@@ -10,8 +10,7 @@ event_struct(
   fu,
   death,
   outcomes,
-  namefix = c("{str_remove_all({.col}, 'index_')}",
-    "{str_replace_all({.col}, 'index_', 't_')}"),
+  pattern = "index_",
   unit = "months",
   keep_dates = F
 )
@@ -27,7 +26,7 @@ event_struct(
 
 \item{outcomes}{Vector of single or multiple column names with the event of interest in date format}
 
-\item{namefix}{Vector of length 2. Indicates the name pattern of the event of interest.}
+\item{pattern}{Indicates the name pattern of the outcomes such as index_event or event_date}
 
 \item{unit}{Whether time-to-event should be reported in months or years.}
 

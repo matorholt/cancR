@@ -12,7 +12,7 @@
 #' @param fu End of follow-up or time of death in date format
 #' @param death Status indicator for death, 0=Alive, 1=Dead
 #' @param outcomes Vector of single or multiple column names with the event of interest in date format
-#' @param namefix Vector of length 2. Indicates the name pattern of the event of interest.
+#' @param pattern Indicates the name pattern of the outcomes such as index_event or event_date
 #' @param unit Whether time-to-event should be reported in months or years.
 #' @param keep_dates Whether the original event dates should be kept.
 #'
@@ -27,7 +27,7 @@ event_struct <- function(data,
                          fu,
                          death,
                          outcomes,
-                         namefix=c("{str_remove_all({.col}, 'index_')}", "{str_replace_all({.col}, 'index_', 't_')}"),
+                         pattern = "index_",
                          unit = "months",
                          keep_dates=F){
 
@@ -37,10 +37,13 @@ event_struct <- function(data,
     t = 365.25
   }
 
+  t_pat <- ifelse(str_detect(pattern, "(?<=([:alpha:]))_"), "t_", "_t")
+
   d <- data %>%
-    mutate(t_fu = as.numeric(fu - index)/t,
-           across(c({{outcomes}}), ~ifelse(!is.na(.), 1, ifelse(death == 1, 2, 0)), .names=namefix[1]),
-           across(c({{outcomes}}), ~ifelse(!is.na(.), as.numeric(. - index)/t, t_fu), .names=namefix[2]))
+    mutate(t_fu = as.numeric({{fu}} - {{index}})/t,
+           across(c({{outcomes}}), ~ifelse(!is.na(.), as.numeric(. - {{index}})/t, t_fu), .names=paste0(c("{str_replace_all({.col},'", pattern, "', '", t_pat, "')}"), collapse="")),
+           across(c({{outcomes}}), ~ifelse(!is.na(.), 1, ifelse({{death}} == 1, 2, 0)), .names=paste0("{str_remove_all({.col},'", pattern, "')}", collapse="")),
+    )
 
   if(keep_dates){
     d <- d
