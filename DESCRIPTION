@@ -13,8 +13,12 @@ Imports:
     dplyr,
     ggplot2,
     heaven,
+    pammtools,
     parallel,
     patchwork,
     prodlim,
+    purrr,
     riskRegression,
-    survival
+    stringr,
+    survival,
+    tidyr
