@@ -36,10 +36,10 @@ crrstrat(
 
 \item{quantiles}{If median time to event should be returned.}
 
-\item{type}{Assign covariates for adjustment.
-uni: No adjustment other than the "group" variable
-age-sex: Age and sex standardization
-select: Uses "vars" to select variables that should be adjusted for.
+\item{type}{Assign covariates for adjustment. \cr
+uni: No adjustment other than the "group" variable \cr
+age-sex: Age and sex standardization \cr
+select: Uses "vars" to select variables that should be adjusted for. \cr
 custom: The right-hand side of the formula can be customized as a character string.}
 
 \item{vars}{Only applicable if "type" = "select".}
@@ -53,18 +53,19 @@ custom: The right-hand side of the formula can be customized as a character stri
 \item{printres}{Defines which time point esimates should be reported.}
 }
 \value{
-Life_table: Event table
-Plot_data: Data for plotting CIF curves
-HR: Hazard ratio between the groups
-Models: Model objects (cause1 and cause2)
-diag: Diagnostics for assessing proportionality
-Risks: Absolute risk estimates at the specified time points
-Risk_differences: Absolute risk differences at the specified time points
-Risk_ratios: Absolute risk ratios at the specified time points
-Event_proportions: "Before" estimates the risk of event within a certain timepoint (e.g. x\% of the events occurred within).
-"After" estimates the risk of residual events between timepoint x and ten years.
-"Window" estimates the percentage of events within six month windows (e.g. x\% of the events occurred between t1 and t2)
-Conditional: Conditional risk estimates
+Life_table: Event table \cr
+Plot_data: Data for plotting CIF curves \cr
+HR: Hazard ratio between the groups \cr
+Models: Model objects (cause1 and cause2) \cr
+diag: Diagnostics for assessing proportionality \cr
+Risks: Absolute risk estimates at the specified time points \cr
+Risk_differences: Absolute risk differences at the specified time points \cr
+Risk_ratios: Absolute risk ratios at the specified time points \cr
+Event_proportions: \cr
+"Before" estimates the risk of event within a certain timepoint (e.g. x\% of the events occurred within). \cr
+"After" estimates the risk of residual events between timepoint x and ten years. \cr
+"Window" estimates the percentage of events within six month windows (e.g. x\% of the events occurred between t1 and t2) \cr
+Conditional: Conditional risk estimates \cr
 Surv: Indicator of the surv-argument
 }
 \description{
