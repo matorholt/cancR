@@ -53,6 +53,7 @@ custom: The right-hand side of the formula can be customized as a character stri
 \item{printres}{Defines which time point esimates should be reported.}
 }
 \value{
+Median_surv: Median survival time \cr
 Life_table: Event table \cr
 Plot_data: Data for plotting CIF curves \cr
 HR: Hazard ratio between the groups \cr

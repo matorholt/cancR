@@ -4,10 +4,12 @@
 \alias{closest}
 \title{Closest}
 \usage{
-closest(mdose, str, split = T)
+closest(mdose, vec = NULL, str, split = T)
 }
 \arguments{
 \item{mdose}{estimated dose in the patient}
+
+\item{vec}{vector to search for closest value. If NULL, provide str which vec should be created from}
 
 \item{str}{strength of the tablet}
 

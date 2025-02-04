@@ -13,9 +13,7 @@
 #' @return Returns the dose closest to the estimated
 #' @export
 #'
-#'  @examples
-#'  closest(25, str=50, split=F)
-#'  closest(50, c(100,200,300))
+#'
 #'
 #'
 

@@ -18,46 +18,10 @@
 #' @return A dataframe with dose, duration, cumulated dose as time-varying measures.
 #' @export
 #'
-#'  @examples
-#'  lmdb <- rbind(data.frame(pnr=c(1,1,1,1,1,1,1,1,1,1,1,2),
-#'                   atc=rep("L04AD01", 12),
-#'                   eksd = as.Date(c("2001-01-01",
-#'                                  "2001-04-01",
-#'                                  "2001-07-01",
-#'                                  "2001-10-01",
-#'                                  "2001-10-14",
-#'                                  "2001-12-31",
-#'                                  "2002-02-01",
-#'                                  "2002-02-14",
-#'                                  "2002-05-01",
-#'                                  "2002-05-14",
-#'                                  "2003-10-01",
-#'                                  "2001-01-01")),
-#'                 apk = c(2,2,2,1,1, 2, 1, 1,2,1,1,1),
-#'                 strnum = c(50, 50, 50, 100, 100, 50, 50,100, 50, 100, 100,50),
-#'                 packsize = c(50, 50, 50, 50, 50, 50, 50, 50, 50,50, 50,50)),
-#'
-#'            data.frame(pnr=c(3),
-#'                       atc=rep("L04AD01", 1),
-#'                       eksd = as.Date(c("2001-01-01")),
-#'                       apk = c(6),
-#'                       strnum = c(50),
-#'                       packsize = c(50)),
-#'            data.frame(pnr=rep(4, 3),
-#'                       atc=rep("L04AD01", 3),
-#'                       eksd = as.Date(c("2001-01-01",
-#'                                        "2001-01-11",
-#'                                        "2001-01-25")),
-#'                       apk = c(3,3,2),
-#'                       strnum = c(50,25,50),
-#'                       packsize = c(50,50,50)))
-#'
-#' map_drugs(lmdb, drug = "L04AD01")
-
-#'
 #'
 map_drugs <- function(data,
                       drug,
+                      type = "MG$",
                       windowsize = 30,
                       doses=NULL,
                       pnr = pnr,
@@ -66,11 +30,13 @@ map_drugs <- function(data,
                       apk = apk,
                       strnum = strnum,
                       packsize = packsize,
+                      strunit = strunit,
                       split=T) {
-  data %>%
-    filter(str_detect({{atc}}, drug)) %>%
-    group_by(pnr) %>%
-    arrange(pnr, eksd) %>%
+
+data %>%
+    filter(str_detect({{atc}}, drug) & str_detect({{strunit}}, type)) %>%
+    group_by({{pnr}}) %>%
+    arrange({{pnr}}, {{eksd}}) %>%
     mutate(window = row_number(),
            #Make windows of prescriptions with short intervals
            window = ifelse({{eksd}}- lag({{eksd}}) < windowsize & row_number() > 1, NA, window)) %>%
@@ -103,12 +69,34 @@ map_drugs <- function(data,
     #
     mutate(dose = ifelse(row_number() == n(), mode(dose[str == last(str)]), dose),
            duration = pmin(as.numeric(lead({{eksd}}) - {{eksd}}), total/dose),
-           duration = ifelse(row_number() == n(), total/dose, duration))
-    # #Time-varying stucture
-    # mutate(tstart = as.numeric({{eksd}} - first({{eksd}})),
-    #        tstop = tstart + duration,
-    #        totaldose = duration *dose,
-    #        cumdose = cumsum(totaldose)) %>%
-    # select({{pnr}}, {{atc}}, dose, duration, tstart, tstop, totaldose, cumdose)
+           duration = ifelse(row_number() == n(), total/dose, duration)) %>%
+    #Time-varying stucture
+    mutate(tstart = as.numeric({{eksd}} - first({{eksd}})),
+           tstop = tstart + duration,
+           totaldose = duration *dose,
+           cumdose = cumsum(totaldose),
+           date = {{eksd}}) %>%
+    select({{pnr}}, {{atc}}, dose, duration, tstart, tstop, totaldose, cumdose, date)
+
 }
 
+# map_drugs(lmdb,drug = "L04", split=F)
+#
+# lmdb <- data.frame(pnr=c(1,1,1,1,1,1,1,1,1,1,1),
+#                    atc=rep("L04AD01", 11),
+#                    eksd = as.Date(c("2001-01-01",
+#                                     "2001-04-01",
+#                                     "2001-07-01",
+#                                     "2001-10-01",
+#                                     "2001-10-14",
+#                                     "2001-12-31",
+#                                     "2002-02-01",
+#                                     "2002-02-14",
+#                                     "2002-05-01",
+#                                     "2002-05-14",
+#                                     "2003-10-01")),
+#                    apk = c(2,2,2,1,1, 2, 1, 1,2,1,1),
+#                    strnum = c(50, 50, 50, 100, 100, 50, 50,100, 50, 100, 100),
+#                    packsize = c(50, 50, 50, 50, 50, 50, 50, 50, 50,50, 50),
+#                    strunit = rep("MG", 11))
+#

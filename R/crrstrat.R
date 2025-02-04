@@ -27,6 +27,7 @@
 #' @param printres Defines which time point esimates should be reported.
 #'
 #' @return
+#' Median_surv: Median survival time \cr
 #' Life_table: Event table \cr
 #' Plot_data: Data for plotting CIF curves \cr
 #' HR: Hazard ratio between the groups \cr

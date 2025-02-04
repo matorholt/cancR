@@ -7,12 +7,16 @@
 map_drugs(
   data,
   drug,
+  type = "MG$",
+  windowsize = 30,
+  doses = NULL,
   pnr = pnr,
   atc = atc,
   eksd = eksd,
   apk = apk,
   strnum = strnum,
   packsize = packsize,
+  strunit = strunit,
   split = T
 )
 }
@@ -20,6 +24,8 @@ map_drugs(
 \item{data}{Dataframe, typically LMDB}
 
 \item{drug}{Regex filtering drugs of interest (e.g. L04AD01 or L0\link{34})}
+
+\item{windowsize}{Interval between two redeems that should be considered one}
 
 \item{pnr}{pnr}
 
