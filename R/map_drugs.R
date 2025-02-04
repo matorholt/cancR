@@ -75,8 +75,9 @@ data %>%
            tstop = tstart + duration,
            totaldose = duration *dose,
            cumdose = cumsum(totaldose),
-           date = {{eksd}}) %>%
-    select({{pnr}}, {{atc}}, dose, duration, tstart, tstop, totaldose, cumdose, date)
+           dstart = {{eksd}},
+           dstop = dstart + duration) %>%
+    select({{pnr}}, {{atc}}, dose, duration, tstart, tstop, dstart, dstop, totaldose, cumdose)
 
 }
 
