@@ -2,11 +2,13 @@
 
 export(closest)
 export(combiner)
+export(crrplot)
 export(crrstrat)
 export(event_struct)
 export(follow_up)
 export(map_drugs)
 export(mode)
+export(n_groups)
 export(pfun)
 export(powershell)
 export(pstrat)
