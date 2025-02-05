@@ -33,7 +33,7 @@ map_drugs <- function(data,
                       strunit = strunit,
                       split=T) {
 
-data %>%
+mobj <- data %>%
     filter(str_detect({{atc}}, drug) & str_detect({{strunit}}, type)) %>%
     group_by({{pnr}}) %>%
     arrange({{pnr}}, {{eksd}}) %>%
@@ -77,13 +77,16 @@ data %>%
            cumdose = cumsum(totaldose),
            dstart = {{eksd}},
            dstop = dstart + duration) %>%
-    select({{pnr}}, {{atc}}, dose, duration, tstart, tstop, dstart, dstop, totaldose, cumdose)
+    select({{pnr}}, {{atc}}, dose, duration, tstart, tstop, dstart, dstop, totaldose, cumdose) %>%
+    ungroup()
 
+class(mobj) <- append(class(mobj),"Mobj")
+return(mobj)
 }
-
-# map_drugs(lmdb,drug = "L04", split=F)
 #
-# lmdb <- data.frame(pnr=c(1,1,1,1,1,1,1,1,1,1,1),
+#
+# set.seed(1)
+# lmdb <- rbind(data.frame(pnr=c(1,1,1,1,1,1,1,1,1,1,1),
 #                    atc=rep("L04AD01", 11),
 #                    eksd = as.Date(c("2001-01-01",
 #                                     "2001-04-01",
@@ -99,5 +102,61 @@ data %>%
 #                    apk = c(2,2,2,1,1, 2, 1, 1,2,1,1),
 #                    strnum = c(50, 50, 50, 100, 100, 50, 50,100, 50, 100, 100),
 #                    packsize = c(50, 50, 50, 50, 50, 50, 50, 50, 50,50, 50),
-#                    strunit = rep("MG", 11))
+#                    strunit = rep("MG", 11)),
+#               data.frame(pnr=2,
+#                          atc=rep("L04AD01", 11),
+#                          eksd = as.Date(c("2001-01-01",
+#                                           "2001-04-01",
+#                                           "2001-07-01",
+#                                           "2001-10-01",
+#                                           "2001-10-14",
+#                                           "2001-12-31",
+#                                           "2002-02-01",
+#                                           "2002-02-14",
+#                                           "2002-05-01",
+#                                           "2002-05-14",
+#                                           "2003-10-01")),
+#                          apk = sample(c(1,2), size=11, replace=T),
+#                          strnum = sample(c(50,100), size = 11, replace=T),
+#                          packsize = c(50, 50, 50, 50, 50, 50, 50, 50, 50,50, 50),
+#                          strunit = "MG"),
+#               data.frame(pnr=3,
+#                          atc=rep("L04AD01", 11),
+#                          eksd = as.Date(c("2001-01-01",
+#                                           "2001-04-01",
+#                                           "2001-07-01",
+#                                           "2001-10-01",
+#                                           "2001-10-14",
+#                                           "2001-12-31",
+#                                           "2002-02-01",
+#                                           "2002-02-14",
+#                                           "2002-05-01",
+#                                           "2002-05-14",
+#                                           "2003-10-01")),
+#                          apk = sample(c(1,2), size=11, replace=T),
+#                          strnum = sample(c(50,100), size = 11, replace=T),
+#                          packsize = c(50, 50, 50, 50, 50, 50, 50, 50, 50,50, 50),
+#                          strunit = "MG"),
+#               data.frame(pnr=3,
+#                          atc=rep("L04AD01", 11),
+#                          eksd = as.Date(c("2001-01-01",
+#                                           "2001-04-01",
+#                                           "2001-07-01",
+#                                           "2001-10-01",
+#                                           "2001-10-14",
+#                                           "2001-12-31",
+#                                           "2002-02-01",
+#                                           "2002-02-14",
+#                                           "2002-05-01",
+#                                           "2002-05-14",
+#                                           "2003-10-01")),
+#                          apk = sample(c(1,2), size=11, replace=T),
+#                          strnum = sample(c(200), size = 11, replace=T),
+#                          packsize = c(50, 50, 50, 50, 50, 50, 50, 50, 50,50, 50),
+#                          strunit = "MG")
+#               )
+#
+# lmdb
+#
+# m <- map_drugs(lmdb,drug = "L04", split=F)
 #

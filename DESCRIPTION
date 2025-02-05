@@ -12,6 +12,7 @@ Depends:
     arsenal,
     data.table,
     dplyr,
+    dtplyr,
     ggplot2,
     heaven,
     magrittr,
