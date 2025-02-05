@@ -73,15 +73,21 @@ sum_drugs <- function(mobj, pnr = pnr, trend=F,scale) {
   scale_y_continuous(breaks=seq(0,100,10), labels = paste0(seq(0,100,10), "%"))
 
 uni_dose <- df %>% distinct(pnr, dose) %>% group_by(pnr) %>% summarise(n = n()) %>%
-    ggplot(aes(x=n)) +
-    geom_histogram(fill = "Steelblue")  +
-    theme_classic() +
-    theme(panel.grid.major = element_line(scales::alpha("grey92", .7),
-                                          linewidth = 0.5)) +
-    labs(title = "Distinct doses", x="Unique number of doses")
+  ungroup() %>%
+  group_by(n) %>%
+  summarise(n2 = n()) %>%
+  mutate(tot = n_distinct(df$pnr),
+         pct = n2 / tot * 100) %>%
+  ggplot(aes(x=n2, y=pct)) +
+  geom_col(fill = "Steelblue")  +
+  theme_classic() +
+  theme(panel.grid.major = element_line(scales::alpha("grey92", .7),
+                                        linewidth = 0.5)) +
+  labs(title = "Distinct doses", x="Unique number of doses")
 
   plot <- (cum + doses) / (dose_dist + uni_dose)
   return(plot)
 }
+
 
 
