@@ -4,7 +4,7 @@
 \alias{pstrat}
 \title{Life-table}
 \usage{
-pstrat(data, timevar, event, group, horizon = 120)
+pstrat(data, timevar, event, group, survscale = "OS", horizon = 120)
 }
 \arguments{
 \item{data}{dataframe}
@@ -14,6 +14,8 @@ pstrat(data, timevar, event, group, horizon = 120)
 \item{event}{event column with either 0/1 structure or 0/1/2 in case of competing risks}
 
 \item{group}{optional grouping column}
+
+\item{survscale}{Whether estimates should be presented as Overall survival or All-Cause Mortality}
 
 \item{horizon}{time horizon (default=120 months)}
 }

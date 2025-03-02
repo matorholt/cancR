@@ -16,6 +16,7 @@ crrplot(
   respos.x = 0,
   respos.y = 0,
   ylab = 0,
+  legend.pos = c(0.5, 0.95),
   tscale = 1,
   ndigits_est = 1,
   ndigits_res = 1,

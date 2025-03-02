@@ -16,7 +16,6 @@ Depends:
     ggplot2,
     heaven,
     magrittr,
-    pammtools,
     parallel,
     patchwork,
     prodlim,
@@ -26,3 +25,6 @@ Depends:
     survival,
     survminer,
     tidyr
+Imports: 
+    pammtools,
+    tibble

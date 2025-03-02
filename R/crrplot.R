@@ -35,6 +35,7 @@ crrplot <- function(list,
                     respos.x = 0,
                     respos.y = 0,
                     ylab = 0,
+                    legend.pos = c(0.5,0.95),
                     tscale = 1,
                     ndigits_est = 1,
                     ndigits_res = 1,
@@ -44,12 +45,17 @@ crrplot <- function(list,
       "The input is not of class \"CRlist\" or \"Plist\" created using the crrstrat/pstrat function - maybe ask MØ??"
     )
   }
-  require(tidyverse)
-  require(pammtools)
+
+
+
+  if (max(list$Life_table$time) < fu) {
+    stop(
+      "Follow-up time is not equal in the crrstrat/pstrat and the crrplot"
+    )
+  }
+
 
   tab <- as.data.frame(list$Life_table) %>% filter(time %in% seq(0,fu,12))
-
-
 
   if(ncol(tab)==7) {
     tab$stratum = "test"
@@ -79,6 +85,12 @@ crrplot <- function(list,
 
   surv = list$Surv
 
+  if(list$Plot_data[1,"est"] == 1) {
+    survscale <- "OS"
+  } else {
+    survscale <- "AM"
+  }
+
   x=y/100
   tot = x+(x*0.6)
 
@@ -97,14 +109,18 @@ crrplot <- function(list,
           axis.title = element_blank(),
           axis.text.x = element_blank(),
           axis.text.y = element_blank(),
-          legend.position = c(0.5,0.95),
+          legend.position = legend.pos,
           legend.direction = "horizontal",
           legend.title = element_blank(),
           legend.text = element_text(size=16*tscale),
-          plot.margin = margin(0,1,0,0, unit = "cm")) +
-    #Labels
-    annotate("text", x=fu/2, y = -(tot*0.10), label = "Years", size = 6*tscale) +
-    annotate("text", x=-(fu*0.11)-ylab, y = x/2, label = ifelse(surv, paste(outcome, " (%)"), paste("Risk of ", outcome, " (%)")), size = 6*tscale, angle = 90) +
+          plot.margin = margin(0,1,0,0, unit = "cm"))
+  if(length(grps) == 1) {
+    p + theme(legend.position = "none")
+  }
+
+  #Labels
+  p <- p + annotate("text", x=fu/2, y = -(tot*0.10), label = "Years", size = 6*tscale) +
+    annotate("text", x=-(fu*0.11)-ylab, y = x/2, label = ifelse(surv, paste(outcome, " (%)"), ifelse(str_count(outcome) <= 25, paste0("Risk of ", outcome, " (%)"), "Risk (%)")), size = 6*tscale, angle = 90) +
     annotate("text", x=seq(0,fu/12,1)*12, y=-(tot*0.06), label=seq(0,fu/12,1), size = 6*tscale)
   if(y>50){
     p <- p + annotate("text", x=-(fu*0.03), y=seq(0,x,0.1), label = paste(seq(0,x*100,10), "%", sep=""), size = 6*tscale, hjust="right")
@@ -119,7 +135,15 @@ crrplot <- function(list,
     p <- p +
       annotate("text", label = tab[,"cumsum"], x = seq(0,fu,12), y = -(tot*0.21), color = col[1], size = 5*tscale) +
       annotate("text", label = tab[,"n.risk"], x = seq(0,fu,12), y = -(tot*0.33), color = col[1], size = 5*tscale)
-  } else if(length(grps)>2) {
+  }
+
+  if(length(grps)==2) {
+    p <- p + annotate("text", label = tab[tab[,gr] %in% grps[2],"cumsum"], x = seq(0,fu,12), y = -(tot*0.19), color = col[1], size = 5*tscale) +
+      annotate("text", label = tab[tab[,gr] %in% grps[1],"cumsum"], x = seq(0,fu,12), y = -(tot*0.23), color = col[2], size = 5*tscale) +
+      annotate("text", label = tab[tab[,gr] %in% grps[2],"n.risk"], x = seq(0,fu,12), y = -(tot*0.31), color = col[1], size = 5*tscale) +
+      annotate("text", label = tab[tab[,gr] %in% grps[1],"n.risk"], x = seq(0,fu,12), y = -(tot*0.35), color = col[2], size = 5*tscale)
+  }
+  if(length(grps)==3) {
     p <- p +
       annotate("text", label = tab[tab[,gr] %in% grps[3],"cumsum"], x = seq(0,fu,12), y = -(tot*0.185), color = col[1], size = 4.5*tscale) +
       annotate("text", label = tab[tab[,gr] %in% grps[2],"cumsum"], x = seq(0,fu,12), y = -(tot*0.21), color = col[2], size = 4.5*tscale) +
@@ -127,12 +151,20 @@ crrplot <- function(list,
       annotate("text", label = tab[tab[,gr] %in% grps[3],"n.risk"], x = seq(0,fu,12), y = -(tot*0.305), color = col[1], size = 4.5*tscale) +
       annotate("text", label = tab[tab[,gr] %in% grps[2],"n.risk"], x = seq(0,fu,12), y = -(tot*0.33), color = col[2], size = 4.5*tscale) +
       annotate("text", label = tab[tab[,gr] %in% grps[1],"n.risk"], x = seq(0,fu,12), y = -(tot*0.355), color = col[3], size = 4.5*tscale)
-  } else {
-    p <- p + annotate("text", label = tab[tab[,gr] %in% grps[2],"cumsum"], x = seq(0,fu,12), y = -(tot*0.19), color = col[1], size = 5*tscale) +
-      annotate("text", label = tab[tab[,gr] %in% grps[1],"cumsum"], x = seq(0,fu,12), y = -(tot*0.23), color = col[2], size = 5*tscale) +
-      annotate("text", label = tab[tab[,gr] %in% grps[2],"n.risk"], x = seq(0,fu,12), y = -(tot*0.31), color = col[1], size = 5*tscale) +
-      annotate("text", label = tab[tab[,gr] %in% grps[1],"n.risk"], x = seq(0,fu,12), y = -(tot*0.35), color = col[2], size = 5*tscale)
   }
+  if(length(grps)==4) {
+    p <- p +
+      annotate("text", label = tab[tab[,gr] %in% grps[4],"cumsum"], x = seq(0,fu,12), y = -(tot*0.18), color = col[1], size = 3.5*tscale) +
+      annotate("text", label = tab[tab[,gr] %in% grps[3],"cumsum"], x = seq(0,fu,12), y = -(tot*0.20), color = col[2], size = 3.5*tscale) +
+      annotate("text", label = tab[tab[,gr] %in% grps[2],"cumsum"], x = seq(0,fu,12), y = -(tot*0.22), color = col[3], size = 3.5*tscale) +
+      annotate("text", label = tab[tab[,gr] %in% grps[1],"cumsum"], x = seq(0,fu,12), y = -(tot*0.24), color = col[4], size = 3.5*tscale) +
+      annotate("text", label = tab[tab[,gr] %in% grps[4],"n.risk"], x = seq(0,fu,12), y = -(tot*0.30), color = col[1], size = 3.5*tscale) +
+      annotate("text", label = tab[tab[,gr] %in% grps[3],"n.risk"], x = seq(0,fu,12), y = -(tot*0.32), color = col[2], size = 3.5*tscale) +
+      annotate("text", label = tab[tab[,gr] %in% grps[2],"n.risk"], x = seq(0,fu,12), y = -(tot*0.34), color = col[3], size = 3.5*tscale) +
+      annotate("text", label = tab[tab[,gr] %in% grps[1],"n.risk"], x = seq(0,fu,12), y = -(tot*0.36), color = col[4], size = 3.5*tscale)
+
+  }
+
   #Risk table segments
   p <- p +
     geom_segment(x = 0, xend=2, y=-(tot*0.27), yend=-(tot*0.27), color = "#616161", linewidth = 1) +               #Kort midt
@@ -148,12 +180,12 @@ crrplot <- function(list,
   if(length(grps)==1) {
     p <- p + theme(legend.position = "none")
     #Estimates
-    # annotate("text", x=60, y=ifelse(surv,est$lower[est$time %in% 60]-0.05*x,est$upper[est$time %in% 60]+0.05*x)+labpos[1], label = paste(c(format(round(est$est[est$time%in%60]*100,ndigits_est), nsmall=1),"%"),collapse=""), size = 5*tscale, col = col[1])
+    # annotate("text", x=60, y=ifelse(surv & survscale == "OS",est$lower[est$time %in% 60]-0.05*x,est$upper[est$time %in% 60]+0.05*x)+labpos[1], label = paste(c(format(round(est$est[est$time%in%60]*100,ndigits_est), nsmall=1),"%"),collapse=""), size = 5*tscale, col = col[1])
 
     if(str_detect(printres, "est")) {
-      p <- p + annotate("text", x=fu*0.04+respos.x, y=ifelse(surv, 0.2*x+respos.y, 0.95*x+respos.y), label = paste0(fu/12, "-year Risk", collapse=""), fontface = 2, hjust="left", size = 5*tscale) +
-        annotate("text", x=fu*0.04+respos.x, y=ifelse(surv, 0.15*x+respos.y, 0.90*x+respos.y), label = paste(c(format(round(est$est[est$time%in%fu]*100,ndigits_est), nsmall=1),"%, (95%CI ", format(round(est$lower[est$time%in%fu]*100, ndigits_res), nsmall=1),"-", format(round(est$upper[est$time%in%fu]*100, ndigits_res), nsmall=1),")"), collapse=""), size = 5*tscale, hjust="left", fontface=1) +
-        annotate("segment", x=fu*0.01+respos.x, xend=fu*0.03+respos.x, y=ifelse(surv, 0.15*x, 0.90*x), yend=ifelse(surv, 0.15*x, 0.90*x), color = c(col[2:1]), linewidth = 1.5)
+      p <- p + annotate("text", x=fu*0.04+respos.x, y=ifelse(surv & survscale == "OS", 0.2*x+respos.y, 0.95*x+respos.y), label = paste0(fu/12, "-year Risk", collapse=""), fontface = 2, hjust="left", size = 5*tscale) +
+        annotate("text", x=fu*0.04+respos.x, y=ifelse(surv & survscale == "OS", 0.15*x+respos.y, 0.90*x+respos.y), label = paste(c(format(round(est$est[est$time%in%fu]*100,ndigits_est), nsmall=1),"% (95%CI ", format(round(est$lower[est$time%in%fu]*100, ndigits_res), nsmall=1),"-", format(round(est$upper[est$time%in%fu]*100, ndigits_res), nsmall=1),")"), collapse=""), size = 5*tscale, hjust="left", fontface=1) +
+        annotate("segment", x=fu*0.01+respos.x, xend=fu*0.03+respos.x, y=ifelse(surv & survscale == "OS", 0.15*x, 0.90*x), yend=ifelse(surv & survscale == "OS", 0.15*x, 0.90*x), color = c(col[2:1]), linewidth = 1.5)
     }
   }
 
@@ -161,20 +193,20 @@ crrplot <- function(list,
   if(length(grps)==2) {
 
     #Line labels
-    # p <- p +  annotate("text", x=60, y=ifelse(surv, pmin(0.995,est$upper[est$time %in% 60 & est$stratum %in% first(est$stratum)]+x*0.05),pmax(0.015,est$lower[est$time %in% 60 & est$stratum %in% first(est$stratum)]-x*0.05)) + labpos[1], label = paste(c(format(round(est$est[est$time%in%60 & est$stratum %in% first(est$stratum)]*100,ndigits_est), nsmall=1),"%"),collapse=""), size = 5*tscale, col = col[2]) +
-    #   annotate("text", x=60, y=ifelse(surv, est$lower[est$time %in% 60 & est$stratum %in% last(est$stratum)]-x*0.05,est$upper[est$time %in% 60 & est$stratum %in% last(est$stratum)]+x*0.05) + labpos[1], label = paste(c(format(round(est$est[est$time%in%60 & est$stratum %in% last(est$stratum)]*100,ndigits_est), nsmall=1),"%"),collapse=""), size = 5*tscale, col = col[1])
+    # p <- p +  annotate("text", x=60, y=ifelse(surv & survscale == "OS", pmin(0.995,est$upper[est$time %in% 60 & est$stratum %in% first(est$stratum)]+x*0.05),pmax(0.015,est$lower[est$time %in% 60 & est$stratum %in% first(est$stratum)]-x*0.05)) + labpos[1], label = paste(c(format(round(est$est[est$time%in%60 & est$stratum %in% first(est$stratum)]*100,ndigits_est), nsmall=1),"%"),collapse=""), size = 5*tscale, col = col[2]) +
+    #   annotate("text", x=60, y=ifelse(surv & survscale == "OS", est$lower[est$time %in% 60 & est$stratum %in% last(est$stratum)]-x*0.05,est$upper[est$time %in% 60 & est$stratum %in% last(est$stratum)]+x*0.05) + labpos[1], label = paste(c(format(round(est$est[est$time%in%60 & est$stratum %in% last(est$stratum)]*100,ndigits_est), nsmall=1),"%"),collapse=""), size = 5*tscale, col = col[1])
     if(str_detect(printres, "est")) {
-      p <- p + annotate("text", x=fu*0.04+respos.x, y=ifelse(surv, 0.2*x+respos.y, 0.95*x+respos.y), label = paste0(fu/12, "-year Risk", collapse=""), fontface = 2, hjust="left", size = 5*tscale) +
-        annotate("text", x=fu*0.04+respos.x, y=ifelse(surv, 0.15*x+respos.y, 0.90*x+respos.y), label = paste(c(format(round(est$est[est$time%in%fu & est$stratum %in% grps[1]]*100,ndigits_est), nsmall=1),"%, (95%CI ", format(round(est$lower[est$time%in%fu & est$stratum %in% grps[1]]*100, ndigits_res), nsmall=1),"-", format(round(est$upper[est$time%in%fu & est$stratum %in% grps[1]]*100, ndigits_res), nsmall=1),")"), collapse=""), size = 5*tscale, hjust="left", fontface=1) +
-        annotate("text", x=fu*0.04+respos.x, y=ifelse(surv, 0.1*x+respos.y, 0.85*x+respos.y), label = paste(c(format(round(est$est[est$time%in%fu & est$stratum %in% grps[2]]*100,ndigits_est), nsmall=1),"%, (95%CI ", format(round(est$lower[est$time%in%fu & est$stratum %in% grps[2]]*100, ndigits_res), nsmall=1),"-", format(round(est$upper[est$time%in%fu & est$stratum %in% grps[2]]*100, ndigits_res), nsmall=1),")"), collapse=""), size = 5*tscale, hjust="left", fontface=1) +
-        annotate("segment", x=fu*0.01+respos.x, xend=fu*0.03+respos.x, y=ifelse(rep(surv,2), (c(0.15*x,0.1*x)), c(0.90*x,0.85*x)), yend=ifelse(rep(surv,2), (c(0.15*x,0.1*x)), c(0.90*x,0.85*x)), color = c(col[2:1]), linewidth = 1.5)
+      p <- p + annotate("text", x=fu*0.04+respos.x, y=ifelse(surv & survscale == "OS", 0.2*x+respos.y, 0.95*x+respos.y), label = paste0(fu/12, "-year Risk", collapse=""), fontface = 2, hjust="left", size = 5*tscale) +
+        annotate("text", x=fu*0.04+respos.x, y=ifelse(surv & survscale == "OS", 0.15*x+respos.y, 0.90*x+respos.y), label = paste(c(format(round(est$est[est$time%in%fu & est$stratum %in% grps[1]]*100,ndigits_est), nsmall=1),"% (95%CI ", format(round(est$lower[est$time%in%fu & est$stratum %in% grps[1]]*100, ndigits_res), nsmall=1),"-", format(round(est$upper[est$time%in%fu & est$stratum %in% grps[1]]*100, ndigits_res), nsmall=1),")"), collapse=""), size = 5*tscale, hjust="left", fontface=1) +
+        annotate("text", x=fu*0.04+respos.x, y=ifelse(surv & survscale == "OS", 0.1*x+respos.y, 0.85*x+respos.y), label = paste(c(format(round(est$est[est$time%in%fu & est$stratum %in% grps[2]]*100,ndigits_est), nsmall=1),"% (95%CI ", format(round(est$lower[est$time%in%fu & est$stratum %in% grps[2]]*100, ndigits_res), nsmall=1),"-", format(round(est$upper[est$time%in%fu & est$stratum %in% grps[2]]*100, ndigits_res), nsmall=1),")"), collapse=""), size = 5*tscale, hjust="left", fontface=1) +
+        annotate("segment", x=fu*0.01+respos.x, xend=fu*0.03+respos.x, y=ifelse(rep(surv & survscale == "OS",2), (c(0.15*x,0.1*x)), c(0.90*x,0.85*x)), yend=ifelse(rep(surv & survscale == "OS",2), (c(0.15*x,0.1*x)), c(0.90*x,0.85*x)), color = c(col[2:1]), linewidth = 1.5)
     }
     if(class(list) %in% "CRlist") {
       if(str_detect(printres, "hr")) {
-        p <-  p+ annotate("text", x=fu*0.04+respos.x, y = ifelse(surv, x*0.05+respos.y, x*0.8+respos.y), label = hr$print, size = 5*tscale, hjust = "left", fontface=3)
+        p <-  p+ annotate("text", x=fu*0.04+respos.x, y = ifelse(surv & survscale == "OS", x*0.05+respos.y, x*0.8+respos.y), label = hr$print, size = 5*tscale, hjust = "left", fontface=3)
       }
       if(str_detect(printres, "rd")) {
-        p <- p+ annotate("text", x=fu*0.04+respos.x, y = ifelse(surv, x*0.05+respos.y, x*0.8+respos.y), label = paste0(ifelse(str_detect(printres, "est"), "RD = ", paste0(fu/12, "-year RD = ", collapse="")), format(round(diff$diff[diff$time%in%fu], ndigits_res), nsmall=1), "% (95%CI ", format(round(diff$lower[diff$time%in%fu], ndigits_res), nsmall=1),"-", format(round(diff$upper[diff$time%in%fu], ndigits_res), nsmall=1),"), ", diff$p.value[diff$time%in%fu]), size = 5*tscale, hjust = "left", fontface=3)
+        p <- p+ annotate("text", x=fu*0.04+respos.x, y = ifelse(surv & survscale == "OS", x*0.05+respos.y, x*0.8+respos.y), label = paste0(ifelse(str_detect(printres, "est"), "RD = ", paste0(fu/12, "-year RD = ", collapse="")), format(round(diff$diff[diff$time%in%fu], ndigits_res), nsmall=1), "% (95%CI ", format(round(diff$lower[diff$time%in%fu], ndigits_res), nsmall=1),"-", format(round(diff$upper[diff$time%in%fu], ndigits_res), nsmall=1),"), ", diff$p.value[diff$time%in%fu]), size = 5*tscale, hjust = "left", fontface=3)
       }
     }
 
@@ -182,53 +214,36 @@ crrplot <- function(list,
 
   if(length(grps) == 3) {
 
-    if(fu == 60) {
-      if(printres=="est") {
-        p <- p + annotate("text", x=fu*0.04, y=ifelse(surv, 0.2*x+respos.y, 0.95*x+respos.y), label = "5-Year Risk", fontface = 2, hjust="left", size = 5*tscale) +
-          annotate("text", x=fu*0.04, y=ifelse(surv, 0.15*x+respos.y, 0.90*x+respos.y), label = paste(c(format(round(est$est[est$time%in%60 & est$stratum %in% grps[1]]*100,ndigits_est), nsmall=1),"%, (95%CI ", format(round(est$lower[est$time%in%60 & est$stratum %in% grps[1]], ndigits_res), nsmall=1),"-", format(round(est$upper[est$time%in%60 & est$stratum %in% grps[1]], ndigits_res), nsmall=1),")"), collapse=""), size = 5*tscale, hjust="left", fontface=1) +
-          annotate("text", x=fu*0.04, y=ifelse(surv, 0.1*x+respos.y, 0.85*x+respos.y), label = paste(c(format(round(est$est[est$time%in%60 & est$stratum %in% grps[2]]*100,ndigits_est), nsmall=1),"%, (95%CI ", format(round(est$lower[est$time%in%60 & est$stratum %in% grps[2]], ndigits_res), nsmall=1),"-", format(round(est$upper[est$time%in%60 & est$stratum %in% grps[2]], ndigits_res), nsmall=1),")"), collapse=""), size = 5*tscale, hjust="left", fontface=1) +
-          annotate("text", x=fu*0.04, y=ifelse(surv, 0.05*x+respos.y, 0.80*x+respos.y), label = paste(c(format(round(est$est[est$time%in%60 & est$stratum %in% grps[3]]*100,ndigits_est), nsmall=1),"%, (95%CI ", format(round(est$lower[est$time%in%60 & est$stratum %in% grps[3]], ndigits_res), nsmall=1),"-", format(round(est$upper[est$time%in%60 & est$stratum %in% grps[3]], ndigits_res), nsmall=1),")"), collapse=""), size = 5*tscale, hjust="left", fontface=1) +
-          annotate("segment", x=fu*0.01, xend=fu*0.03, y=ifelse(rep(surv,3), (c(0.15*x,0.1*x,0.05*x)), c(0.90*x,0.85*x,0.80*x)), yend=ifelse(rep(surv,3), (c(0.15*x,0.1*x,0.05*x)), c(0.90*x,0.85*x,0.80*x)), color = c(col[3:1]), linewidth = 1.5)
-      }
-
-      if(printres=="rd" & class(list) %in% "CRlist") {
-        p <- p + annotate("text", x=fu*0.04, y=ifelse(surv, 0.2*x+respos.y, 0.95*x+respos.y), label = "5-Year Risk", fontface = 2, hjust="left", size = 5*tscale) +
-          annotate("text", x=fu*0.04, y=ifelse(surv, 0.15*x+respos.y, 0.90*x+respos.y), label = paste(c(format(round(est$est[est$time%in%60 & est$stratum %in% grps[1]]*100,ndigits_est), nsmall=1),"%, reference"),collapse=""), size = 5*tscale, hjust="left", fontface=1) +
-          annotate("text", x=fu*0.04, y=ifelse(surv, 0.1*x+respos.y, 0.85*x+respos.y), label = paste(c(format(round(est$est[est$time%in%60 & est$stratum %in% grps[2]]*100,ndigits_est), nsmall=1),"%, ",
-                                                                                                       "RD = ",
-                                                                                                       format(round(first(diff$diff[diff$time%in%60]), ndigits_res), nsmall=1), "% (95%CI ", format(round(first(diff$lower[diff$time%in%60]), ndigits_res), nsmall=1),"-", format(round(first(diff$upper[diff$time%in%60]), ndigits_res), nsmall=1),"), ", first(diff$p.value[diff$time%in%60])),collapse=""), size = 5*tscale, hjust="left", fontface=1) +
-          annotate("text", x=fu*0.04, y=ifelse(surv, 0.05*x+respos.y, 0.80*x+respos.y), label = paste(c(format(round(est$est[est$time%in%60 & est$stratum %in% grps[3]]*100,ndigits_est), nsmall=1),"%, ",
-                                                                                                        "RD = ",
-                                                                                                        format(round(nth(diff$diff[diff$time%in%60], 2), ndigits_res), nsmall=1), "% (95%CI ", format(round(nth(diff$lower[diff$time%in%60],2), ndigits_res), nsmall=1),"-", format(round(nth(diff$upper[diff$time%in%60],2), ndigits_res), nsmall=1),"), ", nth(diff$p.value[diff$time%in%60],2)),collapse=""), size = 5*tscale, hjust="left", fontface=1) +
-          annotate("segment", x=fu*0.01, xend=fu*0.03, y=ifelse(rep(surv,3), (c(0.15*x,0.1*x,0.05*x)), c(0.90*x,0.85*x,0.80*x)), yend=ifelse(rep(surv,3), (c(0.15*x,0.1*x,0.05*x)), c(0.90*x,0.85*x,0.80*x)), color = c(col[3:1]), linewidth = 1.5)
-      }
+    if(printres=="est") {
+      p <- p + annotate("text", x=fu*0.04, y=ifelse(surv & survscale == "OS", 0.2*x+respos.y, 0.95*x+respos.y), label=paste0(fu/12, "-year Risk", collapse=""), fontface = 2, hjust="left", size = 5*tscale) +
+        annotate("text", x=fu*0.04, y=ifelse(surv & survscale == "OS", 0.15*x+respos.y, 0.90*x+respos.y), label = paste(c(format(round(est$est[est$time%in%fu & est$stratum %in% grps[1]]*100,ndigits_est), nsmall=1),"% (95%CI ", format(round(est$lower[est$time%in%fu & est$stratum %in% grps[1]], ndigits_res), nsmall=1),"-", format(round(est$upper[est$time%in%fu & est$stratum %in% grps[1]], ndigits_res), nsmall=1),")"), collapse=""), size = 5*tscale, hjust="left", fontface=1) +
+        annotate("text", x=fu*0.04, y=ifelse(surv & survscale == "OS", 0.1*x+respos.y, 0.85*x+respos.y), label = paste(c(format(round(est$est[est$time%in%fu & est$stratum %in% grps[2]]*100,ndigits_est), nsmall=1),"% (95%CI ", format(round(est$lower[est$time%in%fu & est$stratum %in% grps[2]], ndigits_res), nsmall=1),"-", format(round(est$upper[est$time%in%fu & est$stratum %in% grps[2]], ndigits_res), nsmall=1),")"), collapse=""), size = 5*tscale, hjust="left", fontface=1) +
+        annotate("text", x=fu*0.04, y=ifelse(surv & survscale == "OS", 0.05*x+respos.y, 0.80*x+respos.y), label = paste(c(format(round(est$est[est$time%in%fu & est$stratum %in% grps[3]]*100,ndigits_est), nsmall=1),"% (95%CI ", format(round(est$lower[est$time%in%fu & est$stratum %in% grps[3]], ndigits_res), nsmall=1),"-", format(round(est$upper[est$time%in%fu & est$stratum %in% grps[3]], ndigits_res), nsmall=1),")"), collapse=""), size = 5*tscale, hjust="left", fontface=1) +
+        annotate("segment", x=fu*0.01, xend=fu*0.03, y=ifelse(rep(surv & survscale == "OS",3), (c(0.15*x,0.1*x,0.05*x)), c(0.90*x,0.85*x,0.80*x)), yend=ifelse(rep(surv & survscale == "OS",3), (c(0.15*x,0.1*x,0.05*x)), c(0.90*x,0.85*x,0.80*x)), color = c(col[3:1]), linewidth = 1.5)
     }
 
-    if(fu == 120) {
-      if(printres=="est") {
-        p <- p + annotate("text", x=fu*0.04, y=ifelse(surv, 0.2*x+respos.y, 0.95*x+respos.y), label = "10-Year Risk", fontface = 2, hjust="left", size = 5*tscale) +
-          annotate("text", x=fu*0.04, y=ifelse(surv, 0.15*x+respos.y, 0.90*x+respos.y), label = paste(c(format(round(est$est[est$time%in%120 & est$stratum %in% grps[1]]*100,ndigits_est), nsmall=1),"%, (95%CI ", format(round(est$lower[est$time%in%120 & est$stratum %in% grps[1]], ndigits_res), nsmall=1),"-", format(round(est$upper[est$time%in%120 & est$stratum %in% grps[1]], ndigits_res), nsmall=1),")"), collapse=""), size = 5*tscale, hjust="left", fontface=1) +
-          annotate("text", x=fu*0.04, y=ifelse(surv, 0.1*x+respos.y, 0.85*x+respos.y), label = paste(c(format(round(est$est[est$time%in%120 & est$stratum %in% grps[2]]*100,ndigits_est), nsmall=1),"%, (95%CI ", format(round(est$lower[est$time%in%120 & est$stratum %in% grps[2]], ndigits_res), nsmall=1),"-", format(round(est$upper[est$time%in%120 & est$stratum %in% grps[2]], ndigits_res), nsmall=1),")"), collapse=""), size = 5*tscale, hjust="left", fontface=1) +
-          annotate("text", x=fu*0.04, y=ifelse(surv, 0.05*x+respos.y, 0.80*x+respos.y), label = paste(c(format(round(est$est[est$time%in%120 & est$stratum %in% grps[3]]*100,ndigits_est), nsmall=1),"%, (95%CI ", format(round(est$lower[est$time%in%120 & est$stratum %in% grps[3]], ndigits_res), nsmall=1),"-", format(round(est$upper[est$time%in%120 & est$stratum %in% grps[3]], ndigits_res), nsmall=1),")"), collapse=""), size = 5*tscale, hjust="left", fontface=1) +
-          annotate("segment", x=fu*0.01, xend=fu*0.03, y=ifelse(rep(surv,3), (c(0.15*x,0.1*x,0.05*x)), c(0.90*x,0.85*x,0.80*x)), yend=ifelse(rep(surv,3), (c(0.15*x,0.1*x,0.05*x)), c(0.90*x,0.85*x,0.80*x)), color = c(col[3:1]), linewidth = 1.5)
-      }
-
-      if(printres=="rd" & class(list) %in% "CRlist") {
-        p <- p + annotate("text", x=fu*0.04, y=ifelse(surv, 0.2*x+respos.y, 0.95*x+respos.y), label = "10-Year Risk", fontface = 2, hjust="left", size = 5*tscale) +
-          annotate("text", x=fu*0.04, y=ifelse(surv, 0.15*x+respos.y, 0.90*x+respos.y), label = paste(c(format(round(est$est[est$time%in%120 & est$stratum %in% grps[1]]*100,ndigits_est), nsmall=1),"%, reference"),collapse=""), size = 5*tscale, hjust="left", fontface=1) +
-          annotate("text", x=fu*0.04, y=ifelse(surv, 0.1*x+respos.y, 0.85*x+respos.y), label = paste(c(format(round(est$est[est$time%in%120 & est$stratum %in% grps[2]]*100,ndigits_est), nsmall=1),"%, ",
-                                                                                                       "RD = ",
-                                                                                                       format(round(first(diff$diff[diff$time%in%120]), ndigits_res), nsmall=1), "% (95%CI ", format(round(first(diff$lower[diff$time%in%120]), ndigits_res), nsmall=1),"-", format(round(first(diff$upper[diff$time%in%120]), ndigits_res), nsmall=1),"), ", first(diff$p.value[diff$time%in%120])),collapse=""), size = 5*tscale, hjust="left", fontface=1) +
-          annotate("text", x=fu*0.04, y=ifelse(surv, 0.05*x+respos.y, 0.80*x+respos.y), label = paste(c(format(round(est$est[est$time%in%120 & est$stratum %in% grps[3]]*100,ndigits_est), nsmall=1),"%, ",
-                                                                                                        "RD = ",
-                                                                                                        format(round(nth(diff$diff[diff$time%in%120], 2), ndigits_res), nsmall=1), "% (95%CI ", format(round(nth(diff$lower[diff$time%in%120],2), ndigits_res), nsmall=1),"-", format(round(nth(diff$upper[diff$time%in%120],2), ndigits_res), nsmall=1),"), ", nth(diff$p.value[diff$time%in%120],2)),collapse=""), size = 5*tscale, hjust="left", fontface=1) +
-          annotate("segment", x=fu*0.01, xend=fu*0.03, y=ifelse(rep(surv,3), (c(0.15*x,0.1*x,0.05*x)), c(0.90*x,0.85*x,0.80*x)), yend=ifelse(rep(surv,3), (c(0.15*x,0.1*x,0.05*x)), c(0.90*x,0.85*x,0.80*x)), color = c(col[3:1]), linewidth = 1.5)
-      }
+    if(printres=="rd" & class(list) %in% "CRlist") {
+      p <- p + annotate("text", x=fu*0.04, y=ifelse(surv & survscale == "OS", 0.2*x+respos.y, 0.95*x+respos.y), label=paste0(fu/12, "-year Risk", collapse=""), fontface = 2, hjust="left", size = 5*tscale) +
+        annotate("text", x=fu*0.04, y=ifelse(surv & survscale == "OS", 0.15*x+respos.y, 0.90*x+respos.y), label = paste(c(format(round(est$est[est$time%in%fu & est$stratum %in% grps[1]]*100,ndigits_est), nsmall=1),"%, reference"),collapse=""), size = 5*tscale, hjust="left", fontface=1) +
+        annotate("text", x=fu*0.04, y=ifelse(surv & survscale == "OS", 0.1*x+respos.y, 0.85*x+respos.y), label = paste(c(format(round(est$est[est$time%in%fu & est$stratum %in% grps[2]]*100,ndigits_est), nsmall=1),"%, ",
+                                                                                                                         "RD = ",
+                                                                                                                         format(round(first(diff$diff[diff$time%in%fu]), ndigits_res), nsmall=1), "% (95%CI ", format(round(first(diff$lower[diff$time%in%fu]), ndigits_res), nsmall=1),"-", format(round(first(diff$upper[diff$time%in%fu]), ndigits_res), nsmall=1),"), ", first(diff$p.value[diff$time%in%fu])),collapse=""), size = 5*tscale, hjust="left", fontface=1) +
+        annotate("text", x=fu*0.04, y=ifelse(surv & survscale == "OS", 0.05*x+respos.y, 0.80*x+respos.y), label = paste(c(format(round(est$est[est$time%in%fu & est$stratum %in% grps[3]]*100,ndigits_est), nsmall=1),"%, ",
+                                                                                                                          "RD = ",
+                                                                                                                          format(round(nth(diff$diff[diff$time%in%fu], 2), ndigits_res), nsmall=1), "% (95%CI ", format(round(nth(diff$lower[diff$time%in%fu],2), ndigits_res), nsmall=1),"-", format(round(nth(diff$upper[diff$time%in%fu],2), ndigits_res), nsmall=1),"), ", nth(diff$p.value[diff$time%in%fu],2)),collapse=""), size = 5*tscale, hjust="left", fontface=1) +
+        annotate("segment", x=fu*0.01, xend=fu*0.03, y=ifelse(rep(surv,3), (c(0.15*x,0.1*x,0.05*x)), c(0.90*x,0.85*x,0.80*x)), yend=ifelse(rep(surv,3), (c(0.15*x,0.1*x,0.05*x)), c(0.90*x,0.85*x,0.80*x)), color = c(col[3:1]), linewidth = 1.5)
     }
-
 
   }
 
+  if(length(grps) == 4) {
+    p <- p + annotate("text", x=fu*0.04, y=ifelse(surv & survscale == "OS", 0.25*x+respos.y, 0.95*x+respos.y), label=paste0(fu/12, "-year Risk", collapse=""), fontface = 2, hjust="left", size = 5*tscale) +
+      annotate("text", x=fu*0.04, y=ifelse(surv & survscale == "OS", 0.20*x+respos.y, 0.90*x+respos.y), label = paste(c(format(round(est$est[est$time%in%fu & est$stratum %in% grps[1]]*100,ndigits_est), nsmall=1),"% (95%CI ", format(round(est$lower[est$time%in%fu & est$stratum %in% grps[1]], ndigits_res), nsmall=1),"-", format(round(est$upper[est$time%in%fu & est$stratum %in% grps[1]], ndigits_res), nsmall=1),")"), collapse=""), size = 5*tscale, hjust="left", fontface=1) +
+      annotate("text", x=fu*0.04, y=ifelse(surv & survscale == "OS", 0.15*x+respos.y, 0.85*x+respos.y), label = paste(c(format(round(est$est[est$time%in%fu & est$stratum %in% grps[2]]*100,ndigits_est), nsmall=1),"% (95%CI ", format(round(est$lower[est$time%in%fu & est$stratum %in% grps[2]], ndigits_res), nsmall=1),"-", format(round(est$upper[est$time%in%fu & est$stratum %in% grps[2]], ndigits_res), nsmall=1),")"), collapse=""), size = 5*tscale, hjust="left", fontface=1) +
+      annotate("text", x=fu*0.04, y=ifelse(surv & survscale == "OS", 0.10*x+respos.y, 0.80*x+respos.y), label = paste(c(format(round(est$est[est$time%in%fu & est$stratum %in% grps[3]]*100,ndigits_est), nsmall=1),"% (95%CI ", format(round(est$lower[est$time%in%fu & est$stratum %in% grps[3]], ndigits_res), nsmall=1),"-", format(round(est$upper[est$time%in%fu & est$stratum %in% grps[3]], ndigits_res), nsmall=1),")"), collapse=""), size = 5*tscale, hjust="left", fontface=1) +
+      annotate("text", x=fu*0.04, y=ifelse(surv & survscale == "OS", 0.05*x+respos.y, 0.75*x+respos.y), label = paste(c(format(round(est$est[est$time%in%fu & est$stratum %in% grps[4]]*100,ndigits_est), nsmall=1),"% (95%CI ", format(round(est$lower[est$time%in%fu & est$stratum %in% grps[4]], ndigits_res), nsmall=1),"-", format(round(est$upper[est$time%in%fu & est$stratum %in% grps[4]], ndigits_res), nsmall=1),")"), collapse=""), size = 5*tscale, hjust="left", fontface=1) +
+      annotate("segment", x=fu*0.01, xend=fu*0.03, y=ifelse(rep(surv,4), (c(0.20*x,0.15*x,0.10*x,0.05*x)), c(0.90*x,0.85*x,0.80*x, 0.75*x)), yend=ifelse(rep(surv,4), (c(0.20*x,0.15*x,0.10*x,0.05*x)), c(0.90*x,0.85*x,0.80*x, 0.75*x)), color = c(col[4:1]), linewidth = 1.5)
+  }
 
 
   return(p)
