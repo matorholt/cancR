@@ -3,6 +3,7 @@
 export(cci_time)
 export(closest)
 export(combiner)
+export(cprfix)
 export(crrplot)
 export(crrstrat)
 export(event_struct)
