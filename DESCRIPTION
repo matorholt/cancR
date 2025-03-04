@@ -26,5 +26,6 @@ Depends:
     survminer,
     tidyr
 Imports: 
+    ggpubr,
     pammtools,
     tibble
