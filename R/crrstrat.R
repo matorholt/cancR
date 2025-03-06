@@ -146,7 +146,7 @@ crrstrat <- function(data,
     cr <- coxph(form_s, data=data2, x=TRUE, y=TRUE)
     cr$call$formula <- form_s
     CRest <- ate(cr, treatment = "stratum", data=data2, times = timepoints)
-    CRplot <- ate(cr, treatment = "stratum", data=data2, times = c(0,unlist(unique(data2 %>%filter(status %in%1)%>%select(time)%>%arrange(time))),60,horizon))
+    CRplot <- ate(cr, treatment = "stratum", data=data2, times = unique(c(0,unlist(unique(data2 %>%filter(status %in%1)%>%select(time)%>%arrange(time))),60,horizon)))
     est <- as.data.frame(summary(CRest, short=T, type = "meanRisk")$meanRisk)
     if(survscale == "OS") {
       est <- est %>% mutate(across(c(estimate, lower, upper), ~1 - .)) %>%
