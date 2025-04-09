@@ -6,13 +6,45 @@
 #'
 #' @param data dataset
 #' @param cpr cpr-column
+#' @param extract TRUE if age and date of birth should be extracted
 #'
-#' @return Returns same dataset with correct CPR numbers
+#' @return Returns same dataset with correct CPR numbers and optionally age and date of birth
 #' @export
 #'
 #'
-cprfix <- function(data, cpr) {
-  data %>%
-    rowwise() %>%
-    mutate({{cpr}} := ifelse(str_count({{cpr}}) == 9, paste0("0",{{cpr}}, collapse=""), {{cpr}}))
+#'
+cprfix <- function(data, cpr=cpr, extract=F) {
+
+  if(sum(str_detect(data %>% pull({{cpr}}), "^\\d{9,10}$|^\\d{5,6}-\\w{4}", negate=T) |
+     str_sub(data %>% pull({{cpr}}), 1,2) %in% c("00", seq(32,99)) |
+     str_sub(data %>% pull({{cpr}}), 3,4) %in% c("00", seq(13,99))) > 0
+                ) {
+    stop("Invalid CPR(s) detected")
+    }
+
+  data <- data %>%
+    mutate({{cpr}} := str_pad(str_remove_all({{cpr}}, "-"), width=10, pad="0"))
+
+  if(extract) {
+    data <- data %>%
+      mutate(sex = case_when(str_sub({{cpr}}, 10) %in% seq(0,8,2) ~ "F",
+                             str_sub({{cpr}}, 10) %in% seq(1,9,2) ~ "M"),
+             birth = case_when(str_detect({{cpr}}, "[:alpha:]") ~ as.Date(NA),
+                               str_sub({{cpr}}, 5,6) %in% str_pad(seq(0,36), 2, pad="0") &
+                                 str_sub({{cpr}}, 7,10) %in% c(seq(4000,4999), seq(9000,9999)) ~ as.Date(str_c("20", str_replace_all({{cpr}}, "(\\d{2})(\\d{2})(\\d{2})(\\d{4})", "\\3-\\2-\\1"), sep="")),
+                               str_sub({{cpr}}, 5,6) %in% str_pad(seq(0,57), 2, pad="0") &
+                                 str_sub({{cpr}}, 7,10) %in% seq(5000,8999) ~ as.Date(str_c("20", str_replace_all({{cpr}}, "(\\d{2})(\\d{2})(\\d{2})(\\d{4})", "\\3-\\2-\\1"), sep="")),
+                               str_sub({{cpr}}, 5,6) %in% str_pad(seq(58,99), 2, pad="0") &
+                                 str_sub({{cpr}}, 7,10) %in% seq(5000,8999) ~ as.Date(str_c("18", str_replace_all({{cpr}}, "(\\d{2})(\\d{2})(\\d{2})(\\d{4})", "\\3-\\2-\\1"), sep="")),
+
+                               T ~ as.Date(str_c("19", str_replace_all({{cpr}}, "(\\d{2})(\\d{2})(\\d{2})(\\d{4})", "\\3-\\2-\\1"), sep=""))))
+  }
+
+  return(data)
 }
+
+data.frame(x=c("010133-1224", "010133-1A24")) %>%
+  cprfix(cpr=x, extract=T)
+
+
+df <- data.frame(x=c(1,232,234234))
