@@ -20,16 +20,30 @@
 #' For patients without an event the function returns the time to last follow-up if status = 0 and time to death if status = 2
 #' @export
 #'
-#'
+# df <- data.frame(index = c(as.Date("1995-01-01"), as.Date("1995-05-02"))) %>%
+#  mutate(fu = index + 10000,
+#         death = c(0,1),
+#         death_date = c(as.Date(NA), as.Date("2010-05-02")),
+#         hudc_date = index+500,
+#         mm_date = index+700)
+#
+#
+#  event_struct(df, index, fu, death, outcomes=c(hudc_date, mm_date), keep_dates = T)
+#
+
 
 event_struct <- function(data,
                          index,
                          fu,
                          death,
                          outcomes,
-                         pattern = "index_",
+                         pattern = "_date",
                          unit = "months",
                          keep_dates=F){
+
+  if(any(str_detect(data %>% select({{outcomes}}) %>% colnames(), pattern, negate=T))) {
+    stop("Wrong naming pattern for outcome columns (e.g. index_ or _date)")
+  }
 
   if(str_detect(unit, "m|M")){
     t = 30.4375
@@ -53,3 +67,6 @@ event_struct <- function(data,
 
   return(d)
 }
+
+
+

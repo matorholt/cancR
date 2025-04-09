@@ -15,11 +15,16 @@
 #'
 cprfix <- function(data, cpr=cpr, extract=F) {
 
-  if(sum(str_detect(data %>% pull({{cpr}}), "^\\d{9,10}$|^\\d{5,6}-\\w{4}", negate=T) |
+  if(any(str_detect(data %>% pull({{cpr}}), "^\\d{9,10}$|^\\d{5,6}-\\w{4}", negate=T) |
      str_sub(data %>% pull({{cpr}}), 1,2) %in% c("00", seq(32,99)) |
-     str_sub(data %>% pull({{cpr}}), 3,4) %in% c("00", seq(13,99))) > 0
+     str_sub(data %>% pull({{cpr}}), 3,4) %in% c("00", seq(13,99)))
                 ) {
-    stop("Invalid CPR(s) detected")
+    errors <- data %>% filter(str_detect(data %>% pull({{cpr}}), "^\\d{9,10}$|^\\d{5,6}-\\w{4}", negate=T) |
+                      str_sub(data %>% pull({{cpr}}), 1,2) %in% c("00", seq(32,99)) |
+                      str_sub(data %>% pull({{cpr}}), 3,4) %in% c("00", seq(13,99)))
+    warning(paste0(nrow(errors), " invalid CPR", rep("(s)", nrow(errors)>1), " detected and returned"))
+    return(errors)
+
     }
 
   data <- data %>%

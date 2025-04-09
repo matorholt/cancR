@@ -10,7 +10,7 @@ event_struct(
   fu,
   death,
   outcomes,
-  pattern = "index_",
+  pattern = "_date",
   unit = "months",
   keep_dates = F
 )
