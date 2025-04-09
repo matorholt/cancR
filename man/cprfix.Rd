@@ -4,15 +4,17 @@
 \alias{cprfix}
 \title{CPRfix}
 \usage{
-cprfix(data, cpr)
+cprfix(data, cpr = cpr, extract = F)
 }
 \arguments{
 \item{data}{dataset}
 
 \item{cpr}{cpr-column}
+
+\item{extract}{TRUE if age and date of birth should be extracted}
 }
 \value{
-Returns same dataset with correct CPR numbers
+Returns same dataset with correct CPR numbers and optionally age and date of birth
 }
 \description{
 Fixes CPR numbers with removed leading zeros. Works with piping

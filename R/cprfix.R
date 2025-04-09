@@ -43,8 +43,3 @@ cprfix <- function(data, cpr=cpr, extract=F) {
   return(data)
 }
 
-data.frame(x=c("010133-1224", "010133-1A24")) %>%
-  cprfix(cpr=x, extract=T)
-
-
-df <- data.frame(x=c(1,232,234234))
