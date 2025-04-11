@@ -1,6 +1,6 @@
 #' crrplot
 #'
-#' @description
+#' #' @description
 #' Automatic plot of adjusted Kaplan-Meier and cumulative incidence curves
 #'
 #'
@@ -8,13 +8,15 @@
 #' @param y Value of y-axis in whole number (eg. 50)
 #' @param col color palette as a vector
 #' @param outcome Labels for outcome
+#' @param ylab Label for y-axis
 #' @param labpos adjustments for point estimates on the plot. Can be removed with NA
 #' @param printres Which results should be printed. Estimates="est", hazard ratio = "hr", risk difference = "rd" and risk ratio = "rr"
 #' @param labgrp group labels
 #' @param fu Length of follow-up (default = 120 months)
 #' @param respos.x shift of the result label on the x-axis
 #' @param respos.y shift of the result label on the y-axis
-#' @param ylab manual shifting of the y-axis label
+#' @param ylab.pos shifting of y-axis label position
+#' @param legend.pos legend position as vector
 #' @param tscale Global scaling parameter if text needs to change size
 #' @param ndigits_est No of digitis in the estimates
 #' @param ndigits_res No of digits in the results
@@ -23,18 +25,19 @@
 #' @return Adjusted Kaplan-Meier or cumulative incidence curves
 #' @export
 #'
-#'
+
 crrplot <- function(list,
                     y=100,
                     col=c("#9B62B8", "#224B87", "#67A8DC", "#D66ACE"),
                     outcome = "",
+                    ylab = "Risk of Event (%)",
                     labpos = rep(0,4),
                     printres = "est",
                     labgrp = grps,
                     fu = 120,
                     respos.x = 0,
                     respos.y = 0,
-                    ylab = 0,
+                    ylab.pos = 0,
                     legend.pos = c(0.5,0.95),
                     tscale = 1,
                     ndigits_est = 1,
@@ -100,7 +103,7 @@ crrplot <- function(list,
     geom_step(linewidth = 1.5) +
     scale_color_manual(values = c(col[length(grps):1]), labels = labgrp) +
     scale_fill_manual(values = c(col[length(grps):1]), labels = labgrp) +
-    geom_stepribbon(aes(ymin = lower, ymax = upper), alpha = 0.2, color = NA) +
+    pammtools::geom_stepribbon(aes(ymin = lower, ymax = upper), alpha = 0.2, color = NA) +
     coord_cartesian(xlim=c(-(fu*0.1),fu), ylim = c(-(x*0.6),1.2*x)) +
     scale_y_continuous(limits = c(-(0.8*x),1.06)) +
     theme_classic() +
@@ -120,9 +123,9 @@ crrplot <- function(list,
 
   #Labels
   p <- p + annotate("text", x=fu/2, y = -(tot*0.10), label = "Years", size = 6*tscale) +
-    annotate("text", x=-(fu*0.11)-ylab, y = x/2, label = ifelse(surv, paste(outcome, " (%)"), ifelse(str_count(outcome) <= 25, paste0("Risk of ", outcome, " (%)"), "Risk (%)")), size = 6*tscale, angle = 90) +
+    annotate("text", x=-(fu*0.11)-ylab.pos, y = x/2, label = ylab, size = 6*tscale, angle = 90) +
     annotate("text", x=seq(0,fu/12,1)*12, y=-(tot*0.06), label=seq(0,fu/12,1), size = 6*tscale)
-  if(y>50){
+  if(y>=50){
     p <- p + annotate("text", x=-(fu*0.03), y=seq(0,x,0.1), label = paste(seq(0,x*100,10), "%", sep=""), size = 6*tscale, hjust="right")
   } else if(y<=10) {
     p <- p + annotate("text", x=-(fu*0.03), y=seq(0,x,0.01), label = paste(seq(0,x*100,1), "%", sep=""), size = 6*tscale, hjust="right")

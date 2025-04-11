@@ -18,7 +18,7 @@
 #' @return Saves plot automatically in current project folder
 #' @export
 #'
-#'
+
 saver <- function(plot,
                   name,
                   width = 154,
@@ -30,11 +30,16 @@ saver <- function(plot,
                   compression="lzw",
                   formats = c("pdf", "svg", "tiff")) {
 
+  if(missing(name)) {
+    name <- paste0(substitute(plot))
+  }
+
   invisible(suppressWarnings(sapply(formats, function(x, plot, width, name, height, unit, scale, dpi, device, compression) {
 
     if("tiff" %in% x) {
-      ggsave(ifelse(missing(name), paste0(substitute(plot), ".", x, collapse=""), paste0(name, ".", x, collapse="")),
+      ggsave(filename=paste0(name, ".", x, collapse=""),
              plot=plot,
+             path="plots",
              width = width,
              height = height,
              unit = unit,
@@ -44,8 +49,9 @@ saver <- function(plot,
              compression=compression)
     }
 
-    ggsave(ifelse(missing(name), paste0(substitute(plot), ".", x, collapse=""), paste0(name, ".", x, collapse="")),
+    ggsave(filename=paste0(name, ".", x, collapse=""),
            plot=plot,
+           path="plots",
            width = width,
            height = height,
            unit = unit,
@@ -54,3 +60,4 @@ saver <- function(plot,
 
   }, plot=plot, width = width, height = height, unit = unit, scale = scale, name=name, dpi=dpi, device=device, compression=compression)))
 }
+

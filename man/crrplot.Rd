@@ -9,13 +9,14 @@ crrplot(
   y = 100,
   col = c("#9B62B8", "#224B87", "#67A8DC", "#D66ACE"),
   outcome = "",
+  ylab = "Risk of Event (\%)",
   labpos = rep(0, 4),
   printres = "est",
   labgrp = grps,
   fu = 120,
   respos.x = 0,
   respos.y = 0,
-  ylab = 0,
+  ylab.pos = 0,
   legend.pos = c(0.5, 0.95),
   tscale = 1,
   ndigits_est = 1,
@@ -32,6 +33,8 @@ crrplot(
 
 \item{outcome}{Labels for outcome}
 
+\item{ylab}{Label for y-axis}
+
 \item{labpos}{adjustments for point estimates on the plot. Can be removed with NA}
 
 \item{printres}{Which results should be printed. Estimates="est", hazard ratio = "hr", risk difference = "rd" and risk ratio = "rr"}
@@ -44,7 +47,9 @@ crrplot(
 
 \item{respos.y}{shift of the result label on the y-axis}
 
-\item{ylab}{manual shifting of the y-axis label}
+\item{ylab.pos}{shifting of y-axis label position}
+
+\item{legend.pos}{legend position as vector}
 
 \item{tscale}{Global scaling parameter if text needs to change size}
 
@@ -58,5 +63,6 @@ crrplot(
 Adjusted Kaplan-Meier or cumulative incidence curves
 }
 \description{
+#' @description
 Automatic plot of adjusted Kaplan-Meier and cumulative incidence curves
 }
