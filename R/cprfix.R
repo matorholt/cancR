@@ -15,11 +15,11 @@
 #'
 cprfix <- function(data, cpr=cpr, extract=F) {
 
-  if(any(str_detect(data %>% pull({{cpr}}), "^\\d{9,10}$|^\\d{5,6}-\\w{4}", negate=T) |
+  if(any(str_detect(data %>% pull({{cpr}}), "^\\d{9,10}$|^\\d{5,6}-?\\w{4}", negate=T) |
      str_sub(data %>% pull({{cpr}}), 1,2) %in% c("00", seq(32,99)) |
      str_sub(data %>% pull({{cpr}}), 3,4) %in% c("00", seq(13,99)))
                 ) {
-    errors <- data %>% filter(str_detect(data %>% pull({{cpr}}), "^\\d{9,10}$|^\\d{5,6}-\\w{4}", negate=T) |
+    errors <- data %>% filter(str_detect(data %>% pull({{cpr}}), "^\\d{9,10}$|^\\d{5,6}-?\\w{4}", negate=T) |
                       str_sub(data %>% pull({{cpr}}), 1,2) %in% c("00", seq(32,99)) |
                       str_sub(data %>% pull({{cpr}}), 3,4) %in% c("00", seq(13,99)))
     warning(paste0(nrow(errors), " invalid CPR", rep("s", nrow(errors)>1), " detected and returned as vector"))
@@ -34,16 +34,17 @@ cprfix <- function(data, cpr=cpr, extract=F) {
     data <- data %>%
       mutate(sex = case_when(str_sub({{cpr}}, 10) %in% seq(0,8,2) ~ "F",
                              str_sub({{cpr}}, 10) %in% seq(1,9,2) ~ "M"),
-             birth = case_when(str_detect({{cpr}}, "[:alpha:]") ~ as.Date(NA),
-                               str_sub({{cpr}}, 5,6) %in% str_pad(seq(0,36), 2, pad="0") &
-                                 str_sub({{cpr}}, 7,10) %in% c(seq(4000,4999), seq(9000,9999)) ~ as.Date(str_c("20", str_replace_all({{cpr}}, "(\\d{2})(\\d{2})(\\d{2})(\\d{4})", "\\3-\\2-\\1"), sep="")),
+             birth = case_when(str_sub({{cpr}}, 5,6) %in% str_pad(seq(0,36), 2, pad="0") &
+                                  str_sub({{cpr}}, 7,7) %in% c(4, 9) ~ as.Date(str_c("20", str_replace_all({{cpr}}, "(\\d{2})(\\d{2})(\\d{2})(\\w{4})", "\\3-\\2-\\1"), sep="")),
                                str_sub({{cpr}}, 5,6) %in% str_pad(seq(0,57), 2, pad="0") &
-                                 str_sub({{cpr}}, 7,10) %in% seq(5000,8999) ~ as.Date(str_c("20", str_replace_all({{cpr}}, "(\\d{2})(\\d{2})(\\d{2})(\\d{4})", "\\3-\\2-\\1"), sep="")),
+                                 str_sub({{cpr}}, 7,7) %in% seq(5,8) ~ as.Date(str_c("20", str_replace_all({{cpr}}, "(\\d{2})(\\d{2})(\\d{2})(\\w{4})", "\\3-\\2-\\1"), sep="")),
                                str_sub({{cpr}}, 5,6) %in% str_pad(seq(58,99), 2, pad="0") &
-                                 str_sub({{cpr}}, 7,10) %in% seq(5000,8999) ~ as.Date(str_c("18", str_replace_all({{cpr}}, "(\\d{2})(\\d{2})(\\d{2})(\\d{4})", "\\3-\\2-\\1"), sep="")),
+                                 str_sub({{cpr}}, 7,7) %in% seq(5,8) ~ as.Date(str_c("18", str_replace_all({{cpr}}, "(\\d{2})(\\d{2})(\\d{2})(\\w{4})", "\\3-\\2-\\1"), sep="")),
 
-                               T ~ as.Date(str_c("19", str_replace_all({{cpr}}, "(\\d{2})(\\d{2})(\\d{2})(\\d{4})", "\\3-\\2-\\1"), sep=""))))
+                               T ~ as.Date(str_c("19", str_replace_all({{cpr}}, "(\\d{2})(\\d{2})(\\d{2})(\\w{4})", "\\3-\\2-\\1"), sep=""))))
   }
 
   return(data)
 }
+
+
