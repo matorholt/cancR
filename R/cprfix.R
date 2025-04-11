@@ -16,13 +16,15 @@
 cprfix <- function(data, cpr=cpr, extract=F) {
 
   if(any(str_detect(data %>% pull({{cpr}}), "^\\d{9,10}$|^\\d{5,6}-?\\w{4}$", negate=T) |
-     str_sub(data %>% pull({{cpr}}), 1,2) %in% c("00", seq(32,99)) |
-     str_sub(data %>% pull({{cpr}}), 3,4) %in% c("00", seq(13,99)) |
+     str_count(data %>% pull({{cpr}})) == 10 & str_sub(data %>% pull({{cpr}}), 1,2) %in% c("00", seq(32,99)) |
+     str_count(data %>% pull({{cpr}})) == 10 & str_sub(data %>% pull({{cpr}}), 3,4) %in% c("00", seq(13,99)) |
+     str_count(data %>% pull({{cpr}})) == 9 & str_sub(data %>% pull({{cpr}}), 2,3) %in% c("00", seq(13,99)) |
      is.na(data %>% pull({{cpr}})))
                 ) {
     errors <- data %>% filter(str_detect(data %>% pull({{cpr}}), "^\\d{9,10}$|^\\d{5,6}-?\\w{4}$", negate=T) |
-                      str_sub(data %>% pull({{cpr}}), 1,2) %in% c("00", seq(32,99)) |
-                      str_sub(data %>% pull({{cpr}}), 3,4) %in% c("00", seq(13,99)) |
+                                str_count(data %>% pull({{cpr}})) == 10 & str_sub(data %>% pull({{cpr}}), 1,2) %in% c("00", seq(32,99)) |
+                                str_count(data %>% pull({{cpr}})) == 10 & str_sub(data %>% pull({{cpr}}), 3,4) %in% c("00", seq(13,99)) |
+                                str_count(data %>% pull({{cpr}})) == 9 & str_sub(data %>% pull({{cpr}}), 2,3) %in% c("00", seq(13,99)) |
                         is.na(data %>% pull({{cpr}})))
     warning(paste0(nrow(errors), " invalid CPR", rep("s", nrow(errors)>1), " detected and returned as vector"))
     return(errors %>% pull({{cpr}}))
@@ -48,7 +50,6 @@ cprfix <- function(data, cpr=cpr, extract=F) {
 
   return(data)
 }
-
 
 
 
