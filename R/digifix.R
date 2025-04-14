@@ -1,0 +1,21 @@
+#' digifix
+#'
+#' @description
+#' Organizes numeric vectors to uniform digit-formatting (e.g. showing zeros)
+#'
+#'
+#' @param numbers numeric value or vector for formatting
+#' @param digits number of digits
+#' @param nsmall number of zero-digits
+#'
+#' @return returns a vector of same lentgh with formatted digits
+#' @export
+#'
+#'
+
+digifix <- function(numbers, digits = 1, nsmall) {
+  if(missing(nsmall)) {
+    nsmall <- digits
+  }
+  format(round(numbers, digits), nsmall = nsmall)
+}
