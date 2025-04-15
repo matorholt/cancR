@@ -4,10 +4,12 @@
 \alias{mode}
 \title{Mode}
 \usage{
-mode(x, na.rm = T)
+mode(x, ties = "first", na.rm = T)
 }
 \arguments{
 \item{x}{Vector of values}
+
+\item{ties}{If two or more values are equally common, which should be chosen. Default is first.}
 
 \item{na.rm}{Whether NAs should be removed, defaults to TRUE}
 }
@@ -16,7 +18,4 @@ The most common value of the vector excluding NAs
 }
 \description{
 Get the mode (most common value) of a vector.
-}
-\examples{
-mode(c(1,1,2,3))
 }
