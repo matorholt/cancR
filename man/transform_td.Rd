@@ -9,7 +9,7 @@ transform_td(data, level = "last")
 \arguments{
 \item{data}{dataframe after matching}
 
-\item{level}{whether the last value or maximal value should be picked. Maximal applies for ranked variables. Otherwise the last will be chosen.}
+\item{level}{Which value should be picked. last = latest status (default). first = first status. max = maximal status for ranked variables (otherwise the last will be chosen). frequent = most frequent status.}
 }
 \value{
 dataframe with one row per pnr with the last or maximal value of the matched time-dependent variables
