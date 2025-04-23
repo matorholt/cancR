@@ -12,7 +12,8 @@ cci_time(data, interval = 365.25/2)
 \item{interval}{Interval in which the CCIs should be calculated}
 }
 \value{
-cci: Date of first value of each CCI score for each patient
+cci_all: Date of first value of each CCI score for each patient
+cci_bin: Date of first value of CCI binned into 0-1, 2-3, 4-5 and 6+
 comorb: Date of first presence of each comorbidity
 }
 \description{
