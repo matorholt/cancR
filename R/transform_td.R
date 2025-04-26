@@ -10,6 +10,7 @@
 #' @return dataframe with one row per pnr with the last or maximal value of the matched time-dependent variables
 #' @export
 #'
+
 # test <- data.frame(pnr = rep(c(1:5),each=36),
 #                    var = rep(c("married", "unmarried", "the_capital_region_of_denmark", "region_zealand", "the_north_denmark_region", "central_denmark_region", "the_region_of_southern_denmark", "basic", "bachelor", "vocational_training", "higher_education", "upper_secondary", "wage", "public", "q1", "q2", "q3", "q4", "cci_1", "cci_2", "cci_3", "cci_4", "cci_5", "cci_6", "cci_7", "cci_8", "cci_9", "cci_10", "cci_11", "cci_12", "cci_13", "cci_14", "cci_15", "cci_16", "cci_17", "cci_18"),5),
 #                    date = sample(c(rep(as.Date(NA), 100), seq(as.Date("2000-01-01"), as.Date("2020-01-01"), by = "month")), 36*5, replace = T)) %>%
@@ -17,19 +18,18 @@
 #   mutate(index = rep(as.Date("2010-01-01"),5)) %>%
 #   select(pnr, index, everything())
 #
-#transform_td(test, level = "max")
+# transform_td(test, level = "max")
 #
 #
 #
 # transform_td(test, level = "frequent")
 #
 # transform_td(test, level = "last")
-#
 
 transform_td <- function(data, level = "last") {
   level <- match.arg(level, c("max", "last", "frequent", "first"))
 
-  long <- data %>% pivot_longer(cols = c(gift:cci_18), names_to = "var", values_to = "date") %>%
+  long <- data %>% pivot_longer(cols = c(married:cci_18), names_to = "var", values_to = "date") %>%
     filter(date <= index) %>%
     arrange(pnr, date) %>%
     mutate(category = case_when(str_detect(var, "cci") ~ "cci",
