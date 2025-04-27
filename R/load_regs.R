@@ -13,13 +13,13 @@
 #' @export
 #'
 #'
-load_regs <- function(regs = c("lpr", "pop", "pato", "cancer", "lmdb", "opr"),
+load_regs <- function(regs = c("lpr", "pop", "cancer", "lmdb", "opr"),
                       keep,
                       n = NULL,
                       id_filter = NULL,
                       pattern) {
 
-  regs <- match.arg(regs, several.ok = T)
+  regs <- match.arg(regs, c("lpr", "pop", "cancer", "lmdb", "opr", "pato"), several.ok = T)
 
   if(!missing(keep) & class(keep) != "list") {
     stop('Format the argument "keep" as a list with the structure list("lpr" = c("vars"), "lmdb" = c("vars"))')
@@ -59,6 +59,9 @@ load_regs <- function(regs = c("lpr", "pop", "pato", "cancer", "lmdb", "opr"),
   df_list <- list()
 
   if("lpr" %in% regs) {
+    if(is.null(n) | is.null(id_filter) | missing(keep) | missing(pattern)) {
+      suppressWarnings(df_list[1] <- readRDS("V:/Data/Workdata/709545/Mathias Ørholt/DATASETS/LPR.rds"))
+    } else {
     suppressWarnings(df_list[1] <-
                          importSAS("X:/Data/Rawdata_Hurtig/709545/Grunddata/LPR/diag_indl.sas7bdat",
                                    obs = n,
@@ -67,15 +70,12 @@ load_regs <- function(regs = c("lpr", "pop", "pato", "cancer", "lmdb", "opr"),
                                    where = paste0("prxmatch('/", pattern$lpr, "/', diag)")
                                    ))
     }
+  }
 
   if("pop" %in% regs) {
-    suppressWarnings(df_list[2] <-
-                       importSAS("X:/Data/Rawdata_Hurtig/709545/Grunddata/Population/t_person.sas7bdat",
-                                 obs = n,
-                                 keep = keep$pop,
-                                 filter = id_filter,
-                                 where = paste0("prxmatch('/", pattern$pop, "/', diag)")
-                       ))
+    suppressWarnings(df_list[3] <-
+                       readRDS("V:/Data/Workdata/709545/Mathias Ørholt/DATASETS/POP.rds")
+    )
   }
 
   if("pato" %in% regs) {
@@ -85,6 +85,9 @@ load_regs <- function(regs = c("lpr", "pop", "pato", "cancer", "lmdb", "opr"),
   }
 
   if("cancer" %in% regs) {
+    if(is.null(n) | is.null(id_filter) | missing(keep) | missing(pattern)) {
+      suppressWarnings(df_list[4] <- readRDS("V:/Data/Workdata/709545/Mathias Ørholt/DATASETS/CANCER.rds"))
+    } else {
     suppressWarnings(df_list[4] <-
                        importSAS("X:/Data/Rawdata_Hurtig/709545/Grunddata/Cancer/t_tumor.sas7bdat",
                                  obs = n,
@@ -92,9 +95,13 @@ load_regs <- function(regs = c("lpr", "pop", "pato", "cancer", "lmdb", "opr"),
                                  filter = id_filter,
                                  where = paste0("prxmatch('/", pattern$cancer, "/', diag)")
                        ))
+    }
   }
 
   if("lmdb" %in% regs) {
+    if(is.null(n) | is.null(id_filter) | missing(keep) | missing(pattern)) {
+      suppressWarnings(df_list[5] <- readRDS("V:/Data/Workdata/709545/Mathias Ørholt/DATASETS/LMDB.rds"))
+    } else {
     suppressWarnings(df_list[5] <-
                        rbindlist(lapply(seq(1995,2023), function(year) {
                          importSAS(paste0("X:/Data/Rawdata_Hurtig/709545/Grunddata/medication/lmdb", year, "12.sasbdat", sep=""),
@@ -104,9 +111,13 @@ load_regs <- function(regs = c("lpr", "pop", "pato", "cancer", "lmdb", "opr"),
                                    where = paste0("prxmatch('/", pattern$lmdb, "/', diag)"))
 
                        })))
+    }
   }
 
   if("opr" %in% regs) {
+    if(is.null(n) | is.null(id_filter) | missing(keep) | missing(pattern)) {
+      suppressWarnings(df_list[6] <- readRDS("V:/Data/Workdata/709545/Mathias Ørholt/DATASETS/OPR.rds"))
+    } else {
     suppressWarnings(df_list[6] <-
                        importSAS("X:/Data/Rawdata_Hurtig/709545/Grunddata/LPR/opr.sas7bdat",
                                  obs = n,
@@ -114,6 +125,7 @@ load_regs <- function(regs = c("lpr", "pop", "pato", "cancer", "lmdb", "opr"),
                                  filter = id_filter,
                                  where = paste0("prxmatch('/", pattern$opr, "/', diag)")
                        ))
+    }
   }
 
   df_list <- df_list %>% discard(is.null)
