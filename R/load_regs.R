@@ -14,24 +14,24 @@
 #'
 #'
 load_regs <- function(regs = c("lpr", "pop", "cancer", "lmdb", "opr"),
-                      keep,
+                      keep = NULL,
                       n = NULL,
                       id_filter = NULL,
-                      pattern) {
+                      pattern = NULL) {
 
   regs <- match.arg(regs, c("lpr", "pop", "cancer", "lmdb", "opr", "pato"), several.ok = T)
 
-  if(!missing(keep) & class(keep) != "list") {
+  if(!is.null(keep) & class(keep) != "list") {
     stop('Format the argument "keep" as a list with the structure list("lpr" = c("vars"), "lmdb" = c("vars"))')
   }
 
-  if(!missing(pattern) & class(pattern) != "list") {
+  if(!is.null(pattern) & class(pattern) != "list") {
     stop('Format the argument "pattern" as a list with the structure list("lpr" = "DC92|DC239", "lmdb" = "L04|L01"))')
   }
 
   keep_default <-
-    list("lpr" = c("PNR","diag","inddto"),
-       "pop" = c("V_PNR", "C_STATUS", "C_KON", "D_FODDATO", "D_STATUS_HEN_START"),
+    list("lpr" = c("pnr","diag","inddto"),
+       "pop" = c("v_pnr", "c_status", "c_kon", "d_foddato", "d_status_hen_start"),
        "pato" = c("pnr", "k_matnr", "D_MODTDATO", "C_SNOMEDKODE"),
        "cancer" = c("pnr", "D_DIAGNOSEDATO", "C_ICD10", "C_MORFO3"),
        "lmdb" = c("pnr", "eksd", "apk", "ATC", "strnum", "strunit", "PACKSIZE"),
@@ -46,20 +46,25 @@ load_regs <- function(regs = c("lpr", "pop", "cancer", "lmdb", "opr"),
          "opr" = ""
     )
 
-  if(!missing(keep)) {
+  if(!is.null(keep)) {
     keep <- modifyList(keep_default, keep)
+  } else {
+    keep <- keep_default
   }
 
-  if(!missing(pattern)) {
+  if(!is.null(pattern)) {
     pattern <- modifyList(pattern_default, pattern)
-  }
+  } else {
+    pattern <- pattern_default
+    }
+
 
 
 
   df_list <- list()
 
   if("lpr" %in% regs) {
-    if(is.null(n) | is.null(id_filter) | missing(keep) | missing(pattern)) {
+    if(is.null(n) & is.null(id_filter) & missing(keep) & missing(pattern)) {
       suppressWarnings(df_list[1] <- readRDS("V:/Data/Workdata/709545/Mathias Ørholt/DATASETS/LPR.rds"))
     } else {
     suppressWarnings(df_list[1] <-
@@ -85,7 +90,7 @@ load_regs <- function(regs = c("lpr", "pop", "cancer", "lmdb", "opr"),
   }
 
   if("cancer" %in% regs) {
-    if(is.null(n) | is.null(id_filter) | missing(keep) | missing(pattern)) {
+    if(is.null(n) & is.null(id_filter) & missing(keep) & missing(pattern)) {
       suppressWarnings(df_list[4] <- readRDS("V:/Data/Workdata/709545/Mathias Ørholt/DATASETS/CANCER.rds"))
     } else {
     suppressWarnings(df_list[4] <-
@@ -99,7 +104,7 @@ load_regs <- function(regs = c("lpr", "pop", "cancer", "lmdb", "opr"),
   }
 
   if("lmdb" %in% regs) {
-    if(is.null(n) | is.null(id_filter) | missing(keep) | missing(pattern)) {
+    if(is.null(n) & is.null(id_filter) & missing(keep) & missing(pattern)) {
       suppressWarnings(df_list[5] <- readRDS("V:/Data/Workdata/709545/Mathias Ørholt/DATASETS/LMDB.rds"))
     } else {
     suppressWarnings(df_list[5] <-
@@ -115,7 +120,7 @@ load_regs <- function(regs = c("lpr", "pop", "cancer", "lmdb", "opr"),
   }
 
   if("opr" %in% regs) {
-    if(is.null(n) | is.null(id_filter) | missing(keep) | missing(pattern)) {
+    if(is.null(n) & is.null(id_filter) & missing(keep) & missing(pattern)) {
       suppressWarnings(df_list[6] <- readRDS("V:/Data/Workdata/709545/Mathias Ørholt/DATASETS/OPR.rds"))
     } else {
     suppressWarnings(df_list[6] <-
@@ -133,5 +138,6 @@ load_regs <- function(regs = c("lpr", "pop", "cancer", "lmdb", "opr"),
   names(df_list) <- regs
 
   return(list2env(df_list, envir = globalenv()))
+
 }
 
