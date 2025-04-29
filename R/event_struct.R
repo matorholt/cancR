@@ -21,52 +21,67 @@
 #' @export
 #'
 # df <- data.frame(index = c(as.Date("1995-01-01"), as.Date("1995-05-02"))) %>%
-#  mutate(fu = index + 10000,
-#         death = c(0,1),
-#         death_date = c(as.Date(NA), as.Date("2010-05-02")),
-#         hudc_date = index+500,
-#         mm_date = index+700)
+#   mutate(fu = index + 10000,
+#          death_date = c(as.Date(NA), as.Date("2010-05-02")),
+#          hudc_date = index+500,
+#          other_date = c(1,2),
+#          mm_date = c(as.Date("1996-01-01"), as.Date(NA)))
 #
 #
-#  event_struct(df, index, fu, death, outcomes=c(hudc_date, mm_date), keep_dates = T)
-#
-
+# event_struct(df, index, fu, outcomes=c(hudc_date, mm_date), competing = death_date)
 
 event_struct <- function(data,
                          index,
                          fu,
-                         death,
                          outcomes,
+                         competing,
                          pattern = "_date",
                          unit = "months",
                          keep_dates=F){
+
+  unit <- match.arg(unit, c("months", "years"))
 
   if(any(str_detect(data %>% select({{outcomes}}) %>% colnames(), pattern, negate=T))) {
     stop("Wrong naming pattern for outcome columns (e.g. index_ or _date)")
   }
 
-  if(str_detect(unit, "m|M")){
+  if(unit == "months"){
     t = 30.4375
-  }else if(str_detect(unit, "y|Y")){
+  }else if(unit == "years"){
     t = 365.25
   }
 
   t_pat <- ifelse(str_detect(pattern, "(?<=([:alpha:]))_"), "t_", "_t")
 
-  d <- data %>%
-    mutate(t_fu = as.numeric({{fu}} - {{index}})/t,
-           across(c({{outcomes}}), ~ifelse(!is.na(.), as.numeric(. - {{index}})/t, t_fu), .names=paste0(c("{str_replace_all({.col},'", pattern, "', '", t_pat, "')}"), collapse="")),
-           across(c({{outcomes}}), ~ifelse(!is.na(.), 1, ifelse({{death}} == 1, 2, 0)), .names=paste0("{str_remove_all({.col},'", pattern, "')}", collapse="")),
-    )
+  if(missing(competing)) {
 
-  if(keep_dates){
-    d <- d
-  }else {
-    d <- d %>%select(-{{outcomes}})
+    d <- data %>%
+      mutate(t_fu = as.numeric({{fu}} - {{index}})/t,
+             across(c({{outcomes}}), ~ ifelse(!is.na(.), as.numeric(. - {{index}})/t, t_fu), .names=paste0(c("{str_replace_all({.col},'", pattern, "', '", t_pat, "')}"), collapse="")),
+             across(c({{outcomes}}), ~ ifelse(!is.na(.), 1, 0), .names=paste0("{str_remove_all({.col},'", pattern, "')}", collapse="")))
+
+  } else {
+    comp_name <- str_remove(data %>% select({{competing}}) %>% names(), pattern)
+    d <- data %>%
+    mutate(t_fu = as.numeric({{fu}} - {{index}})/t,
+           !!(sym(comp_name)) := ifelse(!is.na({{competing}}), 1, 0),
+           across(c({{outcomes}}), ~ifelse(!is.na(.), as.numeric(. - {{index}})/t, t_fu), .names=paste0(c("{str_replace_all({.col},'", pattern, "', '", t_pat, "')}"), collapse="")),
+           across(c({{outcomes}}), ~ifelse(!is.na(.), 1, ifelse(!!(sym(comp_name)) == 1, 2, 0)), .names=paste0("{str_remove_all({.col},'", pattern, "')}", collapse="")))
+
   }
+
+  if(!keep_dates & !missing(competing)){
+    d <- d %>% select(-{{outcomes}}, -{{competing}})
+  } else if(!keep_dates) {
+    d <- d %>% select(-{{outcomes}})
+  }
+
+
 
   return(d)
 }
+
+
 
 
 
