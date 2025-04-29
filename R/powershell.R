@@ -13,8 +13,10 @@
 #' powershell('rscript')
 #'
 powershell <- function(text) {
+  cat("Copy the following string: \n\n\n\n ")
   cat(str_replace_all(text, c("\\{" = "x{x",
                               "\\}" = "x}x",
+                              "\\\\" = "\\\\\\\\",
                               "\\(" = "{\\(}",
                               "\\)" = "{\\)}",
                               "\\+" = "{\\+}",
@@ -27,9 +29,17 @@ powershell <- function(text) {
                               "\\}\\s" = "}",
                               "\\s+" = ' '
   )))
-  cat("\n\n---------------------------------------------------------------------")
-  cat("\n\nAdd-Type -AssemblyName System.Windows.Forms
-\nStart-Sleep 5
-\n[System.Windows.Forms.SendKeys]::SendWait('text’)")
+  cat("\n\n\n\n#########  Instructions:  ############")
+  cat("\n1)Open Windows PowerShell
+  \n2)Insert the following separated by ctrl+enter:
+  \n3)Insert the output in the R-console in 'text'
+  \n4)Press enter
+  \n5)Left-click on the screen where the script should be inserted and wait 5 seconds
+  \n\n\n########  Copy  #############
+  \nAdd-Type -AssemblyName System.Windows.Forms
+  \nStart-Sleep 5
+  \n[System.Windows.Forms.SendKeys]::SendWait('text’)
+  \n########  Copy  #############")
 
 }
+
