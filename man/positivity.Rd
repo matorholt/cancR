@@ -14,7 +14,7 @@ positivity(data, treatment, vars)
 \item{vars}{the covariates to examine for positivity violations. State multiple variables as c(var1, var2, var3) without quotes.}
 }
 \value{
-prints the variables with positivity violations if present. Otherwise none detected. Also returns a TRUE or FALSE for downstream use.
+prints the variables with positivity violations if present. Otherwise none detected. Also returns as either NULL or character for downstream use.
 }
 \description{
 Detection of positivity violations (empty levels)

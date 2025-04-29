@@ -5,7 +5,7 @@
 \title{load_regs}
 \usage{
 load_regs(
-  regs = c("lpr", "pop", "pato", "cancer", "lmdb", "opr"),
+  regs = c("lpr", "pop", "cancer", "lmdb", "opr"),
   keep,
   n = NULL,
   id_filter = NULL,

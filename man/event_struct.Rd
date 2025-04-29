@@ -8,8 +8,8 @@ event_struct(
   data,
   index,
   fu,
-  death,
   outcomes,
+  competing,
   pattern = "_date",
   unit = "months",
   keep_dates = F
@@ -22,9 +22,9 @@ event_struct(
 
 \item{fu}{End of follow-up or time of death in date format}
 
-\item{death}{Status indicator for death, 0=Alive, 1=Dead}
-
 \item{outcomes}{Vector of single or multiple column names with the event of interest in date format}
+
+\item{competing}{Single column indicating dates of the competing event}
 
 \item{pattern}{Indicates the name pattern of the outcomes such as index_event or event_date}
 

@@ -10,8 +10,8 @@
 #' @param data Dataframe
 #' @param index Index time point 'T=0' provided in date format
 #' @param fu End of follow-up or time of death in date format
-#' @param death Status indicator for death, 0=Alive, 1=Dead
 #' @param outcomes Vector of single or multiple column names with the event of interest in date format
+#' @param competing Single column indicating dates of the competing event
 #' @param pattern Indicates the name pattern of the outcomes such as index_event or event_date
 #' @param unit Whether time-to-event should be reported in months or years.
 #' @param keep_dates Whether the original event dates should be kept.
