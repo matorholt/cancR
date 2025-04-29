@@ -12,6 +12,7 @@
 #' @examples
 #' powershell('rscript')
 #'
+
 powershell <- function(text) {
   cat("Copy the following string: \n\n\n\n ")
   cat(str_replace_all(text, c("\\{" = "x{x",
@@ -43,3 +44,4 @@ powershell <- function(text) {
 
 }
 
+powershell('hej^')

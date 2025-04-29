@@ -45,7 +45,7 @@ crrplot <- function(list,
                     censur=F) {
   if (!(class(list) %in% c("CRlist" , "Plist"))) {
     stop(
-      "The input is not of class \"CRlist\" or \"Plist\" created using the crrstrat/pstrat function - maybe ask MØ??"
+      "The input is not of class 'CRlist' or 'Plist' created using the crrstrat/pstrat function - maybe ask MØ??"
     )
   }
 
