@@ -14,7 +14,7 @@
 #'
 # n=20
 # set.seed(1)
-# df <- data.frame(pnr=seq(1:n),
+# df <- data.frame(id=seq(1:n),
 #                  group=sample(c("pre", "sub"), n, replace=T),
 #                  sex=sample(c("M","F"), n, replace=T),
 #                  age_group=sample(c("<50",">50"),n,replace=T),
@@ -25,19 +25,30 @@
 #          chemo = ifelse(group %in% "pre", "yes", chemo),
 #          age_group = ifelse(group %in% "sub", "<50", age_group))
 #
+#
+#
 # t <- positivity(df, group, sex)
 # t2 <- positivity(df, group, c(sex, hospital))
 #
 # is.character(t)
 # is.null(t2)
 
-positivity <- function(data, treatment, vars) {
+positivity <- function(data, treatment, vars, id = id) {
 
   na_check <- data %>%
-                     filter(if_any(c({{treatment}}, {{vars}}), is.na))
+    select({{id}}, {{treatment}}, {{vars}}) %>%
+    filter(if_any(c({{treatment}}, {{vars}}), is.na))
 
   if(nrow(na_check) > 0) {
-    return(cat(paste(c("NAs detected in the following variables:",(names(na_check)[sapply(na_check, anyNA)])), collapse="\n")))
+    id_list <- na_check %>% select({{id}}, all_of((names(na_check)[sapply(na_check, anyNA)]))) %>%
+             pivot_longer(cols = all_of((names(na_check)[sapply(na_check, anyNA)])), names_to = "na_vars", values_to = "nas") %>%
+             filter(is.na(nas))
+
+
+    return(cat(paste(c("NAs detected in the following variables:",
+                       (names(na_check)[sapply(na_check, anyNA)]),
+                       "In the following IDs:\nID  variable",
+                       paste(t %>% pull(id) %>% str_pad(width = 3), t %>% pull(na_vars), sep = "   ")), collapse="\n")))
   }
 
   gr_char <- data %>% select({{treatment}}) %>% names()
@@ -66,3 +77,4 @@ positivity <- function(data, treatment, vars) {
    return(cat(" "))
  }
 }
+
