@@ -22,7 +22,7 @@
 #'
 # df <- data.frame(index = c(as.Date("1995-01-01"), as.Date("1995-05-02"))) %>%
 #   mutate(fu = c(as.Date("2010-05-02"), as.Date("2010-05-02")),
-#          death = c(NA,1),
+#          death = c(0,1),
 #          explant = c(0,1),
 #          exp_date = c(as.Date("2005-05-02"), as.Date("2006-05-02")),
 #          hudc_date = index+500,
