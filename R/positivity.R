@@ -12,18 +12,19 @@
 #' @export
 #'
 #'
-# n=20
+# n=200
 # set.seed(1)
 # df <- data.frame(id=seq(1:n),
 #                  group=sample(c("pre", "sub"), n, replace=T),
-#                  sex=sample(c("M","F"), n, replace=T),
+#                  sex=factor(sample(c("M","F"), n, replace=T)),
 #                  age_group=sample(c("<50",">50"),n,replace=T),
 #                  chemo = sample(c("yes","no"), n, replace=T),
-#                  age = rnorm(n,60,10),
+#                  age = sample(c(seq(50,60), 50), n, replace=TRUE),
 #                  hospital = sample(c("rh","herlev","roskilde"), n, replace=T)) %>%
 #   mutate(hospital = ifelse(group %in% "sub", "roskilde", hospital),
 #          chemo = ifelse(group %in% "pre", "yes", chemo),
-#          age_group = ifelse(group %in% "sub", "<50", age_group))
+#          age_group = ifelse(group %in% "sub", "<50", age_group),
+#          hospital = as.factor(hospital))
 #
 #
 #
@@ -32,6 +33,7 @@
 #
 # is.character(t)
 # is.null(t2)
+
 
 positivity <- function(data, treatment, vars, id = id) {
 
@@ -43,6 +45,7 @@ positivity <- function(data, treatment, vars, id = id) {
   if(nrow(na_check) > 0) {
     id_list <-
       na_check %>% select({{id}}, all_of((names(na_check)[sapply(na_check, anyNA)]))) %>%
+      mutate(across(everything(), ~ as.character(.))) %>%
       pivot_longer(cols = all_of((names(na_check)[sapply(na_check, anyNA)])), names_to = "na_vars", values_to = "nas") %>%
       filter(is.na(nas))
 
@@ -59,7 +62,8 @@ positivity <- function(data, treatment, vars, id = id) {
 
 
   data <- data %>%
-    mutate(across(where(is.numeric), ~ cut(.,breaks = quantile(., seq(0,1,0.1)))),
+    select({{treatment}}, {{vars}}) %>%
+    mutate(across(where(is.numeric), ~ cut(.,breaks = unique(quantile(., seq(0,1,0.1))))),
            across(c({{vars}}), ~ as.factor(.)))
 
   zero <- unlist(lapply(var_char, function(x) {
