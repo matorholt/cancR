@@ -21,6 +21,12 @@ load_regs <- function(regs = c("lpr", "pop", "cancer", "lmdb", "opr"),
 
   regs <- match.arg(regs, c("lpr", "pop", "cancer", "lmdb", "opr", "pato"), several.ok = T)
 
+  if(is.null(n) & is.null(id_filter) & missing(keep) & missing(pattern)) {
+  user_input <- readline(cat("All filters are NULL. Are you sure you want to run this? (yes/no)"))
+  if(user_input != 'yes')
+    return(cat('Load_regs cancelled'))
+    }
+
   if(!is.null(keep) & class(keep) != "list") {
     stop('Format the argument "keep" as a list with the structure list("lpr" = c("vars"), "lmdb" = c("vars"))')
   }
@@ -65,9 +71,9 @@ load_regs <- function(regs = c("lpr", "pop", "cancer", "lmdb", "opr"),
 
   if("lpr" %in% regs) {
     if(is.null(n) & is.null(id_filter) & missing(keep) & missing(pattern)) {
-      suppressWarnings(df_list[1] <- readRDS("V:/Data/Workdata/709545/Mathias Ørholt/DATASETS/LPR.rds"))
+      suppressWarnings(df_list[[1]] <- readRDS("V:/Data/Workdata/709545/Mathias Ørholt/DATASETS/LPR.rds"))
     } else {
-    suppressWarnings(df_list[1] <-
+    suppressWarnings(df_list[[1]] <-
                          importSAS("X:/Data/Rawdata_Hurtig/709545/Grunddata/LPR/diag_indl.sas7bdat",
                                    obs = n,
                                    keep = keep$lpr,
@@ -78,42 +84,42 @@ load_regs <- function(regs = c("lpr", "pop", "cancer", "lmdb", "opr"),
   }
 
   if("pop" %in% regs) {
-    suppressWarnings(df_list[3] <-
+    suppressWarnings(df_list[[2]] <-
                        readRDS("V:/Data/Workdata/709545/Mathias Ørholt/DATASETS/POP.rds")
     )
   }
 
   if("pato" %in% regs) {
-    suppressWarnings(df_list[3] <-
+    suppressWarnings(df_list[[3]] <-
                        readRDS("V:/Data/Workdata/709545/Mathias Ørholt/DATASETS/PATO.rds")
                        )
   }
 
   if("cancer" %in% regs) {
     if(is.null(n) & is.null(id_filter) & missing(keep) & missing(pattern)) {
-      suppressWarnings(df_list[4] <- readRDS("V:/Data/Workdata/709545/Mathias Ørholt/DATASETS/CANCER.rds"))
+      suppressWarnings(df_list[[4]] <- readRDS("V:/Data/Workdata/709545/Mathias Ørholt/DATASETS/CANCER.rds"))
     } else {
-    suppressWarnings(df_list[4] <-
+    suppressWarnings(df_list[[4]] <-
                        importSAS("X:/Data/Rawdata_Hurtig/709545/Grunddata/Cancer/t_tumor.sas7bdat",
                                  obs = n,
                                  keep = keep$cancer,
                                  filter = id_filter,
-                                 where = paste0("prxmatch('/", pattern$cancer, "/', diag)")
+                                 where = paste0("prxmatch('/", pattern$cancer, "/', c_morfo3)")
                        ))
     }
   }
 
   if("lmdb" %in% regs) {
     if(is.null(n) & is.null(id_filter) & missing(keep) & missing(pattern)) {
-      suppressWarnings(df_list[5] <- readRDS("V:/Data/Workdata/709545/Mathias Ørholt/DATASETS/LMDB.rds"))
+      suppressWarnings(df_list[[5]] <- readRDS("V:/Data/Workdata/709545/Mathias Ørholt/DATASETS/LMDB.rds"))
     } else {
-    suppressWarnings(df_list[5] <-
+    suppressWarnings(df_list[[5]] <-
                        rbindlist(lapply(seq(1995,2023), function(year) {
                          importSAS(paste0("X:/Data/Rawdata_Hurtig/709545/Grunddata/medication/lmdb", year, "12.sasbdat", sep=""),
                                    obs = n,
                                    keep = keep$lmdb,
                                    filter = id_filter,
-                                   where = paste0("prxmatch('/", pattern$lmdb, "/', diag)"))
+                                   where = paste0("prxmatch('/", pattern$lmdb, "/', atc)"))
 
                        })))
     }
@@ -121,21 +127,23 @@ load_regs <- function(regs = c("lpr", "pop", "cancer", "lmdb", "opr"),
 
   if("opr" %in% regs) {
     if(is.null(n) & is.null(id_filter) & missing(keep) & missing(pattern)) {
-      suppressWarnings(df_list[6] <- readRDS("V:/Data/Workdata/709545/Mathias Ørholt/DATASETS/OPR.rds"))
+      suppressWarnings(df_list[[6]] <- readRDS("V:/Data/Workdata/709545/Mathias Ørholt/DATASETS/OPR.rds"))
     } else {
-    suppressWarnings(df_list[6] <-
+    suppressWarnings(df_list[[6]] <-
                        importSAS("X:/Data/Rawdata_Hurtig/709545/Grunddata/LPR/opr.sas7bdat",
                                  obs = n,
                                  keep = keep$opr,
                                  filter = id_filter,
-                                 where = paste0("prxmatch('/", pattern$opr, "/', diag)")
+                                 where = paste0("prxmatch('/", pattern$opr, "/', opr)")
                        ))
     }
   }
 
   df_list <- df_list %>% discard(is.null)
 
-  names(df_list) <- regs
+  default_names <- c("lpr", "pop", "pato", "cancer", "lmdb", "opr")
+
+  names(df_list) <- default_names[default_names %in% regs]
 
   return(list2env(df_list, envir = globalenv()))
 

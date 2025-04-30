@@ -33,8 +33,17 @@
 
 positivity <- function(data, treatment, vars) {
 
+  na_check <- data %>%
+                     filter(if_any(c({{treatment}}, {{vars}}), is.na))
+
+  if(nrow(na_check) > 0) {
+    return(cat(paste(c("NAs detected in the following variables:",(names(na_check)[sapply(na_check, anyNA)])), collapse="\n")))
+  }
+
   gr_char <- data %>% select({{treatment}}) %>% names()
   var_char <- data %>% select({{vars}}) %>% names()
+
+
 
   data <- data %>%
     mutate(across(where(is.numeric), ~ cut(.,breaks = quantile(., seq(0,1,0.1)))),
@@ -54,7 +63,6 @@ positivity <- function(data, treatment, vars) {
  }
  if(length(zero) > 0) {
    cat(paste0(c("Positivity violations:", zero), sep="\n"))
-   return(" ")
+   return(cat(" "))
  }
 }
-

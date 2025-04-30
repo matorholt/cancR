@@ -15,7 +15,6 @@
 
 powershell <- function(text) {
   if(str_detect(text, "\\^")) {warning("Caution: the text contains ^ which cannot be translated in powershell")}
-  cat("Copy the following string: \n\n\n\n ")
   cat(str_replace_all(text, c("\\{" = "x{x",
                               "\\}" = "x}x",
                               "\\\\" = "\\\\\\\\",
