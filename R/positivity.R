@@ -35,20 +35,22 @@
 
 positivity <- function(data, treatment, vars, id = id) {
 
-  na_check <- data %>%
+  na_check <-
+    data %>%
     select({{id}}, {{treatment}}, {{vars}}) %>%
     filter(if_any(c({{treatment}}, {{vars}}), is.na))
 
   if(nrow(na_check) > 0) {
-    id_list <- na_check %>% select({{id}}, all_of((names(na_check)[sapply(na_check, anyNA)]))) %>%
-             pivot_longer(cols = all_of((names(na_check)[sapply(na_check, anyNA)])), names_to = "na_vars", values_to = "nas") %>%
-             filter(is.na(nas))
+    id_list <-
+      na_check %>% select({{id}}, all_of((names(na_check)[sapply(na_check, anyNA)]))) %>%
+      pivot_longer(cols = all_of((names(na_check)[sapply(na_check, anyNA)])), names_to = "na_vars", values_to = "nas") %>%
+      filter(is.na(nas))
 
 
     return(cat(paste(c("NAs detected in the following variables:",
                        (names(na_check)[sapply(na_check, anyNA)]),
-                       "In the following IDs:\nID  variable",
-                       paste(t %>% pull(id) %>% str_pad(width = 3), t %>% pull(na_vars), sep = "   ")), collapse="\n")))
+                       "In the following IDs (variable):\nID",
+                       paste(id_list %>% pull({{id}}) %>% str_pad(width = 3), id_list %>% pull(na_vars), sep = "   ")), collapse="\n")))
   }
 
   gr_char <- data %>% select({{treatment}}) %>% names()
@@ -60,21 +62,20 @@ positivity <- function(data, treatment, vars, id = id) {
     mutate(across(where(is.numeric), ~ cut(.,breaks = quantile(., seq(0,1,0.1)))),
            across(c({{vars}}), ~ as.factor(.)))
 
- zero <- unlist(lapply(var_char, function(x) {
-   data %>%
-     group_by(!!sym(gr_char), !!sym(x), .drop = FALSE) %>%
-     count() %>%
-     filter(n == 0) %>%
-     mutate(check = str_c(str_c(gr_char, ": ", !!sym(gr_char), sep=""), str_c(x, ": ", !!sym(x), sep =""), sep="  -  ")) %>%
-     pull(check)
- }))
+  zero <- unlist(lapply(var_char, function(x) {
+    data %>%
+      group_by(!!sym(gr_char), !!sym(x), .drop = FALSE) %>%
+      count() %>%
+      filter(n == 0) %>%
+      mutate(check = str_c(str_c(gr_char, ": ", !!sym(gr_char), sep=""), str_c(x, ": ", !!sym(x), sep =""), sep="  -  ")) %>%
+      pull(check)
+  }))
 
- if(length(zero) == 0) {
-   cat("No positivity violations detected")
- }
- if(length(zero) > 0) {
-   cat(paste0(c("Positivity violations:", zero), sep="\n"))
-   return(cat(" "))
- }
+  if(length(zero) == 0) {
+    cat("No positivity violations detected")
+  }
+  if(length(zero) > 0) {
+    cat(paste0(c("Positivity violations:", zero), sep="\n"))
+    return(cat(" "))
+  }
 }
-
