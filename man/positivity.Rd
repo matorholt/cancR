@@ -4,7 +4,7 @@
 \alias{positivity}
 \title{Positivity}
 \usage{
-positivity(data, treatment, vars)
+positivity(data, treatment, vars, id = id)
 }
 \arguments{
 \item{data}{data frame to detect positivity violations}

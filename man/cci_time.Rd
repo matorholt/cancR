@@ -4,17 +4,22 @@
 \alias{cci_time}
 \title{Time-dependent CCI}
 \usage{
-cci_time(data, interval = 365.25/2)
+cci_time(data, interval = 365.25/2, comorb = F)
 }
 \arguments{
 \item{data}{Full LPR dataset}
 
 \item{interval}{Interval in which the CCIs should be calculated}
+
+\item{comorb}{Whether the specific comorbidites in the CCI score should be extracted. Default is FALSE.}
 }
 \value{
-cci_all: Date of first value of each CCI score for each patient
-cci_bin: Date of first value of CCI binned into 0-1, 2-3, 4-5 and 6+
-comorb: Date of first presence of each comorbidity
+cci_all: Dates of all CCI scores. Repeted scores in adjacent rows are removed as the status is not changed.
+cci_bin: Same as cci_all with CCI scores binned 1, 2-3, 4-5 and 6+
+comorb: Dates of all comorbidites
+cci_all_wide: Date of first value of each CCI score for each patient in wide format
+cci_bin_wide: Date of first value of CCI binned into 1, 2-3, 4-5 and 6+ in wide format
+comorb_wide: Date of first presence of each comorbidity in wide format
 }
 \description{
 Generation of time-dependent CCI and comorbidities from the Charlson Comorbidity Index

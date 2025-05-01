@@ -6,10 +6,10 @@
 \usage{
 load_regs(
   regs = c("lpr", "pop", "cancer", "lmdb", "opr"),
-  keep,
+  keep = NULL,
   n = NULL,
   id_filter = NULL,
-  pattern
+  pattern = NULL
 )
 }
 \arguments{

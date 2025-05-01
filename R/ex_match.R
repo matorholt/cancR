@@ -1,40 +1,79 @@
+#' ex_match
+#'
+#' @description
+#' Time-dependent exact matching for matched cohort studies.
+#'
+#'
+#' @param data data frame with cases and controls defined
+#' @param pnr pnr
+#' @param case 1/0
+#' @param index index of cases, controls should be blank
+#' @param fu follow-up time for all patients
+#' @param cat categorical matching parametres
+#' @param dat time-dependent matching paramtres
+#' @param exclude exclusion of event before index
+#' @param n_controls number of desired controls
+#' @param seed seed
+#' @param cores default = 4
+#'
+#' @return returns the original data frame with n_controls matches per case with set indicating the risk set.
+#' @export
+#'
+#'
 
-no = 10000
-cno= 2
+# no = 10000
+# cno= 2
+#
+# set.seed(1)
+# (pop <- data.frame(pnr = paste("pnr", rnorm(no, 40000,1000)),
+#                    case = c(rep(1,cno), rep(0,(no-cno))),
+#                    index = sample(c(sample(seq(as.Date('1990/01/01'), as.Date('2010/01/01'), by="day"))), size = no, replace=TRUE),
+#                    fu = c(sample(seq(as.Date('2015/01/01'), as.Date('2020/01/01'), by="day"), no, replace=T)),
+#                    byear = sample(c(seq(1950,1955)), no, replace=T),
+#                    sex = sample(c("F","M"), no, replace=T),
+#                    skinc = sample(c(sample(seq(as.Date('1998/01/01'), as.Date('2010/01/01'), by="day"))), size = no, replace=TRUE),
+#                    random1 = 1,
+#                    random2 = 2) %>%
+#     mutate(index = if_else(case == 0, as.Date(NA), index),
+#            skinc = if_else(case == 1, as.Date(NA), skinc)))
+# set.seed(1)
+# mp <- 40
+# (ses <- data.frame(var = sample(c("married",
+#                                   "education",
+#                                   "income",
+#                                   "cci",
+#                                   "region"),
+#                                 size = no*mp,
+#                                 replace=TRUE),
+#                    date = sample(c(sample(seq(as.Date('1980/01/01'), as.Date('2000/01/01'), by="day"))), size = no*mp, replace=TRUE),
+#                    pnr = sample(pop$pnr, size = no*mp, replace=TRUE)) %>%
+#     arrange(pnr) %>%
+#     mutate(val = case_when(var %in% "income" ~ sample(paste("q", seq(1,4), sep=""), no*mp, prob = rep(0.25,4), replace=TRUE),
+#                            var %in% "education" ~ sample(c("education_low", "education_medium", "education_high"), no*mp, prob = rep(1/3,3), replace=TRUE),
+#                            var %in% "cci" ~ sample(as.character(seq(1,6)), no*mp, prob = rep(1/6,6), replace=TRUE),
+#                            var %in% "region" ~ sample(c("the_capital_region_of_denmark",
+#                                                         "region_zealand",
+#                                                         "the_north_denmark_region",
+#                                                         "central_denmark_region",
+#                                                         "the_region_of_southern_denmark"), no*mp, prob = rep(0.20,5), replace=TRUE),
+#                            var %in% "married" ~ "married")) %>%
+#     select(pnr, date, var, val))
+#
+# start <- Sys.time()
+#
+# (t <- ex_match(data=pop,
+#                pnr=pnr,
+#                case=case,
+#                index=index,
+#                fu=fu,
+#                cat = c(sex, byear),
+#                dat = c(education, region, income, cci, married),
+#                exclude = skinc,
+#                n_controls=1))
+# Sys.time() - start
 
-set.seed(1)
-(pop <- data.frame(pnr = paste("pnr", rnorm(no, 40000,1000)),
-                   case = c(rep(1,cno), rep(0,(no-cno))),
-                   index = sample(c(sample(seq(as.Date('1990/01/01'), as.Date('2010/01/01'), by="day"))), size = no, replace=TRUE),
-                   fu = c(sample(seq(as.Date('2015/01/01'), as.Date('2020/01/01'), by="day"), no, replace=T)),
-                    byear = sample(c(seq(1950,1955)), no, replace=T),
-                    sex = sample(c("F","M"), no, replace=T),
-                   skinc = sample(c(sample(seq(as.Date('1998/01/01'), as.Date('2010/01/01'), by="day"))), size = no, replace=TRUE)) %>%
-    mutate(index = if_else(case == 0, as.Date(NA), index)))
-set.seed(1)
-mp <- 40
-(ses <- data.frame(var = sample(c("married",
-                                  "education",
-                                  "income",
-                                  "cci",
-                                  "region"),
-                                size = no*mp,
-                                replace=TRUE),
-           date = sample(c(sample(seq(as.Date('1980/01/01'), as.Date('2000/01/01'), by="day"))), size = no*mp, replace=TRUE),
-           pnr = sample(pop$pnr, size = no*mp, replace=TRUE)) %>%
-  arrange(pnr) %>%
-  mutate(val = case_when(var %in% "income" ~ sample(paste("q", seq(1,4), sep=""), no*mp, prob = rep(0.25,4), replace=TRUE),
-                         var %in% "education" ~ sample(c("education_low", "education_medium", "education_high"), no*mp, prob = rep(1/3,3), replace=TRUE),
-                         var %in% "cci" ~ sample(as.character(seq(1,6)), no*mp, prob = rep(1/6,6), replace=TRUE),
-                         var %in% "region" ~ sample(c("the_capital_region_of_denmark",
-                                                      "region_zealand",
-                                                      "the_north_denmark_region",
-                                                      "central_denmark_region",
-                                                      "the_region_of_southern_denmark"), no*mp, prob = rep(0.20,5), replace=TRUE),
-                         var %in% "married" ~ "married")) %>%
-  select(pnr, date, var, val))
 
-ex_match <- function(data, pnr, case, index, date, fu,n_controls, cat, dat, seed=1, cores = 4) {
+ex_match <- function(data, pnr, case, index, fu, cat, dat, exclude, n_controls, seed=1, cores = 4) {
 
   cl <- makeCluster(cores)
   clusterEvalQ(cl, {
@@ -43,11 +82,11 @@ ex_match <- function(data, pnr, case, index, date, fu,n_controls, cat, dat, seed
 
   pnr_c <- data %>% select({{pnr}}) %>% names()
 
-  #original
-  df <- data
+  #original non used data
+  df <- data %>% select(-{{fu}}, -{{index}}, -{{case}}, -{{cat}}, -{{exclude}})
   # #Simplify data
   data <-
-  data %>% select({{pnr}}, {{case}}, {{index}}, {{fu}}, {{cat}}) %>%
+  data %>% select({{pnr}}, {{case}}, {{index}}, {{fu}}, {{cat}}, {{exclude}}) %>%
     mutate(id = row_number()) %>%
   left_join(., ses, by = pnr_c) %>%
     arrange(desc({{case}}), {{pnr}}, date)
@@ -69,16 +108,17 @@ ex_match <- function(data, pnr, case, index, date, fu,n_controls, cat, dat, seed
 
   #Split data in one case + all controls
 
-  control_df <- as.data.frame(rbindlist(parLapply(cl, seq(1, nrow(cases)), function(x) {
+  control_df <-
+  as.data.frame(rbindlist(
+      parLapply(cl, seq(1, nrow(cases)), function(x) {
 
 
     i <- cases[x,] %>% pull({{index}})
-    f <- cases[x,] %>% pull({{fu}})
     s <- cases[x,] %>% pull(set)
 
     bind_rows(cases[x,],
               controls %>%
-      filter({{fu}} >= f & date <= i) %>%
+      filter({{fu}} > i & date <= i & {{exclude}} > i) %>%
       group_by({{pnr}}, var) %>%
       slice(n()) %>%
       ungroup() %>%
@@ -98,7 +138,8 @@ ex_match <- function(data, pnr, case, index, date, fu,n_controls, cat, dat, seed
   set.seed(seed)
 
   #Order with fewest potential matches first
-  con_list <- parLapply(cl, unique(con_list$set), function(x) {
+  con_list <-
+    parLapply(cl, unique(con_list$set), function(x) {
     con_list %>% filter(set %in% x) %>% select(-nrow)
   })
 
@@ -106,14 +147,17 @@ ex_match <- function(data, pnr, case, index, date, fu,n_controls, cat, dat, seed
   con_list[[1]] <- list(a<-con_list[[1]] %>% slice_sample(n=pmin(nrow(con_list[[1]]), n_controls)), a$id)
 
   #Rolling unique sampling
-  matches <- as.data.frame(rbindlist(parLapply(cl, accumulate(con_list, function(acc, nxt) {
+  matches <-
+    as.data.frame(rbindlist(parLapply(cl, accumulate(con_list, function(acc, nxt) {
     id_sample <- nxt %>% filter(!(id %in% acc[[2]])) %>% slice_sample(n=pmin(nrow(nxt), n_controls))
     id_cnt <- c(acc[[2]], id_sample$id)
     list(id_sample, id_cnt)
   }), function(x) {x[[1]]})))
 
   #list(cases, control_df, matches)
-  total <- bind_rows(cases, left_join(matches %>% select(pnr, set), control_df, by = c(pnr_c, "set"))) %>%
+  total <-
+    bind_rows(cases, left_join(matches %>% select(pnr, set), control_df, by = c(pnr_c, "set"))) %>%
+    left_join(., df, by = pnr_c) %>%
   select(-nrow, -id) %>%
    arrange(set) %>%
    group_by(set) %>%
@@ -123,13 +167,7 @@ ex_match <- function(data, pnr, case, index, date, fu,n_controls, cat, dat, seed
   stopCluster(cl)
 
   return(total)
-
 }
-
-start <- Sys.time()
-
-(t <- ex_match(data=pop, pnr=pnr, case=case, index=index, fu=fu, cat = c(sex, byear), dat = c(education, region, income, cci, married), n_controls=1))
-Sys.time() - start
 
 
 
