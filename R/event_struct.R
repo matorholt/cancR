@@ -11,12 +11,13 @@
 #' @param index Index time point 'T=0' provided in date format
 #' @param fu End of follow-up or time of death in date format
 #' @param outcomes Vector of single or multiple column names with the event of interest in date format
-#' @param competing Single column indicating dates of the competing event
+#' @param competing Single column indicating either status or dates of the competing event. If passed as a status (0/1) the dates are assumed to stem from follow-up (e.g. death)
 #' @param pattern Indicates the name pattern of the outcomes such as index_event or event_date
 #' @param unit Whether time-to-event should be reported in months or years.
 #' @param keep_dates Whether the original event dates should be kept.
 #'
-#' @return To columns for each event of interest. A status indicator of 0/1/2 and a time-to-event column.
+#' @return For each outcome, a status indicator of 0/1/2 and a time-to-event column are returned. If competing is missing, the levels are 0/1
+#' For the competing event, a status indicator of 0/1 and a time-to-event is returned.
 #' For patients without an event the function returns the time to last follow-up if status = 0 and time to death if status = 2
 #' @export
 #'

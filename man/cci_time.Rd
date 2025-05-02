@@ -4,22 +4,29 @@
 \alias{cci_time}
 \title{Time-dependent CCI}
 \usage{
-cci_time(data, interval = 365.25/2, comorb = F)
+cci_time(
+  data,
+  interval = 365.25/2,
+  structure = "binned",
+  format = "long",
+  comorb = F
+)
 }
 \arguments{
 \item{data}{Full LPR dataset}
 
 \item{interval}{Interval in which the CCIs should be calculated}
 
+\item{structure}{Whether CCI should be the full 18 parametres or binned into 1, 2-3, 4-5 and 6+}
+
+\item{format}{Whether the output should be in long or wide format}
+
 \item{comorb}{Whether the specific comorbidites in the CCI score should be extracted. Default is FALSE.}
 }
 \value{
-cci_all: Dates of all CCI scores. Repeted scores in adjacent rows are removed as the status is not changed.
-cci_bin: Same as cci_all with CCI scores binned 1, 2-3, 4-5 and 6+
-comorb: Dates of all comorbidites
-cci_all_wide: Date of first value of each CCI score for each patient in wide format
-cci_bin_wide: Date of first value of CCI binned into 1, 2-3, 4-5 and 6+ in wide format
-comorb_wide: Date of first presence of each comorbidity in wide format
+cci_full_long/wide: Dates of all CCI scores. Repeted scores in adjacent rows are removed as the status is not changed.
+cci_bin_long/wide: Same as cci_all with CCI scores binned 1, 2-3, 4-5 and 6+
+comorb_long/wide: Dates of all comorbidites
 }
 \description{
 Generation of time-dependent CCI and comorbidities from the Charlson Comorbidity Index

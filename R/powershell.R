@@ -36,12 +36,12 @@ powershell <- function(text) {
   \n3)Insert the output in the R-console in 'text'
   \n4)Press enter
   \n5)Left-click on the screen where the script should be inserted and wait 5 seconds
-  \n\n\n########  Copy  #############
+  \n\n\n########  Copy, separated by shift+enter  #############
   \nAdd-Type -AssemblyName System.Windows.Forms
   \nStart-Sleep 5
-  \n[System.Windows.Forms.SendKeys]::SendWait('text’)
-  \n########  Copy  #############")
+  \n[System.Windows.Forms.SendKeys]::SendWait('text’)")
 
 }
 
+powershell('str_detect(1234')
 
