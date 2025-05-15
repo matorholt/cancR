@@ -20,6 +20,7 @@
 #' @export
 #'
 #'
+#'
 
 # df <- simAdmissionData(n=100)
 # df2 <- simPrescriptionData(n=100)
@@ -31,17 +32,18 @@
 #                                     "Astma" = c("DB", "DQ"),
 #                                     "DM" = "DD"),
 #                  register = "lpr",
-#                  remove = c("DG", "DUA"),
+#                  remove = c("DG", "DUA", "EG"),
 #                  format="date",
 #                  slice = "first"))
+
 
 var_search <- function(data,
                        pattern_list,
                        register,
                        index_df,
-                       match = "start",
+                       match = "contains",
                        remove = "*_*",
-                       format = "categorical",
+                       format = "date",
                        interval,
                        slice = "first",
                        index = index,
@@ -59,14 +61,6 @@ var_search <- function(data,
   pattern <- unlist(pattern_list)
   labels <- names(pattern_list)
 
-
-  if(missing(labels)) {
-    labels <- pattern
-  }
-
-  if(length(pattern) != length(labels)) {
-    stop("Number of patterns and labels do not match")
-  }
 
   if(missing(remove)) {
     remove <- rep("xxx", length(pattern))
@@ -89,10 +83,10 @@ var_search <- function(data,
          "lmdb" = {data <- data %>% rename(code = atc,
                                            date = eksd)},
          "pato" = {data <- data %>% rename(code = snomed)},
-         "opr" = {data <- data %>% rename(code = diag,
+         "opr" = {data <- data %>% rename(code = opr,
                                           date = inddto)},
-         "cancer" = {data <- data %>% rename(code = morfo_3,
-                                          date = d_rekvisitionsdato)}
+         "cancer" = {data <- data %>% rename(code = c_morfo3,
+                                          date = d_diagnosedato)}
          )
 
   if(!missing(index_df)) {
@@ -145,4 +139,5 @@ var_search <- function(data,
     arrange(pnr)
 
 }
+
 

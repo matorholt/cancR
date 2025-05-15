@@ -4,12 +4,14 @@
 \alias{combiner}
 \title{Combiner}
 \usage{
-combiner(letters, letters2 = NULL)
+combiner(letters, letters2 = NULL, list = F)
 }
 \arguments{
 \item{letters}{Vector either of length 1 (will be split for each subelement) og length >1}
 
 \item{letters2}{Optional second vector if chunks are to be combined}
+
+\item{list}{Whether all combinations should be returned as a list (useful for looping with lapply)}
 }
 \value{
 Returns all possible combinations of the input vector(s)

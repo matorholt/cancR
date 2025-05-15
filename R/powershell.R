@@ -43,5 +43,3 @@ powershell <- function(text) {
 
 }
 
-powershell('str_detect(1234')
-

@@ -6,12 +6,13 @@
 #'
 #' @param letters Vector either of length 1 (will be split for each subelement) og length >1
 #' @param letters2 Optional second vector if chunks are to be combined
+#' @param list Whether all combinations should be returned as a list (useful for looping with lapply)
 #'
 #' @return Returns all possible combinations of the input vector(s)
 #' @export
 #'
 #'
-combiner <- function(letters, letters2=NULL) {
+combiner <- function(letters, letters2=NULL, list=F) {
   #Convenience split if only one combination is provided
   if(length(letters) == 1 & is.null(letters2)) {
     letters <- unlist(stringr::str_split(letters, ""))
@@ -25,7 +26,10 @@ combiner <- function(letters, letters2=NULL) {
   if(!is.null(letters2)) {
     as.vector(apply(expand.grid(letters, letters2), 1, function(x) paste0(x, collapse="")))
     #If only one vector is provided, all possible unique combinations are found
-  } else {
+  } else if(!list){
     as.vector(na.omit(apply(expand.grid(mget(rep("letters", length(letters)))), 1, function(x) ifelse(length(unique(x)) == length(letters), paste0(x, collapse=""), NA ))))
+  } else {
+    (str_split(as.vector(na.omit(apply(expand.grid(mget(rep("letters", length(letters)))), 1, function(x) ifelse(length(unique(x)) == length(letters), paste0(x, collapse=";"), NA )))), ";"))
   }
 }
+

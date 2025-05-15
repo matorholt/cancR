@@ -16,6 +16,7 @@ Depends:
     ggplot2,
     heaven,
     magrittr,
+    mets,
     parallel,
     patchwork,
     prodlim,
@@ -27,5 +28,4 @@ Depends:
     tidyr
 Imports: 
     ggpubr,
-    pammtools,
     tibble
