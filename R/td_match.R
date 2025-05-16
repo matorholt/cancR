@@ -22,6 +22,13 @@
 #' @export
 #'
 #'
+#'
+
+# library(cancR)
+# library(foreach)
+# library(doParallel)
+#
+#
 # no = 40000
 # cno= 0.00025*no
 #
@@ -82,7 +89,7 @@
 #
 #
 # start <- Sys.time()
-# (t1 <- ex_match_loop_dt(data=pop,
+# (t1 <- td_match(data=pop,
 #                         case=case,
 #                         pnr = id,
 #                         fu=follow,
@@ -174,7 +181,7 @@ td_match <- function(data, tdframe, index, case, fu, tddate, cat, dat, exclude, 
 
 
   stopCluster(cluster)
-  return(as.data.frame(bind_rows(cases, rbindlist(matches))[order(set)][, index := nafill(index, "locf"), env=list(index=substitute(index))]))
+  return(as.data.frame(bind_rows(cases, rbindlist(matches))[order(set)][, c("index") := nafill(index, "locf"), env=list(index=substitute(index))]))
 
 }
 

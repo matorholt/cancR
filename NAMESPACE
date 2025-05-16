@@ -2,6 +2,7 @@
 
 export(cci_time)
 export(closest)
+export(clusterci)
 export(combiner)
 export(cprfix)
 export(crrplot)

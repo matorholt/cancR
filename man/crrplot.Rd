@@ -14,6 +14,8 @@ crrplot(
   printres = "est",
   labgrp = grps,
   fu = 120,
+  breaks = 12,
+  unit = "Years",
   respos.x = 0,
   respos.y = 0,
   ylab.pos = 0,
@@ -41,7 +43,11 @@ crrplot(
 
 \item{labgrp}{group labels}
 
-\item{fu}{Length of follow-up (default = 120 months)}
+\item{fu}{length of follow-up (default = 120 months)}
+
+\item{breaks}{the subdivisions between time = 0 and follow-up length (defaults to 12)}
+
+\item{unit}{Whether the time unit is years, months or days (defaults to "Years")}
 
 \item{respos.x}{shift of the result label on the x-axis}
 
@@ -63,6 +69,5 @@ crrplot(
 Adjusted Kaplan-Meier or cumulative incidence curves
 }
 \description{
-#' @description
 Automatic plot of adjusted Kaplan-Meier and cumulative incidence curves
 }

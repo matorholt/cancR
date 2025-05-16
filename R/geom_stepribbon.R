@@ -25,3 +25,20 @@ geom_stepribbon <- function(
   )
 
 }
+
+GeomStepribbon <- ggproto(
+  "GeomStepribbon", GeomRibbon,
+
+  extra_params = c("na.rm"),
+
+  draw_group = function(data, panel_scales, coord, na.rm = FALSE, direction = "hv") {
+
+    if (na.rm) data <- data[complete.cases(data[c("x", "ymin", "ymax")]), ]
+    data   <- rbind(data, data)
+    data   <- data[order(data$x), ]
+    data   <- ggplot2_stairstep(data[complete.cases(data["x"]), ],
+                                direction = direction)
+    GeomRibbon$draw_group(data, panel_scales, coord, na.rm = na.rm)
+  }
+
+)
