@@ -15,7 +15,7 @@ crrplot(
   labgrp = grps,
   fu = 120,
   breaks = 12,
-  unit = "Years",
+  time_unit = "m2y",
   respos.x = 0,
   respos.y = 0,
   ylab.pos = 0,
@@ -47,7 +47,7 @@ crrplot(
 
 \item{breaks}{the subdivisions between time = 0 and follow-up length (defaults to 12)}
 
-\item{unit}{Whether the time unit is years, months or days (defaults to "Years")}
+\item{time_unit}{Whether the time unit should be transformed to years or months. If no transformation choose days/months/years (defaults to "m2y")}
 
 \item{respos.x}{shift of the result label on the x-axis}
 

@@ -39,7 +39,7 @@ clusterci(
 Life_table: Event table \cr
 Plot_data: Data for plotting CIF curves \cr
 Risks: Absolute risk estimates at the specified time points \cr
-Risk_differences: Absolute risk differences at the specified time points \cr
+Risk_differences: Absolute risk difference at the specified time point \cr
 Surv: Indicator of the surv-argument
 }
 \description{

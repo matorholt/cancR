@@ -14,7 +14,7 @@
 #' @param labgrp group labels
 #' @param fu length of follow-up (default = 120 months)
 #' @param breaks the subdivisions between time = 0 and follow-up length (defaults to 12)
-#' @param unit Whether the time unit is years, months or days (defaults to "Years")
+#' @param time_unit Whether the time unit should be transformed to years or months. If no transformation choose days/months/years (defaults to "m2y")
 #' @param respos.x shift of the result label on the x-axis
 #' @param respos.y shift of the result label on the y-axis
 #' @param ylab.pos shifting of y-axis label position
@@ -28,9 +28,9 @@
 #' @export
 #'
 
-#library(cancR)
+# library(cancR)
 #
-#Competing risks
+# #Competing risks
 # n <- 300
 # set.seed(1)
 # cdf <- riskRegression::sampleData(n, outcome="competing.risks")
@@ -39,7 +39,7 @@
 #
 # mod <- crrstrat(cdf, time, event, X2, type = "uni", surv=F)
 #
-# #ClusterCI
+#ClusterCI
 # set.seed(1)
 # n=1000
 # df <- riskRegression::sampleData(n) %>%
@@ -53,7 +53,7 @@
 #
 #
 # crrplot(mod, outcome = "Test", printres = "estrd")
-# crrplot(t, fu = 90, breaks = 10, unit = "Days", outcome = "Explantation", labgrp = c("Subpectoral", "Prepectoral"))
+# crrplot(t, fu = 90, breaks = 10, time_unit = "days", outcome = "Explantation", labgrp = c("Subpectoral", "Prepectoral"), printres = "estrd")
 
 crrplot <- function(list,
                     y=100,
@@ -65,7 +65,7 @@ crrplot <- function(list,
                     labgrp = grps,
                     fu = 120,
                     breaks = 12,
-                    unit = "Years",
+                    time_unit = "m2y",
                     respos.x = 0,
                     respos.y = 0,
                     ylab.pos = 0,
@@ -88,7 +88,7 @@ crrplot <- function(list,
     )
   }
 
-  unit <- match.arg(unit, c("Years", "Months", "Days"))
+  time_unit <- match.arg(time_unit, c("m2y", "d2m", "d2y", "days", "months", "years"))
 
   tab <- as.data.frame(list$Life_table) %>% filter(time %in% seq(0,fu,breaks))
 
@@ -135,11 +135,23 @@ crrplot <- function(list,
   x=y/100
   tot = x+(x*0.6)
 
-  if(unit == "Years") {
-    u <- 12
-  } else {u <- 1}
-
-
+  switch(time_unit,
+         "m2y" = {
+           u <- 12
+           unit <- "Years"},
+         "d2m" = {
+           u <- 365.25/12
+           unit <- "Months"},
+         "d2y" = {
+           u <- 365.25
+           unit <- "Years"
+         },
+         "days" = ,
+         "months" = ,
+         "years" = {
+           u <- 1
+           unit <- str_to_title(time_unit)
+         })
 
   p <-
     ggplot(plot, aes(x=time, y=est, color = stratum, fill = stratum)) +
@@ -170,7 +182,7 @@ crrplot <- function(list,
   p <-
   p + annotate("text", x=fu/2, y = -(tot*0.10), label = unit, size = 6*tscale) +
   annotate("text", x=-(fu*0.11)-ylab.pos, y = x/2, label = ylab, size = 6*tscale, angle = 90) +
-  annotate("text", x=seq(0,fu,breaks), y=-(tot*0.06), label=seq(0,fu,breaks)/u, size = 6*tscale)
+  annotate("text", x=seq(0,fu,breaks), y=-(tot*0.06), label=round(seq(0,fu,breaks)/u,0), size = 6*tscale)
   if(y>=50){
     p <- p + annotate("text", x=-(fu*0.03), y=seq(0,x,0.1), label = paste(seq(0,x*100,10), "%", sep=""), size = 6*tscale, hjust="right")
   } else if(y<=10) {
@@ -298,4 +310,3 @@ crrplot <- function(list,
  return(p)
 
 }
-

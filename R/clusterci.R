@@ -18,7 +18,7 @@
 #' Life_table: Event table \cr
 #' Plot_data: Data for plotting CIF curves \cr
 #' Risks: Absolute risk estimates at the specified time points \cr
-#' Risk_differences: Absolute risk differences at the specified time points \cr
+#' Risk_differences: Absolute risk difference at the specified time point \cr
 #' Surv: Indicator of the surv-argument
 #' @export
 #'
@@ -93,23 +93,23 @@ clusterci <- function(data,
       select(time, treatment, est, lower, upper)
     })) %>% arrange(treatment, time) %>% as.data.frame()
 
-  dif <-
-    rbindlist(parLapply(cl, seq(0,time,breaks), function(x){
-      bin_obj <- binregATE(formula = as.formula(out.mod),
-                           data=data,cause=1,
+      bin_obj <- binregATE(data=data,
+                           formula = as.formula(out.mod),
                            treat.model = as.formula(treat.mod),
-                           time=x,cens.model= as.formula(c.mod))
+                           cens.model= as.formula(c.mod),
+                           cause=1,
+                           time=time)
 
-        as.data.frame(estimate(coef=bin_obj$difriskDR,vcov=as.matrix(bin_obj$var.difriskDR))$coefmat) %>%
+      dif <-
+      as.data.frame(estimate(coef=bin_obj$difriskDR,vcov=as.matrix(bin_obj$var.difriskDR))$coefmat) %>%
         rename(diff = "Estimate",
                lower = "2.5%",
                upper = "97.5%",
                p.value = "P-value") %>%
         mutate(across(c(diff, lower, upper), ~ round(.*100,2)),
                p.value = pfun(p.value),
-               time=x) %>%
+               time=time) %>%
         select(time, diff, lower, upper, p.value)
-    })) %>% arrange(time) %>% as.data.frame()
 
   plot <-
     rbindlist(parLapply(cl, sort(unique(data %>% filter({{event}} == 1) %>% pull({{timevar}}))), function(x){
@@ -147,6 +147,7 @@ clusterci <- function(data,
   stopCluster(cl)
   l <- list(Life_table = tab, Risks = risk, Risk_differences = dif, Plot_data = plot, Surv = surv)
   class(l) <- "CLUSTERCI"
+
   return(l)
 
 }
