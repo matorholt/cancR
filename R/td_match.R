@@ -105,12 +105,12 @@
 
 td_match <- function(data, tdframe, index, case, fu, tddate, cat, dat, exclude, n_controls=4, seed=1, cores=4, pnr=pnr) {
 
-  deparse(substitute(cat))
-
   cluster <- makeCluster(cores)
   registerDoParallel(cluster)
 
   pnr_c <- deparse(substitute(pnr))
+  index_c <- deparse(substitute(index))
+  tddate_c <- deparse(substitute(tddate))
   cat_c <- unlist(str_extract_all(deparse(substitute(cat)), "\\w{2,}"))
   dat_c <- unlist(str_extract_all(deparse(substitute(dat)), "\\w{2,}"))
   exclude_c <- unlist(str_extract_all(deparse(substitute(exclude)), "\\w{2,}"))
@@ -147,12 +147,13 @@ td_match <- function(data, tdframe, index, case, fu, tddate, cat, dat, exclude, 
 
   control_list <- foreach(i = seq(1,nrow(cases)), .packages = c("tidyverse", "data.table")) %dopar% {
 
+    itime <- df[i, index_s, env = list(index_s = index_s)]
+
     controls <-
-      df[set == i | case_s == 0 & fu_s > first(index_s) & tddate_s < first(index_s), env=list(case_s = case_s,
+      df[set == i | case_s == 0 & fu_s > itime & tddate_s < itime, env=list(case_s = case_s,
                                                                                               fu_s = fu_s,
-                                                                                              index_s = index_s,
                                                                                               tddate_s = tddate_s)] %>%
-      .[.[, Reduce(`&`, lapply(.SD, function(x) is.na(x) | x > first(index_s))),.SDcols = c(exclude_c)], .SDcols= c(exclude_c), env=list(index_s = index_s)] %>%
+      .[.[, Reduce(`&`, lapply(.SD, function(x) is.na(x) | x > itime)),.SDcols = c(exclude_c)], .SDcols= c(exclude_c)] %>%
       .[, .SD[.N], by = pnr_c] %>%
       .[.[, Reduce(`&`, lapply(.SD, function(x) is.na(x) & is.na(first(x)) | x == first(x))),.SDcols = c(cat_c, dat_c)], .SDcols= c(cat_c, dat_c)]
 
@@ -181,7 +182,8 @@ td_match <- function(data, tdframe, index, case, fu, tddate, cat, dat, exclude, 
 
 
   stopCluster(cluster)
-  return(as.data.frame(bind_rows(cases, rbindlist(matches))[order(set)][, c("index") := nafill(index, "locf"), env=list(index=substitute(index))]))
+  return(as.data.frame(bind_rows(cases, rbindlist(matches))[order(set)][, c("index") := nafill(index, "locf"), env=list(index=substitute(index))][, c(exclude_c, tddate_c, index_c) := NULL]) %>%
+           select({{pnr}}, case, set, index, everything()))
 
 }
 
