@@ -5,8 +5,12 @@
 #'
 #'
 #' @param data data frame to detect positivity violations
-#' @param treatment the main stratum which all covariates should include all levels of
+#' @param treatment the main stratum which all covariates should include all levels of (optional)
+#' @param outcome the outcome variable which all covariates should include all levels of (optional)
 #' @param vars the covariates to examine for positivity violations. State multiple variables as c(var1, var2, var3) without quotes.
+#' @param levels the number of combinations of covariates. level=1 (default) corresponds to a 2x2 table, whereas level=2 corresponds to 2x2 tables stratified on e.g. treatment
+#' @param quantiles quantiles for binning of continuous covariates
+#' @param id column indicating unique patient identifier for returning specific NAs
 #'
 #' @return prints the variables with positivity violations if present. Otherwise none detected. Also returns as either NULL or character for downstream use.
 #' @export
@@ -28,14 +32,25 @@
 #
 #
 #
-# t <- positivity(df, group, sex)
-# t2 <- positivity(df, group, c(sex, hospital))
+# t <- positivity(df,
+#                 treatment=group,
+#                 vars=sex,
+#                 levels=1)
+# t2 <- positivity(df, group, vars=c(sex, hospital), levels=2)
+# t3 <- positivity(df, treatment=group, outcome = sex, vars=c(age_group, chemo, hospital), levels = 3)
 #
 # is.character(t)
 # is.null(t2)
 
+positivity <- function(data, treatment, outcome, vars, levels=1, quantiles=0.1, id=id) {
 
-positivity <- function(data, treatment, vars, id = id) {
+  vars_c <- data %>% select({{vars}}) %>% names()
+  treat_c <- data %>% select({{treatment}}) %>% names()
+  out_c <- data %>% select({{outcome}}) %>% names()
+
+  if(levels > length(c(vars_c))) {
+    return(cat(paste0("ERROR: Levels exceeding number of variables. Level can maximally be: ", length(c(vars_c)))))
+  }
 
   na_check <-
     data %>%
@@ -56,30 +71,61 @@ positivity <- function(data, treatment, vars, id = id) {
                        paste(id_list %>% pull({{id}}) %>% str_pad(width = 3), id_list %>% pull(na_vars), sep = "   ")), collapse="\n")))
   }
 
-  gr_char <- data %>% select({{treatment}}) %>% names()
-  var_char <- data %>% select({{vars}}) %>% names()
-
-
+  n = levels
 
   data <- data %>%
-    select({{treatment}}, {{vars}}) %>%
-    mutate(across(where(is.numeric), ~ cut(.,breaks = unique(quantile(., seq(0,1,0.1))))),
-           across(c({{vars}}), ~ as.factor(.)))
+    select({{treatment}}, {{vars}}, {{outcome}}) %>%
+    mutate(across(where(is.numeric), ~ cut(.,breaks = unique(quantile(., seq(0,1,quantiles))))),
+           across(c({{treatment}}, {{vars}}), ~ as.factor(.)))
 
-  zero <- unlist(lapply(var_char, function(x) {
-    data %>%
-      group_by(!!sym(gr_char), !!sym(x), .drop = FALSE) %>%
+  grid <- expand.grid(lapply(1:n, function(x) {
+    vars_c
+  })) %>%
+    mutate(index = row_number()) %>%
+    pivot_longer(cols=c(1:n), names_to = "position", values_to="var") %>%
+    group_by(index) %>%
+    distinct(var) %>%
+    filter(n() == n) %>%
+    arrange(index, var) %>%
+    mutate(position = letters[row_number()+10]) %>%
+    ungroup() %>%
+    pivot_wider(names_from = position, values_from = var) %>%
+    select(-index) %>%
+    distinct() %>%
+    mutate(across(everything(), ~ as.character(.)))
+
+  if(!missing(treatment)) {
+    grid$a_treat <- paste(substitute(treatment))
+  }
+
+  if(!missing(outcome)) {
+    grid$b_outcome <- paste(substitute(outcome))
+  }
+
+  grid <- grid[, order(colnames(grid))]
+
+  l <-
+    lapply(c(1:nrow(grid)), function(i) {
+      paste0(grid[i,])
+    })
+
+  zero <- rbindlist(lapply(l, function(x) {
+    data %>% select(!!!syms(x)) %>%
+      group_by(!!!syms(x), .drop = FALSE) %>%
       count() %>%
+      ungroup() %>%
       filter(n == 0) %>%
-      mutate(check = str_c(str_c(gr_char, ": ", !!sym(gr_char), sep=""), str_c(x, ": ", !!sym(x), sep =""), sep="  -  ")) %>%
-      pull(check)
-  }))
+      select(-n) %>%
+      ungroup()
+  }), fill=T)
 
-  if(length(zero) == 0) {
+  if(nrow(zero) == 0) {
     cat("No positivity violations detected")
   }
-  if(length(zero) > 0) {
-    cat(paste0(c("Positivity violations:", zero), sep="\n"))
-    return(cat(" "))
+  if(nrow(zero) > 0) {
+    cat("Positivity violations detected in the following combinations:\n")
+    print(as_tibble(zero), n=300)
   }
 }
+
+

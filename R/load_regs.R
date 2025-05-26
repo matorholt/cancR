@@ -30,7 +30,7 @@ load_regs <- function(regs = c("lpr", "pop", "cancer", "lmdb", "opr"),
   regs <- match.arg(regs, c("lpr", "pop", "cancer", "lmdb", "opr", "pato"), several.ok = T)
 
   if(is.null(n) & is.null(id_filter) & missing(keep) & missing(pattern)) {
-  user_input <- readline(cat("All filters are NULL. Are you sure you want to run this? (yes/no)"))
+  user_input <- readline(cat("Loading complete registers. Are you sure you want to run this? (yes/no)"))
   if(user_input != "yes")
     return(cat("Load_regs cancelled"))
     }

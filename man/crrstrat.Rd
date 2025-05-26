@@ -18,7 +18,8 @@ crrstrat(
   form,
   horizon = 120,
   timepoints = seq(0, horizon, 6),
-  printres = c(seq(0, 60, 12), horizon)
+  printres = c(seq(0, 60, 12), horizon),
+  cores = 4
 )
 }
 \arguments{
@@ -53,6 +54,8 @@ custom: The right-hand side of the formula can be customized as a character stri
 
 \item{printres}{Defines which time point esimates should be reported.}
 
+\item{cores}{Number of cores for parallel processing. Default = 4.}
+
 \item{t2}{Time-horizon (maximum time point to estimate). Defaults to 120 (10 years).}
 }
 \value{
@@ -77,9 +80,4 @@ The function uses stratified cause-specific Cox regression and G-computation to 
 timepoint taking competing risks into account. The function also provides pointwise risk differences and ratios and prepares
 the subsequent plotting of the cumulative incidence curves.
 The function is a wrapper of the ate-function from riskRegression by T. Gerds et al.
-}
-\examples{
-# n <- 300
-
-
 }

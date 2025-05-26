@@ -6,13 +6,13 @@
 \usage{
 td_match(
   data,
-  tdframe,
+  td_frame,
   index,
   case,
   fu,
-  tddate,
-  cat,
-  dat,
+  td_date,
+  fixed_vars,
+  td_vars,
   exclude,
   n_controls = 4,
   seed = 1,
@@ -23,7 +23,7 @@ td_match(
 \arguments{
 \item{data}{Dataset containing case/control indicator with index date for cases and fixed matching parameters}
 
-\item{tdframe}{Dataset with time dependent matching covariates. Should be multiple rows for each patient with updated values for each parameter.}
+\item{td_frame}{Dataset with time dependent matching covariates. Should be multiple rows for each patient with updated values for each parameter.}
 
 \item{index}{Index date for cases, NA for controls}
 
@@ -31,11 +31,11 @@ td_match(
 
 \item{fu}{End of follow up as date}
 
-\item{tddate}{Name of the date column in the time dependent matching covariate dataset}
+\item{td_date}{Name of the date column in the time dependent matching covariate dataset}
 
-\item{cat}{Vector of fixed matching parameters}
+\item{fixed_vars}{Vector of fixed matching parameters}
 
-\item{dat}{Vector of time dependent matching parameters}
+\item{td_vars}{Vector of time dependent matching parameters}
 
 \item{exclude}{Vector of parameters that are not allowed to occur before index}
 

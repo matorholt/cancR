@@ -26,6 +26,7 @@
 #' @param timepoints Defines timepoints of interest at which estimates should be estimated. Defaults to 6 month intervals
 #' @param t2 Time-horizon (maximum time point to estimate). Defaults to 120 (10 years).
 #' @param printres Defines which time point esimates should be reported.
+#' @param cores Number of cores for parallel processing. Default = 4.
 #'
 #' @return
 #' Median_surv: Median survival time \cr
@@ -46,15 +47,18 @@
 #'
 #' @export
 #'
-#' @examples
-#' # n <- 300
+#'
+#'
+# n <- 300
 # set.seed(1)
 # df <- riskRegression::sampleData(n, outcome="survival")
 # df$time <- round(df$time,1)*12
 # df$X1 <- factor(rbinom(n, prob = c(0.3,0.4) , size = 2), labels = paste0("T",0:2))
+# df$set <- as.factor(rep(seq(1,10),each=30))
 #
 # crrstrat(df, time, event, X2, type = "uni", surv=T)
 # crrstrat(df, time, event, X1, type = "uni", surv=T, multi=T)
+# crrstrat(df, time, event, X2, type = "matching", surv=T)
 #
 # n <- 300
 # set.seed(1)
@@ -65,8 +69,6 @@
 # crrstrat(df, time, event, X2, type = "uni", surv=F)
 # crrstrat(df, time, event, X1, type = "uni", surv=F, multi=T)
 
-#'
-#'
 crrstrat <- function(data,
                      timevar,
                      event,
@@ -80,7 +82,16 @@ crrstrat <- function(data,
                      form,
                      horizon=120,
                      timepoints = seq(0,horizon,6),
-                     printres = c(seq(0,60,12),horizon)){
+                     printres = c(seq(0,60,12),horizon),
+                     cores = 4){
+
+  cl <- makeCluster(cores)
+  clusterEvalQ(cl, {
+    library(tidyverse)
+    library(riskRegression)
+    library(prodlim)
+    library(cancR)
+  })
 
   data2 <- data %>%rename(time := {{timevar}},
                           status := {{event}},
@@ -123,10 +134,6 @@ crrstrat <- function(data,
   form_shr <- as.formula(paste(c(lhs_s, rhshr), collapse = ""))
 
 
-
-
-
-
   if(surv){
     #Prodlimtab
     prod <- prodlim(Hist(time, status)~stratum, data=data2)
@@ -142,11 +149,12 @@ crrstrat <- function(data,
         slice(1,3,5,8)
     }
 
+
     hr <- coxph(form_shr, data=data2, x=TRUE, y=TRUE)
     cr <- coxph(form_s, data=data2, x=TRUE, y=TRUE)
     cr$call$formula <- form_s
-    CRest <- ate(cr, treatment = "stratum", data=data2, times = timepoints)
-    CRplot <- ate(cr, treatment = "stratum", data=data2, times = unique(c(0,unlist(unique(data2 %>%filter(status %in%1)%>%select(time)%>%arrange(time))),60,horizon)))
+    CRest <- ate(cr, treatment = "stratum", data=data2, times = timepoints, cl=cl)
+    CRplot <- ate(cr, treatment = "stratum", data=data2, times = unique(c(0,unlist(unique(data2 %>%filter(status %in%1)%>%select(time)%>%arrange(time))),60,horizon)), cl=cl)
     est <- as.data.frame(summary(CRest, short=T, type = "meanRisk")$meanRisk)
     if(survscale == "OS") {
       est <- est %>% mutate(across(c(estimate, lower, upper), ~1 - .)) %>%
@@ -182,7 +190,7 @@ crrstrat <- function(data,
     pc <- survminer::ggcoxzph(c)
     diaglist <- list(c,pc)
     names(diaglist)<- c("Cox_tests", "Cox_plots")
-  }
+   }
 
   else {
     #Prodlimtab
@@ -202,8 +210,8 @@ crrstrat <- function(data,
     hr <- CSC(form_hhr, data = data2)
     cr <- CSC(as.formula(form_h), data = data2)
     cr$call$formula <- form_h
-    CRest <- ate(cr, treatment = "stratum", data=data2, times = timepoints)
-    CRplot <- ate(cr, treatment = "stratum", data=data2, times = unique(c(0,unlist(unique(data2 %>%filter(status %in%1)%>%select(time)%>%arrange(time))),60,horizon)))
+    CRest <- ate(cr, treatment = "stratum", data=data2, times = timepoints, cl=cl)
+    CRplot <- ate(cr, treatment = "stratum", data=data2, times = unique(c(0,unlist(unique(data2 %>%filter(status %in%1)%>%select(time)%>%arrange(time))),60,horizon)), cl=cl)
     est <- as.data.frame(summary(CRest, short=T, type = "meanRisk")$meanRisk)%>%
       rename({{group}}:= treatment, est=estimate)%>%
       select(time:upper)%>%
@@ -382,6 +390,9 @@ crrstrat <- function(data,
       rownames(condi)<- NULL
       return(condi)
     }))
+
+
+
   }
 
   if(quantiles) {
@@ -392,8 +403,9 @@ crrstrat <- function(data,
     list <- list(tab, plot, hres, cr, diaglist, est %>%filter(time %in%printres), rd %>%filter(time %in%printres), rr %>%filter(time %in%printres), prop, conditional, surv)
     names(list)<- c("Life_table", "Plot_data", "HR", "Models", "diag", "Risks", "Risk_differences", "Risk_ratios", "Event_proportions", "Conditional", "Surv")
   }
+  stopCluster(cl)
   class(list)<- "CRlist"
   return(list)
-}
 
+}
 
