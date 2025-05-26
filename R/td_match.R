@@ -23,7 +23,6 @@
 #'
 #'
 #'
-
 # library(cancR)
 # library(foreach)
 # library(doParallel)
@@ -31,7 +30,7 @@
 #
 #
 #
-# no = 80000
+# no = 40000
 # cno= 0.0025*no
 #
 #
@@ -193,7 +192,7 @@ td_match <- function(data, td_frame, index, case, fu, td_date, fixed_vars, td_va
 
 
     m <-
-      control_list[[i]][,set:=first(set)][case==0 & !(pnr %in% idlist), env=list(case=substitute(case),
+      control_list[[i]][,set:=first(set)][case==0 & pnr %nin% idlist, env=list(case=substitute(case),
                                                                        pnr=substitute(pnr))][sample(.N, pmin(.N, n_controls))]
 
     idlist <- c(idlist, m[, pnr, env=list(pnr = substitute(pnr))])
@@ -212,4 +211,6 @@ td_match <- function(data, td_frame, index, case, fu, td_date, fixed_vars, td_va
   return(as.data.frame(bind_rows(cases, rbindlist(matches))[order(set)][, c("index") := nafill(index, "locf"), env=list(index=substitute(index))][, c(exclude_c, td_date_c, index_c) := NULL]) %>%
            select({{pnr}}, case, set, index, everything()))
 
+
 }
+
