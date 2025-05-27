@@ -85,6 +85,8 @@ crrstrat <- function(data,
                      printres = c(seq(0,60,12),horizon),
                      cores = 4){
 
+  type <- match.arg(type, c("uni", "age-sex", "matching", "matching2", "select", "custom"))
+
   cl <- parallel::makeCluster(cores)
   parallel::clusterEvalQ(cl, {
     library(tidyverse)
@@ -113,6 +115,10 @@ crrstrat <- function(data,
   }
   if(type %in%"matching"){
     rhs <- "strata(stratum) + strata(set)"
+    rhshr <- "stratum + strata(set)"
+  }
+  if(type %in%"matching2"){
+    rhs <- "stratum + strata(set)"
     rhshr <- "stratum + strata(set)"
   }
   if(type %in%"select"){

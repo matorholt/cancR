@@ -39,7 +39,7 @@
 #
 # mod <- crrstrat(cdf, time, event, X2, type = "uni", surv=F)
 #
-#ClusterCI
+# #ClusterCI
 # set.seed(1)
 # n=1000
 # df <- riskRegression::sampleData(n) %>%
@@ -51,9 +51,15 @@
 #   as.data.frame()
 # (t <- clusterci(df, time, event, X1, vars = c(X2, X3, X6), cluster = id, time = 90, breaks = 10))
 #
+# #Pstrat
+# pmod <- pstrat(cdf, time, event, X2)
+#
 #
 # crrplot(mod, outcome = "Test", printres = "estrd")
+#
 # crrplot(t, fu = 90, breaks = 10, time_unit = "days", outcome = "Explantation", labgrp = c("Subpectoral", "Prepectoral"), printres = "estrd")
+#
+# crrplot(pmod, outcome = "Test")
 
 crrplot <- function(list,
                     y=100,
