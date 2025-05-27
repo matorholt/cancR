@@ -205,8 +205,6 @@ td_match <- function(data, td_frame, index, case, fu, td_date, fixed_vars, td_va
   base::cat(paste0("Total runtime: \n"))
   print(Sys.time() - start)
 
-
-  close(pb)
   stopCluster(cluster)
   return(as.data.frame(bind_rows(cases, rbindlist(matches))[order(set)][, c("index") := nafill(index, "locf"), env=list(index=substitute(index))][, c(exclude_c, td_date_c, index_c) := NULL]) %>%
            select({{pnr}}, case, set, index, everything()))
