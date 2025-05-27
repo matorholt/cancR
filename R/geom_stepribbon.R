@@ -26,8 +26,8 @@ geom_stepribbon <- function(
 
 }
 
-GeomStepribbon <- ggproto(
-  "GeomStepribbon", GeomRibbon,
+GeomStepribbon <- ggplot2::ggproto(
+  "GeomStepribbon", ggplot2::GeomRibbon,
 
   extra_params = c("na.rm"),
 

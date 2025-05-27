@@ -107,7 +107,7 @@ td_match <- function(data, td_frame, index, case, fu, td_date, fixed_vars, td_va
   start <- Sys.time()
   base::cat(paste0("\nInitializing matching algorithm: ", lubridate::round_date(Sys.time(), "second"), "\n"))
 
-  cluster <- makeCluster(cores)
+  cluster <- parallel::makeCluster(cores)
   registerDoSNOW(cluster)
 
   pnr_c <- deparse(substitute(pnr))
@@ -195,7 +195,7 @@ td_match <- function(data, td_frame, index, case, fu, td_date, fixed_vars, td_va
       control_list[[i]][,set:=first(set)][case==0 & pnr %nin% idlist, env=list(case=substitute(case),
                                                                        pnr=substitute(pnr))][sample(.N, pmin(.N, n_controls))]
 
-    idlist <- c(idlist, m[, pnr, env=list(pnr = substitute(pnr))])
+    idlist <- c(idlist, m[, c(pnr), env=list(pnr = substitute(pnr))])
 
     matches[[i]] <- m
 

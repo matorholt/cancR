@@ -76,7 +76,7 @@ basetab <- function(data,
                        numeric.test=test_stats[1], cat.test=test_stats[2],
                        numeric.stats=numeric,
                        cat.stats=categorical,
-                       stats.labels=list(median='Median', q1q3='Q1, Q3', iqr = "IQR", mean = "Mean", sd="SD", range = "Range", Nmiss = "Missing")
+                       stats.labels=list(median="Median", q1q3="Q1, Q3", iqr = "IQR", mean = "Mean", sd="SD", range = "Range", Nmiss = "Missing")
                        )
 
   form <- paste0(substitute(group), " ~ ", paste0(vars_c, collapse="+"))

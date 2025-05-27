@@ -85,12 +85,12 @@ crrstrat <- function(data,
                      printres = c(seq(0,60,12),horizon),
                      cores = 4){
 
-  cl <- makeCluster(cores)
-  clusterEvalQ(cl, {
+  cl <- parallel::makeCluster(cores)
+  parallel::clusterEvalQ(cl, {
     library(tidyverse)
     library(riskRegression)
     library(prodlim)
-    library(cancR)
+    library(data.table)
   })
 
   data2 <- data %>%rename(time := {{timevar}},

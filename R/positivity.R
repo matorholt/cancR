@@ -49,7 +49,7 @@ positivity <- function(data, treatment, outcome, vars, levels=1, quantiles=0.1, 
   out_c <- data %>% select({{outcome}}) %>% names()
 
   if(levels > length(c(vars_c))) {
-    return(cat(paste0("ERROR: Levels exceeding number of variables. Level can maximally be: ", length(c(vars_c)))))
+    return(cat(paste0("ERROR: Levels exceeding number of variables. Levels can maximally be: ", length(c(vars_c)))))
   }
 
   na_check <-
