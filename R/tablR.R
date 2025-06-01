@@ -1,4 +1,4 @@
-#' basetab
+#' tablR
 #'
 #' @description
 #' Wrapper for the tableby function in the Arsenal package
@@ -29,21 +29,23 @@
 # df$time <- round(df$time,1)*12
 # df$X1 <- factor(rbinom(n, prob = c(0.3,0.4) , size = 2), labels = paste0("T",0:2))
 # df$set <- as.factor(rep(seq(1,10),each=30))
+# df$age <- sample(c("80-90", "10-20", "110-120", "0-40"), n, replace=TRUE)
 #
-
+# df <- as.data.frame(df)
+#
 # basetab(df,
 #         group=X2,
-#         vars=c(X1,X3,X4,X6,X7),
+#         vars=c(X1,X3,X4,X6,X7, age),
 #         labels = c("X1" = "Treatment",
 #                    "X3" = "Sex"),
 #         total = T,
 #         numeric = c("median", "q1q3", "range"),
 #         test = T,
-#         show_na=T,
-#         filename = "Table 1")
+#         show_na=T)
+# #         #filename = "Table 1")
 
 
-basetab <- function(data,
+tablR <- function(data,
                     group,
                     vars,
                     test=FALSE,
@@ -53,7 +55,8 @@ basetab <- function(data,
                     labels= NULL,
                     test_stats = c("kwt", "chisq"),
                     show_na = FALSE,
-                    filename = NULL) {
+                    filename = NULL,
+                    sort_numeric = TRUE) {
 
   numeric <- match.arg(numeric, c("median", "q1q3", "iqr", "range", "mean", "sd", "min", "max"), several.ok = T)
   direction <- match.arg(direction, c("colwise", "rowwise"))
@@ -71,6 +74,18 @@ basetab <- function(data,
   }
 
   vars_c <- data %>% select({{vars}}) %>% names()
+  data <- data %>% mutate({{group}} := fct_rev({{group}}))
+
+  if(sort_numeric) {
+  for(v in vars_c) {
+
+    if(any(str_detect(data %>% pull(v), "\\d+")) & class(data %>% pull(v)) != "numeric") {
+      data <- data %>% factR(!!sym(v), levels = c(str_sort(unique(data %>% pull(!!sym(v))), numeric = T)))
+    }
+
+  }
+  }
+
 
   c <- tableby.control(test=test, total=total,
                        numeric.test=test_stats[1], cat.test=test_stats[2],
@@ -84,8 +99,14 @@ basetab <- function(data,
   table <- tableby(as.formula(form), data=data, control=c)
 
   if(!is.null(filename)) {
+
+    if(!dir.exists(paste0(getwd(), "/plots"))) {
+      dir.create(paste0(getwd(), "/plots"))
+    }
+
+
   write2word(table,
-             paste0(getwd(), "/", filename, ".docx"),
+             paste0(getwd(), "/plots", filename, ".docx"),
              quiet = TRUE,
              labelTranslations = labels)
   }
@@ -96,5 +117,3 @@ basetab <- function(data,
           labelTranslations = labels)
 
 }
-
-
