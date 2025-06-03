@@ -10,7 +10,7 @@ factR(
   reference = list(),
   levels = list(),
   labels = list(),
-  lab_to_lev = TRUE
+  lab_to_lev = FALSE
 )
 }
 \arguments{

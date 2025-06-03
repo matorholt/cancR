@@ -12,7 +12,8 @@ tablR(
   total = FALSE,
   numeric = c("median", "q1q3", "range"),
   direction = "colwise",
-  labels = NULL,
+  labels = list(),
+  headings = NULL,
   test_stats = c("kwt", "chisq"),
   show_na = FALSE,
   filename = NULL,
@@ -34,7 +35,9 @@ tablR(
 
 \item{direction}{Direction for percentages (colwise or rowwise)}
 
-\item{labels}{Labels for the aggregate variables}
+\item{labels}{List specifying labels of the specific labels for each variable}
+
+\item{headings}{List specifying labels for variable names}
 
 \item{test_stats}{Vector of length 2 containing statistical tests that should be performed}
 

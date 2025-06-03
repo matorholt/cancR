@@ -52,16 +52,29 @@
 #
 # (tdf <-
 #     df %>%
-#     format_td(case_labs = c("No CLL", "CLL")))
-#
+#     formatR(case_labs = c("No CLL", "CLL"),
+#             seqlist = list("age" = c(0,70, seq(80,150, 10)),
+#                            "index" = seq(1980,2030,10)),
+#             names = list("index" = "Period")))
+
 
 
 formatR <- function(data,
-                      cat_vars = c(case, sex, cci, region, education, income, marital),
-                      num_vars = c(age, index),
-                      case_labs) {
+                    cat_vars = c(case, sex, cci, region, education, income, marital),
+                    num_vars = c(age, index),
+                    seqlist = list(),
+                    names = list(),
+                    case_labs) {
 
 
+
+  seqlist_default <- list("age" = seq(0,150,10),
+                          "index" = seq(1980,2030,5))
+  names_default <- list("age" = "age_group",
+                        "index" = "period")
+
+  seqlist <- modifyList(seqlist_default, seqlist)
+  names <- modifyList(names_default, names)
 
 
     data %>%
@@ -90,10 +103,8 @@ formatR <- function(data,
                                                        "divorced" = "Divorced"))) %>%
     mutate(age = round(as.numeric(index - birth)/365.25,1)) %>%
     cutR({{num_vars}},
-       seqlist = list("age" = seq(0,150,10),
-                     "index" = seq(1980,2030,5)),
-       names = list("age" = "age_group",
-                    "index" = "period")) %>%
-    mutate(across(c(age_group, period, {{cat_vars}}), ~ fct_drop(.)))
+       seqlist = seqlist,
+       names = names) %>%
+    mutate(across(c(unlist(names), {{cat_vars}}), ~ fct_drop(.)))
 
   }

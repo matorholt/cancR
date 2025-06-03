@@ -1,4 +1,4 @@
-#' Saver function to automatically save plots
+#' SavR
 #'
 #' @description
 #' Wrapper for ggsave with default settings and automatic saving of multiple formats
@@ -19,7 +19,7 @@
 #' @export
 #'
 
-saver <- function(plot,
+savR <- function(plot,
                   name,
                   width = 154,
                   height = 60,
@@ -28,10 +28,14 @@ saver <- function(plot,
                   dpi=1200,
                   device= NULL,
                   compression="lzw",
-                  formats = c("pdf", "svg", "tiff")) {
+                  formats = c("pdf", "svg", "tiff", "jpg")) {
 
   if(missing(name)) {
     name <- paste0(substitute(plot))
+  }
+
+  if(!dir.exists(paste0(getwd(), "/Plots"))) {
+    dir.create(paste0(getwd(), "/Plots"))
   }
 
   invisible(suppressWarnings(sapply(formats, function(x, plot, width, name, height, unit, scale, dpi, device, compression) {
@@ -39,7 +43,7 @@ saver <- function(plot,
     if("tiff" %in% x) {
       ggsave(filename=paste0(name, ".", x, collapse=""),
              plot=plot,
-             path="plots",
+             path="Plots",
              width = width,
              height = height,
              unit = unit,
@@ -51,10 +55,11 @@ saver <- function(plot,
 
     ggsave(filename=paste0(name, ".", x, collapse=""),
            plot=plot,
-           path="plots",
+           path="Plots",
            width = width,
            height = height,
            unit = unit,
+           dpi = dpi,
            scale = scale,
            device=device)
 

@@ -81,7 +81,7 @@
 # (tdf6 <-
 #     df %>%
 #     factR(vars = c(v1, v2,v3),
-#           labels = list("v3" = c("e" = "epsilon", "d" = "delta", "a" = "alfa", "b" = "beta", "c" = "charlie"))))
+#           labels = list("v3" = c("e" = "epsilon", "d" = "delta", "a" = "alfa", "b" = "beta", "c" = "charlie")), lab_to_lev=T))
 #
 # str(tdf6)
 
@@ -93,7 +93,7 @@
 # str(tdf7)
 
 
-factR <- function(data, vars, reference = list(), levels = list(), labels = list(), lab_to_lev = TRUE) {
+factR <- function(data, vars, reference = list(), levels = list(), labels = list(), lab_to_lev = FALSE) {
 
   vars_c <-
     data %>% select({{vars}}) %>% names()

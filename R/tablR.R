@@ -11,7 +11,8 @@
 #' @param total Whether a total column should be included (default = FALSE)
 #' @param numeric Selection of the type of stats for numerical variables (e.g. median, q1q3, range, mean, sd)
 #' @param direction Direction for percentages (colwise or rowwise)
-#' @param labels Labels for the aggregate variables
+#' @param labels List specifying labels of the specific labels for each variable
+#' @param headings List specifying labels for variable names
 #' @param test_stats Vector of length 2 containing statistical tests that should be performed
 #' @param show_na Whether NAs should be presented
 #' @param filename The filname of the exported word-table
@@ -33,11 +34,12 @@
 #
 # df <- as.data.frame(df)
 #
-# basetab(df,
+# tablR(df,
 #         group=X2,
 #         vars=c(X1,X3,X4,X6,X7, age),
-#         labels = c("X1" = "Treatment",
-#                    "X3" = "Sex"),
+#       labels = list("age" = c("0-40" = "<=40"),
+#                     "X1" = c("T2" = "T2-T3")),
+#       headings = list("Age" = "Age2"),
 #         total = T,
 #         numeric = c("median", "q1q3", "range"),
 #         test = T,
@@ -46,17 +48,18 @@
 
 
 tablR <- function(data,
-                    group,
-                    vars,
-                    test=FALSE,
-                    total=FALSE,
-                    numeric = c("median", "q1q3", "range"),
-                    direction="colwise",
-                    labels= NULL,
-                    test_stats = c("kwt", "chisq"),
-                    show_na = FALSE,
-                    filename = NULL,
-                    sort_numeric = TRUE) {
+                  group,
+                  vars,
+                  test=FALSE,
+                  total=FALSE,
+                  numeric = c("median", "q1q3", "range"),
+                  direction="colwise",
+                  labels= list(),
+                  headings = NULL,
+                  test_stats = c("kwt", "chisq"),
+                  show_na = FALSE,
+                  filename = NULL,
+                  sort_numeric = TRUE) {
 
   numeric <- match.arg(numeric, c("median", "q1q3", "iqr", "range", "mean", "sd", "min", "max"), several.ok = T)
   direction <- match.arg(direction, c("colwise", "rowwise"))
@@ -73,8 +76,19 @@ tablR <- function(data,
     categorical <- c("Nmiss", categorical)
   }
 
+
   vars_c <- data %>% select({{vars}}) %>% names()
+
   data <- data %>% mutate({{group}} := fct_rev({{group}}))
+
+  for(v in vars_c) {
+
+    if(!is.numeric(data %>% pull(v))) {
+      data <- data %>% factR(!!sym(v), labels = labels, lab_to_lev = F)
+    }
+
+  }
+
 
   if(sort_numeric) {
   for(v in vars_c) {
@@ -86,6 +100,8 @@ tablR <- function(data,
   }
   }
 
+  vars_c <- str_to_title(str_replace_all(vars_c, "_", " "))
+  data <- data %>% rename_with(function(x) {str_to_title(str_replace_all(x, "_", " "))}, c({{vars}}))
 
   c <- tableby.control(test=test, total=total,
                        numeric.test=test_stats[1], cat.test=test_stats[2],
@@ -100,20 +116,20 @@ tablR <- function(data,
 
   if(!is.null(filename)) {
 
-    if(!dir.exists(paste0(getwd(), "/plots"))) {
-      dir.create(paste0(getwd(), "/plots"))
+    if(!dir.exists(paste0(getwd(), "/Plots"))) {
+      dir.create(paste0(getwd(), "/Plots"))
     }
 
 
   write2word(table,
-             paste0(getwd(), "/plots", filename, ".docx"),
+             paste0(getwd(), "/Plots/", filename, ".docx"),
              quiet = TRUE,
-             labelTranslations = labels)
+             labelTranslations = headings)
   }
 
 
   summary(table,
           text=T,
-          labelTranslations = labels)
+          labelTranslations = headings)
 
 }

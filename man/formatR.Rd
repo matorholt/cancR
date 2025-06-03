@@ -8,6 +8,8 @@ formatR(
   data,
   cat_vars = c(case, sex, cci, region, education, income, marital),
   num_vars = c(age, index),
+  seqlist = list(),
+  names = list(),
   case_labs
 )
 }

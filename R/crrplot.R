@@ -193,6 +193,8 @@ crrplot <- function(list,
     p <- p + annotate("text", x=-(fu*0.03), y=seq(0,x,0.1), label = paste(seq(0,x*100,10), "%", sep=""), size = 6*tscale, hjust="right")
   } else if(y<=10) {
     p <- p + annotate("text", x=-(fu*0.03), y=seq(0,x,0.01), label = paste(seq(0,x*100,1), "%", sep=""), size = 6*tscale, hjust="right")
+  } else if(y <=1) {
+    p <- p + annotate("text", x=-(fu*0.03), y=seq(0,x,0.001), label = paste(seq(0,x*100,0.1), "%", sep=""), size = 6*tscale, hjust="right")
   } else {
     p <- p + annotate("text", x=-(fu*0.03), y=seq(0,x,0.05), label = paste(seq(0,x*100,5), "%", sep=""), size = 6*tscale, hjust="right")
   }

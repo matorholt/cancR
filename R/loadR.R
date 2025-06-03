@@ -1,4 +1,4 @@
-#' load_regs
+#' loadR
 #'
 #' @description
 #' Simple loading function of the most used registers including variable selection, regex filtering and id_list filtering.
@@ -17,7 +17,7 @@
 #'
 #'
 
-load_regs <- function(regs = c("lpr", "pop", "cancer", "lmdb", "opr"),
+loadR <- function(regs = c("lpr", "pop", "cancer", "lmdb", "opr"),
                       keep = NULL,
                       n = NULL,
                       id_filter = NULL,
@@ -32,7 +32,7 @@ load_regs <- function(regs = c("lpr", "pop", "cancer", "lmdb", "opr"),
   if(is.null(n) & is.null(id_filter) & missing(keep) & missing(pattern)) {
   user_input <- readline(cat("Loading complete registers. Are you sure you want to run this? (yes/no)"))
   if(user_input != "yes")
-    return(cat("Load_regs cancelled"))
+    return(cat("Loading cancelled"))
     }
 
   if(!is.null(keep) & class(keep) != "list") {
