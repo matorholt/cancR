@@ -21,9 +21,7 @@
 #' @export
 #'
 #'
-# library(cancR)
-# library(arsenal)
-#
+
 # n <- 300
 # set.seed(1)
 # df <- riskRegression::sampleData(n, outcome="survival")
@@ -54,7 +52,9 @@ tablR <- function(data,
                   total=FALSE,
                   numeric = c("median", "q1q3", "range"),
                   direction="colwise",
+                  levels = list(),
                   labels= list(),
+                  reference = list(),
                   headings = NULL,
                   test_stats = c("kwt", "chisq"),
                   show_na = FALSE,
@@ -84,7 +84,7 @@ tablR <- function(data,
   for(v in vars_c) {
 
     if(!is.numeric(data %>% pull(v))) {
-      data <- data %>% factR(!!sym(v), labels = labels, lab_to_lev = F)
+      data <- data %>% factR(!!sym(v), levels = levels, labels = labels, reference = reference, lab_to_lev = F)
     }
 
   }

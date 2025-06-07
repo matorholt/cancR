@@ -55,8 +55,8 @@
 #     formatR(case_labs = c("No CLL", "CLL"),
 #             seqlist = list("age" = c(0,70, seq(80,150, 10)),
 #                            "index" = seq(1980,2030,10)),
-#             names = list("index" = "Period")))
-
+#             names = list("index" = "Period",
+#                          "age" = "age_group")))
 
 
 formatR <- function(data,
@@ -105,6 +105,7 @@ formatR <- function(data,
     cutR({{num_vars}},
        seqlist = seqlist,
        names = names) %>%
-    mutate(across(c(unlist(names), {{cat_vars}}), ~ fct_drop(.)))
+    mutate(across(c(as.vector(unlist(names)), {{cat_vars}}), ~ fct_drop(.)))
+
 
   }

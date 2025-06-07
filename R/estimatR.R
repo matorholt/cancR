@@ -1,4 +1,4 @@
-#' Competing risk regression outcomes and plot-preparation
+#' estimatR
 #'
 #' @description
 #' The function uses stratified cause-specific Cox regression and G-computation to estimate the risk of event at a specific
@@ -56,9 +56,9 @@
 # df$X1 <- factor(rbinom(n, prob = c(0.3,0.4) , size = 2), labels = paste0("T",0:2))
 # df$set <- as.factor(rep(seq(1,10),each=30))
 #
-# crrstrat(df, time, event, X2, type = "uni", surv=T)
-# crrstrat(df, time, event, X1, type = "uni", surv=T, multi=T)
-# crrstrat(df, time, event, X2, type = "matching", surv=T)
+# estimatR(df, time, event, X2, type = "uni", surv=T)
+# estimatR(df, time, event, X1, type = "uni", surv=T, multi=T)
+# estimatR(df, time, event, X2, type = "matching", surv=T)
 #
 # n <- 300
 # set.seed(1)
@@ -66,10 +66,10 @@
 # df$time <- round(df$time,1)*12
 # df$X1 <- factor(rbinom(n, prob = c(0.3,0.4) , size = 2), labels = paste0("T",0:2))
 #
-# crrstrat(df, time, event, X2, type = "uni", surv=F)
-# crrstrat(df, time, event, X1, type = "uni", surv=F, multi=T)
+# estimatR(df, time, event, X2, type = "uni", surv=F)
+# estimatR(df, time, event, X1, type = "uni", surv=F, multi=T)
 
-crrstrat <- function(data,
+estimatR <- function(data,
                      timevar,
                      event,
                      group,
@@ -85,7 +85,7 @@ crrstrat <- function(data,
                      printres = c(seq(0,60,12),horizon),
                      cores = 4){
 
-  type <- match.arg(type, c("uni", "age-sex", "matching", "matching2", "select", "custom"))
+  type <- match.arg(type, c("uni", "age-sex", "select", "custom"))
 
   cl <- parallel::makeCluster(cores)
   parallel::clusterEvalQ(cl, {
@@ -112,14 +112,6 @@ crrstrat <- function(data,
   if(type %in%"age-sex"){
     rhs <- "strata(stratum) + age + sex"
     rhshr <- "stratum + age + sex"
-  }
-  if(type %in%"matching"){
-    rhs <- "strata(stratum) + strata(set)"
-    rhshr <- "stratum + strata(set)"
-  }
-  if(type %in%"matching2"){
-    rhs <- "stratum + strata(set)"
-    rhshr <- "stratum + strata(set)"
   }
   if(type %in%"select"){
     rhs <- paste(c("strata(stratum)", vars), collapse = " +")
@@ -410,7 +402,6 @@ crrstrat <- function(data,
     names(list)<- c("Life_table", "Plot_data", "HR", "Models", "diag", "Risks", "Risk_differences", "Risk_ratios", "Event_proportions", "Conditional", "Surv")
   }
   stopCluster(cl)
-  class(list)<- "CRlist"
   return(list)
 
 }

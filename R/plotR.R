@@ -1,4 +1,4 @@
-#' crrplot
+#' plotR
 #'
 #' @description
 #' Automatic plot of adjusted Kaplan-Meier and cumulative incidence curves
@@ -61,7 +61,7 @@
 #
 # crrplot(pmod, outcome = "Test")
 
-crrplot <- function(list,
+plotR <- function(list,
                     y=100,
                     col=c("#9B62B8", "#224B87", "#67A8DC", "#D66ACE"),
                     outcome = "",
@@ -80,12 +80,6 @@ crrplot <- function(list,
                     ndigits_est = 1,
                     ndigits_res = 1,
                     censur=F) {
-  if (!(class(list) %in% c("CRlist" , "Plist", "CLUSTERCI"))) {
-    stop(
-      "The input is not of class 'CRlist', 'Plist' or 'CLUSTERCI' created using the crrstrat/pstrat/clusterci functions - maybe ask MØ??"
-    )
-  }
-
 
 
   if (max(list$Life_table$time) < fu) {
