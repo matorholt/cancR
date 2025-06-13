@@ -1,4 +1,4 @@
-#' td_match
+#' matchR
 #'
 #' @description
 #' Function for time dependent exact matching
@@ -88,7 +88,7 @@
 #   pivot_wider(names_from=var, values_from = val) %>%
 #   fill(income, married, region, education, cci, .direction = "down")
 #
-# t1 <- td_match(data=pop,
+# t1 <- matchR(data=pop,
 #                case=case,
 #                pnr = id,
 #                fu=follow,
@@ -102,7 +102,7 @@
 #                seed=1)
 
 
-td_match <- function(data, td_frame, index, case, fu, td_date, fixed_vars, td_vars, exclude, n_controls=4, seed=1, cores=4, pnr=pnr) {
+matchR <- function(data, td_frame, index, case, fu, td_date, fixed_vars, td_vars, exclude, n_controls=4, seed=1, cores=4, pnr=pnr) {
 
   start <- Sys.time()
   base::cat(paste0("\nInitializing matching algorithm: ", lubridate::round_date(Sys.time(), "second"), "\n"))

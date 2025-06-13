@@ -1,4 +1,4 @@
-#' powershell
+#' powR
 #'
 #' @description
 #' Converter from Rscript to powershell format
@@ -13,7 +13,7 @@
 #' powershell('rscript')
 #'
 
-powershell <- function(text) {
+powR <- function(text) {
   if(str_detect(text, "\\^")) {warning("Caution: the text contains ^ which cannot be translated in powershell")}
   cat(str_replace_all(text, c("\\{" = "x{x",
                               "\\}" = "x}x",

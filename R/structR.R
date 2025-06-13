@@ -1,4 +1,4 @@
-#' Event structuring
+#' structR
 #'
 #' @description
 #' Converts event dates to status indicator and a time-to-event variable.
@@ -30,9 +30,9 @@
 #          other_date = c(1,2),
 #          mm_date = c(as.Date("1996-01-01"), as.Date(NA)))
 #
-# event_struct(df, index, fu, outcomes=c(hudc_date, mm_date), competing = exp_date, unit = "days", keep_dates = T)
+# structR(df, index, fu, outcomes=c(hudc_date, mm_date), competing = exp_date, unit = "days", keep_dates = T)
 
-event_struct <- function(data,
+structR <- function(data,
                          index,
                          fu,
                          outcomes,

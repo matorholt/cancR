@@ -1,4 +1,4 @@
-#' digifix
+#' numbR
 #'
 #' @description
 #' Organizes numeric vectors to uniform digit-formatting (e.g. showing zeros)
@@ -13,7 +13,7 @@
 #'
 #'
 
-digifix <- function(numbers, digits = 1, nsmall) {
+numbR <- function(numbers, digits = 1, nsmall) {
   if(missing(nsmall)) {
     nsmall <- digits
   }

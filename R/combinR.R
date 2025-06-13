@@ -1,4 +1,4 @@
-#' Combiner
+#' combinR
 #'
 #' @description
 #' All possible combinations of a single vector (ABC: ABC, ACB, BAC, BCA, CAB, CBA) or two separate vectors (AB, CD: ABCD, CDAB)
@@ -12,7 +12,7 @@
 #' @export
 #'
 #'
-combiner <- function(letters, letters2=NULL, list=F) {
+combinR <- function(letters, letters2=NULL, list=F) {
   #Convenience split if only one combination is provided
   if(length(letters) == 1 & is.null(letters2)) {
     letters <- unlist(stringr::str_split(letters, ""))

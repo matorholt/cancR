@@ -1,4 +1,4 @@
-#' Data summary
+#' summarisR
 #'
 #' @description
 #' Graphical overview of entire dataset
@@ -10,7 +10,7 @@
 #' @export
 #'
 #'
-data_summary <- function(data) {
+summarisR <- function(data) {
 
   plist <- lapply(colnames(data), data=data, function(data, var) {
 

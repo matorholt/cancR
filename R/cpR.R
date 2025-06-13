@@ -1,4 +1,4 @@
-#' CPRfix
+#' cpR
 #'
 #' @description
 #' Fixes CPR numbers with removed leading zeros. Works with piping
@@ -13,7 +13,7 @@
 #'
 
 
-cprfix <- function(data, cpr=cpr, extract=F) {
+cpR <- function(data, cpr=cpr, extract=F) {
 
   if(any(str_detect(data %>% pull({{cpr}}), "^\\d{9,10}$|^\\d{5,6}-?\\w{4}$", negate=T) |
      str_count(data %>% pull({{cpr}})) == 10 & str_sub(data %>% pull({{cpr}}), 1,2) %in% c("00", seq(32,99)) |

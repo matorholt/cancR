@@ -1,4 +1,4 @@
-#' Closest
+#' ClosR
 #'
 #' @description
 #' Pick the closest value from a range in vector.
@@ -17,7 +17,7 @@
 #'
 #'
 
-closest <- function(mdose, vec=NULL, str, split=T) {
+closR <- function(mdose, vec=NULL, str, split=T) {
   if(is.na(mdose)) {
     return(mdose)
   } else {

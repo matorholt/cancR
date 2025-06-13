@@ -1,89 +1,68 @@
 #' estimatR
 #'
 #' @description
-#' The function uses stratified cause-specific Cox regression and G-computation to estimate the risk of event at a specific
-#' timepoint taking competing risks into account. The function also provides pointwise risk differences and ratios and prepares
-#' the subsequent plotting of the cumulative incidence curves.
-#' The function is a wrapper of the ate-function from riskRegression by T. Gerds et al.
+#' Absolute risk estimation and comparison of two or more groups with a time-to-event outcome.
+#' Wrapper for the prodlim and ate-functions in riskRegression.
 #'
-#'
-#' @param data Input dataframe
-#' @param timevar Time-to-event column
-#' @param event Event indicator. In case of competing risk the structure should be censoring=0, event=1 and death=2. Otherwise
-#' 0/1 can be used in case of no competing risks.
-#' @param group Grouping variable, between which the contrasts are estimated
-#' @param surv If competing risks = FALSE, otherwise = TRUE.
-#' @param multi If more than 2 groups are assigned to the "group" argument.
-#' @param quantiles If median time to event should be returned.
-#' @param survscale Whether estimates should be presented as Overall survival or All-Cause Mortality
-#' @param type Assign covariates for adjustment. \cr
-#' uni: No adjustment other than the "group" variable \cr
-#' age-sex: Age and sex standardization \cr
-#' select: Uses "vars" to select variables that should be adjusted for. \cr
-#' custom: The right-hand side of the formula can be customized as a character string.
-#' @param vars Only applicable if "type" = "select".
-#' @param form Only applicable if "type" = "custom".
-#' @param timepoints Defines timepoints of interest at which estimates should be estimated. Defaults to 6 month intervals
-#' @param t2 Time-horizon (maximum time point to estimate). Defaults to 120 (10 years).
-#' @param printres Defines which time point esimates should be reported.
-#' @param cores Number of cores for parallel processing. Default = 4.
+#' @param data dataset
+#' @param timevar Time variable
+#' @param event Status indicator
+#' @param group Grouping variable
+#' @param quantiles Whether median time to event should be calculated (default = TRUE)
+#' @param survscale Whether overall survial should be estimated as survival or all-cause mortality (1-survival)
+#' @param type Model specification, Can be univariate ("uni"), Age- and sex standardized ("age-sex"), Multivariate with variable selection ("select"). In this case vars should be a vector of the covariates. "custom" allows for free modelling where the form-argument contains the formula.
+#' @param vars Only applicable when "select" is chosen as type. The variables are added to the model as an additive model
+#' @param form Only applicable when "custom" is chosen as type. Free specification of the model as the right-hand side of the formula.
+#' @param time Time horizon of interest. Defaults to 60 (e.g. 5-years)
+#' @param breaks Interim time points of interest. Defaults to 12 months (1-year gaps)
+#' @param cores Number of cores for parallel processing
 #'
 #' @return
-#' Median_surv: Median survival time \cr
-#' Life_table: Event table \cr
-#' Plot_data: Data for plotting CIF curves \cr
-#' HR: Hazard ratio between the groups \cr
-#' Models: Model objects (cause1 and cause2) \cr
+#' time_to_event: Median survival time \cr
+#' table: Event table \cr
+#' plot_data: Data for plotting CIF curves \cr
+#' hr: Hazard ratio between the groups \cr
+#' models: Model objects (cause1 and cause2) \cr
 #' diag: Diagnostics for assessing proportionality \cr
-#' Risks: Absolute risk estimates at the specified time points \cr
-#' Risk_differences: Absolute risk differences at the specified time points \cr
-#' Risk_ratios: Absolute risk ratios at the specified time points \cr
-#' Event_proportions: \cr
+#' risks: Absolute risk estimates at the specified time points \cr
+#' differences: Absolute risk difference at the specified time horizons \cr
+#' ratios: Absolute risk ratios at the the specified time horizon \cr
+#' proportions: \cr
 #' "Before" estimates the risk of event within a certain timepoint (e.g. x% of the events occurred within). \cr
 #' "After" estimates the risk of residual events between timepoint x and ten years. \cr
 #' "Window" estimates the percentage of events within six month windows (e.g. x% of the events occurred between t1 and t2) \cr
-#' Conditional: Conditional risk estimates \cr
-#' Surv: Indicator of the surv-argument
+#' conditional: Conditional risk estimates \cr
+#' info: information on arguments for extraction
+#'
 #'
 #' @export
 #'
 #'
-#'
-# n <- 300
-# set.seed(1)
-# df <- riskRegression::sampleData(n, outcome="survival")
-# df$time <- round(df$time,1)*12
-# df$X1 <- factor(rbinom(n, prob = c(0.3,0.4) , size = 2), labels = paste0("T",0:2))
-# df$set <- as.factor(rep(seq(1,10),each=30))
-#
-# estimatR(df, time, event, X2, type = "uni", surv=T)
-# estimatR(df, time, event, X1, type = "uni", surv=T, multi=T)
-# estimatR(df, time, event, X2, type = "matching", surv=T)
-#
-# n <- 300
-# set.seed(1)
-# df <- riskRegression::sampleData(n, outcome="competing.risks")
-# df$time <- round(df$time,1)*12
-# df$X1 <- factor(rbinom(n, prob = c(0.3,0.4) , size = 2), labels = paste0("T",0:2))
-#
-# estimatR(df, time, event, X2, type = "uni", surv=F)
-# estimatR(df, time, event, X1, type = "uni", surv=F, multi=T)
 
 estimatR <- function(data,
                      timevar,
                      event,
                      group,
-                     surv,
-                     multi=FALSE,
                      quantiles=T,
-                     survscale = "OS",
+                     survscale = "AM",
                      type,
                      vars,
                      form,
-                     horizon=120,
-                     timepoints = seq(0,horizon,6),
-                     printres = c(seq(0,60,12),horizon),
-                     cores = 4){
+                     time=120,
+                     breaks = 12,
+                     cores = pmin(detectCores(), 4)){
+
+  start <- Sys.time()
+  base::cat(paste0("\nInitializing estimatR: ", lubridate::round_date(Sys.time(), "second"), "\n"))
+
+  timevar <- rlang::enquo(timevar)
+  event <- rlang::enquo(event)
+  group <- rlang::enquo(group)
+  timevar_c <- rlang::as_name(timevar)
+  event_c <- rlang::as_name(event)
+  group_c <- rlang::as_name(group)
+  horizon <- time
+
 
   type <- match.arg(type, c("uni", "age-sex", "select", "custom"))
 
@@ -95,132 +74,92 @@ estimatR <- function(data,
     library(data.table)
   })
 
-  data2 <- data %>%rename(time := {{timevar}},
-                          status := {{event}},
-                          stratum := {{group}}) %>%
-    drop_na(stratum)%>%
-    mutate(stratum = as.factor(stratum))
+  dat <-
+    data %>% drop_na(!!group)%>%
+    mutate(!!group := as.factor(!!group))
 
-  if(length(unique(data2$status)) == 2 & is.factor(data2$status)) {
-    data2$status <- as.numeric(data2$status)-1
+  group_levels <- levels(dat[,group_c])
+
+  if(length(levels(dat[,event_c])) == 2) {
+    dat[,event_c] <- as.numeric(dat[,event_c]) - 1
   }
+
+  if(length(unique(dat[, event_c])) == 2) {
+    surv = TRUE
+  } else {
+    surv = FALSE
+  }
+
+  if(length(group_levels > 2)) {
+    multi = TRUE
+  } else {
+    multi = FALSE
+  }
+
 
   if(type %in%"uni"){
-    rhs <- "strata(stratum)"
-    rhshr <- "stratum"
+    rhs <- group_c
+
   }
   if(type %in%"age-sex"){
-    rhs <- "strata(stratum) + age + sex"
-    rhshr <- "stratum + age + sex"
+    rhs <- paste0(group_c, " + age + sex", collapse="")
   }
   if(type %in%"select"){
-    rhs <- paste(c("strata(stratum)", vars), collapse = " +")
-    rhshr <- paste(c("stratum", vars), collapse = " +")
-    data2 <- data2 %>% drop_na({{vars}})
+    rhs <- paste(c(group_c, vars), collapse = " + ")
+    data <- data %>% drop_na(!!!syms(vars))
   }
   if(type %in%"custom"){
-    rhs <- paste(c("strata(stratum)+", form), collapse = "")
-    rhshr <- paste(c("stratum +", form), collapse = "")
+    rhs <- paste(c(form), collapse = "")
   }
 
+  rhs_strat <- str_replace(rhs, group_c, paste0("strata(", group_c, ")"))
+
   #Formula generation
-  lhs_h <- paste(c("Hist(time, status) ~"), collapse = "")
-  lhs_s <- paste(c("Surv(time, status) ~"), collapse = "")
-  form_h <- as.formula(paste(c(lhs_h, rhs), collapse = ""))
-  form_hhr <- as.formula(paste(c(lhs_h, rhshr), collapse = ""))
-  form_s <- as.formula(paste(c(lhs_s, rhs), collapse = ""))
-  form_shr <- as.formula(paste(c(lhs_s, rhshr), collapse = ""))
+  form_h <- as.formula(paste(c(paste0("Hist(", timevar_c, ", ", event_c, ") ~", collapse = ""), rhs_strat), collapse = ""))
+  form_hhr <- as.formula(paste(c(paste0("Hist(", timevar_c, ", ", event_c, ") ~", collapse = ""), rhs), collapse = ""))
+  form_s <- as.formula(paste(c(paste0("Surv(", timevar_c, ", ", event_c, ") ~", collapse = ""), rhs_strat), collapse = ""))
+  form_shr <- as.formula(paste(c(paste0("Surv(", timevar_c, ", ", event_c, ") ~", collapse = ""), rhs), collapse = ""))
 
+  #Life-table
+  prod <- prodlim(as.formula(paste0("Hist(", timevar_c, ", ", event_c, ") ~", group_c, collapse = "")), data=dat)
+  tab <- summary(prod, times = seq(0,horizon,1), intervals = TRUE, cause=1) %>%
+    group_by(!!group) %>%
+    mutate(cumsum = cumsum(n.event)) %>%
+    ungroup() %>%
+    rename(time = time1) %>%
+    select(-time0, -n.lost, -contains("se.")) %>%
+    as.data.frame()
 
+  #Model specification and diagnostics
   if(surv){
-    #Prodlimtab
-    prod <- prodlim(Hist(time, status)~stratum, data=data2)
-    tab <- summary(prod, times = seq(0,horizon,1), intervals = TRUE)%>%group_by(stratum)%>%mutate(cumsum = cumsum(n.event))%>%ungroup() %>% rename(time = time1) %>%
-      select(stratum, time, n.risk, n.event, surv, lower, upper, cumsum)
-    if(quantiles) {
-      qs <- quantile(prod, as.numeric(unlist(tab %>%filter(time %in%horizon)%>%select(surv)))/2)
-      msurv <- data.frame(grp = qs$stratum,
-                          q = qs$q,
-                          time = qs$quantile,
-                          lwr = qs$lower,
-                          upr = qs$upper)%>%
-        slice(1,3,5,8)
-    }
 
+    hr <-
+      coxph(form_shr, data=dat, x=TRUE, y=TRUE)
 
-    hr <- coxph(form_shr, data=data2, x=TRUE, y=TRUE)
-    cr <- coxph(form_s, data=data2, x=TRUE, y=TRUE)
+    cr <-
+      coxph(form_s, data=dat, x=TRUE, y=TRUE)
     cr$call$formula <- form_s
-    CRest <- ate(cr, treatment = "stratum", data=data2, times = timepoints, cl=cl)
-    CRplot <- ate(cr, treatment = "stratum", data=data2, times = unique(c(0,unlist(unique(data2 %>%filter(status %in%1)%>%select(time)%>%arrange(time))),60,horizon)), cl=cl)
-    est <- as.data.frame(summary(CRest, short=T, type = "meanRisk")$meanRisk)
-    if(survscale == "OS") {
-      est <- est %>% mutate(across(c(estimate, lower, upper), ~1 - .)) %>%
-        rename(upr = lower,
-               lwr = upper) %>%
-        rename({{group}}:= treatment, est=estimate, upper = upr, lower = lwr)
-    } else {
-      est <- est %>%
-        rename({{group}}:= treatment, est=estimate)
-    }
-    est <- est %>%
-      select(time:se, lower, upper) %>%
-      mutate(across(c(est:upper), ~round(.,3)))
-    plot <- as.data.frame(summary(CRplot, short=TRUE, type = "meanRisk")$meanRisk)
-    if(survscale == "OS") {
-      plot <- plot %>% mutate(across(c(estimate, lower, upper), ~1 - .))%>%
-        rename(upr = lower,
-               lwr = upper) %>%
-        rename({{group}}:= treatment, est=estimate, upper = upr, lower = lwr)
-    } else {
-      plot <- plot %>%
-        rename({{group}}:= treatment, est=estimate)
-    }
-    plot <- plot %>%
-      select(time:se, lower, upper)
 
     hres <- data.frame(level = rownames(summary(hr)$coefficients),
                        hr =   summary(hr)$coefficients[,2],
-                       lwr = summary(hr)$conf.int[,3],
-                       upr = summary(hr)$conf.int[,4],
-                       pval_ex =   summary(hr)$coefficients[,5])
+                       lower = summary(hr)$conf.int[,3],
+                       upper = summary(hr)$conf.int[,4],
+                       pval_ex = summary(hr)$coefficients[,5])
     c <- cox.zph(hr)
     pc <- survminer::ggcoxzph(c)
     diaglist <- list(c,pc)
     names(diaglist)<- c("Cox_tests", "Cox_plots")
-   }
 
-  else {
-    #Prodlimtab
-    prod <- prodlim(Hist(time, status)~stratum, data=data2)
-    tab <- summary(prod, cause=1, times = seq(0,horizon,1), intervals = TRUE)%>%group_by(stratum)%>%mutate(cumsum = cumsum(n.event))%>%ungroup()%>% rename(time = time1) %>%
-      select(stratum, time, cause, n.risk, n.event, cuminc, lower, upper, cumsum)
-    if(quantiles) {
-      qs <- quantile(prod, as.numeric(unlist(tab %>%filter(time %in%horizon)%>%select(cuminc)))/2)
-      msurv <- data.frame(grp = qs$stratum,
-                          q = qs$q,
-                          time = qs$quantile,
-                          lwr = qs$lower,
-                          upr = qs$upper)%>%
-        slice(1,3,5,8)
-    }
+  } else {
 
-    hr <- CSC(form_hhr, data = data2)
-    cr <- CSC(as.formula(form_h), data = data2)
+    hr <- CSC(form_hhr, data = dat)
+    cr <- CSC(as.formula(form_h), data = dat)
     cr$call$formula <- form_h
-    CRest <- ate(cr, treatment = "stratum", data=data2, times = timepoints, cl=cl)
-    CRplot <- ate(cr, treatment = "stratum", data=data2, times = unique(c(0,unlist(unique(data2 %>%filter(status %in%1)%>%select(time)%>%arrange(time))),60,horizon)), cl=cl)
-    est <- as.data.frame(summary(CRest, short=T, type = "meanRisk")$meanRisk)%>%
-      rename({{group}}:= treatment, est=estimate)%>%
-      select(time:upper)%>%
-      mutate(across(c(est:upper), ~round(.,3)))
-    plot <- as.data.frame(summary(CRplot, short=TRUE, type = "meanRisk")$meanRisk)%>%
-      rename({{group}}:= treatment, est = estimate)%>%
-      select(time:upper)
+
     hres <- data.frame(level = rownames(summary(hr$models$`Cause 1`)$coefficients),
                        hr =   summary(hr$models$`Cause 1`)$coefficients[,2],
-                       lwr = summary(hr$models$`Cause 1`)$conf.int[,3],
-                       upr = summary(hr$models$`Cause 1`)$conf.int[,4],
+                       lower = summary(hr$models$`Cause 1`)$conf.int[,3],
+                       upper = summary(hr$models$`Cause 1`)$conf.int[,4],
                        pval_ex =   summary(hr$models$`Cause 1`)$coefficients[,5])
     c1 <- hr$models$`Cause 1`
     c2 <- hr$models$`Cause 2`
@@ -230,178 +169,168 @@ estimatR <- function(data,
     pct2 <- survminer::ggcoxzph(ct2)
     diaglist <- list(ct1,pct1,ct2,pct2)
     names(diaglist)<- c("Cause1_tests", "Cause1_plots", "Cause2_tests", "Cause")
+
   }
 
-  hres <- hres %>% filter(str_detect(level, "stratum")) %>% mutate(level = str_remove_all(level, "stratum"),
-                                                                   pval = pfun(pval_ex),
-                                                                   across(c(hr:pval_ex), ~ format(round(.,2), nsmall=1)),
-                                                                   print = paste0("HR = ", hr, " (95%CI ", lwr, "-", upr, "), ", pval)) %>%
+  CRest <-
+    invisible(ate(cr, treatment = group_c, data=dat, times = seq(0,horizon,breaks), cl=cl))
+
+  CRplot <-
+    invisible(ate(cr, treatment = group_c, data=dat, times = sort(unique(c(0,data[data[, event_c] == 1, timevar_c],horizon))), cl=cl))
+
+  est <-
+    as.data.frame(summary(CRest, short=T, type = "meanRisk")$meanRisk)
+
+  plot <-
+    as.data.frame(summary(CRplot, short=TRUE, type = "meanRisk")$meanRisk)
+
+
+  if(surv & survscale == "OS") {
+    est <- est %>% mutate(across(c(estimate, lower, upper), ~1 - .)) %>%
+      rename(upr = lower,
+             lwr = upper) %>%
+      rename(!!group := treatment, est=estimate, upper = upr, lower = lwr)
+
+    plot <- plot %>% mutate(across(c(estimate, lower, upper), ~1 - .))%>%
+      rename(upr = lower,
+             lwr = upper) %>%
+      rename(!!group := treatment, est=estimate, upper = upr, lower = lwr)
+
+  } else {
+    est <- est %>%
+      rename({{group}}:= treatment, est=estimate)
+
+    plot <- plot %>%
+      rename(!!group := treatment, est=estimate)
+  }
+  est <- est %>%
+    select(time:se, lower, upper) %>%
+    mutate(across(c(est:upper), ~round(.,3)))
+
+  plot <- plot %>%
+    select(time:se, lower, upper)
+
+
+  if(quantiles) {
+    qs <-
+      as.data.frame(quantile(prod, tab[tab[, "time"] == horizon, colnames(tab)[which(colnames(tab) %in% c("surv", "cuminc"))]]/2))
+    msurv <- tibble(!!group := qs[,group_c],
+                    q = qs$q,
+                    time = qs$quantile,
+                    lwr = qs$lower,
+                    upr = qs$upper) %>%
+      slice(1,3,5,8)
+  }
+
+  hres <- hres %>% filter(str_detect(level, group_c)) %>% mutate(level = str_remove_all(level, group_c),
+                                                                 p.value = pfun(pval_ex),
+                                                                 across(c(hr:upper), ~ as.numeric(format(round(.,2), nsmall=1)))) %>%
+    rename(!!group := level) %>%
     tibble::remove_rownames()
 
-  if(surv & multi){
-    rd <- as.data.frame(summary(CRest, short=T, type = "diffRisk")$diffRisk)
-    if(survscale == "OS") {
-      rd <- rd %>% mutate(across(c(estimate.A, estimate.B), ~1 - .))
-    }
-    rd <- rd %>%
-      rename(diff = estimate)%>%
-      select(time, A, B,diff:p.value)%>%
-      mutate(across(c(diff:upper), ~.*100),
-             across(c(diff:upper), ~round(.,1)),
-             p.value = sapply(p.value, pfun))
-    rr <- as.data.frame(summary(CRest, short=T, type = "ratioRisk")$ratioRisk)%>%
-      rename(ratio = estimate) %>%
-      select(time,A, B, ratio:p.value)%>%
-      mutate(across(c(ratio:upper), ~round(.,2)),
-             p.value = sapply(p.value, pfun))
-  }else if(surv){
-    rd <- as.data.frame(summary(CRest, short=T, type = "diffRisk")$diffRisk)
-    if(survscale == "OS") {
-      rd <- rd %>% mutate(across(c(estimate.A, estimate.B), ~1 - .))
-    }
-    rd <- rd %>%
-      rename(diff = estimate)%>%
-      select(time,diff:p.value)%>%
-      mutate(across(c(diff:upper), ~.*100),
-             across(c(diff:upper), ~round(.,1)),
-             p.value = sapply(p.value, pfun))
-    rr <- as.data.frame(summary(CRest, short=T, type = "ratioRisk")$ratioRisk)%>%
-      rename(ratio = estimate)%>%
-      select(time, ratio:p.value)%>%
-      mutate(p.value = sapply(p.value, pfun))
-  }else if(multi){
-    rd <- as.data.frame(summary(CRest, short=T, type = "diffRisk")$diffRisk)%>%
-      rename(diff = estimate)%>%
-      select(time, A, B, diff:p.value)%>%
-      mutate(across(c(diff:upper), ~.*100),
-             across(c(diff:upper), ~round(.,1)),
-             p.value = sapply(p.value, pfun))
-    rr <- as.data.frame(summary(CRest, short=T, type = "ratioRisk")$ratioRisk)%>%
-      rename(ratio = estimate) %>%
-      select(time,A, B, ratio:p.value)%>%
-      mutate(across(c(ratio:upper), ~round(.,2)),
-             p.value = sapply(p.value, pfun))
 
-  }else {
-    rd <- as.data.frame(summary(CRest, short=T, type = "diffRisk")$diffRisk)%>%
-      rename(diff = estimate)%>%
-      select(time, diff:p.value)%>%
-      mutate(across(c(diff:upper), ~.*100),
-             across(c(diff:upper), ~round(.,1)),
-             p.value = sapply(p.value, pfun))
-    rr <- as.data.frame(summary(CRest, short=T, type = "ratioRisk")$ratioRisk)%>%
-      rename(ratio = estimate)%>%
-      select(time, ratio:p.value)%>%
-      mutate(across(c(ratio:upper), ~round(.,2)),
-             p.value = sapply(p.value, pfun))
-  }
-  if(surv){
-    prop <- est %>%group_by({{group}})%>%
-      mutate(est = 1-est,
-             before = est / last(est)* 100,
-             after = 100-before,
-             window = before - lag(before),
-             window = ifelse(is.na(window), before, window),
-             residual = (last(est)- est),
-             rse = sqrt(last(se)&2 +se&2),
-             rescil = (pmax((residual - (1.96*rse)), 0)),
-             resciu = (pmin((residual +(1.96*rse)),100)),
-             across(c(residual, rescil, resciu), ~. * 100))%>%
-      select(time, {{group}}, before, after, window, residual, rescil, resciu)%>%
-      filter(time < horizon)
-  }else {
-    prop <- est %>%group_by({{group}})%>%
-      mutate(before = est / last(est)* 100,
-             after = 100-before,
-             window = before - lag(before),
-             window = ifelse(is.na(window), before, window),
-             residual = (last(est)- est),
-             rse = sqrt(last(se)&2 +se&2),
-             rescil = (pmax((residual - (1.96*rse)), 0)),
-             resciu = (pmin((residual +(1.96*rse)),100)),
-             across(c(residual, rescil, resciu), ~. * 100))%>%
-      select(time, {{group}}, before, after, window, residual, rescil, resciu)%>%
-      filter(time < horizon)
-  }
-  tab <- tab %>%rename({{group}}:= stratum)%>%ungroup()
-  if(surv){
-    conditional <- bind_rows(lapply(paste(unlist(unique(tab[substitute(group)]))), tab = tab, risk = est, function(x, tab, risk){
-      tab2 <- tab %>%filter({{group}}%in%x)
-      risk2 <- risk %>%filter({{group}}%in%x)
-      condi <- bind_rows(lapply(seq(6,horizon,6), tab = tab2, risk = risk2, t2=horizon, function(t1, t2, tab, risk){
-        cm <- tab2
-        ri <- risk2
-        cs <- ((ri$est[ri$time %in%t2])/ (ri$est[ri$time %in%t1]))
-        cs.sq <- cs&2
-        temp <-as.data.frame(cbind(cm$n.event, cm$time, cm$n.risk))
-        d <- temp$V1[temp$V2 >= t1 &
-                       temp$V2 <= t2 &
-                       temp$V1 > 0]
+  rd <-
+    as.data.frame(summary(CRest, short=T, type = "diffRisk")$diffRisk) %>%
+    filter(time == horizon) %>%
+    rename(diff = estimate) %>%
+    select(time, A, B,diff:p.value) %>%
+    mutate(across(c(diff:upper), ~.*100),
+           across(c(diff:upper), ~round(.,1)),
+           p.value = sapply(p.value, pfun))
 
-        r <- temp$V3[temp$V2 >= t1 &
-                       temp$V2 <= t2 &
-                       temp$V1 > 0]
-        dr <- d / (r * (r - d))
-        var.cs <- 1 / (log(cs)&2)* sum(dr)
-        ci <- cs&(exp(c(1, -1)* stats::qnorm(0.975)* sqrt(var.cs)))
-        ci.cs <- round(ci,3)
+  rr <- as.data.frame(summary(CRest, short=T, type = "ratioRisk")$ratioRisk) %>%
+    filter(time == horizon) %>%
+    rename(ratio = estimate) %>%
+    select(time,A, B, ratio:p.value)%>%
+    mutate(across(c(ratio:upper), ~round(.,2)),
+           p.value = sapply(p.value, pfun))
+
+  prop <- est %>%group_by(!!group)%>%
+    mutate(est = ifelse(rep(survscale == "OS", n()), 1-est, est),
+           before = est / last(est)* 100,
+           after = 100-before,
+           window = before - lag(before),
+           window = ifelse(is.na(window), before, window),
+           residual = (last(est)- est),
+           rse = sqrt(last(se)^2 +se^2),
+           rescil = (pmax((residual - (1.96*rse)), 0)),
+           resciu = (pmin((residual +(1.96*rse)),100)),
+           across(c(residual, rescil, resciu), ~. * 100))%>%
+    select(time, !!group, before, after, window, residual, rescil, resciu)%>%
+    filter(time < horizon)
+
+  conditional <- rbindlist(lapply(group_levels, function(x){
+    tab2 <- tab %>%filter(!!group %in% x)
+    risk2 <- est %>%filter(!!group %in% x)
+    condi <- rbindlist(lapply(seq(breaks,horizon,breaks), function(t1){
+
+      if(surv & survscale == "OS") {
+        cs <- ((risk2$est[risk2$time %in% horizon])/ (risk2$est[risk2$time %in%t1]))
+      } else {
+        cs <- ((1-risk2$est[risk2$time %in% horizon])/ (1-risk2$est[risk2$time %in% t1]))
+      }
+
+      cs.sq <- cs^2
+      temp <- tab2 %>% select(n.event, time, n.risk) %>% as.data.frame()
+      d <- temp$n.event[temp$time >= t1 &
+                          temp$time <= horizon &
+                          temp$n.event > 0]
+
+      r <- temp$n.risk[temp$time >= t1 &
+                         temp$time <= horizon &
+                         temp$n.event > 0]
+      dr <- d / (r * (r - d))
+      var.cs <- 1 / (log(cs)^2)* sum(dr)
+      ci.cs <- round(cs^(exp(c(1, -1)* stats::qnorm(0.975)* sqrt(var.cs))),3)
+      if(surv & survscale == "OS") {
         cond <- data.frame(est = round(cs,3),
                            upper = ci.cs[1],
                            lower = ci.cs[2])
-        return(cond)
-      })) %>% rbind(risk2[risk2$time %in% horizon,c("est","lower","upper")], .)%>%
-        mutate(grp = x,
-               time = seq(0,horizon,6))%>%
-        rename({{group}}:= grp)
-      rownames(condi)<- NULL
-      return(condi)
-    }))
-  } else {
-    conditional <- bind_rows(lapply(paste(unlist(unique(tab[substitute(group)]))), tab = tab, risk = est, function(x, tab, risk){
-      tab2 <- tab %>%filter({{group}}%in%x)
-      risk2 <- risk %>%filter({{group}}%in%x)
-      condi <- bind_rows(lapply(seq(6,horizon,6), tab = tab2, risk = risk2, t2=horizon, function(t1, t2, tab, risk){
-        cm <- tab2
-        ri <- risk2
-        cs <- ((1-ri$est[ri$time %in%t2])/ (1-ri$est[ri$time %in%t1]))
-        cs.sq <- cs&2
-        temp <-as.data.frame(cbind(cm$n.event, cm$time, cm$n.risk))
-        d <- temp$V1[temp$V2 >= t1 &
-                       temp$V2 <= t2 &
-                       temp$V1 > 0]
-
-        r <- temp$V3[temp$V2 >= t1 &
-                       temp$V2 <= t2 &
-                       temp$V1 > 0]
-        dr <- d / (r * (r - d))
-        var.cs <- 1 / (log(cs)&2)* sum(dr)
-        ci <- cs&(exp(c(1, -1)* stats::qnorm(0.975)* sqrt(var.cs)))
-        ci.cs <- round(ci,3)
+      } else {
         cond <- data.frame(est = round(1-cs,3),
                            upper = 1-ci.cs[1],
                            lower = 1-ci.cs[2])
-        return(cond)
-      })) %>% rbind(risk2[risk2$time %in% horizon,c("est","lower","upper")], .)%>%
-        mutate(grp = x,
-               time = seq(0,horizon,6))%>%
-        rename({{group}}:= grp)
-      rownames(condi)<- NULL
-      return(condi)
-    }))
 
+      }
+      return(cond)
+    })) %>% rbind(risk2[risk2$time %in% horizon ,c("est","lower","upper")], .)%>%
+      mutate(grp = x,
+             time = seq(0,horizon,breaks))%>%
+      rename(!!group := grp) %>%
+      select(time, !!group, est, lower, upper) %>%
+      tibble::remove_rownames()
 
+    return(condi)
+  }))
 
-  }
+  list <- list("table" = tab,
+               "plot_data" = plot,
+               "hr" =  hres,
+               "models" =  cr,
+               "diag" = diaglist,
+               "risks" = est,
+               "difference" = rd,
+               "ratio" = rr,
+               "event_proportions" = prop,
+               "conditional" = conditional,
+               "info" = list("timevar" = timevar_c,
+                             "event" = event_c,
+                             "group" = group_c,
+                             "group_levels" = group_levels,
+                             "surv" = surv,
+                             "survscale" = survscale,
+                             "time" = horizon,
+                             "breaks" = breaks,
+                             "multi" = multi))
 
   if(quantiles) {
-    list <- list(msurv, tab, plot, hres, cr, diaglist, est %>%filter(time %in%printres), rd %>%filter(time %in%printres), rr %>%filter(time %in%printres), prop, conditional, surv)
-    names(list)<- c("Median_surv", "Life_table", "Plot_data", "HR", "Models", "diag", "Risks", "Risk_differences", "Risk_ratios", "Event_proportions", "Conditional", "Surv")
+    list <- append(list, list("time_to_event" = msurv))
   }
-  else {
-    list <- list(tab, plot, hres, cr, diaglist, est %>%filter(time %in%printres), rd %>%filter(time %in%printres), rr %>%filter(time %in%printres), prop, conditional, surv)
-    names(list)<- c("Life_table", "Plot_data", "HR", "Models", "diag", "Risks", "Risk_differences", "Risk_ratios", "Event_proportions", "Conditional", "Surv")
-  }
+
+
+
   stopCluster(cl)
+  class(list)<- "estimatR"
   return(list)
 
 }

@@ -1,4 +1,4 @@
-#' var_search
+#' searchR
 #'
 #' @description
 #' Function to obtain covariates or outcomes from the most common registers
@@ -27,7 +27,7 @@
 #
 # df_index <- df %>% select(pnr, indexdate) %>% rename(index = indexdate) %>% distinct(pnr, .keep_all=T)
 #
-# (t <- var_search(df,
+# (t <- searchR(df,
 #                  pattern_list= list("KOL" = "DQ",
 #                                     "Astma" = c("DB", "DQ"),
 #                                     "DM" = "DD"),
@@ -37,7 +37,7 @@
 #                  slice = "first"))
 
 
-var_search <- function(data,
+searchR <- function(data,
                        pattern_list,
                        register,
                        index_df,

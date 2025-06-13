@@ -9,75 +9,59 @@ estimatR(
   timevar,
   event,
   group,
-  surv,
-  multi = FALSE,
   quantiles = T,
-  survscale = "OS",
+  survscale = "AM",
   type,
   vars,
   form,
-  horizon = 120,
-  timepoints = seq(0, horizon, 6),
-  printres = c(seq(0, 60, 12), horizon),
-  cores = 4
+  time = 120,
+  breaks = 12,
+  cores = pmin(detectCores(), 4)
 )
 }
 \arguments{
-\item{data}{Input dataframe}
+\item{data}{dataset}
 
-\item{timevar}{Time-to-event column}
+\item{timevar}{Time variable}
 
-\item{event}{Event indicator. In case of competing risk the structure should be censoring=0, event=1 and death=2. Otherwise
-0/1 can be used in case of no competing risks.}
+\item{event}{Status indicator}
 
-\item{group}{Grouping variable, between which the contrasts are estimated}
+\item{group}{Grouping variable}
 
-\item{surv}{If competing risks = FALSE, otherwise = TRUE.}
+\item{quantiles}{Whether median time to event should be calculated (default = TRUE)}
 
-\item{multi}{If more than 2 groups are assigned to the "group" argument.}
+\item{survscale}{Whether overall survial should be estimated as survival or all-cause mortality (1-survival)}
 
-\item{quantiles}{If median time to event should be returned.}
+\item{type}{Model specification, Can be univariate ("uni"), Age- and sex standardized ("age-sex"), Multivariate with variable selection ("select"). In this case vars should be a vector of the covariates. "custom" allows for free modelling where the form-argument contains the formula.}
 
-\item{survscale}{Whether estimates should be presented as Overall survival or All-Cause Mortality}
+\item{vars}{Only applicable when "select" is chosen as type. The variables are added to the model as an additive model}
 
-\item{type}{Assign covariates for adjustment. \cr
-uni: No adjustment other than the "group" variable \cr
-age-sex: Age and sex standardization \cr
-select: Uses "vars" to select variables that should be adjusted for. \cr
-custom: The right-hand side of the formula can be customized as a character string.}
+\item{form}{Only applicable when "custom" is chosen as type. Free specification of the model as the right-hand side of the formula.}
 
-\item{vars}{Only applicable if "type" = "select".}
+\item{time}{Time horizon of interest. Defaults to 60 (e.g. 5-years)}
 
-\item{form}{Only applicable if "type" = "custom".}
+\item{breaks}{Interim time points of interest. Defaults to 12 months (1-year gaps)}
 
-\item{timepoints}{Defines timepoints of interest at which estimates should be estimated. Defaults to 6 month intervals}
-
-\item{printres}{Defines which time point esimates should be reported.}
-
-\item{cores}{Number of cores for parallel processing. Default = 4.}
-
-\item{t2}{Time-horizon (maximum time point to estimate). Defaults to 120 (10 years).}
+\item{cores}{Number of cores for parallel processing}
 }
 \value{
-Median_surv: Median survival time \cr
-Life_table: Event table \cr
-Plot_data: Data for plotting CIF curves \cr
-HR: Hazard ratio between the groups \cr
-Models: Model objects (cause1 and cause2) \cr
+time_to_event: Median survival time \cr
+table: Event table \cr
+plot_data: Data for plotting CIF curves \cr
+hr: Hazard ratio between the groups \cr
+models: Model objects (cause1 and cause2) \cr
 diag: Diagnostics for assessing proportionality \cr
-Risks: Absolute risk estimates at the specified time points \cr
-Risk_differences: Absolute risk differences at the specified time points \cr
-Risk_ratios: Absolute risk ratios at the specified time points \cr
-Event_proportions: \cr
+risks: Absolute risk estimates at the specified time points \cr
+differences: Absolute risk difference at the specified time horizons \cr
+ratios: Absolute risk ratios at the the specified time horizon \cr
+proportions: \cr
 "Before" estimates the risk of event within a certain timepoint (e.g. x\% of the events occurred within). \cr
 "After" estimates the risk of residual events between timepoint x and ten years. \cr
 "Window" estimates the percentage of events within six month windows (e.g. x\% of the events occurred between t1 and t2) \cr
-Conditional: Conditional risk estimates \cr
-Surv: Indicator of the surv-argument
+conditional: Conditional risk estimates \cr
+info: information on arguments for extraction
 }
 \description{
-The function uses stratified cause-specific Cox regression and G-computation to estimate the risk of event at a specific
-timepoint taking competing risks into account. The function also provides pointwise risk differences and ratios and prepares
-the subsequent plotting of the cumulative incidence curves.
-The function is a wrapper of the ate-function from riskRegression by T. Gerds et al.
+Absolute risk estimation and comparison of two or more groups with a time-to-event outcome.
+Wrapper for the prodlim and ate-functions in riskRegression.
 }

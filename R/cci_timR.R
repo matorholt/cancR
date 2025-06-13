@@ -1,4 +1,4 @@
-#' Time-dependent CCI
+#' cci_timR
 #'
 #' @description
 #' Generation of time-dependent CCI and comorbidities from the Charlson Comorbidity Index
@@ -24,7 +24,7 @@
 #
 # cci_time(lpr, structure = "full", format = "wide", comorb=T)
 
-cci_time <- function(data, interval = 365.25/2, structure = "binned", format = "long", comorb=F) {
+cci_timR <- function(data, interval = 365.25/2, structure = "binned", format = "long", comorb=F) {
 
   structure <- match.arg(structure, c("binned", "full"))
   format <- match.arg(format, c("long", "wide"))

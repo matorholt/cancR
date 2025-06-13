@@ -1,4 +1,4 @@
-#' clusterci
+#' clustR
 #'
 #' @description
 #' Wrapper for the binregATE in the mets package for performing causal inference on time-to-event data in a competing risk setting with clustering
@@ -38,7 +38,7 @@
 #   as.data.frame()
 # (t <- clusterci(df, time, event, X1, vars = c(X2, X3, X6), cluster = id, time = 90, breaks = 10))
 
-clusterci <- function(data,
+clustR <- function(data,
                       timevar,
                       event,
                       treatment,
@@ -146,7 +146,7 @@ clusterci <- function(data,
 
   stopCluster(cl)
   l <- list(Life_table = tab, Risks = risk, Risk_differences = dif, Plot_data = plot, Surv = surv)
-  class(l) <- "CLUSTERCI"
+  class(l) <- "clustR"
 
   return(l)
 

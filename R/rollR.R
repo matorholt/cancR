@@ -1,4 +1,4 @@
-#' rolling_id
+#' rollR
 #'
 #' @description
 #' Assigns rolling ID. Useful after sorting a dataset, which changes the ID order. Works with piping
@@ -15,10 +15,10 @@
 # data.frame(id=c(1,1,1,1,2,2,2,3,3,3,4,4,4,4),
 #            x=c(5,5,6,6,7,8,9,1,2,1,4,1,2,4)) %>%
 #   arrange(x) %>%
-#   rolling_id()
+#   rollR()
 
 
-rolling_id <- function(data, id = id, lab = order) {
+rollR <- function(data, id = id, lab = order) {
 
   data %>% mutate({{lab}} := match({{id}}, unique({{id}})))
 }

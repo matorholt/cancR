@@ -8,66 +8,87 @@ plotR(
   list,
   y = 100,
   col = c("#9B62B8", "#224B87", "#67A8DC", "#D66ACE"),
-  outcome = "",
-  ylab = "Risk of Event (\%)",
-  labpos = rep(0, 4),
-  printres = "est",
-  labgrp = grps,
-  fu = 120,
-  breaks = 12,
+  table.col = "#616161",
   time_unit = "m2y",
-  respos.x = 0,
-  respos.y = 0,
-  ylab.pos = 0,
+  labgrp = levels,
+  print.est = TRUE,
+  contrast = "rd",
+  title = "",
+  title.size = 7,
+  x.title = unit,
+  x.title.size = 6,
+  x.text.size = 6,
+  y.title = "Risk of Event (\%)",
+  y.title.size = 6,
+  y.title.shift = 0,
+  y.text.size = 6,
+  res.size = 5,
+  res.shift = c(0, 0),
+  res.spacing = 1,
+  res.digits = 1,
+  contrast.digits = 1,
+  table.size = 5,
   legend.pos = c(0.5, 0.95),
   tscale = 1,
-  ndigits_est = 1,
-  ndigits_res = 1,
   censur = F
 )
 }
 \arguments{
-\item{list}{crrlist or plist object from the crrstrat function}
+\item{list}{an object of class estimatR, incidencR or clustR}
 
-\item{y}{Value of y-axis in whole number (eg. 50)}
+\item{y}{Upper limit for y-axis}
 
-\item{col}{color palette as a vector}
+\item{col}{Vector of colors}
 
-\item{outcome}{Labels for outcome}
+\item{table.col}{Grid color}
 
-\item{ylab}{Label for y-axis}
+\item{time_unit}{Specification of the time-unit and optional conversion. Conversions include Months to years ("m2y"), days to years ("d2y") and days to months ("d2m")}
 
-\item{labpos}{adjustments for point estimates on the plot. Can be removed with NA}
+\item{labgrp}{Character vector of similar length to the number of levels in the group with labels. Reference is first.}
 
-\item{printres}{Which results should be printed. Estimates="est", hazard ratio = "hr", risk difference = "rd" and risk ratio = "rr"}
+\item{print.est}{Whether absolute risks at the time horizon should be printet. Defaults to TRUE}
 
-\item{labgrp}{group labels}
+\item{contrast}{The type of contrast that should be provided. Includes risk difference ("rd", default), risk ratio ("rr"), hazard ratio ("hr") or "none".}
 
-\item{fu}{length of follow-up (default = 120 months)}
+\item{title}{Plot title}
 
-\item{breaks}{the subdivisions between time = 0 and follow-up length (defaults to 12)}
+\item{title.size}{Plot title size}
 
-\item{time_unit}{Whether the time unit should be transformed to years or months. If no transformation choose days/months/years (defaults to "m2y")}
+\item{x.title}{X-axis title}
 
-\item{respos.x}{shift of the result label on the x-axis}
+\item{x.title.size}{X-axis title size}
 
-\item{respos.y}{shift of the result label on the y-axis}
+\item{x.text.size}{X-axis text size}
 
-\item{ylab.pos}{shifting of y-axis label position}
+\item{y.title}{Y-axis title}
 
-\item{legend.pos}{legend position as vector}
+\item{y.title.size}{Y-axis title size}
 
-\item{tscale}{Global scaling parameter if text needs to change size}
+\item{y.title.shift}{Y-axis title horizontal shift}
 
-\item{ndigits_est}{No of digitis in the estimates}
+\item{y.text.size}{Y-axis text.size}
 
-\item{ndigits_res}{No of digits in the results}
+\item{res.size}{Size of the results}
 
-\item{censur}{Censuring of counts < 5. Default = FALSE}
+\item{res.shift}{Vector of XY shifting of the results}
+
+\item{res.spacing}{Vertical spacing between results}
+
+\item{res.digits}{Number of digits on the risk estimates}
+
+\item{contrast.digits}{Number of digits on the contrasts}
+
+\item{table.size}{Risk table text size}
+
+\item{legend.pos}{XY vector of legend position in percentage}
+
+\item{tscale}{Global size scaler}
+
+\item{censur}{Whether values <= 3 should be censored. Default = FALSE}
 }
 \value{
-Adjusted Kaplan-Meier or cumulative incidence curves
+Plot of the adjusted cumulative incidence or Kaplan-Meier curve
 }
 \description{
-Automatic plot of adjusted Kaplan-Meier and cumulative incidence curves
+Automatic plot function for the functions estimatR, incidencR and clustR
 }

@@ -1,4 +1,4 @@
-#' Median follow-up time
+#' followR
 #'
 #' @description
 #' Function to calculate median follow-up time using the inverse Kaplan-Meier method
@@ -13,7 +13,7 @@
 #' @export
 #'
 #'
-follow_up <- function(df, timevar, event, group) {
+followR <- function(df, timevar, event, group) {
 
   #Formula generation
   lhs <- paste(c("Hist(", paste(substitute(timevar)), ",", paste(substitute(event)), ") ~"), collapse = "")

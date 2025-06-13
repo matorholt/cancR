@@ -1,4 +1,4 @@
-#' Positivity
+#' checkR
 #'
 #' @description
 #' Detection of positivity violations (empty levels)
@@ -42,7 +42,7 @@
 # is.character(t)
 # is.null(t2)
 
-positivity <- function(data, treatment, outcome, vars, levels=1, quantiles=0.1, id=id) {
+checkR <- function(data, treatment, outcome, vars, levels=1, quantiles=0.1, id=id) {
 
   vars_c <- data %>% select({{vars}}) %>% names()
   treat_c <- data %>% select({{treatment}}) %>% names()
