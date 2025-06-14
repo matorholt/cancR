@@ -38,19 +38,19 @@
 #' @export
 #'
 #'
-n <- 3000
-set.seed(1)
-df <- riskRegression::sampleData(n, outcome="survival")
-df$time <- round(df$time,1)*12
-df$time2 <- df$time + rnorm(n)
-df$X1 <- factor(rbinom(n, prob = c(0.3,0.4) , size = 2), labels = paste0("T",0:2))
-df$X3 <- factor(rbinom(n, prob = c(0.3,0.4,0.3) , size = 3), labels = paste0("T",0:3))
-df$event2 <- rbinom(n, 2, prob=.3)
-df <- as.data.frame(df)
-
-df2 <- df %>% mutate(X2 = ifelse(row_number()==1, NA, X2),
-                     event = as.factor(event)) %>%
-  rename(ttt = time)
+# n <- 3000
+# set.seed(1)
+# df <- riskRegression::sampleData(n, outcome="survival")
+# df$time <- round(df$time,1)*12
+# df$time2 <- df$time + rnorm(n)
+# df$X1 <- factor(rbinom(n, prob = c(0.3,0.4) , size = 2), labels = paste0("T",0:2))
+# df$X3 <- factor(rbinom(n, prob = c(0.3,0.4,0.3) , size = 3), labels = paste0("T",0:3))
+# df$event2 <- rbinom(n, 2, prob=.3)
+# df <- as.data.frame(df)
+#
+# df2 <- df %>% mutate(X2 = ifelse(row_number()==1, NA, X2),
+#                      event = as.factor(event)) %>%
+#   rename(ttt = time)
 
 
 estimatR <- function(data,
@@ -69,9 +69,9 @@ estimatR <- function(data,
   start <- Sys.time()
   base::cat(paste0("\nInitializing estimatR: ", lubridate::round_date(Sys.time(), "second"), "\n"))
 
-  timevar_c <- data %>% select({{timevar}}) %>% names()
-  event_c <- data %>% select({{event}}) %>% names()
-  group_c <- data %>% select({{group}}) %>% names()
+  suppressWarnings(timevar_c <- data %>% select({{timevar}}) %>% names())
+  suppressWarnings( event_c <- data %>% select({{event}}) %>% names())
+  suppressWarnings(group_c <- data %>% select({{group}}) %>% names())
   horizon <- time
 
 

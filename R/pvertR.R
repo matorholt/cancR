@@ -1,5 +1,5 @@
-pfun <- function(x) {
-#' P-function
+#' pvertR
+#'
 #' @description
 #' The function takes a raw p-value and prints it according to the AMA manual of style
 #'
@@ -12,7 +12,7 @@ pfun <- function(x) {
 #' pfun(0.048)
 #' pfun(0.056)
 
-
+pvertR <- function(x) {
   sapply(x, function(x) {
     if(is.na(x)){
       y="NA"
