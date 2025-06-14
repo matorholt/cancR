@@ -38,29 +38,40 @@
 #' @export
 #'
 #'
+n <- 3000
+set.seed(1)
+df <- riskRegression::sampleData(n, outcome="survival")
+df$time <- round(df$time,1)*12
+df$time2 <- df$time + rnorm(n)
+df$X1 <- factor(rbinom(n, prob = c(0.3,0.4) , size = 2), labels = paste0("T",0:2))
+df$X3 <- factor(rbinom(n, prob = c(0.3,0.4,0.3) , size = 3), labels = paste0("T",0:3))
+df$event2 <- rbinom(n, 2, prob=.3)
+df <- as.data.frame(df)
+
+df2 <- df %>% mutate(X2 = ifelse(row_number()==1, NA, X2),
+                     event = as.factor(event)) %>%
+  rename(ttt = time)
+
 
 estimatR <- function(data,
-                     timevar,
-                     event,
-                     group,
-                     quantiles=T,
-                     survscale = "AM",
-                     type,
-                     vars,
-                     form,
-                     time=120,
-                     breaks = 12,
-                     cores = pmin(detectCores(), 4)){
+                      timevar,
+                      event,
+                      group,
+                      quantiles=T,
+                      survscale = "AM",
+                      type,
+                      vars,
+                      form,
+                      time=120,
+                      breaks = 12,
+                      cores = pmin(detectCores(), 4)){
 
   start <- Sys.time()
   base::cat(paste0("\nInitializing estimatR: ", lubridate::round_date(Sys.time(), "second"), "\n"))
 
-  timevar <- rlang::enquo(timevar)
-  event <- rlang::enquo(event)
-  group <- rlang::enquo(group)
-  timevar_c <- rlang::as_name(timevar)
-  event_c <- rlang::as_name(event)
-  group_c <- rlang::as_name(group)
+  timevar_c <- data %>% select({{timevar}}) %>% names()
+  event_c <- data %>% select({{event}}) %>% names()
+  group_c <- data %>% select({{group}}) %>% names()
   horizon <- time
 
 
@@ -75,8 +86,8 @@ estimatR <- function(data,
   })
 
   dat <-
-    data %>% drop_na(!!group)%>%
-    mutate(!!group := as.factor(!!group))
+    data %>% drop_na(!!sym(group_c))%>%
+    mutate(!!sym(group_c) := as.factor(!!sym(group_c)))
 
   group_levels <- levels(dat[,group_c])
 
@@ -114,6 +125,8 @@ estimatR <- function(data,
 
   rhs_strat <- str_replace(rhs, group_c, paste0("strata(", group_c, ")"))
 
+  rhs_strat
+
   #Formula generation
   form_h <- as.formula(paste(c(paste0("Hist(", timevar_c, ", ", event_c, ") ~", collapse = ""), rhs_strat), collapse = ""))
   form_hhr <- as.formula(paste(c(paste0("Hist(", timevar_c, ", ", event_c, ") ~", collapse = ""), rhs), collapse = ""))
@@ -123,7 +136,7 @@ estimatR <- function(data,
   #Life-table
   prod <- prodlim(as.formula(paste0("Hist(", timevar_c, ", ", event_c, ") ~", group_c, collapse = "")), data=dat)
   tab <- summary(prod, times = seq(0,horizon,1), intervals = TRUE, cause=1) %>%
-    group_by(!!group) %>%
+    group_by(!!sym(group)) %>%
     mutate(cumsum = cumsum(n.event)) %>%
     ungroup() %>%
     rename(time = time1) %>%
@@ -189,19 +202,19 @@ estimatR <- function(data,
     est <- est %>% mutate(across(c(estimate, lower, upper), ~1 - .)) %>%
       rename(upr = lower,
              lwr = upper) %>%
-      rename(!!group := treatment, est=estimate, upper = upr, lower = lwr)
+      rename(!!sym(group) := treatment, est=estimate, upper = upr, lower = lwr)
 
     plot <- plot %>% mutate(across(c(estimate, lower, upper), ~1 - .))%>%
       rename(upr = lower,
              lwr = upper) %>%
-      rename(!!group := treatment, est=estimate, upper = upr, lower = lwr)
+      rename(!!sym(group) := treatment, est=estimate, upper = upr, lower = lwr)
 
   } else {
     est <- est %>%
       rename({{group}}:= treatment, est=estimate)
 
     plot <- plot %>%
-      rename(!!group := treatment, est=estimate)
+      rename(!!sym(group) := treatment, est=estimate)
   }
   est <- est %>%
     select(time:se, lower, upper) %>%
@@ -214,7 +227,7 @@ estimatR <- function(data,
   if(quantiles) {
     qs <-
       as.data.frame(quantile(prod, tab[tab[, "time"] == horizon, colnames(tab)[which(colnames(tab) %in% c("surv", "cuminc"))]]/2))
-    msurv <- tibble(!!group := qs[,group_c],
+    msurv <- tibble(!!sym(group) := qs[,group_c],
                     q = qs$q,
                     time = qs$quantile,
                     lwr = qs$lower,
@@ -225,7 +238,7 @@ estimatR <- function(data,
   hres <- hres %>% filter(str_detect(level, group_c)) %>% mutate(level = str_remove_all(level, group_c),
                                                                  p.value = pfun(pval_ex),
                                                                  across(c(hr:upper), ~ as.numeric(format(round(.,2), nsmall=1)))) %>%
-    rename(!!group := level) %>%
+    rename(!!sym(group) := level) %>%
     tibble::remove_rownames()
 
 
@@ -245,7 +258,7 @@ estimatR <- function(data,
     mutate(across(c(ratio:upper), ~round(.,2)),
            p.value = sapply(p.value, pfun))
 
-  prop <- est %>%group_by(!!group)%>%
+  prop <- est %>%group_by(!!sym(group))%>%
     mutate(est = ifelse(rep(survscale == "OS", n()), 1-est, est),
            before = est / last(est)* 100,
            after = 100-before,
@@ -256,12 +269,12 @@ estimatR <- function(data,
            rescil = (pmax((residual - (1.96*rse)), 0)),
            resciu = (pmin((residual +(1.96*rse)),100)),
            across(c(residual, rescil, resciu), ~. * 100))%>%
-    select(time, !!group, before, after, window, residual, rescil, resciu)%>%
+    select(time, !!sym(group), before, after, window, residual, rescil, resciu)%>%
     filter(time < horizon)
 
   conditional <- rbindlist(lapply(group_levels, function(x){
-    tab2 <- tab %>%filter(!!group %in% x)
-    risk2 <- est %>%filter(!!group %in% x)
+    tab2 <- tab %>%filter(!!sym(group) %in% x)
+    risk2 <- est %>%filter(!!sym(group) %in% x)
     condi <- rbindlist(lapply(seq(breaks,horizon,breaks), function(t1){
 
       if(surv & survscale == "OS") {
@@ -296,8 +309,8 @@ estimatR <- function(data,
     })) %>% rbind(risk2[risk2$time %in% horizon ,c("est","lower","upper")], .)%>%
       mutate(grp = x,
              time = seq(0,horizon,breaks))%>%
-      rename(!!group := grp) %>%
-      select(time, !!group, est, lower, upper) %>%
+      rename(!!sym(group) := grp) %>%
+      select(time, !!sym(group), est, lower, upper) %>%
       tibble::remove_rownames()
 
     return(condi)
@@ -334,4 +347,5 @@ estimatR <- function(data,
   return(list)
 
 }
+
 
