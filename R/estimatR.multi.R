@@ -1,4 +1,4 @@
-#' multi.estimatR
+#' estimatR.multi
 #'
 #' @description
 #' Convenience function for performing multiple estimatR functions (e.g. multiple outcomes or risk factor). Each argument is recycled to avoid repeated names.
@@ -42,7 +42,7 @@
 #              groups = c("X1","X2","X3"),
 #              names = c("m1", "m2", "m3"))
 
-multi.estimatR <- function(data,
+estimatR.multi <- function(data,
                   timevars,
                   events,
                   groups,

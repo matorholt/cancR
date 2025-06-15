@@ -1,4 +1,4 @@
-#' ngroups
+#' groupR
 #'
 #' @description
 #' Extract first n groups in data frame
@@ -12,7 +12,7 @@
 #' @export
 #'
 #'
-n_groups <- function(data, grps, n) {
+groupR <- function(data, grps, n) {
   data %>% group_by({{grps}}) %>%
     filter(cur_group_id() <= n)
 }
