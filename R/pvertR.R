@@ -21,13 +21,13 @@ pvertR <- function(x) {
       y = "p < 0.001"
     }
     else if(x < 0.01){
-      y = paste0("p = ", format(round(x,3), nsmall=2))
+      y = paste0("p = ", numbR(x,3,2))
     }
     else if(x>=0.045 & x < 0.05){
-      y = paste0("p = ", format(round(x,3), nsmall=2))
+      y = paste0("p = ", numbR(x,3,2))
     }
     else if(x>=0.01 & x<1){
-      y = paste0("p = ", format(round(x,2), nsmall=2))
+      y = paste0("p = ", numbR(x,2,2))
     }
     else if(x>=1){
       y = paste0("p = 1.00")

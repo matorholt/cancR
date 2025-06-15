@@ -36,57 +36,63 @@
 #                      event = as.factor(event)) %>%
 #   rename(ttt = time)
 #
-# t2 <- multi.estimatR(df2,
-#              timevars = "ttt",
-#              events = c("event", "event", "event2"),
-#              groups = c("X1","X2","X3"),
-#              names = c("m1", "m2", "m3"))
+t2 <- estimatR.multi(df2,
+             timevars = "ttt",
+             events = c("event", "event", "event2"),
+             groups = "X1",
+             names = c("m1", "m2", "m3"))
 
 estimatR.multi <- function(data,
-                  timevars,
-                  events,
-                  groups,
-                  names,
-                  quantiles = T,
-                  survscale = "AM",
-                  type = "uni",
-                  vars = "",
-                  form = "",
-                  time = 120,
-                  breaks = 12,
-                  cores = 4) {
+                           timevars,
+                           events,
+                           groups,
+                           names,
+                           survscale = "AM",
+                           type = "uni",
+                           vars = "null",
+                           form = "",
+                           time = 120,
+                           breaks = 12,
+                           quantiles = T,
+                           proportions = F,
+                           conditional = F,
+                           cores = pmin(detectCores(), 4)) {
 
 
-if(missing(names)) {
-  names <- paste(events, groups)
-}
+  if(missing(names)) {
+    names <- paste(events, groups)
+  }
 
   if(missing(timevars)) {
     timevars <- paste("t_", events, sep="")
   }
 
-arg.list <- as.list(environment())
-arg.list[c("data", "names")] <- NULL
+  vars <- list(vars)
+
+  arg.list <- as.list(environment())
+  arg.list[c("data", "names")] <- NULL
 
 
-pmap(arg.list,
-     function(...) {
+  pmap(arg.list,
+       function(...) {
 
-       dots <- rlang::list2(...)
+         dots <- rlang::list2(...)
 
-       estimatR(data = data,
-                timevar = dots$timevars,
-                event = dots$events,
-                group = dots$groups,
-                quantiles=dots$quantiles,
-                survscale = dots$survscale,
-                type = dots$type,
-                vars = dots$vars,
-                form = dots$form,
-                time = dots$time,
-                breaks = dots$breaks,
-                cores = dots$cores)
+         estimatR(data = data,
+                  timevar = dots$timevars,
+                  event = dots$events,
+                  group = dots$groups,
+                  survscale = dots$survscale,
+                  type = dots$type,
+                  vars = dots$vars,
+                  form = dots$form,
+                  time = dots$time,
+                  breaks = dots$breaks,
+                  quantiles = dots$quantiles,
+                  proportions = dots$proportions,
+                  conditional = dots$conditional,
+                  cores = dots$cores)
 
-     }) %>% set_names(names)
+       }) %>% set_names(names)
 
 }
