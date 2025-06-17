@@ -9,13 +9,15 @@ estimatR(
   timevar,
   event,
   group,
-  quantiles = T,
   survscale = "AM",
-  type,
+  type = "uni",
   vars,
   form,
   time = 120,
   breaks = 12,
+  survtime = F,
+  proportions = F,
+  conditional = F,
   cores = pmin(detectCores(), 4)
 )
 }
@@ -27,8 +29,6 @@ estimatR(
 \item{event}{Status indicator}
 
 \item{group}{Grouping variable}
-
-\item{quantiles}{Whether median time to event should be calculated (default = TRUE)}
 
 \item{survscale}{Whether overall survial should be estimated as survival or all-cause mortality (1-survival)}
 
@@ -42,6 +42,12 @@ estimatR(
 
 \item{breaks}{Interim time points of interest. Defaults to 12 months (1-year gaps)}
 
+\item{survtime}{Whether median time to event should be calculated (default = F)}
+
+\item{proportions}{Whether risk of event in different windows should be estimated (default = F)}
+
+\item{conditional}{Whether conditional risk at the time horizon should be calculated (default = F)}
+
 \item{cores}{Number of cores for parallel processing}
 }
 \value{
@@ -54,6 +60,7 @@ diag: Diagnostics for assessing proportionality \cr
 risks: Absolute risk estimates at the specified time points \cr
 differences: Absolute risk difference at the specified time horizons \cr
 ratios: Absolute risk ratios at the the specified time horizon \cr
+counts: Event and group counts in the contrasted groups \cr
 proportions: \cr
 "Before" estimates the risk of event within a certain timepoint (e.g. x\% of the events occurred within). \cr
 "After" estimates the risk of residual events between timepoint x and ten years. \cr

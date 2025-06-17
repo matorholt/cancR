@@ -6,32 +6,26 @@
 \usage{
 estimatR.multi(
   data,
-  timevars,
-  events,
-  groups,
+  timevar,
+  event,
+  group,
   names,
-  quantiles = T,
   survscale = "AM",
   type = "uni",
-  vars = "",
-  form = "",
+  vars = NULL,
+  form = NULL,
   time = 120,
   breaks = 12,
-  cores = 4
+  survtime = T,
+  proportions = F,
+  conditional = F,
+  cores = pmin(detectCores(), 4)
 )
 }
 \arguments{
 \item{data}{dataset}
 
-\item{timevars}{Character vector of time variables. If missing "t_" is assumed to be prefix for all names in the "events" vector}
-
-\item{events}{Character vector of event variables}
-
-\item{groups}{Character vector of grouping variables}
-
 \item{names}{Element names of the returned list of models. If missing the "events" names are used.}
-
-\item{quantiles}{Whether median time to event should be calculated (default = TRUE)}
 
 \item{survscale}{Whether overall survial should be estimated as survival or all-cause mortality (1-survival)}
 
@@ -45,7 +39,15 @@ estimatR.multi(
 
 \item{breaks}{Interim time points of interest. Defaults to 12 months (1-year gaps)}
 
+\item{survtime}{Whether median time to event should be calculated (default = TRUE)}
+
 \item{cores}{Number of cores for parallel processing}
+
+\item{timevars}{Character vector of time variables. If missing "t_" is assumed to be prefix for all names in the "events" vector}
+
+\item{events}{Character vector of event variables}
+
+\item{groups}{Character vector of grouping variables}
 }
 \value{
 A named list of models with the estimatR function

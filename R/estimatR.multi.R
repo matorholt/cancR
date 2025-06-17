@@ -9,7 +9,7 @@
 #' @param events Character vector of event variables
 #' @param groups Character vector of grouping variables
 #' @param names Element names of the returned list of models. If missing the "events" names are used.
-#' @param quantiles Whether median time to event should be calculated (default = TRUE)
+#' @param survtime Whether median time to event should be calculated (default = TRUE)
 #' @param survscale Whether overall survial should be estimated as survival or all-cause mortality (1-survival)
 #' @param type Model specification, Can be univariate ("uni"), Age- and sex standardized ("age-sex"), Multivariate with variable selection ("select"). In this case vars should be a vector of the covariates. "custom" allows for free modelling where the form-argument contains the formula.
 #' @param vars Only applicable when "select" is chosen as type. The variables are added to the model as an additive model
@@ -36,63 +36,50 @@
 #                      event = as.factor(event)) %>%
 #   rename(ttt = time)
 #
-t2 <- estimatR.multi(df2,
-             timevars = "ttt",
-             events = c("event", "event", "event2"),
-             groups = "X1",
-             names = c("m1", "m2", "m3"))
+# t2 <- estimatR.multi(df2,
+#              timevars = "ttt",
+#              events = c("event", "event", "event2"),
+#              groups = "X1",
+#              names = c("m1", "m2", "m3"))
 
 estimatR.multi <- function(data,
-                           timevars,
-                           events,
-                           groups,
+                           timevar,
+                           event,
+                           group,
                            names,
                            survscale = "AM",
                            type = "uni",
-                           vars = "null",
-                           form = "",
+                           vars = NULL,
+                           form = NULL,
                            time = 120,
                            breaks = 12,
-                           quantiles = T,
+                           survtime = T,
                            proportions = F,
                            conditional = F,
                            cores = pmin(detectCores(), 4)) {
 
 
   if(missing(names)) {
-    names <- paste(events, groups)
+    names <- paste(event, group)
   }
 
-  if(missing(timevars)) {
-    timevars <- paste("t_", events, sep="")
+  if(missing(timevar)) {
+    timevar <- paste("t_", event, sep="")
   }
 
+  if(!is.null(vars)) {
   vars <- list(vars)
+  }
 
   arg.list <- as.list(environment())
   arg.list[c("data", "names")] <- NULL
-
+  arg.list <- discard(arg.list, is.null)
 
   pmap(arg.list,
        function(...) {
 
-         dots <- rlang::list2(...)
-
-         estimatR(data = data,
-                  timevar = dots$timevars,
-                  event = dots$events,
-                  group = dots$groups,
-                  survscale = dots$survscale,
-                  type = dots$type,
-                  vars = dots$vars,
-                  form = dots$form,
-                  time = dots$time,
-                  breaks = dots$breaks,
-                  quantiles = dots$quantiles,
-                  proportions = dots$proportions,
-                  conditional = dots$conditional,
-                  cores = dots$cores)
-
-       }) %>% set_names(names)
+         estimatR(data=data, ...)
+       })  %>% set_names(names)
 
 }
+

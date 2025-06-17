@@ -28,20 +28,20 @@
 # df$time <- round(df$time,1)*12
 # df$X1 <- factor(rbinom(n, prob = c(0.3,0.4) , size = 2), labels = paste0("T",0:2))
 # df$set <- as.factor(rep(seq(1,10),each=30))
-# df$age <- sample(c("80-90", "10-20", "110-120", "0-40"), n, replace=TRUE)
+# df$age_group <- sample(c("80-90", "10-20", "110-120", "0-40"), n, replace=TRUE)
 #
 # df <- as.data.frame(df)
 #
 # tablR(df,
-#         group=X2,
-#         vars=c(X1,X3,X4,X6,X7, age),
-#       labels = list("age" = c("0-40" = "<=40"),
+#       group=X2,
+#       vars=c(X1,X3,X4,X6,X7, age_group),
+#       labels = list("age_group" = c("0-40" = "<=40"),
 #                     "X1" = c("T2" = "T2-T3")),
-#       headings = list("Age" = "Age2"),
-#         total = T,
-#         numeric = c("median", "q1q3", "range"),
-#         test = T,
-#         show_na=T)
+#       headings = list("age_group" = "Age2"),
+#       total = T,
+#       numeric = c("median", "q1q3", "range"),
+#       test = T,
+#       show_na=T)
 # #         #filename = "Table 1")
 
 
@@ -59,7 +59,7 @@ tablR <- function(data,
                   test_stats = c("kwt", "chisq"),
                   show_na = FALSE,
                   filename = NULL,
-                  sort_numeric = TRUE) {
+                  sort.numeric = TRUE) {
 
   numeric <- match.arg(numeric, c("median", "q1q3", "iqr", "range", "mean", "sd", "min", "max"), several.ok = T)
   direction <- match.arg(direction, c("colwise", "rowwise"))
@@ -90,7 +90,7 @@ tablR <- function(data,
   }
 
 
-  if(sort_numeric) {
+  if(sort.numeric) {
   for(v in vars_c) {
 
     if(any(str_detect(data %>% pull(v), "\\d+")) & class(data %>% pull(v)) != "numeric") {
@@ -100,8 +100,7 @@ tablR <- function(data,
   }
   }
 
-  vars_c <- str_to_title(str_replace_all(vars_c, "_", " "))
-  data <- data %>% rename_with(function(x) {str_to_title(str_replace_all(x, "_", " "))}, c({{vars}}))
+
 
   c <- tableby.control(test=test, total=total,
                        numeric.test=test_stats[1], cat.test=test_stats[2],
@@ -114,12 +113,16 @@ tablR <- function(data,
 
   table <- tableby(as.formula(form), data=data, control=c)
 
+  #Autoformatting (to_title and spacing)
+  if(is.null(headings)) {
+    headings <- as.list(str_to_title(str_replace_all(vars_c, "_", " "))) %>% set_names(vars_c)
+  }
+
   if(!is.null(filename)) {
 
     if(!dir.exists(paste0(getwd(), "/Plots"))) {
       dir.create(paste0(getwd(), "/Plots"))
     }
-
 
   write2word(table,
              paste0(getwd(), "/Plots/", filename, ".docx"),
@@ -131,5 +134,7 @@ tablR <- function(data,
   summary(table,
           text=T,
           labelTranslations = headings)
+
+
 
 }

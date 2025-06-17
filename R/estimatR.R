@@ -8,13 +8,15 @@
 #' @param timevar Time variable
 #' @param event Status indicator
 #' @param group Grouping variable
-#' @param quantiles Whether median time to event should be calculated (default = TRUE)
 #' @param survscale Whether overall survial should be estimated as survival or all-cause mortality (1-survival)
 #' @param type Model specification, Can be univariate ("uni"), Age- and sex standardized ("age-sex"), Multivariate with variable selection ("select"). In this case vars should be a vector of the covariates. "custom" allows for free modelling where the form-argument contains the formula.
 #' @param vars Only applicable when "select" is chosen as type. The variables are added to the model as an additive model
 #' @param form Only applicable when "custom" is chosen as type. Free specification of the model as the right-hand side of the formula.
 #' @param time Time horizon of interest. Defaults to 60 (e.g. 5-years)
 #' @param breaks Interim time points of interest. Defaults to 12 months (1-year gaps)
+#' @param survtime Whether median time to event should be calculated (default = F)
+#' @param proportions Whether risk of event in different windows should be estimated (default = F)
+#' @param conditional Whether conditional risk at the time horizon should be calculated (default = F)
 #' @param cores Number of cores for parallel processing
 #'
 #' @return
@@ -27,6 +29,7 @@
 #' risks: Absolute risk estimates at the specified time points \cr
 #' differences: Absolute risk difference at the specified time horizons \cr
 #' ratios: Absolute risk ratios at the the specified time horizon \cr
+#' counts: Event and group counts in the contrasted groups \cr
 #' proportions: \cr
 #' "Before" estimates the risk of event within a certain timepoint (e.g. x% of the events occurred within). \cr
 #' "After" estimates the risk of residual events between timepoint x and ten years. \cr
@@ -51,9 +54,8 @@
 # df2 <- df %>% mutate(X2 = ifelse(row_number()==1, NA, X2),
 #                      event = as.factor(event)) %>%
 #   rename(ttt = time)
-# #
-# estimatR(df2, ttt, event2, X2)
-
+#
+# t2 <- estimatR(df2, ttt, event, X3, type = "select", vars = c(X6,X7), quantile=T)
 
 estimatR <- function(data,
                      timevar,
@@ -61,27 +63,21 @@ estimatR <- function(data,
                      group,
                      survscale = "AM",
                      type = "uni",
-                     vars = "null",
-                     form = NULL,
+                     vars,
+                     form,
                      time=120,
                      breaks = 12,
+                     survtime = F,
                      proportions = F,
                      conditional = F,
-                     quantiles = F,
                      cores = pmin(detectCores(), 4)){
 
   start <- Sys.time()
-  base::cat(paste0("\nInitializing estimatR: ", lubridate::round_date(Sys.time(), "second"), "\n"))
 
   suppressWarnings(timevar_c <- data %>% select({{timevar}}) %>% names())
   suppressWarnings( event_c <- data %>% select({{event}}) %>% names())
   suppressWarnings(group_c <- data %>% select({{group}}) %>% names())
   horizon <- time
-
-  if(sum(vars == "null") == 0) {
-    suppressWarnings(vars_c <- data %>% select({{vars}}) %>% names())
-  }
-
 
   type <- match.arg(type, c("uni", "age-sex", "select", "custom"))
 
@@ -116,7 +112,6 @@ estimatR <- function(data,
     multi = FALSE
   }
 
-
   if(type %in%"uni"){
     rhs <- group_c
 
@@ -125,6 +120,7 @@ estimatR <- function(data,
     rhs <- paste0(group_c, " + age + sex", collapse="")
   }
   if(type %in%"select"){
+    suppressWarnings(vars_c <- data %>% select({{vars}}) %>% names())
     rhs <- paste(c(group_c, vars_c), collapse = " + ")
     dat <- dat %>% drop_na(!!!syms(vars_c))
   }
@@ -232,10 +228,10 @@ estimatR <- function(data,
     select(time:se, lower, upper)
 
 
-  if(quantiles) {
+  if(survtime) {
     qs <-
-      as.data.frame(quantile(prod, tab[tab[, "time"] == horizon, colnames(tab)[which(colnames(tab) %in% c("surv", "cuminc"))]]/2))
-    msurv <- tibble(!!sym(group_c) := qs[,group_c],
+      quantile(prod, tab[tab[, "time"] == horizon, colnames(tab)[which(colnames(tab) %in% c("surv", "cuminc"))]]/2)
+    msurv <- tibble(!!sym(group_c) := unlist(qs[,1]),
                     q = qs$q,
                     time = qs$quantile,
                     lwr = qs$lower,
@@ -265,6 +261,15 @@ estimatR <- function(data,
     select(time,A, B, ratio:p.value)%>%
     mutate(across(c(ratio:upper), ~round(.,2)),
            p.value = sapply(p.value, pvertR))
+
+  counts <-
+    bind_cols(
+      dat %>% group_by(!!sym(group_c)) %>%
+        filter(!!sym(event_c) == 1) %>%
+        summarise(n.events = n()),
+      dat %>% group_by(!!sym(group_c)) %>%
+        summarise(total = n()) %>%
+        select(-!!sym(group_c)))
 
   if(proportions) {
   prop <- est %>%group_by(!!sym(group_c))%>%
@@ -336,6 +341,7 @@ estimatR <- function(data,
                "risks" = est,
                "difference" = rd,
                "ratio" = rr,
+               "counts" = counts,
                "info" = list("timevar" = timevar_c,
                              "event" = event_c,
                              "group" = group_c,
@@ -352,7 +358,7 @@ estimatR <- function(data,
   if(conditional) {
     list <- append(list, list("conditional" = conditional))
   }
-  if(quantiles) {
+  if(survtime) {
     list <- append(list, list("time_to_event" = msurv))
   }
 
@@ -362,10 +368,4 @@ estimatR <- function(data,
   class(list)<- "estimatR"
   return(list)
 
-
-
 }
-
-
-
-

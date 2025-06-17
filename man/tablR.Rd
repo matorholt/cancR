@@ -19,7 +19,7 @@ tablR(
   test_stats = c("kwt", "chisq"),
   show_na = FALSE,
   filename = NULL,
-  sort_numeric = TRUE
+  sort.numeric = TRUE
 )
 }
 \arguments{

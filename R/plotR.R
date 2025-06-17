@@ -35,7 +35,23 @@
 #' @export
 #'
 #'
-
+# n <- 3000
+# set.seed(1)
+# df <- riskRegression::sampleData(n, outcome="survival")
+# df$time <- round(df$time,1)*12
+# df$time2 <- df$time + rnorm(n)
+# df$X1 <- factor(rbinom(n, prob = c(0.3,0.4) , size = 2), labels = paste0("T",0:2))
+# df$X3 <- factor(rbinom(n, prob = c(0.3,0.4,0.3) , size = 3), labels = paste0("T",0:3))
+# df$event2 <- rbinom(n, 2, prob=.3)
+# df <- as.data.frame(df)
+#
+# df2 <- df %>% mutate(X2 = ifelse(row_number()==1, NA, X2),
+#                      event = as.factor(event)) %>%
+#   rename(ttt = time)
+#
+# t2 <- estimatR(df2, ttt, event2, X3, time = 60, type = "select", vars = c(X6,X7))
+#
+# plotR(t2)
 
 plotR <- function(list,
                    y=100,
@@ -100,6 +116,10 @@ plotR <- function(list,
 
   if(censur) {
     tab <- tab %>% mutate(across(c(cumsum, n.risk), ~ ifelse(between(., 1, 3), "≤3", .)))
+  }
+
+  if(missing(y)) {
+    y <- max(plot$upper[plot$time == horizon]*1.3)*100
   }
 
   y=y/100
@@ -194,7 +214,7 @@ plotR <- function(list,
     contrast <- "none"
   }
 
-  rows <- seq(0.95, 0.95-((0.05*res.spacing)*(length(levels)+1)), -0.05*res.spacing)
+  rows <- y*(seq(0.95, 0.95-((0.05*res.spacing)*(length(levels)+1)), -0.05*res.spacing))
 
   if(survscale == "OS") {
     rows <- rev(1-rows)

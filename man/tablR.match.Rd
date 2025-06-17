@@ -4,15 +4,7 @@
 \alias{tablR.match}
 \title{tablR.match}
 \usage{
-tablR.match(
-  data,
-  casename,
-  n.controls,
-  vars = c(period, age_group, sex, region, education, income, marital, cci),
-  headings = c(period = "Period"),
-  labels = list(),
-  filename
-)
+tablR.match(data, casename, n.controls, ...)
 }
 \arguments{
 \item{data}{matched dataset}
@@ -23,9 +15,9 @@ tablR.match(
 
 \item{vars}{vars that should be in the table}
 
-\item{headings}{List specifying labels for variable names}
-
 \item{labels}{List specifying labels of the specific labels for each variable}
+
+\item{headings}{List specifying labels for variable names}
 
 \item{filename}{}
 }

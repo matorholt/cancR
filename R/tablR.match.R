@@ -19,26 +19,19 @@
 tablR.match <- function(data,
                         casename,
                         n.controls,
-                        vars = c(period, age_group, sex, region, education, income, marital, cci),
-                        headings = c("period" = "Period"),
-                        labels = list(),
-                        filename) {
+                        ...) {
 
   m <- paste0(seq(n.controls,0, -1), " Matches")
   names(m) <- as.character(seq(n.controls,0, -1))
 
   data %>%
     group_by(set) %>%
-    mutate(n_controls = n() - 1) %>%
+    mutate(n_controls = as.character(n() - 1)) %>%
     ungroup() %>%
     factR(n_controls, labels=m, lab_to_lev=T) %>%
     filter(case == casename) %>%
     tablR(n_controls,
-          vars = c({{vars}}),
-          test=T,
-          show_na=F,
-          labels = labels,
-          filename = filename)
+          ...)
 
 }
 
