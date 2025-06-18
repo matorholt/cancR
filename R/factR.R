@@ -32,9 +32,8 @@
 #                v2 = sample(letters[1:5], size = 20, replace=TRUE),
 #                v3 = sample(letters[1:5], size = 20, replace=TRUE),
 #                vnum = sample(c(0,1), size = n, replace=TRUE)))
-
 #
-# #Lazy_coding
+# # #Lazy_coding
 # (tdf1 <-
 #     df %>%
 #     factR(vars = c(v1, v2,v3)))

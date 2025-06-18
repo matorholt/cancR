@@ -4,7 +4,15 @@
 \alias{extractR}
 \title{extractR}
 \usage{
-extractR(list, vars = c("counts", "risks", "diff"), shape = "long")
+extractR(
+  list,
+  vars = c("counts", "risks", "diff"),
+  shape = "long",
+  ci = "95\%CI ",
+  nsep = " / ",
+  sep = " to ",
+  censur = F
+)
 }
 \arguments{
 \item{list}{estimatR object}
@@ -12,6 +20,14 @@ extractR(list, vars = c("counts", "risks", "diff"), shape = "long")
 \item{vars}{Which outcome measures to provide (counts, risks, differneces and/or ratios)}
 
 \item{shape}{Format of the table (long or wide).}
+
+\item{ci}{The format of the confidence intervals (default = 95\%CI)}
+
+\item{nsep}{The separator between event counts (default = /)}
+
+\item{sep}{The separator between all other ranges (default = to)}
+
+\item{censur}{Whether counts <= 3 should be censured (default = FALSE)}
 }
 \value{
 Returns a data frame compatible with flextable

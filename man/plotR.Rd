@@ -28,6 +28,7 @@ plotR(
   res.digits = 1,
   contrast.digits = 1,
   table.size = 5,
+  table.line = 1,
   legend.pos = c(0.5, 0.95),
   tscale = 1,
   censur = F

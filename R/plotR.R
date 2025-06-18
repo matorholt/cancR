@@ -76,6 +76,7 @@ plotR <- function(list,
                    res.digits = 1,
                    contrast.digits = 1,
                    table.size = 5,
+                  table.line = 1,
                    legend.pos = c(0.5,0.95),
                    tscale = 1,
                    censur=F) {
@@ -119,11 +120,11 @@ plotR <- function(list,
   }
 
   if(missing(y)) {
-    y <- max(plot$upper[plot$time == horizon]*1.3)*100
+    y <- pmin(max(plot$upper[plot$time == horizon]*1.3), 1)*100
   }
 
   y=y/100
-  tot = y+(y*0.6)
+  tot = y*1.6
 
   switch(time_unit,
          "m2y" = {
@@ -185,14 +186,14 @@ plotR <- function(list,
 
   #Risk table segments
   p <- p +
-    geom_segment(x = 0, xend=2, y=-(tot*0.27), yend=-(tot*0.27), color = "#616161", linewidth = 1) +               #Kort midt
-    geom_segment(x = 0, xend=0, y=-(tot*0.16), yend=-(tot*0.15), color = "#616161", linewidth = 1) +               #Ve oppe
-    geom_segment(x = 0, xend=2, y=-(tot*0.15), yend=-(tot*0.15), color = "#616161", linewidth = 1) +               #Kort oppe
-    geom_segment(x = 0, xend=horizon*1.04, y=-(tot*0.39), yend=-(tot*0.39), color = "#616161", linewidth = 1) +        #Lang nede
-    geom_segment(x = 0, xend=0, y=-(tot*0.39), yend=-(tot*0.38), color = "#616161", linewidth = 1) +          #Ve nede
-    geom_segment(x = 0, xend=0, y=-(tot*0.255), yend=-(tot*0.285), color = "#616161", linewidth = 1) +        #Ve midt
-    annotate("text", label = "Cumulative events", x = 3, y = -(tot*0.148), color = "#616161", size = 6*tscale, hjust="left") +
-    annotate("text", label = "At risk", x = 3, y = -(tot*0.268), color = "#616161", size = 6*tscale, hjust="left")
+    geom_segment(x = 0, xend=2, y=-(tot*0.27), yend=-(tot*0.27), color = table.col, linewidth = table.line) +               #Kort midt
+    geom_segment(x = 0, xend=0, y=-(tot*0.16), yend=-(tot*0.15), color = table.col, linewidth = table.line) +               #Ve oppe
+    geom_segment(x = 0, xend=2, y=-(tot*0.15), yend=-(tot*0.15), color = table.col, linewidth = table.line) +               #Kort oppe
+    geom_segment(x = 0, xend=horizon*1.04, y=-(tot*0.39), yend=-(tot*0.39), color = table.col, linewidth = table.line) +        #Lang nede
+    geom_segment(x = 0, xend=0, y=-(tot*0.39), yend=-(tot*0.38), color = table.col, linewidth = table.line) +          #Ve nede
+    geom_segment(x = 0, xend=0, y=-(tot*0.255), yend=-(tot*0.285), color = table.col, linewidth = table.line) +        #Ve midt
+    annotate("text", label = "Cumulative events", x = 3, y = -(tot*0.148), color = table.col, size = 6*tscale, hjust="left") +
+    annotate("text", label = "At risk", x = 3, y = -(tot*0.268), color = table.col, size = 6*tscale, hjust="left")
 
   #Risk table numbers
   for(i in 1:length(levels)) {

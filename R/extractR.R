@@ -7,6 +7,10 @@
 #' @param list estimatR object
 #' @param vars Which outcome measures to provide (counts, risks, differneces and/or ratios)
 #' @param shape Format of the table (long or wide).
+#' @param ci The format of the confidence intervals (default = 95%CI)
+#' @param nsep The separator between event counts (default = /)
+#' @param sep The separator between all other ranges (default = to)
+#' @param censur Whether counts <= 3 should be censured (default = FALSE)
 #'
 #' @return Returns a data frame compatible with flextable
 #' @export
@@ -27,34 +31,45 @@
 #                      event = as.factor(event)) %>%
 #   rename(ttt = time)
 #
-# t2 <- estimatR(df2, ttt, event2, X3, type = "select", vars = c(X6,X7))
+# t2 <- estimatR(df2, ttt, event2, X2, type = "select", vars = c(X6,X7))
 #
-# extractR(t2, vars=c("counts", "risks", "diff"),shape = "long")
+# (t <- extractR(t2, vars=c("counts", "risks", "ratio"), shape = "long", ci = "", nsep = " of ", sep =" to ", censur=T))
 
-extractR <- function(list, vars = c("counts", "risks", "diff"), shape="long") {
+extractR <- function(list,
+                     vars = c("counts", "risks", "diff"),
+                     shape="long",
+                     ci = "95%CI ",
+                     nsep = " / ",
+                     sep = " to ",
+                     censur = F) {
 
-  vars <- match.arg(vars, c("counts", "risks", "diff", "ratio"))
+  vars <- match.arg(vars, c("counts", "risks", "diff", "ratio"), several.ok=TRUE)
 
   grps <- list$info$group_levels
 
+  if(censur) {
+    list$counts <- list$counts %>%
+      mutate(n.events = ifelse(n.events <= 3, "<=3", n.events))
+  }
+
   counts <-
-    list$counts %>% mutate(counts = str_c(n.events, " / ", total)) %>%
+    list$counts %>% mutate(counts = str_c(n.events, nsep, total)) %>%
     select(counts) %>%
     as.data.frame()
 
   risks <-
     list$risks %>% filter(time %in% 120) %>% mutate(across(c(est, lower, upper), ~ numbR(.*100)),
-                                                    risks = str_c(est, "% (95%CI ", lower, " to ", upper, ")")) %>%
+                                                    risks = str_c(est, "%x(", ci, lower, sep, upper, ")")) %>%
     select(risks)
   diff <-
     list$difference %>% slice(1,1:(length(grps)-1)) %>%
-    mutate(diff = ifelse(row_number() > 1, str_c(diff, "% (95%CI ", numbR(lower), " to ", numbR(upper), "), ", p.value), "reference")) %>%
+    mutate(diff = ifelse(row_number() > 1, str_c(numbR(diff), "%x(", ci, numbR(lower), sep, numbR(upper), ")x", p.value), "reference")) %>%
     select(diff)
 
   ratio <-
     list$ratio %>% slice(1,1:(length(grps)-1)) %>%
     rename(rr = ratio) %>%
-    mutate(ratio = ifelse(row_number() > 1, str_c(rr, "% (95%CI ", numbR(lower), " to ", numbR(upper), "), ", p.value), "reference")) %>%
+    mutate(ratio = ifelse(row_number() > 1, str_c(rr, "%x(", ci, numbR(lower), sep, numbR(upper), ")x", p.value), "reference")) %>%
     select(ratio)
 
   total <- bind_cols(counts, risks, diff, ratio)
@@ -62,7 +77,15 @@ extractR <- function(list, vars = c("counts", "risks", "diff"), shape="long") {
   if(shape == "long") {
     tab <- total %>%
       mutate(!!sym(list$info$group) := grps) %>%
-      select(!!sym(list$info$group), {{vars}})
+      select(!!sym(list$info$group), {{vars}}) %>%
+      separate("risks", into=c("risks", paste0("risks", "_ci")), sep = "x", fill="right")
+
+
+    suppressWarnings(for(s in vars[vars != c("counts", "risks")]) {
+      tab <- tab %>% separate(s, into=c(s, paste0(s, "_ci"), paste0(s, "_p.value")), sep = "x", fill="right")
+    })
+
+    tab <- tab %>% mutate(across(everything(), ~ ifelse(is.na(.), "reference", .)))
   }
 
   if(shape == "wide")
@@ -87,9 +110,17 @@ extractR <- function(list, vars = c("counts", "risks", "diff"), shape="long") {
 
     tab <- tab[-which(vars %in% c("diff", "ratio"))]
 
+    for(i in names[str_detect(names, "risks")]) {
+      tab <- tab %>%
+        separate(i, into = c(i, paste0(i, "_ci")), sep = "x", fill = "right")
+    }
+
+    for(i in names[str_detect(names, "diff|ratio") & str_detect(names, grps[1], negate=T)]) {
+      tab <- tab %>%
+        separate(i, into = c(i, paste0(i, "_ci"), paste0(i, "_p.value")), sep = "x", fill = "right")
+    }
+
   }
 tab
+
 }
-
-
-
