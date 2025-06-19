@@ -27,8 +27,12 @@ plotR(
   res.spacing = 1,
   res.digits = 1,
   contrast.digits = 1,
-  table.size = 5,
-  table.line = 1,
+  table = c("event", "risk"),
+  table.space = 1,
+  table.padding = 1,
+  table.title.size = 6,
+  table.text.size = 5,
+  table.linewidth = 1,
   legend.pos = c(0.5, 0.95),
   tscale = 1,
   censur = F
@@ -44,8 +48,6 @@ plotR(
 \item{table.col}{Grid color}
 
 \item{time_unit}{Specification of the time-unit and optional conversion. Conversions include Months to years ("m2y"), days to years ("d2y") and days to months ("d2m")}
-
-\item{labgrp}{Character vector of similar length to the number of levels in the group with labels. Reference is first.}
 
 \item{print.est}{Whether absolute risks at the time horizon should be printet. Defaults to TRUE}
 
@@ -79,13 +81,25 @@ plotR(
 
 \item{contrast.digits}{Number of digits on the contrasts}
 
-\item{table.size}{Risk table text size}
+\item{table}{Which parts of the risk table should be provided ("event", "risk", "none"). Default is c("event", "risk")}
+
+\item{table.space}{Spacing between counts in risk table}
+
+\item{table.padding}{Spacing between lines and first/last rows in the risk table}
+
+\item{table.title.size}{Risk table titles size}
+
+\item{table.text.size}{Risk table text size}
+
+\item{table.linewidth}{Risk table linewidth}
 
 \item{legend.pos}{XY vector of legend position in percentage}
 
 \item{tscale}{Global size scaler}
 
 \item{censur}{Whether values <= 3 should be censored. Default = FALSE}
+
+\item{labs}{Character vector of similar length to the number of levels in the group with labels. Reference is first.}
 }
 \value{
 Plot of the adjusted cumulative incidence or Kaplan-Meier curve

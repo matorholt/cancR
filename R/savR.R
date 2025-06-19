@@ -7,7 +7,7 @@
 #' @param plot Plot to plot
 #' @param name File name of saved plot without extension
 #' @param width width
-#' @param height heigth
+#' @param height heigth. If missing autoscaling is performed
 #' @param unit mm or cm
 #' @param scale to fit
 #' @param dpi resolution
@@ -22,7 +22,7 @@
 savR <- function(plot,
                   name,
                   width = 154,
-                  height = 60,
+                  height,
                   unit = "mm",
                   scale = 2,
                   dpi=1200,
@@ -32,6 +32,11 @@ savR <- function(plot,
 
   if(missing(name)) {
     name <- paste0(substitute(plot))
+  }
+
+  #Autoscale
+  if(missing(height)) {
+    height <- sum(abs(plot$coordinates$limits$y))*1.6*100
   }
 
   if(!dir.exists(paste0(getwd(), "/Plots"))) {

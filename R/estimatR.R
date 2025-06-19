@@ -94,6 +94,9 @@ estimatR <- function(data,
     mutate(!!sym(group_c) := as.factor(!!sym(group_c))) %>%
     as.data.frame()
 
+  #Break ties
+  dat[, timevar_c] <- dat[, timevar_c] + rnorm(nrow(dat), 0, 0.00000001)
+
   group_levels <- levels(dat[,group_c])
 
   if(length(levels(dat[,event_c])) == 2) {

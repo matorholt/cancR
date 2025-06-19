@@ -8,7 +8,7 @@ savR(
   plot,
   name,
   width = 154,
-  height = 60,
+  height,
   unit = "mm",
   scale = 2,
   dpi = 1200,
@@ -24,7 +24,7 @@ savR(
 
 \item{width}{width}
 
-\item{height}{heigth}
+\item{height}{heigth. If missing autoscaling is performed}
 
 \item{unit}{mm or cm}
 
