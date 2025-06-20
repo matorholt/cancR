@@ -46,15 +46,17 @@
 # savR(e)
 
 savR <- function(object,
-                  name,
-                  width = 154,
-                  height,
-                  unit = "mm",
-                  scale = 2,
-                  dpi=1200,
-                  device= NULL,
-                  compression="lzw",
-                  formats = c("pdf", "svg", "tiff", "jpg")) {
+                 name,
+                 width = 154,
+                 height,
+                 unit = "mm",
+                 scale = 2,
+                 dpi=1200,
+                 device= NULL,
+                 compression="lzw",
+                 formats = c("pdf", "svg", "tiff", "jpg")) {
+
+  formats <- match.arg(formats, c("pdf", "svg", "tiff", "jpg", "png"), several.ok=TRUE)
 
   if(missing(name)) {
     name <- paste0(substitute(object))
@@ -64,48 +66,58 @@ savR <- function(object,
     dir.create(paste0(getwd(), "/Tables and Figures"))
   }
 
-  if(class(object) %in% "flextable") {
+  if("flextable" %in% class(object)) {
+
+    cat("Exports")
+    cat(paste0("\nFlextable: "))
 
     object %>%
       set_table_properties(layout = "autofit", width = 1) %>%
       save_as_docx(path = paste0(getwd(), "/Tables and Figures/", name, ".docx", collapse=""))
 
+    cat("Done")
   }
 
-  if(class(object) %in% "ggplot") {
+  if("ggplot" %in% class(object)) {
   #Autoscale
-  if(missing(height)) {
+    if(missing(height)) {
 
     height <- sum(abs(object$coordinates$limits$y))/object$y*100*47
-  }
-
-  invisible(suppressWarnings(sapply(formats, function(x, object, width, name, height, unit, scale, dpi, device, compression) {
-
-    if("tiff" %in% x) {
-      ggsave(filename=paste0(name, ".", x, collapse=""),
-             plot=object,
-             path="Tables and Figures",
-             width = width,
-             height = height,
-             unit = unit,
-             scale = scale,
-             dpi=dpi,
-             device= grDevices::tiff,
-             compression=compression)
     }
 
-    ggsave(filename=paste0(name, ".", x, collapse=""),
-           plot=object,
-           path="Tables and Figures",
-           width = width,
-           height = height,
-           unit = unit,
-           dpi = dpi,
-           scale = scale,
-           device=device)
+    cat("Exports")
+    for(p in formats) {
 
-  }, object=object, width = width, height = height, unit = unit, scale = scale, name=name, dpi=dpi, device=device, compression=compression)))
+      cat(paste0("\n", p, ": "))
 
+        if(p == "tiff") {
+          ggsave(filename=paste0(name, ".", p, collapse=""),
+                 plot=object,
+                 path="Tables and Figures",
+                 width = width,
+                 height = height,
+                 unit = unit,
+                 scale = scale,
+                 dpi=dpi,
+                 device= grDevices::tiff,
+                 compression=compression)
+        } else {
+
+            ggsave(filename=paste0(name, ".", p, collapse=""),
+                   plot=object,
+                   path="Tables and Figures",
+                   width = width,
+                   height = height,
+                   unit = unit,
+                   dpi = dpi,
+                   scale = scale,
+                   device=device)
+
+        }
+
+      cat("Done")
+
+    }
   }
 }
 

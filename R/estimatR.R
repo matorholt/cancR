@@ -42,7 +42,7 @@
 #' @export
 #'
 #'
-# n <- 3000
+# n <- 1000
 # set.seed(1)
 # df <- riskRegression::sampleData(n, outcome="survival")
 # df$time <- round(df$time,1)*12
@@ -56,7 +56,10 @@
 #                      event = as.factor(event)) %>%
 #   rename(ttt = time)
 #
-# t2 <- estimatR(df2, ttt, event, X3, type = "select", vars = c(X6,X7), quantile=T)
+# t2 <- estimatR(df2, ttt, event, X3, type = "select", vars = c(X6,X7))
+#
+# extractR(t2)
+# extractR(t3)
 
 estimatR <- function(data,
                      timevar,
@@ -97,7 +100,7 @@ estimatR <- function(data,
     as.data.frame()
 
   #Break ties
-  dat[, timevar_c] <- dat[, timevar_c] + rnorm(nrow(dat), 0, 0.00000001)
+  dat[, timevar_c] <- pmax(0, (dat[, timevar_c] + rnorm(nrow(dat), 0, 0.00000001)))
 
   group_levels <- levels(dat[,group_c])
 
