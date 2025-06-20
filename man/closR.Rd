@@ -4,14 +4,14 @@
 \alias{closR}
 \title{ClosR}
 \usage{
-closR(mdose, vec = NULL, str, split = T)
+closR(x, vec = NULL, str, split = T)
 }
 \arguments{
-\item{mdose}{estimated dose in the patient}
+\item{x}{Input number}
 
 \item{vec}{vector to search for closest value. If NULL, provide str which vec should be created from}
 
-\item{str}{strength of the tablet}
+\item{str}{Multiplier for the generic vector}
 
 \item{split}{whether the tablet can be split}
 }

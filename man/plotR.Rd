@@ -10,7 +10,7 @@ plotR(
   col = c("#9B62B8", "#224B87", "#67A8DC", "#D66ACE"),
   table.col = "#616161",
   time_unit = "m2y",
-  labgrp = levels,
+  labs = levels,
   print.est = TRUE,
   contrast = "rd",
   title = "",
@@ -48,6 +48,8 @@ plotR(
 \item{table.col}{Grid color}
 
 \item{time_unit}{Specification of the time-unit and optional conversion. Conversions include Months to years ("m2y"), days to years ("d2y") and days to months ("d2m")}
+
+\item{labs}{Character vector of similar length to the number of levels in the group with labels. Reference is first.}
 
 \item{print.est}{Whether absolute risks at the time horizon should be printet. Defaults to TRUE}
 
@@ -98,8 +100,6 @@ plotR(
 \item{tscale}{Global size scaler}
 
 \item{censur}{Whether values <= 3 should be censored. Default = FALSE}
-
-\item{labs}{Character vector of similar length to the number of levels in the group with labels. Reference is first.}
 }
 \value{
 Plot of the adjusted cumulative incidence or Kaplan-Meier curve

@@ -40,7 +40,7 @@
 #' @export
 #'
 #'
-# n <- 3000
+# n <- 500
 # set.seed(1)
 # df <- riskRegression::sampleData(n, outcome="survival")
 # df$time <- round(df$time,1)*12
@@ -54,7 +54,7 @@
 #                      event = as.factor(event)) %>%
 #   rename(ttt = time)
 #
-# t2 <- estimatR(df2, ttt, event2, X3, time = 60, type = "select", vars = c(X6,X7))
+# t2 <- estimatR(df2, ttt, event2, X1, time = 60, type = "select", vars = c(X6,X7))
 #
 # plotR(t2)
 
@@ -63,7 +63,7 @@ plotR <- function(list,
                   col=c("#9B62B8", "#224B87", "#67A8DC", "#D66ACE"),
                   table.col = "#616161",
                   time_unit = "m2y",
-                  labgrp = levels,
+                  labs = levels,
                   print.est = TRUE,
                   contrast = "rd",
                   title = "",
@@ -130,7 +130,7 @@ plotR <- function(list,
   }
 
   if(missing(y)) {
-    y <- pmin(max(plot$upper[plot$time == horizon]*1.3), 1)*100
+    y <- closR(pmin(max(plot$upper[plot$time == horizon]*1.3), 1)*100, c(seq(1,5), seq(10, 100, 10)))
   }
 
   #Grid
@@ -270,7 +270,7 @@ plotR <- function(list,
     contrast <- "none"
   }
 
-  rows <- y*(seq(0.95, 0.95-((0.05*res.spacing)*(length(levels)+1)), -0.05*res.spacing))
+  rows <- y*(seq(0.95, 0.95-((0.06*res.spacing)*(length(levels)+1)), -0.06*res.spacing))
 
   if(survscale == "OS") {
     rows <- rev(1-rows)
@@ -334,6 +334,9 @@ plotR <- function(list,
 
     }
   }
+
+  p$y <- y*100
+  p$grps <- length(levels)
 
   return(p)
 

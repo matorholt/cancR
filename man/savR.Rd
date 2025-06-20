@@ -5,7 +5,7 @@
 \title{SavR}
 \usage{
 savR(
-  plot,
+  object,
   name,
   width = 154,
   height,
@@ -18,9 +18,9 @@ savR(
 )
 }
 \arguments{
-\item{plot}{Plot to plot}
+\item{object}{object to save}
 
-\item{name}{File name of saved plot without extension}
+\item{name}{File name of saved object without extension}
 
 \item{width}{width}
 
@@ -39,7 +39,7 @@ savR(
 \item{formats}{choose between pdf, svg, tiff, jpg and png}
 }
 \value{
-Saves plot automatically in current project folder
+Saves object automatically in current project folder
 }
 \description{
 Wrapper for ggsave with default settings and automatic saving of multiple formats

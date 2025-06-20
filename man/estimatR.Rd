@@ -18,7 +18,8 @@ estimatR(
   survtime = F,
   proportions = F,
   conditional = F,
-  cores = pmin(detectCores(), 4)
+  cores = pmin(detectCores(), 4),
+  pl = T
 )
 }
 \arguments{
@@ -49,6 +50,8 @@ estimatR(
 \item{conditional}{Whether conditional risk at the time horizon should be calculated (default = F)}
 
 \item{cores}{Number of cores for parallel processing}
+
+\item{pl}{Whether product.limit in ATE shoulde be T or F (default = T)}
 }
 \value{
 time_to_event: Median survival time \cr

@@ -18,6 +18,7 @@
 #' @param proportions Whether risk of event in different windows should be estimated (default = F)
 #' @param conditional Whether conditional risk at the time horizon should be calculated (default = F)
 #' @param cores Number of cores for parallel processing
+#' @param pl Whether product.limit in ATE shoulde be T or F (default = T)
 #'
 #' @return
 #' time_to_event: Median survival time \cr
@@ -70,7 +71,8 @@ estimatR <- function(data,
                      survtime = F,
                      proportions = F,
                      conditional = F,
-                     cores = pmin(detectCores(), 4)){
+                     cores = pmin(detectCores(), 4),
+                     pl = T){
 
   start <- Sys.time()
 
@@ -193,10 +195,10 @@ estimatR <- function(data,
   }
 
   CRest <-
-    invisible(ate(cr, treatment = group_c, data=dat, times = seq(0,horizon,breaks), cl=cl))
+    invisible(ate(cr, treatment = group_c, data=dat, times = seq(0,horizon,breaks), cl=cl, product.limit = pl))
 
   CRplot <-
-    invisible(ate(cr, treatment = group_c, data=dat, times = sort(unique(c(0,dat[dat[, event_c] == 1, timevar_c],horizon))), cl=cl))
+    invisible(ate(cr, treatment = group_c, data=dat, times = sort(unique(c(0,dat[dat[, event_c] == 1, timevar_c],horizon))), cl=cl, product.limit = pl))
 
   est <-
     as.data.frame(summary(CRest, short=T, type = "meanRisk")$meanRisk)

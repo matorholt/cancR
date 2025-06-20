@@ -4,9 +4,9 @@
 #' Pick the closest value from a range in vector.
 #'
 #'
-#' @param mdose estimated dose in the patient
+#' @param x Input number
 #' @param vec vector to search for closest value. If NULL, provide str which vec should be created from
-#' @param str strength of the tablet
+#' @param str Multiplier for the generic vector
 #' @param split whether the tablet can be split
 #'
 #'
@@ -17,9 +17,9 @@
 #'
 #'
 
-closR <- function(mdose, vec=NULL, str, split=T) {
-  if(is.na(mdose)) {
-    return(mdose)
+closR <- function(x, vec=NULL, str, split=T) {
+  if(is.na(x)) {
+    return(x)
   } else {
     if(is.null(vec)){
     if(split) {
@@ -29,6 +29,6 @@ closR <- function(mdose, vec=NULL, str, split=T) {
     }
     }
   }
-  vec[which.min(abs(mdose-vec))]
+  vec[which.min(abs(x-vec))]
 }
 

@@ -58,7 +58,7 @@ extractR <- function(list,
     as.data.frame()
 
   risks <-
-    list$risks %>% filter(time %in% 120) %>% mutate(across(c(est, lower, upper), ~ numbR(.*100)),
+    list$risks %>% filter(time %in% list$info$time) %>% mutate(across(c(est, lower, upper), ~ numbR(.*100)),
                                                     risks = str_c(est, "%x(", ci, lower, sep, upper, ")")) %>%
     select(risks)
   diff <-
@@ -124,3 +124,5 @@ extractR <- function(list,
 tab
 
 }
+
+
