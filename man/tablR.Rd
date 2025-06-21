@@ -18,7 +18,6 @@ tablR(
   headings = NULL,
   test_stats = c("kwt", "chisq"),
   show_na = FALSE,
-  filename = NULL,
   sort.numeric = TRUE
 )
 }
@@ -44,8 +43,6 @@ tablR(
 \item{test_stats}{Vector of length 2 containing statistical tests that should be performed}
 
 \item{show_na}{Whether NAs should be presented}
-
-\item{filename}{The filname of the exported word-table}
 }
 \value{
 Returns a table and exports a word-file (optional if filename is provided)

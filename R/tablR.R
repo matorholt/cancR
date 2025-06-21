@@ -15,7 +15,6 @@
 #' @param headings List specifying labels for variable names
 #' @param test_stats Vector of length 2 containing statistical tests that should be performed
 #' @param show_na Whether NAs should be presented
-#' @param filename The filname of the exported word-table
 #'
 #' @return Returns a table and exports a word-file (optional if filename is provided)
 #' @export
@@ -42,7 +41,6 @@
 #       numeric = c("median", "q1q3", "range"),
 #       test = T,
 #       show_na=T)
-# #         #filename = "Table 1")
 
 
 tablR <- function(data,
@@ -58,7 +56,6 @@ tablR <- function(data,
                   headings = NULL,
                   test_stats = c("kwt", "chisq"),
                   show_na = FALSE,
-                  filename = NULL,
                   sort.numeric = TRUE) {
 
   numeric <- match.arg(numeric, c("median", "q1q3", "iqr", "range", "mean", "sd", "min", "max"), several.ok = T)
@@ -118,23 +115,16 @@ tablR <- function(data,
     headings <- as.list(str_to_title(str_replace_all(vars_c, "_", " "))) %>% set_names(vars_c)
   }
 
-  if(!is.null(filename)) {
-
-    if(!dir.exists(paste0(getwd(), "/Plots"))) {
-      dir.create(paste0(getwd(), "/Plots"))
-    }
-
-  write2word(table,
-             paste0(getwd(), "/Plots/", filename, ".docx"),
-             quiet = TRUE,
-             labelTranslations = headings)
-  }
-
-
-  summary(table,
+ print(summary(table,
           text=T,
-          labelTranslations = headings)
+          labelTranslations = headings))
 
+ tablist <- list(table = table, headings = headings)
+ class(tablist) <- "tablR"
 
+invisible(tablist)
 
 }
+
+
+

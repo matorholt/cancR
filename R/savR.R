@@ -19,6 +19,7 @@
 #' @export
 #'
 
+# Save plotR
 # n <- 500
 # set.seed(1)
 # df <- riskRegression::sampleData(n, outcome="survival")
@@ -41,9 +42,35 @@
 # p2 <- plotR(t2)
 # p3 <- plotR(t3)
 # p4 <- plotR(t4)
+#
+#
+# Save extractR
 # e <- extractR(t2) %>% flextable()
 #
 # savR(e)
+#
+# Save tablR
+# n <- 300
+# set.seed(1)
+# df <- riskRegression::sampleData(n, outcome="survival")
+# df$time <- round(df$time,1)*12
+# df$X1 <- factor(rbinom(n, prob = c(0.3,0.4) , size = 2), labels = paste0("T",0:2))
+# df$set <- as.factor(rep(seq(1,10),each=30))
+# df$age_group <- sample(c("80-90", "10-20", "110-120", "0-40"), n, replace=TRUE)
+#
+# df <- as.data.frame(df)
+#
+# tablR(df,
+#       group=X2,
+#       vars=c(X1,X3,X4,X6,X7, age_group),
+#       labels = list("age_group" = c("0-40" = "<=40"),
+#                     "X1" = c("T2" = "T2-T3")),
+#       headings = list("age_group" = "Age2"),
+#       total = T,
+#       numeric = c("median", "q1q3", "range"),
+#       test = T,
+#       show_na=T) %>%
+# savR(name="table1")
 
 savR <- function(object,
                  name,
@@ -119,5 +146,13 @@ savR <- function(object,
 
     }
   }
+
+  if(class(object) == "tablR") {
+    write2word(object$table,
+               paste0(getwd(), "/Tables and Figures/", name, ".docx"),
+               quiet = TRUE,
+               labelTranslations = object$headings)
+  }
 }
+
 
