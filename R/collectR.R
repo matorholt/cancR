@@ -32,11 +32,12 @@
 # t3 <- estimatR(df2, ttt, event2, X1, time = 60)
 # t4 <- estimatR(df2, ttt, event2, X3, time = 60)
 #
-# p2 <- plotR(t2)
-# p3 <- plotR(t3)
-# p4 <- plotR(t4)
+# #Padding for scale correction. Can also be table.space.
+# p2 <- plotR(t2, table.padding = 1.85)
+# p3 <- plotR(t3, y.title = "", table.padding=1.4)
+# p4 <- plotR(t4, y.title = "")
 #
-# collectR(list(p2,p3,p4), legend.grob = get_legend(p4), widths = c(2,2,1))
+# collectR(list(p2,p3,p4), legend.grob = get_legend(p4))
 
 collectR <- function(plots, collect=T, nrow=1, ncol=3, ...) {
 

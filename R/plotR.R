@@ -207,7 +207,7 @@ plotR <- function(list,
     #X-title
     p + annotate("text", x=horizon/2, y = -(y*0.15), label = x.title, size = x.title.size*tscale) +
     #Y-title
-    annotate("text", x=-(horizon*0.11)-y.title.shift, y = y/2, label = y.title, size = y.title.size*tscale, angle = 90) +
+    annotate("text", x=-(horizon*0.11)-y.title.shift, y = y/2, label = y.title, size = y.title.size*tscale, angle = 90)
     #X-breaks
     annotate("text", x=seq(0,horizon,breaks), y=-(y*0.1), label=round(seq(0,horizon,breaks)/u,0), size = x.text.size*tscale)
 
@@ -217,7 +217,8 @@ plotR <- function(list,
                       T ~ 5/100)
   #Y-breaks
   p <- p + annotate("text", x=-(horizon*0.03), y=seq(0,y,yscale), label = paste(seq(0,y*100,yscale*100), "%", sep=""), size = y.text.size*tscale, hjust="right") +
-    #Title
+
+  #Title
     annotate("text", x=-1, y=y*1.06, label=title, size = title.size*tscale, hjust="left")
 
   #Risk table
