@@ -1,6 +1,6 @@
 Package: cancR
 Title: cancR
-Version: 0.0.0.9000
+Version: 1.0.0
 Authors@R: person("Mathias", "Ørholt", email="mathias.oerholt.nielsen@regionh.dk", role=c("aut", "cre"))
 Description: Package for time-to-event analysis and auxillary functions for registry based research
 License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
