@@ -11,7 +11,9 @@ loadR(
   id_filter = NULL,
   pattern = NULL,
   pattern2 = NULL,
-  vars = NULL
+  vars = NULL,
+  lmdb.start = 1995,
+  lmdb.stop = 2023
 )
 }
 \arguments{
@@ -28,6 +30,10 @@ loadR(
 \item{pattern2}{supplemental pattern if multiple columns should be filtered. Works the same way as pattern}
 
 \item{vars}{which columns should the pattern filter be applied to. Defaults to diag, atc, opr and c_morfo3,}
+
+\item{lmdb.start}{first year of LMDB}
+
+\item{lmdb.stop}{last year of LMDB}
 }
 \value{
 Returns the selected registers to the global environment

@@ -10,6 +10,8 @@
 #' @param pattern regex patterns provided as a list("lpr" = "DC92|DC21")
 #' @param pattern2 supplemental pattern if multiple columns should be filtered. Works the same way as pattern
 #' @param vars which columns should the pattern filter be applied to. Defaults to diag, atc, opr and c_morfo3,
+#' @param lmdb.start first year of LMDB
+#' @param lmdb.stop last year of LMDB
 #'
 #'
 #' @return Returns the selected registers to the global environment
@@ -23,7 +25,9 @@ loadR <- function(regs = c("lpr", "pop", "cancer", "lmdb", "opr"),
                       id_filter = NULL,
                       pattern = NULL,
                       pattern2 = NULL,
-                      vars = NULL) {
+                      vars = NULL,
+                  lmdb.start = 1995,
+                  lmdb.stop = 2023) {
 
 
 
@@ -146,7 +150,7 @@ loadR <- function(regs = c("lpr", "pop", "cancer", "lmdb", "opr"),
     if(is.null(n) & is.null(id_filter) & !("lmdb" %in% names(keep)) & !("lmdb" %in% names(pattern))) {
      lmdb_df <<- readRDS("V:/Data/Workdata/709545/Mathias Oerholt/DATASETS/LMDB.rds")
     } else {
-    lmdb_df <<- rbindlist(lapply(seq(1995,2023), function(year) {
+    lmdb_df <<- rbindlist(lapply(seq(lmdb.start,lmdb.stop), function(year) {
       importSAS(paste0("X:/Data/Rawdata_Hurtig/709545/Grunddata/medication/lmdb", year, "12.sas7bdat", sep=""),
                 obs = n,
                 keep = keep_vars$lmdb,

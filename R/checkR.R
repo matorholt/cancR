@@ -30,20 +30,20 @@
 #          age_group = ifelse(group %in% "sub", "<50", age_group),
 #          hospital = as.factor(hospital))
 #
+# #add random NA
+# df <- apply (df, 2, function(x) {x[sample( c(1:n), floor(n/10))] <- NA; x} ) %>%
+#   as_tibble()
 #
-#
-# t <- positivity(df,
-#                 treatment=group,
-#                 vars=sex,
-#                 levels=1)
-# t2 <- positivity(df, group, vars=c(sex, hospital), levels=2)
-# t3 <- positivity(df, treatment=group, outcome = sex, vars=c(age_group, chemo, hospital), levels = 3)
-#
-# is.character(t)
-# is.null(t2)
+# t <- checkR(df,
+#             treatment=group,
+#             vars=sex,
+#             levels=1)
+# t2 <- checkR(df, group, vars=c(sex, hospital), levels=2)
+# t3 <- checkR(df, treatment=group, outcome = sex, vars=c(age_group, chemo, hospital), levels = 3)
 
 checkR <- function(data, treatment, outcome, vars, levels=1, quantiles=0.1, id=id) {
 
+  id_c <- data %>% select({{id}}) %>% names()
   vars_c <- data %>% select({{vars}}) %>% names()
   treat_c <- data %>% select({{treatment}}) %>% names()
   out_c <- data %>% select({{outcome}}) %>% names()
@@ -52,24 +52,16 @@ checkR <- function(data, treatment, outcome, vars, levels=1, quantiles=0.1, id=i
     return(cat(paste0("ERROR: Levels exceeding number of variables. Levels can maximally be: ", length(c(vars_c)))))
   }
 
-  na_check <-
-    data %>%
-    select({{id}}, {{treatment}}, {{vars}}) %>%
-    filter(if_any(c({{treatment}}, {{vars}}), is.na))
+  na <- missR(data, vars = c(vars_c, treat_c, out_c), id = id, print=F)
 
-  if(nrow(na_check) > 0) {
-    id_list <-
-      na_check %>% select({{id}}, all_of((names(na_check)[sapply(na_check, anyNA)]))) %>%
-      mutate(across(everything(), ~ as.character(.))) %>%
-      pivot_longer(cols = all_of((names(na_check)[sapply(na_check, anyNA)])), names_to = "na_vars", values_to = "nas") %>%
-      filter(is.na(nas))
+  if(!is.null(na)) {
+    cat("\nThe checkR algorithm only works on complete data. Remove NAs in the following variables:\n\n")
+    print(na$counts)
 
 
-    return(cat(paste(c("NAs detected in the following variables:",
-                       (names(na_check)[sapply(na_check, anyNA)]),
-                       "In the following IDs (variable):\nID",
-                       paste(id_list %>% pull({{id}}) %>% str_pad(width = 3), id_list %>% pull(na_vars), sep = "   ")), collapse="\n")))
+    return(na)
   }
+
 
   n = levels
 
@@ -127,5 +119,4 @@ checkR <- function(data, treatment, outcome, vars, levels=1, quantiles=0.1, id=i
     print(as_tibble(zero), n=300)
   }
 }
-
 

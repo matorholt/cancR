@@ -4,7 +4,7 @@
 \alias{distributR}
 \title{distributR}
 \usage{
-distributR(data, vars, bins = 1)
+distributR(data, vars, bins = 1, test = "shapiro")
 }
 \arguments{
 \item{data}{dataframe}
@@ -12,6 +12,8 @@ distributR(data, vars, bins = 1)
 \item{vars}{variables to test. If not specified all numeric variables with more than 5 unique values are assessed}
 
 \item{bins}{binwidth}
+
+\item{test}{whether the Shapiro-Wilks (default) or Kolmogorov-Smirnov test should be performed}
 }
 \value{
 Combined plotframe of histograms, QQ-plots and the Shapiro-Wilks tests

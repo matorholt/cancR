@@ -4,14 +4,22 @@
 \alias{summarisR}
 \title{summarisR}
 \usage{
-summarisR(data)
+summarisR(data, vars, type = NULL, exclude = NULL, bins = 1)
 }
 \arguments{
-\item{data}{Dataset}
+\item{data}{dataset}
+
+\item{vars}{vector of variables to be presented}
+
+\item{type}{shortcut to present all numeric or categorical variables ("numeric" or "categorical")}
+
+\item{exclude}{regex of variables that should not be presented}
+
+\item{bins}{number of bins for histograms}
 }
 \value{
 Returns bar charts or density plots depending on format. Numerical variables with less than 5 unique values are considered as factors.
 }
 \description{
-Graphical overview of entire dataset
+Graphical overview of an entire dataset
 }
