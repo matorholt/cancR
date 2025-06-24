@@ -14,9 +14,9 @@
 #'
 
 powR <- function(text) {
-  if(str_detect(text, "\\^")) {warning("Caution: the text contains ^ which cannot be translated in powershell - instead xcaretx is used")}
+  if(str_detect(text, "\\^")) {cat("\nCaution: the text contains ^ which cannot be translated in powershell - instead xcaretx is used")}
 
-  cat("\n\n\n\n#########  Instructions:  ############")
+  cat("\n\n\n#########  Instructions:  ############")
   cat("\n1)Open Windows PowerShell and insert the output below:
   \n2)Press enter
   \n3)Left-click on the screen where the script should be inserted and wait 5 seconds
@@ -30,7 +30,7 @@ powR <- function(text) {
                                                                                                                                                     "\\+" = "{\\+}",
                                                                                                                                                     "\\%" = "{\\%}",
                                                                                                                                                     "\\~" = "{\\~}  ",
-                                                                                                                                                    "\\^" = "{\\xcaretx}",
+                                                                                                                                                    "\\^" = "xcaretx",
                                                                                                                                                     "x\\{x" = "{{}",
                                                                                                                                                     "x\\}x" = "{}}",
                                                                                                                                                     "\n" = "{ENTER}",

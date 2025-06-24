@@ -18,7 +18,8 @@ tablR(
   headings = NULL,
   test_stats = c("kwt", "chisq"),
   show_na = FALSE,
-  sort.numeric = TRUE
+  sort.numeric = TRUE,
+  censur = F
 )
 }
 \arguments{
@@ -43,6 +44,8 @@ tablR(
 \item{test_stats}{Vector of length 2 containing statistical tests that should be performed}
 
 \item{show_na}{Whether NAs should be presented}
+
+\item{censur}{whether counts <= 3 should be censored}
 }
 \value{
 Returns a table and exports a word-file (optional if filename is provided)

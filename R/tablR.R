@@ -15,6 +15,7 @@
 #' @param headings List specifying labels for variable names
 #' @param test_stats Vector of length 2 containing statistical tests that should be performed
 #' @param show_na Whether NAs should be presented
+#' @param censur whether counts <= 3 should be censored
 #'
 #' @return Returns a table and exports a word-file (optional if filename is provided)
 #' @export
@@ -40,7 +41,8 @@
 #       total = T,
 #       numeric = c("median", "q1q3", "range"),
 #       test = T,
-#       show_na=T)
+#       show_na=T,
+#       censur = F)
 
 
 tablR <- function(data,
@@ -56,7 +58,8 @@ tablR <- function(data,
                   headings = NULL,
                   test_stats = c("kwt", "chisq"),
                   show_na = FALSE,
-                  sort.numeric = TRUE) {
+                  sort.numeric = TRUE,
+                  censur=F) {
 
   numeric <- match.arg(numeric, c("median", "q1q3", "iqr", "range", "mean", "sd", "min", "max"), several.ok = T)
   direction <- match.arg(direction, c("colwise", "rowwise"))
@@ -75,6 +78,7 @@ tablR <- function(data,
 
 
   vars_c <- data %>% select({{vars}}) %>% names()
+  group_c <- data %>% select({{group}}) %>% names()
 
   data <- data %>% mutate({{group}} := fct_rev({{group}}))
 
@@ -124,7 +128,26 @@ tablR <- function(data,
 
 invisible(tablist)
 
+s <- summary(table,
+        text=T,
+        labelTranslations = headings)
+
+if(censur) {
+  for(v in c(as.character(unique(data[, group_c])), "Total")) {
+
+    for(i in 1:length(s$object[[1]][v][[1]])) {
+
+      if("tbstat_countpct" %in% class(s$object[[1]][v][[1]][[i]]) & s$object[[1]][v][[1]][[i]][1] != "" & s$object[[1]][v][[1]][[i]][1] <= 3) {
+
+        s$object[[1]][v][[1]][[i]]<- "<=3"
+
+      }
+
+    }
+  }
 }
 
+s
 
+}
 
