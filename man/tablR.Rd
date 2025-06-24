@@ -16,6 +16,7 @@ tablR(
   labels = list(),
   reference = list(),
   headings = NULL,
+  reverse = T,
   test_stats = c("kwt", "chisq"),
   show_na = FALSE,
   sort.numeric = TRUE,

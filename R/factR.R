@@ -114,7 +114,7 @@ factR <- function(data, vars, reference = list(), levels = list(), labels = list
 
   for(v in vars_c) {
 
-    if(length(levels) == 0 & lab_to_lev) {
+    if(lab_to_lev) {
 
       levels[[v]] <- names(labels[[v]])
     }
@@ -130,5 +130,4 @@ factR <- function(data, vars, reference = list(), levels = list(), labels = list
 data
 
 }
-
 

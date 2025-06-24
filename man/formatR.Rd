@@ -10,7 +10,7 @@ formatR(
   num_vars = c(age, index),
   seqlist = list(),
   names = list(),
-  case_labs
+  case.labs
 )
 }
 \arguments{
@@ -20,7 +20,7 @@ formatR(
 
 \item{num_vars}{Vector of numerical covariates that should be cut}
 
-\item{case_labs}{Labels for the case/control column}
+\item{case.labs}{Labels for the case/control column}
 }
 \value{
 Returns the same dataframe with print-friendly labels for the typical full matching setup.

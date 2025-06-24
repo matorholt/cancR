@@ -56,6 +56,7 @@ tablR <- function(data,
                   labels= list(),
                   reference = list(),
                   headings = NULL,
+                  reverse = T,
                   test_stats = c("kwt", "chisq"),
                   show_na = FALSE,
                   sort.numeric = TRUE,
@@ -80,7 +81,9 @@ tablR <- function(data,
   vars_c <- data %>% select({{vars}}) %>% names()
   group_c <- data %>% select({{group}}) %>% names()
 
-  data <- data %>% mutate({{group}} := fct_rev({{group}}))
+  if(reverse) {
+  data <- data %>% mutate(!!sym(group_c) := fct_rev(!!sym(group_c)))
+  }
 
   for(v in vars_c) {
 
@@ -110,7 +113,7 @@ tablR <- function(data,
                        stats.labels=list(median="Median", q1q3="Q1, Q3", iqr = "IQR", mean = "Mean", sd="SD", range = "Range", Nmiss = "Missing")
                        )
 
-  form <- paste0(substitute(group), " ~ ", paste0(vars_c, collapse="+"))
+  form <- paste0(group_c, " ~ ", paste0(vars_c, collapse="+"))
 
   table <- tableby(as.formula(form), data=data, control=c)
 
@@ -148,6 +151,5 @@ if(censur) {
 }
 
 s
-
 }
 

@@ -1,11 +1,17 @@
-#' formatR
+#' reportR
 #'
-#' @param data dataframe. Works with piping
-#' @param cat_vars Vector of categorical covariates which should be formatted to factors with labels
-#' @param num_vars Vector of numerical covariates that should be cut
-#' @param case.labs Labels for the case/control column
+#' @description
+#' Automatic tablR function for overview of matched and unmatched cases
 #'
-#' @return Returns the same dataframe with print-friendly labels for the typical full matching setup.
+#' @param data matched dataset
+#' @param casename name or number of cases (e.g. 1 or "CLL")
+#' @param n.controls n.controls from the matchR function
+#' @param vars vars that should be in the table
+#' @param labels List specifying labels of the specific labels for each variable
+#' @param headings List specifying labels for variable names
+#' @param filename
+#'
+#' @return Returns a table of the matching overview and exports a word-file (optional if filename is provided)
 #' @export
 #'
 #'
@@ -79,77 +85,79 @@
 #   fill(income, marital, region, education, cci, .direction = "down")
 #
 # t1 <- matchR(data=pop,
-#              case=case,
-#              pnr = id,
-#              fu=follow,
-#              index=index_cll,
-#              td_date=date,
-#              fixed_vars=c(byear, sex),
-#              td_vars=c(education, marital, cci),
-#              exclude = c(skinc, imm_sup),
-#              td_frame = ses_wide,
-#              n_controls=4,
-#              seed=1)
+#                case=case,
+#                pnr = id,
+#                fu=follow,
+#                index=index_cll,
+#                td_date=date,
+#                fixed_vars=c(byear, sex),
+#                td_vars=c(education, marital, cci),
+#                exclude = c(skinc, imm_sup),
+#                td_frame = ses_wide,
+#                n_controls=4,
+#                seed=1)
 #
+# d <- formatR(t1, case.labs=c("No CLL", "CLL"))
 #
-# (tdf <-
-#     df %>%
-#     formatR(case.labs = c("No CLL", "CLL"),
-#             seqlist = list("age" = c(0,70, seq(80,150, 10)),
-#                            "index" = seq(1980,2030,10)),
-#             names = list("index" = "Period",
-#                          "age" = "age_group")))
+# reportR(d, casename="CLL", table=T, plots=T)
 
 
-formatR <- function(data,
-                    cat_vars = c(case, sex, cci, region, education, income, marital),
-                    num_vars = c(age, index),
-                    seqlist = list(),
-                    names = list(),
-                    case.labs) {
+reportR <- function(data,
+                    casename,
+                    vars = c(period, age_group, sex, education, income, cci, region, marital),
+                    table = F,
+                    plots = F,
+                        ...) {
 
+  vars_c <- data %>% select({{vars}}) %>% names()
 
+  h <- list("cci" = "Charlson Comorbidity Index")
 
-  seqlist_default <- list("age" = seq(0,150,10),
-                          "index" = seq(1980,2030,5))
-  names_default <- list("age" = "age_group",
-                        "index" = "period")
+  if(missing(casename)) {casename <- "1"}
 
-  seqlist <- modifyList(seqlist_default, seqlist)
-  names <- modifyList(names_default, names)
+  report <- data %>% group_by(set) %>%
+    summarise(matches = n()) %>%
+    group_by(matches) %>%
+    summarise(count = n()) %>%
+    print()
 
+  n.controls <- max(report$matches)
 
-    data %>%
-    factR(vars = {{cat_vars}}, labels = list("case" = c("0" = case.labs[1], "1" = case.labs[2]),
-                                         "sex" = c("m" = "Male",
-                                                   "f" = "Female"),
-                                         "cci" = c("cci_0" = "0 Points",
-                                                   "cci_1" = "1 Point",
-                                                   "cci_2-3" = "2-3 Points",
-                                                   "cci_4-5" = "4-5 Points",
-                                                   "cci_6+" = "6+ Points"),
-                                         "region" = c("the_capital_region_of_denmark" = "The Capital Region of Denmark",
-                                                      "central_denmark_region" = "Central Denmark Region",
-                                                      "the_region_of_southern_denmark" = "The Region of Southern Denmark",
-                                                      "region_zealand" = "Region Zealand",
-                                                      "the_north_denmark_region" = "The North Denmark Region"),
-                                         "education" = c("low" = "Low",
-                                                         "medium" = "Medium",
-                                                         "high" = "High"),
-                                         "income" = c("q1" = "1st Quartile",
-                                                      "q2" = "2nd Quartile",
-                                                      "q3" = "3rd Quartile",
-                                                      "q4" =  "4th Quartile"),
-                                         "marital" = c("married" = "Married",
-                                                       "unmarried" = "Unmarried",
-                                                       "divorced" = "Divorced")),
-          lab_to_lev=T) %>%
-    mutate(age = round(as.numeric(index - birth)/365.25,1)) %>%
-    cutR({{num_vars}},
-       seqlist = seqlist,
-       names = names) %>%
-    mutate(across(c(as.vector(unlist(names)), {{cat_vars}}), ~ fct_drop(.)))
+  m <- paste0(seq(0,n.controls-1), "Matches")
+  names(m) <- as.character(seq(0,n.controls-1))
 
+  d <- data %>%
+    group_by(set) %>%
+    mutate(n_controls = as.character(n() - 1)) %>%
+    ungroup() %>%
+    factR(n_controls, labels=m, lab_to_lev=T) %>%
+    filter(case == c(casename)) %>%
+    as.data.frame()
+
+    if(table) {
+    d %>% tablR(group=n_controls,
+          vars = vars_c,
+          headings = h,
+          ...)
+  }
+
+  if(plots) {
+
+    cols <- c("#9B62B8", "#224B87", "#67A8DC", "#D66ACE", "orange")
+
+    plist <-
+      lapply(vars_c, function(v) {
+
+          ggplot(d, aes(x=!!sym(v), fill=n_controls)) +
+            geom_bar() +
+            scale_fill_manual(values = cols) +
+            theme_classic()
+
+      })
 
   }
+
+  ggarrange(plotlist=plist, common.legend=T)
+
+}
 
