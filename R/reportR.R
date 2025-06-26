@@ -4,14 +4,14 @@
 #' Automatic tablR function for overview of matched and unmatched cases
 #'
 #' @param data matched dataset
-#' @param casename name or number of cases (e.g. 1 or "CLL")
-#' @param n.controls n.controls from the matchR function
+#' @param case name or number of cases (e.g. "1" or "CLL")
 #' @param vars vars that should be in the table
-#' @param labels List specifying labels of the specific labels for each variable
+#' @param table whether a table should be made (default = F)
+#' @param plot whether a plot should be made (default = F)
 #' @param headings List specifying labels for variable names
-#' @param filename
+#' @param ... passed to tablR
 #'
-#' @return Returns a table of the matching overview and exports a word-file (optional if filename is provided)
+#' @return Prints the matching report, table and plot. Returns af list of the table and plot.
 #' @export
 #'
 #'
@@ -85,35 +85,38 @@
 #   fill(income, marital, region, education, cci, .direction = "down")
 #
 # t1 <- matchR(data=pop,
-#                case=case,
-#                pnr = id,
-#                fu=follow,
-#                index=index_cll,
-#                td_date=date,
-#                fixed_vars=c(byear, sex),
-#                td_vars=c(education, marital, cci),
-#                exclude = c(skinc, imm_sup),
-#                td_frame = ses_wide,
-#                n_controls=4,
-#                seed=1)
+#              case=case,
+#              pnr = id,
+#              fu=follow,
+#              index=index_cll,
+#              td_date=date,
+#              fixed_vars=c(byear, sex),
+#              td_vars=c(education, marital, cci),
+#              exclude = c(skinc, imm_sup),
+#              td_frame = ses_wide,
+#              n_controls=4,
+#              seed=1)
 #
-# d <- formatR(t1, case.labs=c("No CLL", "CLL"))
+# reportR(t1)
 #
-# reportR(d, casename="CLL", table=T, plots=T)
+# (tdf <-
+#     t1 %>%
+#     formatR(labels = list("case" = c("0" = "No CLL", "1"="CLL"))))
+#
+# tdf %>%
+#   formatR(layout = "matching") %>%
+#   reportR(case = "CLL", table=T, plot = F, headings = list("cci" = "Charlson Comorbidity Index"))
+
 
 
 reportR <- function(data,
-                    casename,
+                    case = "1",
                     vars = c(period, age_group, sex, education, income, cci, region, marital),
                     table = F,
-                    plots = F,
-                        ...) {
-
-  vars_c <- data %>% select({{vars}}) %>% names()
-
-  h <- list("cci" = "Charlson Comorbidity Index")
-
-  if(missing(casename)) {casename <- "1"}
+                    plot = F,
+                    cols = c("orange","#9B62B8", "#224B87", "#67A8DC", "#D66ACE"),
+                    headings = list(),
+                    ...) {
 
   report <- data %>% group_by(set) %>%
     summarise(matches = n()) %>%
@@ -121,9 +124,18 @@ reportR <- function(data,
     summarise(count = n()) %>%
     print()
 
+  if(table | plot) {
+  vars_c <- data %>% select({{vars}}) %>% names()
+
+  #Autoformatting (to_title and spacing)
+    headings_default <- as.list(str_to_title(str_replace_all(vars_c, "_", " "))) %>% set_names(vars_c)
+    headings <- modifyList(headings_default, headings)
+
+
+
   n.controls <- max(report$matches)
 
-  m <- paste0(seq(0,n.controls-1), "Matches")
+  m <- paste0(seq(0,n.controls-1)," Matches")
   names(m) <- as.character(seq(0,n.controls-1))
 
   d <- data %>%
@@ -131,33 +143,50 @@ reportR <- function(data,
     mutate(n_controls = as.character(n() - 1)) %>%
     ungroup() %>%
     factR(n_controls, labels=m, lab_to_lev=T) %>%
-    filter(case == c(casename)) %>%
+    filter(case == c(case)) %>%
     as.data.frame()
 
+  returnlist <- list()
+
     if(table) {
-    d %>% tablR(group=n_controls,
+    (t <- d %>% tablR(group=n_controls,
           vars = vars_c,
-          headings = h,
-          ...)
+          headings = headings,
+          ...))
+
+      returnlist <- append(returnlist, list("table" = t))
   }
 
-  if(plots) {
-
-    cols <- c("#9B62B8", "#224B87", "#67A8DC", "#D66ACE", "orange")
+  if(plot) {
 
     plist <-
       lapply(vars_c, function(v) {
 
-          ggplot(d, aes(x=!!sym(v), fill=n_controls)) +
-            geom_bar() +
+        if("region" %in% colnames(d)) {
+        d <- d %>% mutate(region = str_remove_all(region, "Region|Denmark|The|of| "))
+        }
+
+          ggplot(d, aes(x=n_controls, fill=!!sym(v))) +
+            geom_bar(position = "fill") +
             scale_fill_manual(values = cols) +
-            theme_classic()
+          scale_y_continuous(breaks = seq(0,1,0.25), labels = paste0(seq(0,100,25), "%")) +
+            theme_classic() +
+            theme(legend.position = "top") +
+          labs(x=headings[[v]], y="", fill="")
 
       })
 
+
+    (p <- ggarrange(plotlist=plist, common.legend=F))
+    returnlist <- append(returnlist, list("plot" = p))
   }
 
-  ggarrange(plotlist=plist, common.legend=T)
+
+
+  returnlist
+
+  }
+
+
 
 }
-

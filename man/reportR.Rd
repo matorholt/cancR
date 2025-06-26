@@ -6,30 +6,32 @@
 \usage{
 reportR(
   data,
-  casename,
+  case = "1",
   vars = c(period, age_group, sex, education, income, cci, region, marital),
   table = F,
-  plots = F,
+  plot = F,
+  cols = c("orange", "#9B62B8", "#224B87", "#67A8DC", "#D66ACE"),
+  headings = list(),
   ...
 )
 }
 \arguments{
 \item{data}{matched dataset}
 
-\item{casename}{name or number of cases (e.g. 1 or "CLL")}
+\item{case}{name or number of cases (e.g. "1" or "CLL")}
 
 \item{vars}{vars that should be in the table}
 
-\item{n.controls}{n.controls from the matchR function}
+\item{table}{whether a table should be made (default = F)}
 
-\item{labels}{List specifying labels of the specific labels for each variable}
+\item{plot}{whether a plot should be made (default = F)}
 
 \item{headings}{List specifying labels for variable names}
 
-\item{filename}{}
+\item{...}{passed to tablR}
 }
 \value{
-Returns a table of the matching overview and exports a word-file (optional if filename is provided)
+Prints the matching report, table and plot. Returns af list of the table and plot.
 }
 \description{
 Automatic tablR function for overview of matched and unmatched cases

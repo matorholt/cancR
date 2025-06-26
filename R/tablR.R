@@ -28,26 +28,28 @@
 # df$time <- round(df$time,1)*12
 # df$X1 <- factor(rbinom(n, prob = c(0.3,0.4) , size = 2), labels = paste0("T",0:2))
 # df$set <- as.factor(rep(seq(1,10),each=30))
-# df$age_group <- sample(c("80-90", "10-20", "110-120", "0-40"), n, replace=TRUE)
+# df$age_group <- sample(c("80-90", "10-20", "110-120", "0-40", ">120"), n, replace=TRUE)
 #
 # df <- as.data.frame(df)
 #
 # tablR(df,
 #       group=X2,
-#       vars=c(X1,X3,X4,X6,X7, age_group),
+#       vars=c(X1,X3,X4,X6,X7),
+#       num_vars = age_group,
 #       labels = list("age_group" = c("0-40" = "<=40"),
 #                     "X1" = c("T2" = "T2-T3")),
-#       headings = list("age_group" = "Age2"),
+#       headings = list("age_group" = "Age2",
+#                       "X6" = "New_var"),
 #       total = T,
 #       numeric = c("median", "q1q3", "range"),
 #       test = T,
 #       show_na=T,
 #       censur = F)
 
-
 tablR <- function(data,
                   group,
                   vars,
+                  num_vars,
                   test=FALSE,
                   total=FALSE,
                   numeric = c("median", "q1q3", "range"),
@@ -55,7 +57,7 @@ tablR <- function(data,
                   levels = list(),
                   labels= list(),
                   reference = list(),
-                  headings = NULL,
+                  headings = list(),
                   reverse = T,
                   test_stats = c("kwt", "chisq"),
                   show_na = FALSE,
@@ -78,30 +80,42 @@ tablR <- function(data,
   }
 
 
-  vars_c <- data %>% select({{vars}}) %>% names()
+  vars_c <- data %>% select({{vars}}, {{num_vars}}) %>% names()
   group_c <- data %>% select({{group}}) %>% names()
+  num_c <-
+    data %>% select({{num_vars}}) %>% names()
 
   if(reverse) {
   data <- data %>% mutate(!!sym(group_c) := fct_rev(!!sym(group_c)))
   }
 
-  for(v in vars_c) {
+  for(v in names(labels)) {
 
-    if(!is.numeric(data %>% pull(v))) {
-      data <- data %>% factR(!!sym(v), levels = levels, labels = labels, reference = reference, lab_to_lev = F)
-    }
+    data <- data %>% mutate(!!sym(v) := recode(!!sym(v), !!!labels[[v]]))
 
   }
 
+  for(v in num_c) {
 
-  if(sort.numeric) {
-  for(v in vars_c) {
+    n <- as.character(data[,v])
 
-    if(any(str_detect(data %>% pull(v), "\\d+")) & class(data %>% pull(v)) != "numeric") {
-      data <- data %>% factR(!!sym(v), levels = c(str_sort(unique(data %>% pull(!!sym(v))), numeric = T)))
-    }
+    names(n) <-
+      lapply(n, function(x) {
+        x2 <- as.numeric(paste0(unlist(str_extract_all(x, "\\d")), collapse=""))
 
-  }
+        if(str_detect(x, "<")) {
+          x2 <- -x2
+        } else if(str_detect(x, ">|\\+")) {x2 <- x2+100000000}
+        else {x2}
+
+      })
+
+    n <- unique(n[as.character(sort(as.numeric(names(n))))])
+
+    data <- data %>%
+      mutate(!!sym(v) := forcats::fct_relevel(!!sym(v), n))
+
+
   }
 
 
@@ -118,18 +132,8 @@ tablR <- function(data,
   table <- tableby(as.formula(form), data=data, control=c)
 
   #Autoformatting (to_title and spacing)
-  if(is.null(headings)) {
-    headings <- as.list(str_to_title(str_replace_all(vars_c, "_", " "))) %>% set_names(vars_c)
-  }
-
- print(summary(table,
-          text=T,
-          labelTranslations = headings))
-
- tablist <- list(table = table, headings = headings)
- class(tablist) <- "tablR"
-
-invisible(tablist)
+  headings_default <- as.list(str_to_title(str_replace_all(vars_c, "_", " "))) %>% set_names(vars_c)
+  headings <- modifyList(headings_default, headings)
 
 s <- summary(table,
         text=T,
@@ -152,4 +156,5 @@ if(censur) {
 
 s
 }
+
 

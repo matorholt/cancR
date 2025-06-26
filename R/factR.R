@@ -13,6 +13,7 @@
 #'
 #' @param data dataframe
 #' @param vars Vector of variables that should be factorized
+#' @param num_vars vector of variables with pseudonumeric ordering
 #' @param reference List of variables with the reference level (e.g. list("v1" = "a"))
 #' @param levels List of variables with the corresponding levels (e.g. list("v1" = "c("a","b","c","d","e")))
 #' @param labels List of variables with the corresponding labels (e.g. list("v3" = c("e" = "epsilon", "d" = "delta")))
@@ -31,7 +32,9 @@
 #     data.frame(v1 = sample(letters[1:5], size = 20, replace=TRUE),
 #                v2 = sample(letters[1:5], size = 20, replace=TRUE),
 #                v3 = sample(letters[1:5], size = 20, replace=TRUE),
-#                vnum = sample(c(0,1), size = n, replace=TRUE)))
+#                vnum = sample(c("<40", "50-60", "10-20", "100-110", ">110", "cci_0"), size = n, replace=TRUE)))
+
+
 #
 # # #Lazy_coding
 # (tdf1 <-
@@ -79,23 +82,33 @@
 # #Setting levels by labels
 # (tdf6 <-
 #     df %>%
-#     factR(vars = c(v1, v2,v3),
-#           labels = list("v3" = c("e" = "epsilon", "d" = "delta", "a" = "alfa", "b" = "beta", "c" = "charlie")), lab_to_lev=T))
+#     factR(vars = c("v1", "v2", "v3"),
+#           labels = list(
+#             "v1" = c("b" = "beta", "a" = "alfa"),
+#             "v2" = c("c" = "charlie"),
+#             "v3" = c("e" = "epsilon", "d" = "delta", "a" = "alfa", "b" = "beta", "c" = "charlie")), lab_to_lev=T))
 #
 # str(tdf6)
-
+#
 # #Single variable
 # (tdf7 <-
 #     df %>%
 #     factR(vars = v1, levels = c("a", "b")))
 #
 # str(tdf7)
+#
+# # Sort pseudo numeric character variable
+# (tdf8 <- df %>%
+#     factR(num_vars=vnum))
+# str(tdf8)
 
-
-factR <- function(data, vars, reference = list(), levels = list(), labels = list(), lab_to_lev = FALSE) {
+factR <- function(data, vars, num_vars, reference = list(), levels = list(), labels = list(), lab_to_lev = FALSE) {
 
   vars_c <-
     data %>% select({{vars}}) %>% names()
+  num_c <-
+    data %>% select({{num_vars}}) %>% names()
+
 
   if(class(levels) == "character") {
     levels <- list(levels)
@@ -126,6 +139,31 @@ factR <- function(data, vars, reference = list(), levels = list(), labels = list
             !!sym(v) := forcats::fct_recode(!!sym(v), !!!setNames(as.character(names(labels[[v]])), labels[[v]])))
 
   }
+
+    for(v in num_c) {
+
+      n <- as.character(data[,v])
+
+      names(n) <-
+        lapply(n, function(x) {
+          x2 <- as.numeric(paste0(unlist(str_extract_all(x, "\\d")), collapse=""))
+
+          if(str_detect(x, "<")) {
+            x2 <- -x2
+          } else if(str_detect(x, ">|\\+")) {x2 <- x2+100000000}
+          else {x2}
+
+        })
+
+      n <- unique(n[as.character(sort(as.numeric(names(n))))])
+
+      data <- data %>%
+      mutate(!!sym(v) := forcats::fct_relevel(!!sym(v), n))
+
+
+    }
+
+
 
 data
 

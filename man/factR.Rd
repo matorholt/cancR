@@ -7,6 +7,7 @@
 factR(
   data,
   vars,
+  num_vars,
   reference = list(),
   levels = list(),
   labels = list(),
@@ -17,6 +18,8 @@ factR(
 \item{data}{dataframe}
 
 \item{vars}{Vector of variables that should be factorized}
+
+\item{num_vars}{vector of variables with pseudonumeric ordering}
 
 \item{reference}{List of variables with the reference level (e.g. list("v1" = "a"))}
 

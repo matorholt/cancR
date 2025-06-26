@@ -147,11 +147,10 @@ savR <- function(object,
     }
   }
 
-  if(class(object) == "tablR") {
-    write2word(object$table,
+  if("summary.tableby" %in% class(object)) {
+    write2word(object,
                paste0(getwd(), "/Tables and Figures/", name, ".docx"),
-               quiet = TRUE,
-               labelTranslations = object$headings)
+               quiet = TRUE)
   }
 }
 

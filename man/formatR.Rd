@@ -7,10 +7,13 @@
 formatR(
   data,
   cat_vars = c(case, sex, cci, region, education, income, marital),
-  num_vars = c(age, index),
+  num_vars = c(period, age_group),
+  cut_vars = c(age, index),
   seqlist = list(),
+  labels = list(),
+  lab_to_lev = F,
   names = list(),
-  case.labs
+  layout = NULL
 )
 }
 \arguments{
@@ -19,6 +22,8 @@ formatR(
 \item{cat_vars}{Vector of categorical covariates which should be formatted to factors with labels}
 
 \item{num_vars}{Vector of numerical covariates that should be cut}
+
+\item{cut_vars}{vector of vars to slice}
 
 \item{case.labs}{Labels for the case/control column}
 }

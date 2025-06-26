@@ -207,7 +207,7 @@ plotR <- function(list,
     #X-title
     p + annotate("text", x=horizon/2, y = -(y*0.15), label = x.title, size = x.title.size*tscale) +
     #Y-title
-    annotate("text", x=-(horizon*0.11)-y.title.shift, y = y/2, label = y.title, size = y.title.size*tscale, angle = 90)
+    annotate("text", x=-(horizon*0.11)-y.title.shift, y = y/2, label = y.title, size = y.title.size*tscale, angle = 90) +
     #X-breaks
     annotate("text", x=seq(0,horizon,breaks), y=-(y*0.1), label=round(seq(0,horizon,breaks)/u,0), size = x.text.size*tscale)
 

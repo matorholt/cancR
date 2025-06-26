@@ -16,7 +16,7 @@
 #' @export
 #'
 #'
-# n <- 1000
+# n <- 2000
 # set.seed(1)
 # df <- riskRegression::sampleData(n, outcome="survival")
 # df$time <- round(df$time,1)*12
@@ -30,7 +30,7 @@
 #                      event = as.factor(event)) %>%
 #   rename(ttt = time)
 #
-# t2 <-
+# t <-
 #   estimatR.multi(df2,
 #              timevar = "ttt",
 #              event = c("event", "event", "event2"),
