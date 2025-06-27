@@ -33,7 +33,7 @@
 #                v2 = sample(letters[1:5], size = 20, replace=TRUE),
 #                v3 = sample(letters[1:5], size = 20, replace=TRUE),
 #                vnum = sample(c("<40", "50-60", "10-20", "100-110", ">110", "cci_0"), size = n, replace=TRUE)))
-
+#
 
 #
 # # #Lazy_coding
@@ -99,7 +99,8 @@
 #
 # # Sort pseudo numeric character variable
 # (tdf8 <- df %>%
-#     factR(num_vars=vnum))
+#     factR(num_vars=vnum,
+#           labels = list("vnum" = c("cci_0" = "test"))))
 # str(tdf8)
 
 factR <- function(data, vars, num_vars, reference = list(), levels = list(), labels = list(), lab_to_lev = FALSE) {
@@ -158,7 +159,8 @@ factR <- function(data, vars, num_vars, reference = list(), levels = list(), lab
       n <- unique(n[as.character(sort(as.numeric(names(n))))])
 
       data <- data %>%
-      mutate(!!sym(v) := forcats::fct_relevel(!!sym(v), n))
+      mutate(!!sym(v) := forcats::fct_relevel(!!sym(v), n),
+             !!sym(v) := forcats::fct_recode(!!sym(v), !!!setNames(as.character(names(labels[[v]])), labels[[v]])))
 
 
     }

@@ -8,19 +8,16 @@ tablR(
   data,
   group,
   vars,
-  num_vars,
   test = FALSE,
   total = FALSE,
   numeric = c("median", "q1q3", "range"),
   direction = "colwise",
-  levels = list(),
   labels = list(),
   reference = list(),
   headings = list(),
   reverse = T,
   test_stats = c("kwt", "chisq"),
   show_na = FALSE,
-  sort.numeric = TRUE,
   censur = F
 )
 }
@@ -42,6 +39,8 @@ tablR(
 \item{labels}{List specifying labels of the specific labels for each variable}
 
 \item{headings}{List specifying labels for variable names}
+
+\item{reverse}{whether the order of groups should start with the highest level (default = T)}
 
 \item{test_stats}{Vector of length 2 containing statistical tests that should be performed}
 

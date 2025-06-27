@@ -9,9 +9,8 @@ formatR(
   cat_vars = c(case, sex, cci, region, education, income, marital),
   num_vars = c(period, age_group),
   cut_vars = c(age, index),
-  seqlist = list(),
   labels = list(),
-  lab_to_lev = F,
+  seqlist = list(),
   names = list(),
   layout = NULL
 )
@@ -19,17 +18,23 @@ formatR(
 \arguments{
 \item{data}{dataframe. Works with piping}
 
-\item{cat_vars}{Vector of categorical covariates which should be formatted to factors with labels}
+\item{cat_vars}{Vector of categorical covariates which should be formatted to factors}
 
-\item{num_vars}{Vector of numerical covariates that should be cut}
+\item{num_vars}{vector of pseudonumerical variables that should be ordered (e.g. 1990-2000, 2000-2010).}
 
-\item{cut_vars}{vector of vars to slice}
+\item{cut_vars}{vector of numerical covariates that should be cut}
 
-\item{case.labs}{Labels for the case/control column}
+\item{labels}{list of labels (e.g. list("var" = c("a" = "apple", "b" = "banana")))}
+
+\item{seqlist}{list of sequences for cutting (e.g. list("age" = seq(0,100,10)))}
+
+\item{names}{names for the cut variable (e.g. list("age" = "age_group")}
+
+\item{layout}{layout preset for common procedures. "Matching" for typical matching studies}
 }
 \value{
 Returns the same dataframe with print-friendly labels for the typical full matching setup.
 }
 \description{
-formatR
+Auto-formatting of a data frame with layout option for typical levels and labels
 }

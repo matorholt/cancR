@@ -3,7 +3,6 @@
 #' @description
 #' Wrapper for the tableby function in the Arsenal package
 #'
-#'
 #' @param data dataframe
 #' @param group Grouping variable. If omitted a single column tabel is provided
 #' @param vars Variables that the grouping variable should be aggregated by
@@ -13,6 +12,7 @@
 #' @param direction Direction for percentages (colwise or rowwise)
 #' @param labels List specifying labels of the specific labels for each variable
 #' @param headings List specifying labels for variable names
+#' @param reverse whether the order of groups should start with the highest level (default = T)
 #' @param test_stats Vector of length 2 containing statistical tests that should be performed
 #' @param show_na Whether NAs should be presented
 #' @param censur whether counts <= 3 should be censored
@@ -49,19 +49,16 @@
 tablR <- function(data,
                   group,
                   vars,
-                  num_vars,
                   test=FALSE,
                   total=FALSE,
                   numeric = c("median", "q1q3", "range"),
                   direction="colwise",
-                  levels = list(),
                   labels= list(),
                   reference = list(),
                   headings = list(),
                   reverse = T,
                   test_stats = c("kwt", "chisq"),
                   show_na = FALSE,
-                  sort.numeric = TRUE,
                   censur=F) {
 
   numeric <- match.arg(numeric, c("median", "q1q3", "iqr", "range", "mean", "sd", "min", "max"), several.ok = T)
@@ -94,31 +91,6 @@ tablR <- function(data,
     data <- data %>% mutate(!!sym(v) := recode(!!sym(v), !!!labels[[v]]))
 
   }
-
-  for(v in num_c) {
-
-    n <- as.character(data[,v])
-
-    names(n) <-
-      lapply(n, function(x) {
-        x2 <- as.numeric(paste0(unlist(str_extract_all(x, "\\d")), collapse=""))
-
-        if(str_detect(x, "<")) {
-          x2 <- -x2
-        } else if(str_detect(x, ">|\\+")) {x2 <- x2+100000000}
-        else {x2}
-
-      })
-
-    n <- unique(n[as.character(sort(as.numeric(names(n))))])
-
-    data <- data %>%
-      mutate(!!sym(v) := forcats::fct_relevel(!!sym(v), n))
-
-
-  }
-
-
 
   c <- tableby.control(test=test, total=total,
                        numeric.test=test_stats[1], cat.test=test_stats[2],

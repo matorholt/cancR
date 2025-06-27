@@ -1,10 +1,17 @@
 #' formatR
 #'
+#' @description
+#' Auto-formatting of a data frame with layout option for typical levels and labels
+#'
+#'
 #' @param data dataframe. Works with piping
-#' @param cat_vars Vector of categorical covariates which should be formatted to factors with labels
-#' @param num_vars Vector of numerical covariates that should be cut
-#' @param cut_vars vector of vars to slice
-#' @param case.labs Labels for the case/control column
+#' @param cat_vars Vector of categorical covariates which should be formatted to factors
+#' @param cut_vars vector of numerical covariates that should be cut
+#' @param num_vars vector of pseudonumerical variables that should be ordered (e.g. 1990-2000, 2000-2010).
+#' @param labels list of labels (e.g. list("var" = c("a" = "apple", "b" = "banana")))
+#' @param seqlist list of sequences for cutting (e.g. list("age" = seq(0,100,10)))
+#' @param names names for the cut variable (e.g. list("age" = "age_group")
+#' @param layout layout preset for common procedures. "Matching" for typical matching studies
 #'
 #' @return Returns the same dataframe with print-friendly labels for the typical full matching setup.
 #' @export
@@ -95,12 +102,13 @@
 #
 # (tdf <-
 #     t1 %>%
-#     formatR(labels = list("case" = c("0" = "No CLL", "1"="CLL"))))
-#
+#     formatR(labels = list("case" = c("0" = "No CLL", "1"="CLL"),
+#                           "age_group" = c("30-40" = "<30", "50-60" = ">60"))))
+# #
 # str(tdf)
-#
-#  (tdf2 <- tdf %>% formatR(layout = "matching"))
-#
+# #
+# (tdf2 <- tdf %>% formatR(layout = "matching"))
+# #
 # str(tdf2)
 
 
@@ -108,9 +116,8 @@ formatR <- function(data,
                     cat_vars = c(case, sex, cci, region, education, income, marital),
                     num_vars = c(period, age_group),
                     cut_vars = c(age, index),
-                    seqlist = list(),
                     labels = list(),
-                    lab_to_lev = F,
+                    seqlist = list(),
                     names = list(),
                     layout = NULL) {
 
@@ -121,7 +128,6 @@ formatR <- function(data,
   names_default <- list("age" = "age_group",
                         "index" = "period")
 
-
   seqlist <- modifyList(seqlist_default, seqlist)
   names <- modifyList(names_default, names)
 
@@ -130,7 +136,7 @@ formatR <- function(data,
 
     if(layout == "matching") {
 
-      labels <- list(
+      labels_default <- list(
         "sex" = c("m" = "Male",
                   "f" = "Female"),
         "cci" = c("cci_0" = "0 Points",
@@ -154,19 +160,26 @@ formatR <- function(data,
                       "unmarried" = "Unmarried",
                       "divorced" = "Divorced"))
 
-      lab_to_lev <- T
-
-
     }
-  }
 
-  data %>%
-    factR(vars=c({{cat_vars}}), labels = labels, lab_to_lev=lab_to_lev) %>%
+    labels <- modifyList(labels_default, labels)
+
+    data <- data %>%
+    factR(num_vars = c({{num_vars}}), labels = labels) %>%
+    factR(vars=c({{cat_vars}}), labels = labels, lab_to_lev=T)
+
+  } else {
+
+
+  data <- data %>%
     mutate(age = round(as.numeric(index - birth)/365.25,1)) %>%
     cutR({{cut_vars}},
          seqlist = seqlist,
          names = names) %>%
-    factR(num_vars = c({{num_vars}})) %>%
+    factR(vars=c({{cat_vars}}, {{num_vars}}), labels = labels, lab_to_lev=F) %>%
     mutate(across(c(as.vector(unlist(names)), {{cat_vars}}), ~ fct_drop(.)))
 
+  }
+
+  data
 }
