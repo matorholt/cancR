@@ -212,8 +212,8 @@ plotR <- function(list,
     annotate("text", x=seq(0,horizon,breaks), y=-(y*0.1), label=round(seq(0,horizon,breaks)/u,0), size = x.text.size*tscale)
 
   yscale <- case_when(y>=0.5 ~ 1/10,
+                      y<=0.01 ~ 2.5/1000,
                       y<=0.1 ~ 1/100,
-                      y<=0.01 ~ 1/1000,
                       T ~ 5/100)
   #Y-breaks
   p <- p + annotate("text", x=-(horizon*0.03), y=seq(0,y,yscale), label = paste(seq(0,y*100,yscale*100), "%", sep=""), size = y.text.size*tscale, hjust="right") +

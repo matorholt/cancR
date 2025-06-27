@@ -14,13 +14,11 @@
 #'
 
 powR <- function(text) {
-  if(str_detect(text, "\\^")) {cat("\nCaution: the text contains ^ which cannot be translated in powershell - instead xcaretx is used")}
-
-  cat("\n\n\n#########  Instructions:  ############")
-  cat("\n1)Open Windows PowerShell and insert the output below:
+  cat("\n#########  Instructions:  ############")
+  cat("\n\n1)Open Windows PowerShell and insert the output below:
   \n2)Press enter
   \n3)Left-click on the screen where the script should be inserted and wait 5 seconds
-  \n\n\n########  COPY  #############")
+  \n\n########  COPY  #############")
 
   cat(paste0("\n\nAdd-Type -AssemblyName System.Windows.Forms; Start-Sleep 5; [System.Windows.Forms.SendKeys]::SendWait('", str_replace_all(text, c("\\{" = "x{x",
                                                                                                                                                     "\\}" = "x}x",
@@ -30,7 +28,7 @@ powR <- function(text) {
                                                                                                                                                     "\\+" = "{\\+}",
                                                                                                                                                     "\\%" = "{\\%}",
                                                                                                                                                     "\\~" = "{\\~}  ",
-                                                                                                                                                    "\\^" = "xcaretx",
+                                                                                                                                                    "\\^" = "+¨",
                                                                                                                                                     "x\\{x" = "{{}",
                                                                                                                                                     "x\\}x" = "{}}",
                                                                                                                                                     "\n" = "{ENTER}",
