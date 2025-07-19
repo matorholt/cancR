@@ -5,8 +5,9 @@
 #'
 #'
 #' @param data The full register as a data.frame
-#' @param pattern_list list with list(label = diagnosis code) structure. The pattern can be collected using c() which will be coupled with | as a regex.
 #' @param register Specify the register
+#' @param pattern_list list with list(label = diagnosis code) structure. The pattern can be collected using c() which will be coupled with | as a regex.
+#' @param keep list with list("label" = "column name") structure if the diagnosis code should be kept with specified column name.
 #' @param index_df Add index-dates to the patients (optional)
 #' @param match How specific the diagnosis codes should be used
 #' @param remove Removal of specific diagnosis codes
@@ -28,18 +29,20 @@
 # df_index <- df %>% select(pnr, indexdate) %>% rename(index = indexdate) %>% distinct(pnr, .keep_all=T)
 #
 # (t <- searchR(df,
-#                  pattern_list= list("KOL" = "DQ",
-#                                     "Astma" = c("DB", "DQ"),
-#                                     "DM" = "DD"),
-#                  register = "lpr",
-#                  remove = c("DG", "DUA", "EG"),
-#                  format="date",
-#                  slice = "first"))
-
+#               pattern_list= list("KOL" = "DQ",
+#                                  "Astma" = c("DB", "DQ"),
+#                                  "DM" = "DD"),
+#               keep = list("KOL" = "subtypes",
+#                           "Astma" = "diags"),
+#               register = "lpr",
+#               remove = c("DG", "DUA", "EG"),
+#               format="date",
+#               slice = "first"))
 
 searchR <- function(data,
+                    register,
                        pattern_list,
-                       register,
+                    keep = list(),
                        index_df,
                        match = "contains",
                        remove = "*_*",
@@ -68,7 +71,11 @@ searchR <- function(data,
 
   if(length(pattern) != length(remove)) {
     remove <- c(remove, rep("xxx", length(pattern)-1))
-    warning("OBS: Different lengths in pattern and remove - check positions")
+    warning("Different lengths in pattern and remove - check positions")
+  }
+
+  if(sum(names(keep) %nin% names(pattern_list)) > 0) {
+    warning(paste0(paste0(names(keep)[names(keep) %nin% names(pattern_list)], collapse=", "), " are not present in pattern_list - check for spelling errors"))
   }
 
   switch(match,
@@ -116,21 +123,27 @@ searchR <- function(data,
           mutate(!!sym(labels[[x]]) := 1)
       } else {
       data <- data %>% mutate(!!sym(labels[[x]]) := date)
-    }
+      }
+
+      if(labels[[x]] %in% names(keep)) {
+        data <- data %>% mutate(!!sym(unlist(keep[labels[[x]]])) := code)
+      }
 
       if(slice == "first") {
         data <- data %>%
           group_by(pnr) %>%
           slice(1) %>%
-          select(pnr, !!sym(labels[[x]]))
+          select(pnr, contains(c(labels[[x]], unlist(keep))))
       } else if(slice == "last") {
         data <- data %>%
           group_by(pnr) %>%
           slice(n()) %>%
-          select(pnr, !!sym(labels[[x]]))
+          select(pnr, contains(c(labels[[x]], unlist(keep))))
+
       } else if(slice == "all") {
         data <- data %>%
-          select(pnr, !!sym(labels[[x]]))
+          select(pnr, contains(c(labels[[x]], unlist(keep))))
+
       }
 
    })
@@ -139,5 +152,3 @@ searchR <- function(data,
     arrange(pnr)
 
 }
-
-
