@@ -7,7 +7,7 @@
 plotR(
   list,
   y = 100,
-  col = c("#9B62B8", "#224B87", "#67A8DC", "#D66ACE"),
+  col = cancR_palette,
   table.col = "#616161",
   time_unit = "m2y",
   labs = levels,
@@ -33,7 +33,7 @@ plotR(
   table.title.size = 6,
   table.text.size = 5,
   table.linewidth = 1,
-  legend.pos = c(0.5, 0.95),
+  legend.pos = c(0.5, 0.9),
   tscale = 1,
   censur = F
 )

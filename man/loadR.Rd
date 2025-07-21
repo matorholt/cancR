@@ -8,9 +8,9 @@ loadR(
   regs = c("lpr", "pop", "cancer", "lmdb", "opr"),
   keep = NULL,
   n = NULL,
-  id_filter = NULL,
-  pattern = NULL,
-  pattern2 = NULL,
+  id.filter = NULL,
+  pattern.list = NULL,
+  pattern.list2 = NULL,
   vars = NULL,
   lmdb.start = 1995,
   lmdb.stop = 2023
@@ -23,11 +23,11 @@ loadR(
 
 \item{n}{number of observations that should be loaded}
 
-\item{id_filter}{optional possibility to limit the registers to a defined patient population of PNRs}
+\item{id.filter}{optional possibility to limit the registers to a defined patient population of PNRs}
 
-\item{pattern}{regex patterns provided as a list("lpr" = "DC92|DC21")}
+\item{pattern.list}{regex patterns provided as a list("lpr" = c("DC92", "DC21"))}
 
-\item{pattern2}{supplemental pattern if multiple columns should be filtered. Works the same way as pattern}
+\item{pattern.list2}{supplemental pattern if multiple columns should be filtered. Works the same way as pattern}
 
 \item{vars}{which columns should the pattern filter be applied to. Defaults to diag, atc, opr and c_morfo3,}
 

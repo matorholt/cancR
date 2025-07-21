@@ -30,7 +30,7 @@
 #
 # summarisR(df, exclude = "time|event|t_")
 
-summarisR <- function(data, vars, type = NULL, exclude = NULL, bins = 1) {
+summarisR <- function(data, vars, type = NULL, exclude = NULL, bins = 1, cols = cancR_palette) {
 
 
   if(!is.null(exclude)) {
@@ -59,7 +59,7 @@ summarisR <- function(data, vars, type = NULL, exclude = NULL, bins = 1) {
 
       if(length(unique(data[,v]))>10) {
 
-        c <- sample(c("#9B62B8", "#224B87", "#67A8DC", "#D66ACE", "orange"), 1)
+        c <- sample(cols, 1)
 
         s <- round(summary(data[,v])[c(1:3,5:6)],1)
 
@@ -109,7 +109,7 @@ summarisR <- function(data, vars, type = NULL, exclude = NULL, bins = 1) {
 
         grps <- unique(data %>% drop_na(!!sym(v)) %>% pull(!!sym(v)))
 
-        c <- sample(c("#9B62B8", "#224B87", "#67A8DC", "#D66ACE", "orange"), 1)
+        c <- sample(cols, 1)
 
         t <- df %>% drop_na(!!sym(v)) %>%
           group_by(!!sym(v)) %>%

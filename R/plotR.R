@@ -54,13 +54,13 @@
 #                      event = as.factor(event)) %>%
 #   rename(ttt = time)
 #
-# t2 <- estimatR(df2, ttt, event2, X1, time = 60, type = "select", vars = c(X6,X7))
+# t2 <- estimatR(df2, ttt, event2, X3, time = 60, type = "select", vars = c(X6,X7), pl=FALSE)
 #
 # plotR(t2)
 
 plotR <- function(list,
                   y=100,
-                  col=c("#9B62B8", "#224B87", "#67A8DC", "#D66ACE"),
+                  col=cancR_palette,
                   table.col = "#616161",
                   time_unit = "m2y",
                   labs = levels,
@@ -86,7 +86,7 @@ plotR <- function(list,
                   table.title.size = 6,
                   table.text.size = 5,
                   table.linewidth = 1,
-                  legend.pos = c(0.5,0.95),
+                  legend.pos = c(0.5,0.9),
                   tscale = 1,
                   censur=F) {
 
@@ -197,7 +197,8 @@ plotR <- function(list,
           axis.title = element_blank(),
           axis.text.x = element_blank(),
           axis.text.y = element_blank(),
-          legend.position = legend.pos,
+          legend.position = "inside",
+          legend.position.inside = legend.pos,
           legend.direction = "horizontal",
           legend.title = element_blank(),
           legend.text = element_text(size=16*tscale),
@@ -343,7 +344,3 @@ plotR <- function(list,
 
 
 }
-
-
-
-

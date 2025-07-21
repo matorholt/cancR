@@ -7,9 +7,9 @@
 searchR(
   data,
   register,
-  pattern_list,
+  pattern.list,
   keep = list(),
-  index_df,
+  index.df,
   match = "contains",
   remove = "*_*",
   format = "date",
@@ -24,11 +24,11 @@ searchR(
 
 \item{register}{Specify the register}
 
-\item{pattern_list}{list with list(label = diagnosis code) structure. The pattern can be collected using c() which will be coupled with | as a regex.}
+\item{pattern.list}{list with list(label = diagnosis code) structure. The pattern can be collected using c() which will be coupled with | as a regex.}
 
 \item{keep}{list with list("label" = "column name") structure if the diagnosis code should be kept with specified column name.}
 
-\item{index_df}{Add index-dates to the patients (optional)}
+\item{index.df}{Add index-dates to the patients (optional)}
 
 \item{match}{How specific the diagnosis codes should be used}
 

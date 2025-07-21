@@ -4,7 +4,14 @@
 \alias{summarisR}
 \title{summarisR}
 \usage{
-summarisR(data, vars, type = NULL, exclude = NULL, bins = 1)
+summarisR(
+  data,
+  vars,
+  type = NULL,
+  exclude = NULL,
+  bins = 1,
+  cols = cancR_palette
+)
 }
 \arguments{
 \item{data}{dataset}
