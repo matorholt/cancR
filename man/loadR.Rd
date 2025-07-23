@@ -6,12 +6,12 @@
 \usage{
 loadR(
   regs = c("lpr", "pop", "cancer", "lmdb", "opr"),
-  keep = NULL,
-  n = NULL,
-  id.filter = NULL,
   pattern.list = NULL,
   pattern.list2 = NULL,
-  vars = NULL,
+  n = NULL,
+  id.filter = NULL,
+  keep.list = NULL,
+  vars.list = NULL,
   lmdb.start = 1995,
   lmdb.stop = 2023
 )
@@ -19,17 +19,17 @@ loadR(
 \arguments{
 \item{regs}{which registers should be loaded. Default is all (lpr, pop, pato, cancer, lmdb and opr)}
 
-\item{keep}{which variables should be kept provided as a list("lpr" = c("vars")).}
+\item{pattern.list}{regex patterns provided as a list("lpr" = c("DC92", "DC21"))}
+
+\item{pattern.list2}{supplemental pattern if multiple columns should be filtered. Works the same way as pattern}
 
 \item{n}{number of observations that should be loaded}
 
 \item{id.filter}{optional possibility to limit the registers to a defined patient population of PNRs}
 
-\item{pattern.list}{regex patterns provided as a list("lpr" = c("DC92", "DC21"))}
+\item{keep.list}{which variables should be kept provided as a list("lpr" = c("vars")).}
 
-\item{pattern.list2}{supplemental pattern if multiple columns should be filtered. Works the same way as pattern}
-
-\item{vars}{which columns should the pattern filter be applied to. Defaults to diag, atc, opr and c_morfo3,}
+\item{vars.list}{which columns should the pattern filter be applied to. Defaults to diag, atc, opr and c_morfo3,}
 
 \item{lmdb.start}{first year of LMDB}
 

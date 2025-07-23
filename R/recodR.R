@@ -15,18 +15,19 @@
 
 # set.seed(1)
 # df <-
-#   data.frame(diag = sample(c("DC123", "DC234", "DG123"), 10, replace=TRUE),
-#              type = sample(c("DY", "DY234", "DY123"), 10, replace=TRUE),
-#              type2 = sample(c("DC123", "DC234", "DG123"), 10, replace=TRUE))
+#   data.frame(diag = sample(c("DX123", "DC123", "DC234", "DG123", "DG234"), 20, replace=TRUE),
+#              type = sample(c("DY", "DY234", "DY123"), 20, replace=TRUE),
+#              type2 = sample(c("DC123", "DC234", "DG123"), 20, replace=TRUE))
+#
+# nlist <- list("diag" = list("KOL" = "DX123",
+#                                "Astma" = c("DC123", "DC2"),
+#                                "AMI" = list("DG123", "DG234")),
+#      "type" = list("Cancer" = "DY"))
 #
 #
 # df %>%
-#   recodR(list("diag" = list("KOL" = "DG123",
-#                          "Astma" = "DC123",
-#                          "AMI" = list("DC234", "DC235")),
-#               "type" = list("Cancer" = "DY")),
+#   recodR(nlist,
 #          match = "exact")
-
 
 recodR <- function(data, namelist, match = "contains") {
 
@@ -36,30 +37,28 @@ recodR <- function(data, namelist, match = "contains") {
     return(cat("ERROR: The variable names are not provided as a list"))
   }
 
+  switch(match,
+         "start" = {regex <- c("^(", ")")},
+         "end" = {regex <- c("(", ")$")},
+         "exact" = {regex <- c("^(", ")$")},
+         "contains" = {regex <- c("(", ")")}
+  )
+
+  #Paste diagnosis codes
+  namelist <- modify_depth(namelist, 2, function(x) paste0(regex[1], paste0(x, collapse="|"), regex[2]))
+
   #Seq through variables (1st order in namelist)
   for(i in names(namelist)) {
 
-    #Remove number from vectors with length > 1
-    uninames <- unique(str_remove(names(namelist[[i]]), "\\d$"))
+    #Seq through names (2nd order in namelist)
+    for(j in names(namelist[[i]])) {
 
-    #Seq through names (2nd order i namelist)
-    for(j in uninames) {
-
-      pattern <- paste0(namelist[[i]][str_detect(names(namelist[[i]]), j)], collapse="|")
-
-      switch(match,
-             "start" = {pattern <- paste0("^", "(", pattern, ")")},
-             "end" = {pattern <- paste0("(", pattern, ")$")},
-             "exact" = {pattern <- paste0("^(", pattern, ")$")}
-      )
-
-      data[,i][str_detect(data[[i]], pattern)] <- j
+      data[,i][str_detect(data[[i]], namelist[[i]][[j]])] <- j
 
     }
 
   }
 
-  return(data)
+  data
 
 }
-

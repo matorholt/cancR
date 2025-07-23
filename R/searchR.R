@@ -4,151 +4,130 @@
 #' Function to obtain covariates or outcomes from the most common registers
 #'
 #'
-#' @param data The full register as a data.frame
-#' @param register Specify the register
-#' @param pattern.list list with list(label = diagnosis code) structure. The pattern can be collected using c() which will be coupled with | as a regex.
-#' @param keep list with list("label" = "column name") structure if the diagnosis code should be kept with specified column name.
-#' @param index.df Add index-dates to the patients (optional)
-#' @param match How specific the diagnosis codes should be used
-#' @param remove Removal of specific diagnosis codes
-#' @param format Whether NA/! or dates should be returned
-#' @param interval Whether the var_search should be in intervals around the index date (e.g. index +/- interval)
-#' @param slice Which occurence should be extracted
-#' @param index Name of the index column
-#' @param pnr Name of the pnr column
+#' @param reglist list of dataframe(s)
+#' @param search.list list with list(label = diagnosis code) structure.
+#' @param sub.list list of variables where the diagnosis code should be kept (e.g. list("KOL" = "subtype"))
+#' @param sub.labels list of labels for the diagnosis code colum (e.g. list("subtype" = list("a" = c("DC1", "DC2"))))
+#' @param exclusion vector of diagnosis codes for exclusion
+#' @param slice which rows should be selected (first(default)/last/all)
+#' @param format whether selected rows should contain date or 1
+#' @param match the match of the regex code (match, start, end or contains(default))
+#' @param casename the name of the case variable (default = "index")
+#' @param pnr name of the pnr column
 #'
-#' @return returns a data frame with one or multiple columns based on the labels with either NA/1 or dates if a condition is present
+#' @return A dataframe with the selected columns with corresponding diagnosis codes
 #' @export
 #'
 #'
-#'
 
-# df <- simAdmissionData(n=100)
-# df2 <- simPrescriptionData(n=100)
+
+# dfs <- list(lpr = simAdmissionData(n=100),
+#             opr = simAdmissionData(n=100) %>% rename(opr = diag),
+#             lmdb = simPrescriptionData(n=100))
 #
-# df_index <- df %>% select(pnr, indexdate) %>% rename(index = indexdate) %>% distinct(pnr, .keep_all=T)
+# dfs <- lapply(dfs, as.data.frame)
 #
-# (t <- searchR(df,
-#               pattern.list= list("KOL" = "DQ",
-#                                  "Astma" = c("DB", "DQ"),
-#                                  "DM" = "DD"),
-#               keep = list("KOL" = "subtypes",
-#                           "Astma" = "diags"),
-#               register = "lpr",
-#               remove = c("DG", "DUA", "EG"),
-#               format="date",
-#               slice = "first"))
+# clist <- decodR(list("lpr_case" = list("kidney" = c("DD", "DQ"),
+#                                    "lung" = c("DF", "DM")),
+#                      "lpr_ex" = list("immune" = "DZ",
+#                                      "cll" = c("DB", "DN")),
+#                      "lmdb_ex" = list("immune" = "C0"),
+#                      "opr_ex" = list("sotr" = c("DT", "DG", "DK")),
+#                      "labels" = list("lpr_case" = "SOTR",
+#                                      "lpr_ex" = "immsup"),
+#                      "exclusion" = c("DQ","ZZ2")))
+#
+#
+#
+# searchR(dfs,
+#         clist$searchR.list,
+#         sub.list = clist$searchR.keep,
+#         sub.labels = clist$recodR.labels,
+#         exclusion = clist$searchR.exclusion) %>%
+#   group_by(SOTR) %>%
+#   summarise(n = n())
 
-searchR <- function(data,
-                    register,
-                       pattern.list,
-                    keep = list(),
-                       index.df,
-                       match = "contains",
-                       remove = "*_*",
-                       format = "date",
-                       interval,
-                       slice = "first",
-                       index = index,
-                       pnr = pnr) {
+searchR <- function(reglist,
+                    search.list,
+                    sub.list,
+                    sub.labels = NULL,
+                    exclusion = "NULL",
+                    slice = "first",
+                    format = "date",
+                    match = "contains",
+                    casename = "index",
+                    pnr = pnr) {
 
-  register <- match.arg(register, c("lpr", "lmdb", "pato", "opr", "cancer", "dcr"))
   match <- match.arg(match, c("start", "end", "exact", "contains"))
   format <- match.arg(format, c("categorical", "date"))
   slice <- match.arg(slice, c("first", "last", "all"))
 
-  pattern.list <- lapply(pattern.list, function(x) {
-                               paste0("(",x,")", collapse="|")
-                             })
-
-  pattern <- unlist(pattern.list)
-  labels <- names(pattern.list)
-
-
-  if(missing(remove)) {
-    remove <- rep("xxx", length(pattern))
+  if(class(reglist) == "data.frame") {
+    reglist <- lst(reglist)
   }
 
-  if(length(pattern) != length(remove)) {
-    remove <- c(remove, rep("xxx", length(pattern)-1))
-    warning("Different lengths in pattern and remove - check positions")
-  }
+  pnr_c <- reglist[[1]] %>% select(pnr) %>% names()
 
-  if(sum(names(keep) %nin% names(pattern.list)) > 0) {
-    warning(paste0(paste0(names(keep)[names(keep) %nin% names(pattern.list)], collapse=", "), " are not present in pattern.list - check for spelling errors"))
-  }
+  reglist <- lapply(reglist, function(d) {
+    colnames(d)[which(str_detect(colnames(d), "eksd|inddto"))] <- "date"
+    colnames(d)[which(str_detect(colnames(d), "diag|opr|atc"))] <- "code"
+    d
+  })
 
-  switch(match,
-         "start" = {pattern <- paste0("^", "(", pattern, ")")},
-         "end" = {pattern <- paste0("(", pattern, ")$")},
-         "exact" = {pattern <- paste0("^(", pattern, ")$")}
-        )
+  slist <- list()
 
-  switch(register,
-         "lpr" = {data <- data %>% rename(code = diag,
-                                          date = inddto)},
-         "lmdb" = {data <- data %>% rename(code = atc,
-                                           date = eksd)},
-         "pato" = {data <- data %>% rename(code = snomed)},
-         "opr" = {data <- data %>% rename(code = opr,
-                                          date = inddto)},
-         "cancer" = {data <- data %>% rename(code = c_morfo3,
-                                          date = d_diagnosedato)}
-         )
+  for(i in names(search.list)) {
+    reg <- str_extract(i, "lpr|lmdb|opr")
 
-  if(!missing(index.df)) {
-    data <- data %>%
-      left_join(., index.df, by = data %>% select(pnr) %>% names()) %>%
-      arrange({{pnr}}, date)
-    if(!missing(interval)) {
-      data <- data %>%
-        filter(between(date, {{index}} + interval[1], {{index}} + interval[2])) %>%
-        arrange({{pnr}}, date)
+    switch(match,
+           "start" = {regex <- c("^(", ")")},
+           "end" = {regex <- c("(", ")$")},
+           "exact" = {regex <- c("^(", ")$")},
+           "contains" = {regex <- c("(", ")")}
+    )
+
+    pattern <- paste0(regex[1], paste0(search.list[[i]], collapse="|"), regex[2])
+
+    exclude <- paste0(regex[1], paste0(exclusion, collapse="|"), regex[2])
+
+
+    data <- as.data.table(reglist[[reg]])[str_detect(code, pattern) & str_detect(code, exclude, negate=T)]
+
+    if(format == "categorical") {
+      data <- data[, c(i) := 1]
     } else {
-      data <- data %>%
-      filter(date <= {{index}}) %>%
-        arrange({{pnr}}, date)
+      data <- data[, c(i) := date]
     }
 
+    if(i %in% names(sub.list)) {
+
+      for(j in sub.list[[i]]) {
+
+        data <- data[, c(j) := code]
+      }
+    }
+
+    switch(slice,
+           "first" = {range <- 1},
+           "last" = {range <- ".N"},
+           "all" = {range <- "1:.N"})
+
+    data <- data[, .SD[eval(parse(text=range))], by=c(pnr_c), .SDcols = c(i, sub.list[[i]])]
+
+    slist[[i]] <- data
   }
 
-   l <-
-    lapply(seq(1,length(pattern)), function(x) {
+  joined_data <- plyr::join_all(slist, by = "pnr", type = "full") %>%
+    arrange(pnr) %>%
+    rename_with(~ paste0(casename), contains("case"))
 
-      data <- data %>%
-        filter(str_detect(code, pattern[x]) & str_detect(code, remove[x], negate=T))
+  if(!is.null(sub.labels)) {
 
-      if(format == "categorical") {
-       data <- data %>%
-          mutate(!!sym(labels[[x]]) := 1)
-      } else {
-      data <- data %>% mutate(!!sym(labels[[x]]) := date)
-      }
+    joined_data <- joined_data %>%
+      recodR(sub.labels)
 
-      if(labels[[x]] %in% names(keep)) {
-        data <- data %>% mutate(!!sym(unlist(keep[labels[[x]]])) := code)
-      }
+  }
 
-      if(slice == "first") {
-        data <- data %>%
-          group_by(pnr) %>%
-          slice(1) %>%
-          select(pnr, contains(c(labels[[x]], unlist(keep))))
-      } else if(slice == "last") {
-        data <- data %>%
-          group_by(pnr) %>%
-          slice(n()) %>%
-          select(pnr, contains(c(labels[[x]], unlist(keep))))
-
-      } else if(slice == "all") {
-        data <- data %>%
-          select(pnr, contains(c(labels[[x]], unlist(keep))))
-
-      }
-
-   })
-
-  plyr::join_all(l, by = "pnr", type = "full") %>%
-    arrange(pnr)
+  joined_data
 
 }

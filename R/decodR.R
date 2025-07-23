@@ -20,12 +20,20 @@
 #                                    "lung" = c("a2", "b2", "c2")),
 #                  "lpr_ex" = list("immune" = "a3",
 #                                  "cll" = c("a4", "b4")),
-#                  "lmdb_ex" = list("immune" = "a5"))
+#                  "lmdb_ex" = list("immune" = "a5"),
+#                  "opr_ex" = list("trans" = "t5"),
+#                  "labels" = list("lpr_case" = "SOTR",
+#                                  "lpr_ex" = "immsup"),
+#                  "exclusion" = c("z1","z2"))
 #
-# decodR(codelist)
+# (clist <- decodR(codelist))
 
 
 decodR <- function(codelist) {
+
+  clist <- codelist
+
+  codelist <- codelist[str_detect(names(codelist), "lpr|lmdb|opr")]
 
   #Registies
   registries <- unique(str_extract(names(codelist), "lpr|opr|lmdb|cancer|pato"))
@@ -41,31 +49,33 @@ decodR <- function(codelist) {
 
     for(j in names(codelist)[str_detect(names(codelist), i)]) {
 
-      searchlist[[i]][[j]] <-c(unlist(codelist[[j]]), use.names=F)
+      searchlist[[j]] <-c(unlist(codelist[[j]]), use.names=F)
 
     }
 
   }
 
-  #Regexes
-  regex <- list()
+  list <- list(
+    codes = clist,
+    loadR.regs = c(registries, "pop"),
+    loadR.list = loadlist,
+    searchR.list = searchlist
+  )
 
-  for(i in names(codelist)) {
+  if("labels" %in% names(clist)) {
+    list <- append(list, list(searchR.keep = clist[["labels"]]))
 
-    regex[[i]] <- lapply(codelist[[i]], function(x) {
-      paste0(x, collapse="|")
+    labs <-
+      clist[c(names(clist[["labels"]]))] %>% set_names(clist[["labels"]])
 
-    })
+    list <- append(list, list(recodR.labels = labs))
 
   }
 
+  if("exclusion" %in% names(clist)) {
 
-  lst(
-    codes = codelist,
-    regs = registries,
-    loadR = loadlist,
-    searchR = searchlist,
-    regex = regex
-  )
+    list <- append(list, list(searchR.exclusion = clist[["exclusion"]]))
+  }
 
+  list
 }

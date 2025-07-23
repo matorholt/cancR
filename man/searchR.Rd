@@ -5,47 +5,41 @@
 \title{searchR}
 \usage{
 searchR(
-  data,
-  register,
-  pattern.list,
-  keep = list(),
-  index.df,
-  match = "contains",
-  remove = "*_*",
-  format = "date",
-  interval,
+  reglist,
+  search.list,
+  sub.list,
+  sub.labels = NULL,
+  exclusion = "NULL",
   slice = "first",
-  index = index,
+  format = "date",
+  match = "contains",
+  casename = "index",
   pnr = pnr
 )
 }
 \arguments{
-\item{data}{The full register as a data.frame}
+\item{reglist}{list of dataframe(s)}
 
-\item{register}{Specify the register}
+\item{search.list}{list with list(label = diagnosis code) structure.}
 
-\item{pattern.list}{list with list(label = diagnosis code) structure. The pattern can be collected using c() which will be coupled with | as a regex.}
+\item{sub.list}{list of variables where the diagnosis code should be kept (e.g. list("KOL" = "subtype"))}
 
-\item{keep}{list with list("label" = "column name") structure if the diagnosis code should be kept with specified column name.}
+\item{sub.labels}{list of labels for the diagnosis code colum (e.g. list("subtype" = list("a" = c("DC1", "DC2"))))}
 
-\item{index.df}{Add index-dates to the patients (optional)}
+\item{exclusion}{vector of diagnosis codes for exclusion}
 
-\item{match}{How specific the diagnosis codes should be used}
+\item{slice}{which rows should be selected (first(default)/last/all)}
 
-\item{remove}{Removal of specific diagnosis codes}
+\item{format}{whether selected rows should contain date or 1}
 
-\item{format}{Whether NA/! or dates should be returned}
+\item{match}{the match of the regex code (match, start, end or contains(default))}
 
-\item{interval}{Whether the var_search should be in intervals around the index date (e.g. index +/- interval)}
+\item{casename}{the name of the case variable (default = "index")}
 
-\item{slice}{Which occurence should be extracted}
-
-\item{index}{Name of the index column}
-
-\item{pnr}{Name of the pnr column}
+\item{pnr}{name of the pnr column}
 }
 \value{
-returns a data frame with one or multiple columns based on the labels with either NA/1 or dates if a condition is present
+A dataframe with the selected columns with corresponding diagnosis codes
 }
 \description{
 Function to obtain covariates or outcomes from the most common registers
