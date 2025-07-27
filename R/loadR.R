@@ -29,7 +29,9 @@ loadR <- function(regs = c("lpr", "pop", "cancer", "lmdb", "opr"),
                   lmdb.start = 1995,
                   lmdb.stop = 2023) {
 
-  regs <- match.arg(regs, c("lpr", "pop", "cancer", "lmdb", "opr", "pato"), several.ok = T)
+  cat(tickR())
+
+  regs <- match.arg(regs, c("lpr", "lmdb", "pop", "pato", "cancer", "opr", "sc", "meta", "dsd", "ses"), several.ok = T)
 
   if(is.null(n) & is.null(id.filter) & missing(keep.list) & missing(pattern.list)) {
     user.input <- readline(cat("Loading complete registers. Are you sure you want to run this? (yes/no)"))
@@ -51,7 +53,11 @@ loadR <- function(regs = c("lpr", "pop", "cancer", "lmdb", "opr"),
                       "pop" = "V:/Data/Workdata/709545/Mathias Oerholt/DATASETS/POPULATION.rds",
                       "pato" = "V:/Data/Workdata/709545/Mathias Oerholt/DATASETS/PATOBANK.rds",
                       "cancer" = "V:/Data/Workdata/709545/Mathias Oerholt/DATASETS/CANCER.rds",
-                      "opr" = "V:/Data/Workdata/709545/Mathias Oerholt/DATASETS/OPR.rds"),
+                      "opr" = "V:/Data/Workdata/709545/Mathias Oerholt/DATASETS/OPR.rds",
+                      "sc" = "V:/Data/Workdata/709545/Mathias Oerholt/DATASETS/SKIN_CANCER.rds",
+                      "meta" = "V:/Data/Workdata/709545/Mathias Oerholt/DATASETS/SKIN_METASTASIS.rds",
+                      "dsd" = "V:/Data/Workdata/709545/Mathias Oerholt/DATASETS/SKIN_DEATH.rds",
+                      "ses" = "V:/Data/Workdata/709545/Mathias Oerholt/DATASETS/SES_wide.rds"),
          "sas" = list("lpr" = "X:/Data/Rawdata_Hurtig/709545/Grunddata/LPR/diag_indl.sas7bdat",
                       "cancer" = "X:/Data/Rawdata_Hurtig/709545/Grunddata/Cancer/t_tumor.sas7bdat",
                       "opr" = "X:/Data/Rawdata_Hurtig/709545/Grunddata/LPR/opr.sas7bdat"))
@@ -88,6 +94,8 @@ loadR <- function(regs = c("lpr", "pop", "cancer", "lmdb", "opr"),
 
   for(i in regs) {
 
+    cat(i,": ")
+
     if(i %in% names(pattern.list2)) {
       pattern <- paste0("prxmatch('/", paste0(pattern.list[[i]], collapse="|"), "/', ", vars.select$cancer[1], ") OR prxmatch('/", paste0(pattern.list2[[i]], collapse="|"), "/', ", vars.select[[i]][2], ")")
     } else if(i %in% names(pattern.list)) {
@@ -96,7 +104,7 @@ loadR <- function(regs = c("lpr", "pop", "cancer", "lmdb", "opr"),
       pattern <- NULL
     }
 
-    if((is.null(n) & is.null(id.filter) & !(i %in% names(keep.list)) & !(i %in% names(pattern.list))) | i == "pop") {
+    if((is.null(n) & is.null(id.filter) & !(i %in% names(keep.list)) & !(i %in% names(pattern.list))) | i %in% c("pop", "sc", "meta", "dsd", "ses")) {
 
       reglist[[i]] <- readRDS(pathlist[["rds"]][[i]])
 
@@ -119,7 +127,20 @@ loadR <- function(regs = c("lpr", "pop", "cancer", "lmdb", "opr"),
       }))
     }
 
+    cat("Done", "\n")
+
   }
 
-  reglist
+  cat(paste0("\nTotal runtime: \n"))
+  cat(tockR("diff"))
+
+  if(length(reglist) == 1) {
+
+    return(reglist[[1]])
+  } else {
+
+    return(reglist)
+  }
+
+
 }

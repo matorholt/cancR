@@ -77,7 +77,7 @@ estimatR <- function(data,
                      cores = pmin(detectCores(), 4),
                      pl = T){
 
-  start <- Sys.time()
+  cat("\nestimatR initialized: ", tickR(), "\n")
 
   suppressWarnings(timevar_c <- data %>% select({{timevar}}) %>% names())
   suppressWarnings( event_c <- data %>% select({{event}}) %>% names())
@@ -261,6 +261,7 @@ estimatR <- function(data,
     select(time, A, B,diff:p.value) %>%
     mutate(across(c(diff:upper), ~.*100),
            across(c(diff:upper), ~round(.,1)),
+           p.exact = p.value,
            p.value = sapply(p.value, pvertR))
 
   rr <- as.data.frame(summary(CRest, short=T, type = "ratioRisk")$ratioRisk) %>%
@@ -268,6 +269,7 @@ estimatR <- function(data,
     rename(ratio = estimate) %>%
     select(time,A, B, ratio:p.value)%>%
     mutate(across(c(ratio:upper), ~round(.,2)),
+           p.exact = p.value,
            p.value = sapply(p.value, pvertR))
 
   counts <-
@@ -370,7 +372,8 @@ estimatR <- function(data,
     list <- append(list, list("time_to_event" = msurv))
   }
 
-
+  cat(paste0("\nTotal runtime: \n"))
+  cat(tockR("diff"))
 
   stopCluster(cl)
   class(list)<- "estimatR"

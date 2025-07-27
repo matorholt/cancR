@@ -150,7 +150,8 @@ matchR <- function(data, td_frame, index, case, fu, td_date, fixed_vars, td_vars
 
   base::cat(paste0("\nMerging time-dependent data frame: completed - ",  lubridate::round_date(Sys.time(), "second"), "\n\n"))
 
-
+  rm(list=c(deparse(substitute(data)), deparse(substitute(td_frame))), envir = .GlobalEnv)
+  gc()
 
   cases <- df[case == 1, env=list(case=substitute(case))]
 

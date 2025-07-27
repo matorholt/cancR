@@ -48,6 +48,7 @@ estimatR.multi <- function(data,
                            names,
                            ...) {
 
+  cat("\nestimatR initialized: ", tickR(), "\n")
 
   if(missing(names)) {
     names <- paste(event, group)
@@ -64,12 +65,17 @@ estimatR.multi <- function(data,
     arg.list$vars <- list(arg.list$vars)
   }
 
-  pmap(arg.list,
+  out <- pmap(arg.list,
        function(...) {
 
          estimatR(data=data, ...)
 
        })  %>% set_names(names)
+
+  cat(paste0("\nTotal runtime: \n"))
+  cat(tockR("diff"))
+
+  return(out)
 
 }
 
