@@ -30,7 +30,7 @@
 #
 # summarisR(df, exclude = "time|event|t_")
 
-summarisR <- function(data, vars, type = NULL, exclude = NULL, bins = 1, cols = cancR_palette) {
+summarisR <- function(data, vars, group, type = NULL, exclude = NULL, bins = 1, cols = cancR_palette) {
 
 
   if(!is.null(exclude)) {
@@ -40,6 +40,7 @@ summarisR <- function(data, vars, type = NULL, exclude = NULL, bins = 1, cols = 
   if(!missing(vars)) {
 
     vars_c <- data %>% select({{vars}}) %>% names()
+
   } else if(!is.null(type)) {
 
     type <- match.arg(type, c("numeric", "categorical"))
@@ -52,7 +53,17 @@ summarisR <- function(data, vars, type = NULL, exclude = NULL, bins = 1, cols = 
     }
   } else {
     vars_c <- colnames(data)
-   }
+  }
+
+  if(!missing(group)) {
+
+    grp_c <- data %>% select({{group}}) %>% names()
+    vars_c <- vars_c[vars_c != grp_c]
+    data <- data %>% drop_na({{group}}) %>% factR({{group}})
+
+  } else {
+    grp_c <- NULL
+  }
 
   plist <-
     lapply(vars_c, function(v) {
@@ -107,45 +118,77 @@ summarisR <- function(data, vars, type = NULL, exclude = NULL, bins = 1, cols = 
           data[, v] <- as.factor(data[,v])
         }
 
-        grps <- unique(data %>% drop_na(!!sym(v)) %>% pull(!!sym(v)))
+        c <- sample(cols,1)
 
-        c <- sample(cols, 1)
+        if(!is.null(grp_c)) {
+          p <- ggplot(data %>% drop_na(!!sym(v)), aes(x=!!sym(v), fill=!!sym(grp_c), group=!!sym(grp_c))) +
+            geom_bar(position = "dodge")
 
-        t <- df %>% drop_na(!!sym(v)) %>%
-          group_by(!!sym(v)) %>%
-          summarise(n = n()) %>%
-          ungroup()
+          c <- cols
 
-        p <- ggplot(data %>% drop_na(!!sym(v)), aes(x=!!sym(v))) +
-              geom_bar(fill=c, col="Black") +
-              labs(x=v) +
-              theme_classic() +
-              labs(title=v) +
-          theme(axis.line = element_blank(),
-                axis.text.y = element_blank(),
-                axis.title.y = element_blank(),
-                axis.ticks = element_blank(),
-                plot.title = element_text(hjust=0.5)) +
-          annotate("text",
-                   x = 1,
-                   y = 1.1*max(t$n),
-                   label = paste0("NA: ", sum(is.na(data %>% pull(!!sym(v))))))
+        } else {
 
-        for(i in 1:length(grps)) {
-
-          p <- p +
-            annotate("text",
-                     x=i,
-                     y=1.20*max(t$n),
-                     label = t[i,"n"])
-
+          p <- ggplot(data %>% drop_na(!!sym(v)), aes(x=!!sym(v), group=1)) +
+               geom_bar(position = "dodge", fill = c)
         }
-
+        p <- p +
+            geom_text(aes(y=after_stat(count)+5,
+                          label=paste0(after_stat(count), " (", round(after_stat(prop),3)*100, "%)")),
+                      position = position_dodge(width = .9),
+                      size = 3,
+                      stat="count") +
+          scale_fill_manual(values=c) +
+                labs(x=v) +
+                theme_classic() +
+                labs(title=v) +
+            theme(axis.line = element_blank(),
+                  axis.text.y = element_blank(),
+                  axis.title.y = element_blank(),
+                  axis.ticks = element_blank(),
+                  plot.title = element_text(hjust=0.5))
+        #
+        # grps <- unique(data %>% drop_na(!!sym(v)) %>% pull(!!sym(v)))
+        #
+        # c <- sample(cols, 1)
+        #
+        # t <- df %>% drop_na(!!sym(v)) %>%
+        #   group_by(!!sym(v)) %>%
+        #   summarise(n = n()) %>%
+        #   ungroup()
+        #
+        # p <- ggplot(data %>% drop_na(!!sym(v)), aes(x=!!sym(v))) +
+        #       geom_bar(fill=c, col="Black") +
+        #       labs(x=v) +
+        #       theme_classic() +
+        #       labs(title=v) +
+        #   theme(axis.line = element_blank(),
+        #         axis.text.y = element_blank(),
+        #         axis.title.y = element_blank(),
+        #         axis.ticks = element_blank(),
+        #         plot.title = element_text(hjust=0.5)) +
+        #   annotate("text",
+        #            x = 1,
+        #            y = 1.1*max(t$n),
+        #            label = paste0("NA: ", sum(is.na(data %>% pull(!!sym(v))))))
+        #
+        # for(i in 1:length(grps)) {
+        #
+        #   p <- p +
+        #     annotate("text",
+        #              x=i,
+        #              y=1.20*max(t$n),
+        #              label = t[i,"n"])
+        #
+        # }
+        #
         p
 
       }
     })
 
-  ggarrange(plotlist=plist)
+  ggarrange(plotlist=plist, common.legend = T)
+
 
 }
+
+#summarisR(data=df,vars=c(X6, X1,X3), group = X2)

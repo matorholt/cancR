@@ -16,7 +16,7 @@ tockR <- function(format = "diff", digits = 1) {
 
     if(format == "time") {
 
-    out <- lubridate::round_date(Sys.time(), "second")
+    out <- paste0(lubridate::round_date(Sys.time(), "second"))
 
     } else if(format == "diff") {
 
