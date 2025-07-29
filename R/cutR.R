@@ -64,7 +64,7 @@ cutR <- function(data, vars, seqlist, names = list()) {
         mutate(!!sym(newvars[[v]]) := as.numeric(str_extract(!!sym(v), "\\d{4}")))
     } else if(class(data %>% pull(v)) != "numeric") {
       data <- data %>%
-        mutate(!!sym(newvars[[v]]) := as.numeric(!!sym(newvars[[v]])))
+        mutate(!!sym(newvars[[v]]) := as.numeric(!!sym(v)))
     }
     #Copy frame
     else {
