@@ -152,7 +152,7 @@ matchR <- function(data, td_frame, index, case, fu, td_date, fixed_vars, td_vars
   cohorts <- sort(unique(full_df[full_df[["case"]]==1,][["byear"]]))
   cohorts_length <- length(cohorts)
 
-  cat(paste0("Partitioning ", cohorts_length, " cohorts (", cohorts[1], " - ", cohorts[cohorts_length], "): \n\n"))
+  cat(paste0("Partitioning ", cohorts_length, " cohorts (", cohorts[1], " to ", cohorts[cohorts_length], "): \n\n"))
 
   byear_list <- list()
 
@@ -169,7 +169,7 @@ matchR <- function(data, td_frame, index, case, fu, td_date, fixed_vars, td_vars
     control_list <- foreach(i = cases$set,
                             .packages = c("tidyverse", "data.table")) %dopar% {
 
-                              itime <- df[i, index_s, env = list(index_s = index_s)]
+                              itime <- df[set == i, index_s, env = list(index_s = index_s)]
 
                               controls <-
                                 df[set == i | case_s == 0 & fu_s > itime & td_date_s < itime, env=list(case_s = case_s,
