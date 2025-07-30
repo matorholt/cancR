@@ -4,7 +4,7 @@
 \alias{colR}
 \title{colR}
 \usage{
-colR(cols)
+colR(cols = NULL, option = "", show = T)
 }
 \arguments{
 \item{cols}{Vector to set the default color palette. If "default", the default palette is reverted}

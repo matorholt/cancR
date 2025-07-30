@@ -17,7 +17,8 @@ matchR(
   n_controls = 4,
   seed = 1,
   cores = 4,
-  pnr = pnr
+  pnr = pnr,
+  interval = NULL
 )
 }
 \arguments{
@@ -46,6 +47,8 @@ matchR(
 \item{cores}{Cores, defaults to 4}
 
 \item{pnr}{Name of PNR column}
+
+\item{interval}{Interval to split birthyear into intervals (e.g. 1950-1955). Assigns a new variable named "age_group".}
 }
 \value{
 Returns the same dataframe as the original but with n_control matches and pairs indicated with a "set" column.

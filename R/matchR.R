@@ -17,6 +17,7 @@
 #' @param seed Seed
 #' @param cores Cores, defaults to 4
 #' @param pnr Name of PNR column
+#' @param interval Interval to split birthyear into intervals (e.g. 1950-1955). Assigns a new variable named "age_group".
 #'
 #' @return Returns the same dataframe as the original but with n_control matches and pairs indicated with a "set" column.
 #' @export
@@ -36,7 +37,7 @@
 #                  case = 1,
 #                  index = sample(c(sample(seq(as.Date('1990/01/01'), as.Date('2010/01/01'), by="day"))), size = cno, replace=TRUE),
 #                  follow = c(sample(seq(as.Date('2015/01/01'), as.Date('2020/01/01'), by="day"), cno, replace=T)),
-#                  byear = sample(c(seq(1959,1960)), cno, replace=T),
+#                  byear = sample(c(seq(1958,1961)), cno, replace=T),
 #                  sex = sample(c("F","M"), cno, replace=T),
 #                  skinc = sample(c(sample(seq(as.Date('2011/01/01'), as.Date('2020/01/01'), by="day")),rep(as.Date(NA),8000)), size = cno, replace=TRUE),
 #                  imm_sup = sample(c(sample(seq(as.Date('2011/01/01'), as.Date('2020/01/01'), by="day")),rep(as.Date(NA),8000)), size = cno, replace=TRUE),
@@ -47,7 +48,7 @@
 # (cnt <- data.frame(id = paste("pnr", rnorm(no, 40000,1000)),
 #                    case = 0,
 #                    follow = c(sample(seq(as.Date('1980/01/01'), as.Date('2020/01/01'), by="day"), no, replace=T)),
-#                    byear = sample(c(seq(1959,1960)), no, replace=T),
+#                    byear = sample(c(seq(1958,1961)), no, replace=T),
 #                    sex = sample(c("F","M"), no, replace=T),
 #                    skinc = sample(c(sample(seq(as.Date('1985/01/01'), as.Date('2000/01/01'), by="day")),rep(as.Date(NA),8000)), size = no, replace=TRUE),
 #                    imm_sup = sample(c(sample(seq(as.Date('1985/01/01'), as.Date('2000/01/01'), by="day")),rep(as.Date(NA),8000)), size = no, replace=TRUE),
@@ -96,10 +97,11 @@
 #              exclude = c(skinc, imm_sup),
 #              td_frame = ses_wide,
 #              n_controls=4,
-#              seed=1)
+#              seed=1,
+#             interval = 5)
 
 
-matchR <- function(data, td_frame, index, case, fu, td_date, fixed_vars, td_vars, exclude, n_controls=4, seed=1, cores=4, pnr=pnr) {
+matchR <- function(data, td_frame, index, case, fu, td_date, fixed_vars, td_vars, exclude, n_controls=4, seed=1, cores=4, pnr=pnr, interval = NULL) {
 
   tickR()
 
@@ -108,12 +110,21 @@ matchR <- function(data, td_frame, index, case, fu, td_date, fixed_vars, td_vars
   cluster <- parallel::makeCluster(cores)
   registerDoParallel(cluster)
 
-  pnr_c <- deparse(substitute(pnr))
-  index_c <- deparse(substitute(index))
-  td_date_c <- deparse(substitute(td_date))
-  cat_c <- unlist(str_extract_all(deparse(substitute(fixed_vars)), "\\w{2,}"))
-  dat_c <- unlist(str_extract_all(deparse(substitute(td_vars)), "\\w{2,}"))
-  exclude_c <- unlist(str_extract_all(deparse(substitute(exclude)), "\\w{2,}"))
+  pnr_c <- data %>% select({{pnr}}) %>% names()
+  index_c <- data %>% select({{index}}) %>% names()
+  td_date_c <- td_frame %>% select({{td_date}}) %>% names()
+  cat_c <- data %>% select({{fixed_vars}}) %>% names()
+  dat_c <- td_frame %>% select({{td_vars}}) %>% names()
+  exclude_c <- data %>% select({{exclude}}) %>% names()
+
+  if(!is.null(interval)) {
+    data[["age_group"]] <- data[["tvar"]] <- cutR(data, byear, seq(1800,3000,interval))[["byear"]]
+  } else {
+    data[["tvar"]] <- data[["byear"]]
+  }
+
+  cat_c <- str_replace_all(cat_c, "byear", "tvar")
+
 
   case_s <- substitute(case)
   fu_s <- substitute(fu)
@@ -130,14 +141,12 @@ matchR <- function(data, td_frame, index, case, fu, td_date, fixed_vars, td_vars
                                                                             fu = substitute(fu))] %>%
     .[.[, Reduce(`&`, lapply(.SD, function(x) is.na(x) | x > min(index_s, na.rm=T))),.SDcols = c(exclude_c)], .SDcols= c(exclude_c), env=list(index_s = index_s)]
 
-
   cat(paste0("completed - ", tockR("time"), "\n\n"))
 
   cat(paste0("Merging time-dependent data frame: "))
 
-
   full_df <-
-    merge(data, td_frame, by = pnr_c)[order(-case, pnr, td_date), env=list(pnr = substitute(pnr),
+    merge(data, td_frame[pnr %in% data[, pnr], env=list(pnr = substitute(pnr))], by = pnr_c)[order(-case, pnr, td_date), env=list(pnr = substitute(pnr),
                                                                            case = substitute(case),
                                                                            td_date = substitute(td_date))][
                                                                              td_date <= index | (case==0 & td_date <= max(index, na.rm=T)), env=list(index = substitute(index),
@@ -146,32 +155,45 @@ matchR <- function(data, td_frame, index, case, fu, td_date, fixed_vars, td_vars
                                                                                                                                                        , .SD[row.names(.SD) == .N | case==0], by = pnr_c, env=list(pnr=substitute(pnr),
                                                                                                                                                                                                                    case=substitute(case))][, set := match(pnr, unique(pnr)), env=list(pnr = substitute(pnr))]
 
+
+
+
   cat(paste0("\nMerging time-dependent data frame: completed - ",  tockR("time"), "\n\n"))
 
   #Partition into birth cohorts
-  cohorts <- sort(unique(full_df[full_df[["case"]]==1,][["byear"]]))
+  cohorts <- sort(unique(full_df[full_df[["case"]]==1,][["tvar"]]))
   cohorts_length <- length(cohorts)
 
-  cat(paste0("Partitioning ", cohorts_length, " cohorts (", cohorts[1], " to ", cohorts[cohorts_length], "): \n\n"))
+  if(str_detect(cohorts[1], "-")) {
+    cat(paste0("Partitioning ", cohorts_length, " cohorts: \n"))
+    cat(paste0(cohorts, collapse="\n"))
+    cat("\n\n")
+  } else {
+    cat(paste0("Partitioning ", cohorts_length, " cohorts (", cohorts[1], " to ", cohorts[cohorts_length], "): \n\n"))
+  }
 
-  byear_list <- list()
+  cohort_list <- list()
+
 
   pb <- txtProgressBar(max = cohorts_length, style = 3)
+
+  ncase <- 0
 
   for(j in 1:cohorts_length) {
 
     b <- cohorts[[j]]
 
-    df <- full_df[byear == b]
+    df <- full_df[tvar == b]
 
     cases <- df[case == 1, env=list(case=substitute(case))]
+
+    ncase <- ncase + nrow(cases)
 
     control_list <- foreach(i = cases$set,
                             .packages = c("tidyverse", "data.table")) %dopar% {
 
                               itime <- df[set == i, index_s, env = list(index_s = index_s)]
 
-                              controls <-
                                 df[set == i | case_s == 0 & fu_s > itime & td_date_s < itime, env=list(case_s = case_s,
                                                                                                        fu_s = fu_s,
                                                                                                        td_date_s = td_date_s)] %>%
@@ -206,7 +228,9 @@ matchR <- function(data, td_frame, index, case, fu, td_date, fixed_vars, td_vars
 
     setTxtProgressBar(pb, j)
 
-    byear_list[[as.character(b)]] <- as.data.frame(bind_rows(cases, rbindlist(matches)))
+    cat(paste0("    Time: ", tockR("time"), "   Cohort: ", b,"    ", nrow(cases), " Cases / ", nrow(df), " Total   Status: ", ncase, " Cases"))
+
+    cohort_list[[as.character(b)]] <- as.data.frame(bind_rows(cases, rbindlist(matches)))
 
   }
 
@@ -218,9 +242,12 @@ matchR <- function(data, td_frame, index, case, fu, td_date, fixed_vars, td_vars
 
   stopCluster(cluster)
 
-  rbindlist(byear_list)[order(set)][, "index" := nafill(index, "locf"), env=list(index=substitute(index))][, c(exclude_c, td_date_c) := NULL] %>%
+  rbindlist(cohort_list)[order(set)][, "index" := nafill(index, "locf"), env=list(index=substitute(index))][, c(exclude_c, td_date_c, "tvar") := NULL] %>%
     select({{pnr}}, case, set, index, everything())
 
 
 
 }
+
+
+

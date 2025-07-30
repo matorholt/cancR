@@ -7,6 +7,7 @@
 summarisR(
   data,
   vars,
+  group,
   type = NULL,
   exclude = NULL,
   bins = 1,
