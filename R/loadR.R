@@ -29,7 +29,11 @@ loadR <- function(regs = c("lpr", "pop", "cancer", "lmdb", "opr"),
                   lmdb.start = 1995,
                   lmdb.stop = 2023) {
 
-  cat(tickR())
+  tickR()
+
+  tickR.first <- tickR.start
+
+  cat(paste0("\nInitializing loadR algorithm: ", tockR("time"), "\n\n"))
 
   regs <- match.arg(regs, c("lpr", "lmdb", "pop", "pato", "cancer", "opr", "sc", "meta", "dsd", "ses"), several.ok = T)
 
@@ -94,7 +98,7 @@ loadR <- function(regs = c("lpr", "pop", "cancer", "lmdb", "opr"),
 
   for(i in regs) {
 
-    cat(i,": ")
+    cat(paste0(i,": "))
 
     if(i %in% names(pattern.list2)) {
       pattern <- paste0("prxmatch('/", paste0(pattern.list[[i]], collapse="|"), "/', ", vars.select$cancer[1], ") OR prxmatch('/", paste0(pattern.list2[[i]], collapse="|"), "/', ", vars.select[[i]][2], ")")
@@ -127,9 +131,11 @@ loadR <- function(regs = c("lpr", "pop", "cancer", "lmdb", "opr"),
       }))
     }
 
-    cat("Done", "\n")
+    cat("Completed - ", tockR("time"), ", runtime: ", tockR("diff"), "\n")
 
   }
+
+  tickR.start <- tickR.first
 
   cat(paste0("\nTotal runtime: \n"))
   cat(tockR("diff"))

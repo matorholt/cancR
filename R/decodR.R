@@ -57,7 +57,7 @@ decodR <- function(codelist) {
 
   list <- list(
     codes = clist,
-    loadR.regs = c(registries, "pop"),
+    loadR.regs = c(registries, "pop", "sc", "meta", "dsd"),
     loadR.list = loadlist,
     searchR.list = searchlist
   )
