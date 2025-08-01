@@ -14,21 +14,23 @@
 #' @export
 #'
 #'
-# n <- 500
-# set.seed(1)
-# df <- riskRegression::sampleData(n, outcome="survival")
-# df$time <- round(df$time,1)*12
-# df$time2 <- df$time + rnorm(n)
-# df$X1 <- factor(rbinom(n, prob = c(0.3,0.4) , size = 2), labels = paste0("T",0:2))
-# df$X3 <- factor(rbinom(n, prob = c(0.3,0.4,0.3) , size = 3), labels = paste0("T",0:3))
-# df$event2 <- rbinom(n, 2, prob=.3)
-# df <- as.data.frame(df)
-#
-# df <- df %>% mutate(X2 = ifelse(row_number()==1, NA, X2),
-#                      event = as.factor(event)) %>%
-#   rename(ttt = time)
-#
-# summarisR(df, exclude = "time|event|t_")
+n <- 500
+set.seed(1)
+df <- riskRegression::sampleData(n, outcome="survival")
+df$time <- round(df$time,1)*12
+df$time2 <- df$time + rnorm(n)
+df$X1 <- factor(rbinom(n, prob = c(0.3,0.4) , size = 2), labels = paste0("T",0:2))
+df$X3 <- factor(rbinom(n, prob = c(0.3,0.4,0.3) , size = 3), labels = paste0("T",0:3))
+df$event2 <- rbinom(n, 2, prob=.3)
+df <- as.data.frame(df)
+
+df <- df %>% mutate(X2 = ifelse(row_number()==1, NA, X2),
+                     event = as.factor(event)) %>%
+  rename(ttt = time)
+
+summarisR(data=df,vars=c(X6, X7, X1, X3), group = X2)
+summarisR(data=df,vars=c(X6))
+summarisR(df, exclude = "time|event|t_", group = X2)
 
 summarisR <- function(data, vars, group, type = NULL, exclude = NULL, bins = 1, cols = cancR_palette) {
 
@@ -65,8 +67,8 @@ summarisR <- function(data, vars, group, type = NULL, exclude = NULL, bins = 1, 
     grp_c <- NULL
   }
 
-  plist <-
-    lapply(vars_c, function(v) {
+ plist <-
+ lapply(vars_c, function(v) {
 
       if(length(unique(data[,v]))>10) {
 
@@ -74,41 +76,62 @@ summarisR <- function(data, vars, group, type = NULL, exclude = NULL, bins = 1, 
 
         s <- round(summary(data[,v])[c(1:3,5:6)],1)
 
-        ggarrange(plotlist=list(
+        if(!is.null(grp_c)) {
+          p1 <- ggplot(data, aes(y=!!sym(v), x=X2, fill=X2)) +
+            geom_boxplot()
 
-          ggplot(data, aes(x=!!sym(v))) +
-            geom_boxplot(fill=c, col="Black") +
-            theme_classic() +
-            theme(axis.line = element_blank(),
-                  axis.text = element_blank(),
-                  axis.ticks = element_blank(),
-                  axis.title = element_blank(),
-                  plot.title = element_text(hjust=0.5)) +
-            labs(title = v) +
-            annotate("text",
-                     x=s,
-                     y=-1,
-                     label = s,
-                     size = 3) +
-            annotate("text",
-                     x=s,
-                     y=-2,
-                     label = c("Min",
-                               "Q1",
-                               "Median",
-                               "Q3",
-                               "Max"),
-                     size = 3) +
-            scale_y_continuous(limits = c(-3,1)),
+          p2 <- ggplot(data, aes(x=!!sym(v), fill=!!sym(grp_c), color = !!sym(grp_c))) +
+            geom_histogram(binwidth = bins, color = "Black")
 
-          ggplot(data, aes(x=!!sym(v))) +
-          geom_histogram(fill=c, col="Black", binwidth = bins) +
+
+          c <- cols
+
+          gheight = 1
+
+        } else {
+
+          p1 <- ggplot(data, aes(y=!!sym(v))) +
+            geom_boxplot(fill = c)
+
+          p2 <- ggplot(data, aes(x=!!sym(v))) +
+            geom_histogram(binwidth = bins, fill = c, color = "Black")
+
+          gheight = 2
+        }
+
+        p1 <- p1 +
+          geom_label(
+            aes(y=stage(!!sym(v), c(min, lower,middle,upper, max)),
+                label = round(after_stat(c(min, lower, middle, upper, max)),1)),
+            stat = StatBoxplot,
+            show.legend=F,
+            size = 3
+          ) +
+          scale_fill_manual(values=c) +
+          scale_color_manual(values=c) +
+              theme_classic() +
+              theme(axis.line = element_blank(),
+                    axis.text = element_blank(),
+                    axis.ticks = element_blank(),
+                    axis.title = element_blank(),
+                    plot.title = element_text(hjust=0.5),
+                    legend.position = "none") +
+              labs(title = v) +
+          coord_flip()
+
+        p2 <- p2 +
+          scale_fill_manual(values=c) +
+          scale_color_manual(values=c) +
           theme_classic() +
-            theme(axis.line = element_blank(),
-                  axis.ticks = element_blank(),
-                  axis.text.y = element_blank(),
-                  axis.title.y = element_blank())
-          ), ncol = 1, nrow=2, heights = c(1,2))
+          theme(axis.line = element_blank(),
+                axis.ticks = element_blank(),
+                axis.text.y = element_blank(),
+                axis.title.y = element_blank(),
+                legend.position = "none")
+
+
+
+        ggarrange(plotlist = list(p1,p2), ncol = 1, nrow=2, heights = c(1,gheight), common.legend=F)
 
 
       } else{
@@ -132,7 +155,7 @@ summarisR <- function(data, vars, group, type = NULL, exclude = NULL, bins = 1, 
                geom_bar(position = "dodge", fill = c)
         }
         p <- p +
-            geom_text(aes(y=after_stat(count)+5,
+            geom_text(aes(y=after_stat(count)+max(after_stat(count))/15,
                           label=paste0(after_stat(count), " (", round(after_stat(prop),3)*100, "%)")),
                       position = position_dodge(width = .9),
                       size = 3,
@@ -146,41 +169,7 @@ summarisR <- function(data, vars, group, type = NULL, exclude = NULL, bins = 1, 
                   axis.title.y = element_blank(),
                   axis.ticks = element_blank(),
                   plot.title = element_text(hjust=0.5))
-        #
-        # grps <- unique(data %>% drop_na(!!sym(v)) %>% pull(!!sym(v)))
-        #
-        # c <- sample(cols, 1)
-        #
-        # t <- df %>% drop_na(!!sym(v)) %>%
-        #   group_by(!!sym(v)) %>%
-        #   summarise(n = n()) %>%
-        #   ungroup()
-        #
-        # p <- ggplot(data %>% drop_na(!!sym(v)), aes(x=!!sym(v))) +
-        #       geom_bar(fill=c, col="Black") +
-        #       labs(x=v) +
-        #       theme_classic() +
-        #       labs(title=v) +
-        #   theme(axis.line = element_blank(),
-        #         axis.text.y = element_blank(),
-        #         axis.title.y = element_blank(),
-        #         axis.ticks = element_blank(),
-        #         plot.title = element_text(hjust=0.5)) +
-        #   annotate("text",
-        #            x = 1,
-        #            y = 1.1*max(t$n),
-        #            label = paste0("NA: ", sum(is.na(data %>% pull(!!sym(v))))))
-        #
-        # for(i in 1:length(grps)) {
-        #
-        #   p <- p +
-        #     annotate("text",
-        #              x=i,
-        #              y=1.20*max(t$n),
-        #              label = t[i,"n"])
-        #
-        # }
-        #
+
         p
 
       }
@@ -191,4 +180,3 @@ summarisR <- function(data, vars, group, type = NULL, exclude = NULL, bins = 1, 
 
 }
 
-#summarisR(data=df,vars=c(X6, X1,X3), group = X2)

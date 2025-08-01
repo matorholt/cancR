@@ -49,7 +49,7 @@
 
 searchR <- function(reglist,
                     search.list,
-                    sub.list,
+                    sub.list = list(),
                     sub.labels = NULL,
                     exclusion = "NULL",
                     slice = "first",
@@ -66,18 +66,24 @@ searchR <- function(reglist,
     reglist <- lst(reglist)
   }
 
+  if(sum(str_detect(names(search.list), "case")) > 1) {
+
+    return(cat("Only one list can be named case. Change to other suffix, e.g. pato_supp"))
+
+  }
+
   pnr_c <- reglist[[1]] %>% select(pnr) %>% names()
 
   reglist <- lapply(reglist, function(d) {
     colnames(d)[which(str_detect(colnames(d), "eksd|inddto"))] <- "date"
-    colnames(d)[which(str_detect(colnames(d), "diag|opr|atc"))] <- "code"
+    colnames(d)[which(str_detect(colnames(d), "diag|opr|atc|snomed"))] <- "code"
     d
   })
 
   slist <- list()
 
   for(i in names(search.list)) {
-    reg <- str_extract(i, "lpr|lmdb|opr")
+    reg <- str_extract(i, "lpr|lmdb|opr|pato")
 
     switch(match,
            "start" = {regex <- c("^(", ")")},

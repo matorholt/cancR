@@ -19,7 +19,7 @@
 #'
 #'
 
-loadR <- function(regs = c("lpr", "pop", "cancer", "lmdb", "opr"),
+loadR <- function(regs,
                   pattern.list = NULL,
                   pattern.list2 = NULL,
                   n = NULL,
@@ -98,6 +98,8 @@ loadR <- function(regs = c("lpr", "pop", "cancer", "lmdb", "opr"),
 
   for(i in regs) {
 
+    tickR()
+
     cat(paste0(i,": "))
 
     if(i %in% names(pattern.list2)) {
@@ -112,16 +114,17 @@ loadR <- function(regs = c("lpr", "pop", "cancer", "lmdb", "opr"),
 
       reglist[[i]] <- readRDS(pathlist[["rds"]][[i]])
 
-    } else if(i != "lmdb") {
+    } else if(! == "pato") {
 
-      reglist[[i]] <-
-         importSAS(pathlist[["sas"]][[i]],
-                  obs = n,
-                  keep = keep.vars[[i]],
-                  filter = id.filter,
-                  where = pattern)
+      dat <- readRDS(pathlist[["rds"]][[i]])
 
-    } else {
+      setDT(dat)
+
+      reglist[[i]] <- dat[str_detect(vars.select[[i]], paste0(pattern.list[[i]], collapse="|")),]
+
+
+    } else if(i == "lmdb") {
+
       reglist[[i]] <- rbindlist(lapply(seq(lmdb.start,lmdb.stop), function(year) {
         importSAS(paste0("X:/Data/Rawdata_Hurtig/709545/Grunddata/medication/lmdb", year, "12.sas7bdat", sep=""),
                   obs = n,
@@ -129,9 +132,19 @@ loadR <- function(regs = c("lpr", "pop", "cancer", "lmdb", "opr"),
                   filter = id.filter,
                   where = pattern)
       }))
+
+    } else {
+
+      reglist[[i]] <-
+        importSAS(pathlist[["sas"]][[i]],
+                  obs = n,
+                  keep = keep.vars[[i]],
+                  filter = id.filter,
+                  where = pattern)
+
     }
 
-    cat("Completed - ", tockR("time"), ", runtime: ", tockR("diff"), "\n")
+    cat(paste0("Completed - ", tockR("time"), ", runtime: ", tockR("diff"), "\n"))
 
   }
 
