@@ -120,7 +120,7 @@ loadR <- function(regs,
 
       setDT(dat)
 
-      reglist[[i]] <- dat[str_detect(vars.select[[i]], paste0(pattern.list[[i]], collapse="|")),]
+      reglist[[i]] <- as.data.frame(dat[str_detect(vars.select[[i]], paste0(pattern.list[[i]], collapse="|")),])
 
 
     } else if(i == "lmdb") {
