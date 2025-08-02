@@ -55,11 +55,14 @@ decodR <- function(codelist) {
 
   }
 
+  updatR <- paste0(unlist(codelist[str_detect(names(codelist), "case")]), collapse = "|")
+
   list <- list(
     codes = clist,
     loadR.regs = c(registries, "pop", "sc", "meta", "dsd"),
     loadR.list = loadlist,
-    searchR.list = searchlist
+    searchR.list = searchlist,
+    updatR = updatR
   )
 
   if("labels" %in% names(clist)) {

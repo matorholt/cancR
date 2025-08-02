@@ -5,7 +5,7 @@
 \title{loadR}
 \usage{
 loadR(
-  regs = c("lpr", "pop", "cancer", "lmdb", "opr"),
+  regs,
   pattern.list = NULL,
   pattern.list2 = NULL,
   n = NULL,

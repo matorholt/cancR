@@ -114,13 +114,13 @@ loadR <- function(regs,
 
       reglist[[i]] <- readRDS(pathlist[["rds"]][[i]])
 
-    } else if(! == "pato") {
+    } else if(i == "pato") {
 
       dat <- readRDS(pathlist[["rds"]][[i]])
 
       setDT(dat)
 
-      reglist[[i]] <- as.data.frame(dat[str_detect(vars.select[[i]], paste0(pattern.list[[i]], collapse="|")),])
+      reglist[[i]] <- as.data.frame(dat[str_detect(snomed, paste0(pattern.list[[i]], collapse="|")),])
 
 
     } else if(i == "lmdb") {

@@ -7,7 +7,7 @@
 searchR(
   reglist,
   search.list,
-  sub.list,
+  sub.list = list(),
   sub.labels = NULL,
   exclusion = "NULL",
   slice = "first",

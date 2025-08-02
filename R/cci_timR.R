@@ -40,7 +40,7 @@ cci_timR <- function(data, interval = 365.25/2, structure = "binned", format = "
 
 
   if(structure == "full" & format == "long") {
-  cci_full_long <<- rbindlist(lapply(cci_total, function(x) {
+  cci_return <- rbindlist(lapply(cci_total, function(x) {
        x$cci
      }))[!is.na(pnr)] %>%
          arrange(pnr, charlson.date) %>%
@@ -53,7 +53,7 @@ cci_timR <- function(data, interval = 365.25/2, structure = "binned", format = "
   }
 
   if(structure == "binned" & format == "long") {
-    cci_bin_long <<-
+    cci_return <-
       rbindlist(lapply(cci_total, function(x) {
         x$cci
       }))[!is.na(pnr)] %>%
@@ -71,7 +71,7 @@ cci_timR <- function(data, interval = 365.25/2, structure = "binned", format = "
   }
 
     if(structure == "full" & format == "wide") {
-    cci_full_wide <<-
+      cci_return <-
     rbindlist(lapply(cci_total, function(x) {
     x$cci
   }))[!is.na(pnr)] %>%
@@ -91,7 +91,7 @@ cci_timR <- function(data, interval = 365.25/2, structure = "binned", format = "
   }
 
   if(structure == "binned" & format == "wide") {
- cci_bin_wide <<-
+    cci_return <-
    rbindlist(lapply(cci_total, function(x) {
      x$cci
    }))[!is.na(pnr)] %>%
@@ -122,7 +122,7 @@ cci_timR <- function(data, interval = 365.25/2, structure = "binned", format = "
   }
 
 if(comorb & structure == "full" & format == "long") {
- comorb_long <<- rbindlist(lapply(cci_total, function(x) {
+  comorb_return <- rbindlist(lapply(cci_total, function(x) {
    x$comorb %>%
      pivot_longer(cols=c(-matches("pnr|charlson.date")), names_to = "disease", values_to = "score") %>%
      filter(score == 1)
@@ -134,7 +134,7 @@ if(comorb & structure == "full" & format == "long") {
 }
 
  if(comorb & format == "wide") {
- comorb_wide <<- rbindlist(lapply(cci_total, function(x) {
+   comorb_return <- rbindlist(lapply(cci_total, function(x) {
     x$comorb %>%
       pivot_longer(cols=c(-matches("pnr|charlson.date")), names_to = "disease", values_to = "score") %>%
       filter(score == 1)
@@ -145,6 +145,16 @@ if(comorb & structure == "full" & format == "long") {
     ungroup() %>%
     pivot_wider(names_from=disease, values_from = charlson.date)
  }
+
+  cci_list <- list("cci" = cci_return)
+
+  if(comorb) {
+    cci_list <- list("cci" = cci_return, "comorb" = comorb_return)
+  } else {
+
+    cci_return
+
+  }
 
 }
 
