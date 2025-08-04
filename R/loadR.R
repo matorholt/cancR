@@ -31,17 +31,11 @@ loadR <- function(regs,
 
   tickR()
 
-  tickR.first <- tickR.start
+  start <- tickR.start
 
   cat(paste0("\nInitializing loadR algorithm: ", tockR("time"), "\n\n"))
 
   regs <- match.arg(regs, c("lpr", "lmdb", "pop", "pato", "cancer", "opr", "sc", "meta", "dsd", "ses"), several.ok = T)
-
-  if(is.null(n) & is.null(id.filter) & missing(keep.list) & missing(pattern.list)) {
-    user.input <- readline(cat("Loading complete registers. Are you sure you want to run this? (yes/no)"))
-    if(user.input != "yes")
-      return(cat("Loading cancelled"))
-  }
 
   if(!is.null(keep.list) & class(keep.list) != "list") {
     stop('Format the argument "keep" as a list with the structure list("lpr" = c("vars"), "lmdb" = c("vars"))')
@@ -50,6 +44,16 @@ loadR <- function(regs,
   if(!is.null(pattern.list) & class(pattern.list) != "list") {
     stop('Format the argument "pattern.list" as a list with the structure list("lpr" = c("DC92", "DC239"), "lmdb" = c("L04", "L01"))')
   }
+
+  if(class(id.filter) %in% c("character", "numeric", "integer")) {
+
+    id.filter <- data.frame(pnr = id.filter)
+
+  }
+
+
+
+
 
   pathlist <-
     list("rds" = list("lpr" = "V:/Data/Workdata/709545/Mathias Oerholt/DATASETS/LPR.rds",
@@ -148,10 +152,8 @@ loadR <- function(regs,
 
   }
 
-  tickR.start <- tickR.first
-
   cat(paste0("\nTotal runtime: \n"))
-  cat(tockR("diff"))
+  cat(paste0(tockR("diff", start), "\n\n"))
 
   if(length(reglist) == 1) {
 

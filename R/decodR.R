@@ -16,24 +16,24 @@
 #'
 #'
 
-# codelist <- list("lpr_case" = list("kidney" = c("a1","b1","c1"),
-#                                    "lung" = c("a2", "b2", "c2")),
-#                  "lpr_ex" = list("immune" = "a3",
-#                                  "cll" = c("a4", "b4")),
-#                  "lmdb_ex" = list("immune" = "a5"),
-#                  "opr_ex" = list("trans" = "t5"),
-#                  "labels" = list("lpr_case" = "SOTR",
-#                                  "lpr_ex" = "immsup"),
-#                  "exclusion" = c("z1","z2"))
-#
-# (clist <- decodR(codelist))
+codelist <- list("lpr_case" = list("kidney" = c("a1","b1","c1"),
+                                   "lung" = c("a2", "b2", "c2")),
+                 "lpr_ex" = list("immune" = "a3",
+                                 "cll" = c("a4", "b4")),
+                 "lmdb_ex" = list("immune" = "a5"),
+                 "opr_ex" = list("trans" = "t5"),
+                 "labels" = list("lpr_case" = "SOTR",
+                                 "lpr_ex" = "immsup"),
+                 "exclusion" = c("z1","z2"))
+
+(clist <- decodR(codelist))
 
 
 decodR <- function(codelist) {
 
   clist <- codelist
 
-  codelist <- codelist[str_detect(names(codelist), "lpr|lmdb|opr")]
+  codelist <- codelist[str_detect(names(codelist), "lpr|lmdb|opr|pato")]
 
   #Registies
   registries <- unique(str_extract(names(codelist), "lpr|opr|lmdb|cancer|pato"))
@@ -55,14 +55,11 @@ decodR <- function(codelist) {
 
   }
 
-  updatR <- paste0(unlist(codelist[str_detect(names(codelist), "case")]), collapse = "|")
-
   list <- list(
     codes = clist,
     loadR.regs = c(registries, "pop", "sc", "meta", "dsd"),
     loadR.list = loadlist,
-    searchR.list = searchlist,
-    updatR = updatR
+    searchR.list = searchlist
   )
 
   if("labels" %in% names(clist)) {
@@ -78,6 +75,12 @@ decodR <- function(codelist) {
   if("exclusion" %in% names(clist)) {
 
     list <- append(list, list(searchR.exclusion = clist[["exclusion"]]))
+  }
+
+  if("lpr_case" %in% names(clist)) {
+
+  list <- append(list, list(updatR.exclusion = unlist(codelist[str_detect(names(codelist), "lpr_case")], use.names = F)))
+
   }
 
   list

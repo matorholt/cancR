@@ -103,7 +103,11 @@
 
 matchR <- function(data, td_frame, index, case, fu, td_date, fixed_vars, td_vars, exclude, n_controls=4, seed=1, cores=4, pnr=pnr, interval = NULL) {
 
-  tickR()
+  if("date" %in% names(data)) {
+    return(cat("Error: The pre_match dataframe cannot contain a variable named date"))
+  }
+
+   tickR()
 
   cat(paste0("\nInitializing matchR algorithm: ", tockR("time"), "\n"))
 

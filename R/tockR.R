@@ -12,7 +12,7 @@
 #'
 #'
 
-tockR <- function(format = "diff", digits = 1) {
+tockR <- function(format = "diff", start, digits = 2) {
 
     if(format == "time") {
 
@@ -20,7 +20,15 @@ tockR <- function(format = "diff", digits = 1) {
 
     } else if(format == "diff") {
 
-    t <- Sys.time() - tickR.start
+      if(!missing(start)) {
+
+        t <- Sys.time() - start
+      } else {
+
+        t <- Sys.time() - tickR.start
+      }
+
+
 
     out <- paste0(round(as.numeric(t), digits), " ", attr(t, "units"))
 
