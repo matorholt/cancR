@@ -16,17 +16,17 @@
 #'
 #'
 
-codelist <- list("lpr_case" = list("kidney" = c("a1","b1","c1"),
-                                   "lung" = c("a2", "b2", "c2")),
-                 "lpr_ex" = list("immune" = "a3",
-                                 "cll" = c("a4", "b4")),
-                 "lmdb_ex" = list("immune" = "a5"),
-                 "opr_ex" = list("trans" = "t5"),
-                 "labels" = list("lpr_case" = "SOTR",
-                                 "lpr_ex" = "immsup"),
-                 "exclusion" = c("z1","z2"))
-
-(clist <- decodR(codelist))
+# codelist <- list("lpr_case" = list("kidney" = c("a1","b1","c1"),
+#                                    "lung" = c("a2", "b2", "c2")),
+#                  "lpr_ex" = list("immune" = "a3",
+#                                  "cll" = c("a4", "b4")),
+#                  "lmdb_ex" = list("immune" = "a5"),
+#                  "opr_ex" = list("trans" = "t5"),
+#                  "labels" = list("lpr_case" = "SOTR",
+#                                  "lpr_ex" = "immsup"),
+#                  "exclusion" = c("z1","z2"))
+#
+# (clist <- decodR(codelist))
 
 
 decodR <- function(codelist) {

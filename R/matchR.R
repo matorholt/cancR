@@ -25,80 +25,79 @@
 #'
 #'
 
-# library(foreach)
-# library(doParallel)
-#
-# no = 40000
-# cno= 0.0025*no
-#
-#
-# set.seed(2)
-# (c <- data.frame(id = paste("pnr", rnorm(cno, 40000,1000)),
-#                  case = 1,
-#                  index = sample(c(sample(seq(as.Date('1990/01/01'), as.Date('2010/01/01'), by="day"))), size = cno, replace=TRUE),
-#                  follow = c(sample(seq(as.Date('2015/01/01'), as.Date('2020/01/01'), by="day"), cno, replace=T)),
-#                  byear = sample(c(seq(1958,1961)), cno, replace=T),
-#                  sex = sample(c("F","M"), cno, replace=T),
-#                  skinc = sample(c(sample(seq(as.Date('2011/01/01'), as.Date('2020/01/01'), by="day")),rep(as.Date(NA),8000)), size = cno, replace=TRUE),
-#                  imm_sup = sample(c(sample(seq(as.Date('2011/01/01'), as.Date('2020/01/01'), by="day")),rep(as.Date(NA),8000)), size = cno, replace=TRUE),
-#                  random1 = 1,
-#                  random2 = 2) %>%
-#     mutate(across(c(skinc, imm_sup), ~ if_else(. > follow | .< index, follow-100, .))))
-#
-# (cnt <- data.frame(id = paste("pnr", rnorm(no, 40000,1000)),
-#                    case = 0,
-#                    follow = c(sample(seq(as.Date('1980/01/01'), as.Date('2020/01/01'), by="day"), no, replace=T)),
-#                    byear = sample(c(seq(1958,1961)), no, replace=T),
-#                    sex = sample(c("F","M"), no, replace=T),
-#                    skinc = sample(c(sample(seq(as.Date('1985/01/01'), as.Date('2000/01/01'), by="day")),rep(as.Date(NA),8000)), size = no, replace=TRUE),
-#                    imm_sup = sample(c(sample(seq(as.Date('1985/01/01'), as.Date('2000/01/01'), by="day")),rep(as.Date(NA),8000)), size = no, replace=TRUE),
-#                    random1 = 1,
-#                    random2 = 2) %>%
-#     mutate(across(c(skinc, imm_sup), ~ if_else(. > follow, follow-2000, .))))
-#
-# pop <- bind_rows(c, cnt)
-#
-# set.seed(1)
-# mp <- 40
-# (ses <- data.frame(var = sample(c("married",
-#                                   "education",
-#                                   "income",
-#                                   "cci",
-#                                   "region"),
-#                                 size = no*mp,
-#                                 replace=TRUE),
-#                    date = sample(c(sample(seq(as.Date('1980/01/01'), as.Date('2000/01/01'), by="day"))), size = no*mp, replace=TRUE),
-#                    id = sample(pop$id, size = no*mp, replace=TRUE)) %>%
-#     arrange(id) %>%
-#     mutate(val = case_when(var %in% "income" ~ sample(paste("q", seq(1,4), sep=""), no*mp, prob = rep(0.25,4), replace=TRUE),
-#                            var %in% "education" ~ sample(c("education_low", "education_medium", "education_high"), no*mp, prob = rep(1/3,3), replace=TRUE),
-#                            var %in% "cci" ~ sample(as.character(seq(1,6)), no*mp, prob = rep(1/6,6), replace=TRUE),
-#                            var %in% "region" ~ sample(c("the_capital_region_of_denmark",
-#                                                         "region_zealand",
-#                                                         "the_north_denmark_region",
-#                                                         "central_denmark_region",
-#                                                         "the_region_of_southern_denmark"), no*mp, prob = rep(0.20,5), replace=TRUE),
-#                            var %in% "married" ~ "married")) %>%
-#     select(id, date, var, val))
-#
-# ses_wide <- ses %>% arrange(id, date) %>%
-#   distinct(id, date, .keep_all = T) %>%
-#   pivot_wider(names_from=var, values_from = val) %>%
-#   fill(income, married, region, education, cci, .direction = "down")
-#
-# t1 <- matchR(data=pop,
-#              case=case,
-#              pnr = id,
-#              fu=follow,
-#              index=index,
-#              td_date=date,
-#              fixed_vars=c(byear, sex),
-#              td_vars=c(education, income, cci, region, married),
-#              exclude = c(skinc, imm_sup),
-#              td_frame = ses_wide,
-#              n_controls=4,
-#              seed=1,
-#             interval = 5)
+library(foreach)
+library(doParallel)
+
+no = 40000
+cno= 0.0025*no
+
+
+set.seed(2)
+(c <- data.frame(id = paste("pnr", rnorm(cno, 40000,1000)),
+                 case = 1,
+                 index = sample(c(sample(seq(as.Date('1990/01/01'), as.Date('2010/01/01'), by="day"))), size = cno, replace=TRUE),
+                 follow = c(sample(seq(as.Date('2015/01/01'), as.Date('2020/01/01'), by="day"), cno, replace=T)),
+                 byear = sample(c(seq(1958,1961)), cno, replace=T),
+                 sex = sample(c("F","M"), cno, replace=T),
+                 skinc = sample(c(sample(seq(as.Date('2011/01/01'), as.Date('2020/01/01'), by="day")),rep(as.Date(NA),8000)), size = cno, replace=TRUE),
+                 imm_sup = sample(c(sample(seq(as.Date('2011/01/01'), as.Date('2020/01/01'), by="day")),rep(as.Date(NA),8000)), size = cno, replace=TRUE),
+                 random1 = 1,
+                 random2 = 2) %>%
+    mutate(across(c(skinc, imm_sup), ~ if_else(. > follow | .< index, follow-100, .))))
+
+(cnt <- data.frame(id = paste("pnr", rnorm(no, 40000,1000)),
+                   case = 0,
+                   follow = c(sample(seq(as.Date('1980/01/01'), as.Date('2020/01/01'), by="day"), no, replace=T)),
+                   byear = sample(c(seq(1958,1961)), no, replace=T),
+                   sex = sample(c("F","M"), no, replace=T),
+                   skinc = sample(c(sample(seq(as.Date('1985/01/01'), as.Date('2000/01/01'), by="day")),rep(as.Date(NA),8000)), size = no, replace=TRUE),
+                   imm_sup = sample(c(sample(seq(as.Date('1985/01/01'), as.Date('2000/01/01'), by="day")),rep(as.Date(NA),8000)), size = no, replace=TRUE),
+                   random1 = 1,
+                   random2 = 2) %>%
+    mutate(across(c(skinc, imm_sup), ~ if_else(. > follow, follow-2000, .))))
+
+pop <- bind_rows(c, cnt)
+
+set.seed(1)
+mp <- 40
+(ses <- data.frame(var = sample(c("marital",
+                                  "education",
+                                  "income",
+                                  "cci",
+                                  "region"),
+                                size = no*mp,
+                                replace=TRUE),
+                   date = sample(c(sample(seq(as.Date('1980/01/01'), as.Date('2000/01/01'), by="day"))), size = no*mp, replace=TRUE),
+                   id = sample(pop$id, size = no*mp, replace=TRUE)) %>%
+    arrange(id) %>%
+    mutate(val = case_when(var %in% "income" ~ sample(paste("q", seq(1,4), sep=""), no*mp, prob = rep(0.25,4), replace=TRUE),
+                           var %in% "education" ~ sample(c("education_low", "education_medium", "education_high"), no*mp, prob = rep(1/3,3), replace=TRUE),
+                           var %in% "cci" ~ sample(as.character(seq(1,6)), no*mp, prob = rep(1/6,6), replace=TRUE),
+                           var %in% "region" ~ sample(c("the_capital_region_of_denmark",
+                                                        "region_zealand",
+                                                        "the_north_denmark_region",
+                                                        "central_denmark_region",
+                                                        "the_region_of_southern_denmark"), no*mp, prob = rep(0.20,5), replace=TRUE),
+                           var %in% "marital" ~ "married")) %>%
+    select(id, date, var, val))
+
+ses_wide <- ses %>% arrange(id, date) %>%
+  distinct(id, date, .keep_all = T) %>%
+  pivot_wider(names_from=var, values_from = val) %>%
+  fill(income, marital, region, education, cci, .direction = "down")
+
+t1 <- matchR(data=pop,
+             case=case,
+             pnr = id,
+             fu=follow,
+             index=index,
+             td_date=date,
+             fixed_vars=c(byear, sex),
+             td_vars=c(education, income, cci, region, marital),
+             exclude = c(skinc, imm_sup),
+             td_frame = ses_wide,
+             n_controls=4,
+             seed=1)
 
 
 matchR <- function(data, td_frame, index, case, fu, td_date, fixed_vars, td_vars, exclude, n_controls=4, seed=1, cores=4, pnr=pnr, interval = NULL) {
@@ -108,6 +107,8 @@ matchR <- function(data, td_frame, index, case, fu, td_date, fixed_vars, td_vars
   }
 
    tickR()
+
+   start <- tickR.start
 
   cat(paste0("\nInitializing matchR algorithm: ", tockR("time"), "\n"))
 
@@ -167,6 +168,10 @@ matchR <- function(data, td_frame, index, case, fu, td_date, fixed_vars, td_vars
   #Partition into birth cohorts
   cohorts <- sort(unique(full_df[full_df[["case"]]==1,][["tvar"]]))
   cohorts_length <- length(cohorts)
+  cc <- c(cat_c, dat_c)
+  ncase <- 0
+  tcase <- nrow(full_df[full_df$case == 1,])
+
 
   if(str_detect(cohorts[1], "-")) {
     cat(paste0("Partitioning ", cohorts_length, " cohorts: \n"))
@@ -181,9 +186,9 @@ matchR <- function(data, td_frame, index, case, fu, td_date, fixed_vars, td_vars
 
   pb <- txtProgressBar(max = cohorts_length, style = 3)
 
-  ncase <- 0
-
   for(j in 1:cohorts_length) {
+
+    tickR()
 
     b <- cohorts[[j]]
 
@@ -198,41 +203,45 @@ matchR <- function(data, td_frame, index, case, fu, td_date, fixed_vars, td_vars
 
                               itime <- df[set == i, index_s, env = list(index_s = index_s)]
 
-                                df[set == i | case_s == 0 & fu_s > itime & td_date_s < itime, env=list(case_s = case_s,
+                              covars <- unlist(df[set == i, .SD, .SDcols = cc])
+
+                              df[set == i | case_s == 0 & fu_s > itime & td_date_s < itime, env=list(case_s = case_s,
                                                                                                        fu_s = fu_s,
                                                                                                        td_date_s = td_date_s)] %>%
-                                .[.[, Reduce(`&`, lapply(.SD, function(x) is.na(x) | x > itime)),.SDcols = c(exclude_c)], .SDcols= c(exclude_c)] %>%
+                                .[.[, Reduce(`&`, lapply(.SD, function(x) is.na(x) | x > itime)) | set == i,.SDcols = c(exclude_c)], .SDcols= c(exclude_c)] %>%
                                 .[, .SD[.N], by = pnr_c] %>%
-                                .[.[, Reduce(`&`, lapply(.SD, function(x) is.na(x) & is.na(first(x)) | x == first(x))),.SDcols = c(cat_c, dat_c)], .SDcols= c(cat_c, dat_c)]
+                                .[.[, Reduce(`&`, lapply(.SD, function(x) x %in% covars)) | set == i,.SDcols = c(cc)], .SDcols= c(cc)]
+
+
 
                             }
 
 
     control_list <- control_list[order(sapply(control_list, nrow))]
 
-    idlist <- c()
+idlist <- c()
 
-    matches <- list()
+matches <- list()
 
-    for(i in seq(1,length(control_list))) {
+for(i in seq(1,length(control_list))) {
 
-      set.seed(seed)
+  set.seed(seed)
 
 
 
-      m <-
-        control_list[[i]][,set:=first(set)][case==0 & pnr %nin% idlist, env=list(case=substitute(case),
-                                                                                 pnr=substitute(pnr))][sample(.N, pmin(.N, n_controls))]
+  m <-
+    control_list[[i]][order(-case)][,set:=first(set)][case==0 & pnr %nin% idlist, env=list(case=substitute(case),
+                                                                             pnr=substitute(pnr))][sample(.N, pmin(.N, n_controls))]
 
-      idlist <- c(idlist, m[, c(pnr), env=list(pnr = substitute(pnr))])
+  idlist <- c(idlist, m[, c(pnr), env=list(pnr = substitute(pnr))])
 
-      matches[[i]] <- m
+  matches[[i]] <- m
 
     }
 
     setTxtProgressBar(pb, j)
 
-    cat(paste0("    Time: ", tockR("time"), "   Cohort: ", b,"    ", nrow(cases), " Cases / ", nrow(df), " Total   Status: ", ncase, " Cases"))
+    cat(paste0("-------Time: ", tockR("time"), ", runtime: ", tockR("diff"), "  -  Cohort: ", b,"   -   Current: ", nrow(cases), " Cases / ", nrow(df), "  -  Total Status: ", ncase, " / ", tcase, " Cases-------"))
 
     cohort_list[[as.character(b)]] <- as.data.frame(bind_rows(cases, rbindlist(matches)))
 
@@ -242,16 +251,20 @@ matchR <- function(data, td_frame, index, case, fu, td_date, fixed_vars, td_vars
 
   cat("\nMatching complete!\n")
   cat("Total runtime: \n")
-  cat(tockR("diff"), "\n\n")
+  cat(tockR("diff", start), "\n\n")
 
   stopCluster(cluster)
 
+
+
   rbindlist(cohort_list)[order(set)][, "index" := nafill(index, "locf"), env=list(index=substitute(index))][, c(exclude_c, td_date_c, "tvar") := NULL] %>%
-    select({{pnr}}, case, set, index, everything())
+   select({{pnr}}, case, set, index, everything())
+
 
 
 
 }
+
 
 
 
