@@ -13,8 +13,8 @@
 #' @param labels List specifying labels of the specific labels for each variable
 #' @param headings List specifying labels for variable names
 #' @param reverse whether the order of groups should start with the highest level (default = T)
-#' @param test_stats Vector of length 2 containing statistical tests that should be performed
-#' @param show_na Whether NAs should be presented
+#' @param test.stats Vector of length 2 containing statistical tests that should be performed
+#' @param show.na Whether NAs should be presented
 #' @param censur whether counts <= 3 should be censored
 #'
 #' @return Returns a table and exports a word-file (optional if filename is provided)
@@ -34,8 +34,7 @@
 #
 # tablR(df,
 #       group=X2,
-#       vars=c(X1,X3,X4,X6,X7),
-#       num_vars = age_group,
+#       vars=c(X1,X3,X4,X6,X7, age_group),
 #       labels = list("age_group" = c("0-40" = "<=40"),
 #                     "X1" = c("T2" = "T2-T3")),
 #       headings = list("age_group" = "Age2",
@@ -43,7 +42,7 @@
 #       total = T,
 #       numeric = c("median", "q1q3", "range"),
 #       test = T,
-#       show_na=T,
+#       show.na=T,
 #       censur = F)
 
 tablR <- function(data,
@@ -57,13 +56,13 @@ tablR <- function(data,
                   reference = list(),
                   headings = list(),
                   reverse = T,
-                  test_stats = c("kwt", "chisq"),
-                  show_na = FALSE,
+                  test.stats = c("kwt", "chisq"),
+                  show.na = FALSE,
                   censur=F) {
 
   numeric <- match.arg(numeric, c("median", "q1q3", "iqr", "range", "mean", "sd", "min", "max"), several.ok = T)
   direction <- match.arg(direction, c("colwise", "rowwise"))
-  test_stats <- match.arg(test_stats, c("kwt", "chisq", "anova"), several.ok = T)
+  test.stats <- match.arg(test.stats, c("kwt", "chisq", "anova"), several.ok = T)
 
   if(direction == "rowwise") {
     categorical <- "countrowpct"
@@ -71,16 +70,14 @@ tablR <- function(data,
       categorical <- "countpct"
   }
 
-  if(show_na) {
+  if(show.na) {
     numeric <- c("Nmiss", numeric)
     categorical <- c("Nmiss", categorical)
   }
 
 
-  vars_c <- data %>% select({{vars}}, {{num_vars}}) %>% names()
+  vars_c <- data %>% select({{vars}}) %>% names()
   group_c <- data %>% select({{group}}) %>% names()
-  num_c <-
-    data %>% select({{num_vars}}) %>% names()
 
   if(reverse) {
   data <- data %>% mutate(!!sym(group_c) := fct_rev(!!sym(group_c)))
@@ -93,7 +90,7 @@ tablR <- function(data,
   }
 
   c <- tableby.control(test=test, total=total,
-                       numeric.test=test_stats[1], cat.test=test_stats[2],
+                       numeric.test=test.stats[1], cat.test=test.stats[2],
                        numeric.stats=numeric,
                        cat.stats=categorical,
                        stats.labels=list(median="Median", q1q3="Q1, Q3", iqr = "IQR", mean = "Mean", sd="SD", range = "Range", Nmiss = "Missing")

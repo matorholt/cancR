@@ -6,15 +6,15 @@
 \usage{
 matchR(
   data,
-  td_frame,
+  td.frame,
   index,
   case,
   fu,
-  td_date,
-  fixed_vars,
-  td_vars,
+  td.date,
+  fixed.vars,
+  td.vars,
   exclude,
-  n_controls = 4,
+  n.controls = 4,
   seed = 1,
   cores = 4,
   pnr = pnr,
@@ -24,7 +24,7 @@ matchR(
 \arguments{
 \item{data}{Dataset containing case/control indicator with index date for cases and fixed matching parameters}
 
-\item{td_frame}{Dataset with time dependent matching covariates. Should be multiple rows for each patient with updated values for each parameter.}
+\item{td.frame}{Dataset with time dependent matching covariates. Should be multiple rows for each patient with updated values for each parameter.}
 
 \item{index}{Index date for cases, NA for controls}
 
@@ -32,15 +32,15 @@ matchR(
 
 \item{fu}{End of follow up as date}
 
-\item{td_date}{Name of the date column in the time dependent matching covariate dataset}
+\item{td.date}{Name of the date column in the time dependent matching covariate dataset}
 
-\item{fixed_vars}{Vector of fixed matching parameters}
+\item{fixed.vars}{Vector of fixed matching parameters}
 
-\item{td_vars}{Vector of time dependent matching parameters}
+\item{td.vars}{Vector of time-dependent matching parameters}
 
 \item{exclude}{Vector of parameters that are not allowed to occur before index}
 
-\item{n_controls}{Number of desired controls per case}
+\item{n.controls}{Number of desired controls per case}
 
 \item{seed}{Seed}
 

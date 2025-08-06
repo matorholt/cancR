@@ -6,11 +6,12 @@
 \usage{
 reportR(
   data,
-  case = "1",
+  casename,
   vars = c(period, age_group, sex, education, income, cci, region, marital),
   table = F,
   plot = F,
-  cols = c("orange", "#9B62B8", "#224B87", "#67A8DC", "#D66ACE"),
+  type = "simple",
+  cols = cancR_palette,
   headings = list(),
   ...
 )
@@ -18,7 +19,7 @@ reportR(
 \arguments{
 \item{data}{matched dataset}
 
-\item{case}{name or number of cases (e.g. "1" or "CLL")}
+\item{casename}{name or number of cases (e.g. "1" or "CLL")}
 
 \item{vars}{vars that should be in the table}
 

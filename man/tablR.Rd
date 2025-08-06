@@ -16,8 +16,8 @@ tablR(
   reference = list(),
   headings = list(),
   reverse = T,
-  test_stats = c("kwt", "chisq"),
-  show_na = FALSE,
+  test.stats = c("kwt", "chisq"),
+  show.na = FALSE,
   censur = F
 )
 }
@@ -42,9 +42,9 @@ tablR(
 
 \item{reverse}{whether the order of groups should start with the highest level (default = T)}
 
-\item{test_stats}{Vector of length 2 containing statistical tests that should be performed}
+\item{test.stats}{Vector of length 2 containing statistical tests that should be performed}
 
-\item{show_na}{Whether NAs should be presented}
+\item{show.na}{Whether NAs should be presented}
 
 \item{censur}{whether counts <= 3 should be censored}
 }

@@ -48,7 +48,7 @@ estimatR.multi <- function(data,
                            names,
                            ...) {
 
-  cat("\nestimatR initialized: ", tickR(), "\n")
+  cat("\nestimatR.multi initialized: ", tickR(), "\n")
 
   if(missing(names)) {
     names <- paste(event, group)

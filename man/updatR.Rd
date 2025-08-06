@@ -4,14 +4,16 @@
 \alias{updatR}
 \title{updatR}
 \usage{
-updatR(data, td.frame, exclusion)
+updatR(data, exclusion, match = "start")
 }
 \arguments{
 \item{data}{data frame with case IDS}
 
-\item{td.frame}{Time-dependent frame containing CCI values to be changed}
+\item{exclusion}{Vector of diagnosis codes to be excluded (e.g. c("DC1", "DC2", "DC3"))}
 
-\item{exclusion}{Vector of diagnosis codes to be excluded}
+\item{lpr}{lpr data frame. Loaded automatically if missing}
+
+\item{td.frame}{Time-dependent frame containing CCI values to be changed. Loaded automatically if missing}
 }
 \value{
 An updated td.frame

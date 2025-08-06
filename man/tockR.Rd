@@ -4,7 +4,7 @@
 \alias{tockR}
 \title{tockR}
 \usage{
-tockR(format = "diff", digits = 1)
+tockR(format = "diff", start, digits = 2)
 }
 \arguments{
 \item{format}{Whether date and time or a time difference should be returned}
