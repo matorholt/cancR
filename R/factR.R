@@ -25,15 +25,15 @@
 #'
 #'
 #
-# set.seed(1)
-#
-# n=20
-#
-# (df <-
-#     data.frame(v1 = sample(letters[1:5], size = 20, replace=TRUE),
-#                v2 = sample(letters[1:5], size = 20, replace=TRUE),
-#                v3 = sample(letters[1:5], size = 20, replace=TRUE),
-#                vnum = sample(c("<40", "50-60", "10-20", "100-110", ">110", "cci_0"), size = n, replace=TRUE)))
+set.seed(1)
+
+n=20
+
+(df <-
+    data.frame(v1 = sample(letters[1:5], size = 20, replace=TRUE),
+               v2 = sample(letters[1:5], size = 20, replace=TRUE),
+               v3 = sample(letters[1:5], size = 20, replace=TRUE),
+               vnum = sample(c("<40", "50-60", "10-20", "100-110", ">110", "cci_0"), size = n, replace=TRUE)))
 #
 
 #
@@ -134,15 +134,13 @@ factR <- function(data, vars, num_vars, reference = list(), levels = list(), lab
       levels[[v]] <- names(labels[[v]])
     }
 
-    if(!is.factor(data[, v])) {
-
       data <- data %>%
       mutate(!!sym(v) := forcats::fct_infreq(as.character(!!sym(v))),
             !!sym(v) := forcats::fct_relevel(!!sym(v), reference[[v]]),
             !!sym(v) := forcats::fct_relevel(!!sym(v), levels[[v]]),
             !!sym(v) := forcats::fct_recode(!!sym(v), !!!setNames(as.character(names(labels[[v]])), labels[[v]])))
 
-    }
+
 
     if(reverse) {
         data <- data %>% mutate(!!sym(v) := fct_rev(!!sym(v)))
