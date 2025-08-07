@@ -9,9 +9,13 @@ summarisR(
   vars,
   group,
   type = NULL,
+  layout = "horizontal",
   exclude = NULL,
   bins = 1,
-  cols = cancR_palette
+  cols = cancR_palette,
+  headings = list(),
+  vjust = -0.5,
+  text.color = "White"
 )
 }
 \arguments{
@@ -19,11 +23,23 @@ summarisR(
 
 \item{vars}{vector of variables to be presented}
 
+\item{group}{Optional grouping variable}
+
 \item{type}{shortcut to present all numeric or categorical variables ("numeric" or "categorical")}
+
+\item{layout}{whether the bar plots should be "horizontal" (side-by-side) or "vertical" (stacked)}
 
 \item{exclude}{regex of variables that should not be presented}
 
 \item{bins}{number of bins for histograms}
+
+\item{cols}{Color palette, defaults to cancR_palette}
+
+\item{headings}{list specifying new variabel labels for layout}
+
+\item{vjust}{vertical adjustment of the counts (pct) labels}
+
+\item{text.color}{label colors}
 }
 \value{
 Returns bar charts or density plots depending on format. Numerical variables with less than 5 unique values are considered as factors.

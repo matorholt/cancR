@@ -25,8 +25,8 @@
 #                  "labels" = list("lpr_case" = "SOTR",
 #                                  "lpr_ex" = "immsup"),
 #                  "exclusion" = c("z1","z2"))
-#
-# (clist <- decodR(codelist))
+# #
+# clist <- decodR(codelist)
 
 
 decodR <- function(codelist) {
@@ -44,7 +44,6 @@ decodR <- function(codelist) {
 
   for(i in registries) {
 
-    #loadlist[[i]] <- c(unlist(codelist[str_detect(names(codelist), i)]), use.names=F)
     loadlist[[i]] <- c(unlist(codelist[str_detect(names(codelist), i)]), use.names=F)
 
     for(j in names(codelist)[str_detect(names(codelist), i)]) {
@@ -79,7 +78,14 @@ decodR <- function(codelist) {
 
   if("lpr_case" %in% names(clist)) {
 
+    if(any(unlist(codelist[["lpr_case"]]) %in% unlist(charlson.codes))) {
+
+      cat("Cases have diagnoses codes as a part of the Charlson Comorbidity Index - remember to use the updatR() function")
+
+
   list <- append(list, list(updatR.exclusion = unlist(codelist[str_detect(names(codelist), "lpr_case")], use.names = F)))
+
+    }
 
   }
 

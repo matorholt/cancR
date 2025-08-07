@@ -11,7 +11,8 @@ factR(
   reference = list(),
   levels = list(),
   labels = list(),
-  lab_to_lev = FALSE
+  lab_to_lev = FALSE,
+  reverse = F
 )
 }
 \arguments{
@@ -28,6 +29,8 @@ factR(
 \item{labels}{List of variables with the corresponding labels (e.g. list("v3" = c("e" = "epsilon", "d" = "delta")))}
 
 \item{lab_to_lev}{Whether changing labels should change levels if these are not specified (defaults to TRUE)}
+
+\item{reverse}{Whether the levels should be reversed (default is FALSE)}
 }
 \value{
 Returns the inputted dataframe with modified factor variables

@@ -11,6 +11,7 @@
 #' @param numeric Selection of the type of stats for numerical variables (e.g. median, q1q3, range, mean, sd)
 #' @param direction Direction for percentages (colwise or rowwise)
 #' @param labels List specifying labels of the specific labels for each variable
+#' @param reference List specifying reference group for each variable
 #' @param headings List specifying labels for variable names
 #' @param reverse whether the order of groups should start with the highest level (default = T)
 #' @param test.stats Vector of length 2 containing statistical tests that should be performed

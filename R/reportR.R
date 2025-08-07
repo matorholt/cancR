@@ -4,11 +4,16 @@
 #' Automatic tablR function for overview of matched and unmatched cases
 #'
 #' @param data matched dataset
-#' @param casename name or number of cases (e.g. "1" or "CLL")
+#' @param casename name or number indicating cases (e.g. "1" or "CLL")
 #' @param vars vars that should be in the table
 #' @param table whether a table should be made (default = F)
 #' @param plot whether a plot should be made (default = F)
+#' @param type whether non-matched counts should be collapsed to "unmatched" ("simple") or remain stratified ("full")
+#' @param cols color palette (default is cancR_palette)
 #' @param headings List specifying labels for variable names
+#' @param layout layout of the bar chart (horizontal or vertical (default))
+#' @param vjust vertical adjustment of the counts (pct) labels
+#' @param text.color label colors
 #' @param ... passed to tablR
 #'
 #' @return Prints the matching report, table and plot. Returns af list of the table and plot.
@@ -103,14 +108,17 @@
 # (tdf <-
 #     t1 %>%
 #     formatR(labels = list("case" = c("0" = "No CLL", "1"="CLL"))))
-
-# match_report <- tdf %>%
+#
+# tt <- tdf %>%
 #   formatR(layout = "matching") %>%
 #   reportR(casename = "CLL",
 #           table=T,
 #           plot = T,
 #           type = "simple",
-#           headings = list("cci" = "Charlson Comorbidity Index"))
+#           headings = list("cci" = "Charlson Comorbidity Index"),
+#           layout = "horizontal",
+#           vjust = 1,
+#           text.color = "Black")
 #
 # match_report$report
 # match_report$table
@@ -126,6 +134,9 @@ reportR <- function(data,
                     type = "simple",
                     cols = cancR_palette,
                     headings = list(),
+                    layout = "vertical",
+                    vjust = -0.5,
+                    text.color = "White",
                     ...) {
 
   type <- match.arg(type, c("simple", "full"))
@@ -187,28 +198,15 @@ reportR <- function(data,
 
   if(plot) {
 
-    plist <-
-      lapply(vars_c, function(v) {
+    if("region" %in% colnames(d)) {
+    d <- d %>% mutate(region = str_remove_all(region, "Region|Denmark|The|of| "))
+    }
 
-        # if("region" %in% colnames(d)) {
-        # d <- d %>% mutate(region = str_remove_all(region, "Region|Denmark|The|of| "))
-        # }
+   p <- summarisR(d, vars = vars_c, group = n_controls, headings = headings, layout = layout, vjust = vjust, text.color = text.color)
 
-          ggplot(d, aes(x=n_controls, fill=!!sym(v))) +
-            geom_bar(position = "fill") +
-            scale_fill_manual(values = cols) +
-          scale_y_continuous(breaks = seq(0,1,0.25), labels = paste0(seq(0,100,25), "%")) +
-            theme_classic() +
-            theme(legend.position = "top") +
-          labs(x=headings[[v]], y="", fill="")
+   print(p)
 
-      })
-
-
-    p <- ggarrange(plotlist=plist, common.legend=F)
-    print(p)
-
-    returnlist <- append(returnlist, list("plot" = p))
+   returnlist <- append(returnlist, list("plot" = p))
   }
 
 
@@ -221,6 +219,6 @@ reportR <- function(data,
   }
 
 returnlist
-}
 
+}
 

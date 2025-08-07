@@ -6,9 +6,15 @@
 #'
 #' @param data dataset
 #' @param vars vector of variables to be presented
+#' @param group Optional grouping variable
 #' @param type shortcut to present all numeric or categorical variables ("numeric" or "categorical")
+#' @param layout whether the bar plots should be "horizontal" (side-by-side) or "vertical" (stacked)
 #' @param exclude regex of variables that should not be presented
 #' @param bins number of bins for histograms
+#' @param cols Color palette, defaults to cancR_palette
+#' @param headings list specifying new variabel labels for layout
+#' @param vjust vertical adjustment of the counts (pct) labels
+#' @param text.color label colors
 #'
 #' @return Returns bar charts or density plots depending on format. Numerical variables with less than 5 unique values are considered as factors.
 #' @export
@@ -21,6 +27,7 @@
 # df$time2 <- df$time + rnorm(n)
 # df$X1 <- factor(rbinom(n, prob = c(0.3,0.4) , size = 2), labels = paste0("T",0:2))
 # df$X3 <- factor(rbinom(n, prob = c(0.3,0.4,0.3) , size = 3), labels = paste0("T",0:3))
+# df$bad_name <- factor(rbinom(n, prob = c(0.3,0.4,0.3) , size = 3), labels = paste0("T",0:3))
 # df$event2 <- rbinom(n, 2, prob=.3)
 # df <- as.data.frame(df)
 #
@@ -31,8 +38,19 @@
 # summarisR(data=df,vars=c(X6, X7, X1, X3), group = X2)
 # summarisR(data=df,vars=c(X6))
 # summarisR(df, exclude = "time|event|t_", group = X2)
+# summarisR(df, c(X3,X1), group=X2, layout = "vertical")
 
-summarisR <- function(data, vars, group, type = NULL, exclude = NULL, bins = 1, cols = cancR_palette) {
+summarisR <- function(data,
+                      vars,
+                      group,
+                      type = NULL,
+                      layout = "horizontal",
+                      exclude = NULL,
+                      bins = 1,
+                      cols = cancR_palette,
+                      headings = list(),
+                      vjust = -0.5,
+                      text.color = "White") {
 
 
   if(!is.null(exclude)) {
@@ -57,6 +75,8 @@ summarisR <- function(data, vars, group, type = NULL, exclude = NULL, bins = 1, 
     vars_c <- colnames(data)
   }
 
+  layout <- match.arg(layout, c("horizontal", "vertical"))
+
   if(!missing(group)) {
 
     grp_c <- data %>% select({{group}}) %>% names()
@@ -67,8 +87,13 @@ summarisR <- function(data, vars, group, type = NULL, exclude = NULL, bins = 1, 
     grp_c <- NULL
   }
 
+  headings_default <- as.list(str_to_title(str_replace_all(vars_c, "_", " "))) %>% set_names(vars_c)
+  headings <- modifyList(headings_default, headings)
+
+  data <- data %>% rename_with(~ unlist(headings), all_of(names(headings)))
+
  plist <-
- lapply(vars_c, function(v) {
+ lapply(headings, function(v) {
 
       if(length(unique(data[,v]))>10) {
 
@@ -76,7 +101,9 @@ summarisR <- function(data, vars, group, type = NULL, exclude = NULL, bins = 1, 
 
         s <- round(summary(data[,v])[c(1:3,5:6)],1)
 
+
         if(!is.null(grp_c)) {
+
           p1 <- ggplot(data, aes(y=!!sym(v), x=X2, fill=X2)) +
             geom_boxplot()
 
@@ -143,40 +170,57 @@ summarisR <- function(data, vars, group, type = NULL, exclude = NULL, bins = 1, 
 
         c <- sample(cols,1)
 
+        if(layout == "vertical") {
+
+          c <- cols
+
+          p <- ggplot(data, aes(x=!!sym(grp_c), fill = !!sym(v))) +
+             geom_bar(position = "fill", color = "Black") +
+             geom_text(aes(x = !!sym(grp_c),
+                           label = paste0(after_stat(count), " (", scales::percent(after_stat(count / tapply(count, x, sum)[x])), ")"),
+                           group = !!sym(v)), position = position_fill(0.5), stat = "count", color = text.color,
+                       vjust = vjust)
+
+
+        } else {
+
         if(!is.null(grp_c)) {
           p <- ggplot(data %>% drop_na(!!sym(v)), aes(x=!!sym(v), fill=!!sym(grp_c), group=!!sym(grp_c))) +
-            geom_bar(position = "dodge")
+            geom_bar(position = "dodge", color = "Black")
 
           c <- cols
 
         } else {
 
           p <- ggplot(data %>% drop_na(!!sym(v)), aes(x=!!sym(v), group=1)) +
-               geom_bar(position = "dodge", fill = c)
+               geom_bar(position = "dodge", fill = c, color = "Black")
         }
         p <- p +
             geom_text(aes(y=after_stat(count)+max(after_stat(count))/15,
                           label=paste0(after_stat(count), " (", round(after_stat(prop),3)*100, "%)")),
                       position = position_dodge(width = .9),
                       size = 3,
-                      stat="count") +
-          scale_fill_manual(values=c) +
-                labs(x=v) +
-                theme_classic() +
-                labs(title=v) +
-            theme(axis.line = element_blank(),
-                  axis.text.y = element_blank(),
-                  axis.title.y = element_blank(),
-                  axis.ticks = element_blank(),
-                  plot.title = element_text(hjust=0.5))
+                      stat="count")
 
-        p
+        }
+
+        p <- p +
+          scale_fill_manual(values=c) +
+          labs(x=v) +
+          theme_classic() +
+          labs(title=v, fill = "") +
+          theme(axis.line = element_blank(),
+                axis.text.y = element_blank(),
+                axis.title = element_blank(),
+                axis.ticks = element_blank(),
+                plot.title = element_text(hjust=0.5),
+                legend.position = "top")
 
       }
     })
 
-  ggarrange(plotlist=plist, common.legend = T)
+  ggarrange(plotlist=plist, common.legend = ifelse(layout == "horizontal", T,F))
+
 
 
 }
-

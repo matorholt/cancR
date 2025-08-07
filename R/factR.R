@@ -18,6 +18,7 @@
 #' @param levels List of variables with the corresponding levels (e.g. list("v1" = "c("a","b","c","d","e")))
 #' @param labels List of variables with the corresponding labels (e.g. list("v3" = c("e" = "epsilon", "d" = "delta")))
 #' @param lab_to_lev Whether changing labels should change levels if these are not specified (defaults to TRUE)
+#' @param reverse Whether the levels should be reversed (default is FALSE)
 #'
 #' @return Returns the inputted dataframe with modified factor variables
 #' @export
@@ -103,7 +104,7 @@
 #           labels = list("vnum" = c("cci_0" = "test"))))
 # str(tdf8)
 
-factR <- function(data, vars, num_vars, reference = list(), levels = list(), labels = list(), lab_to_lev = FALSE) {
+factR <- function(data, vars, num_vars, reference = list(), levels = list(), labels = list(), lab_to_lev = FALSE, reverse = F) {
 
   vars_c <-
     data %>% select({{vars}}) %>% names()
@@ -133,11 +134,20 @@ factR <- function(data, vars, num_vars, reference = list(), levels = list(), lab
       levels[[v]] <- names(labels[[v]])
     }
 
-    data <- data %>%
+    if(!is.factor(data[, v])) {
+
+      data <- data %>%
       mutate(!!sym(v) := forcats::fct_infreq(as.character(!!sym(v))),
             !!sym(v) := forcats::fct_relevel(!!sym(v), reference[[v]]),
             !!sym(v) := forcats::fct_relevel(!!sym(v), levels[[v]]),
             !!sym(v) := forcats::fct_recode(!!sym(v), !!!setNames(as.character(names(labels[[v]])), labels[[v]])))
+
+    }
+
+    if(reverse) {
+        data <- data %>% mutate(!!sym(v) := fct_rev(!!sym(v)))
+    }
+
 
   }
 

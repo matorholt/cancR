@@ -56,7 +56,7 @@
 #                      event = as.factor(event)) %>%
 #   rename(ttt = time)
 #
-# t2 <- estimatR(df2, ttt, event, X3, type = "select", vars = c(X6,X7))
+# t2 <- estimatR(df2, ttt, event, X3, type = "select", vars = c(X6,X7), break.ties = T)
 #
 # extractR(t2)
 # extractR(t3)
@@ -98,9 +98,6 @@ estimatR <- function(data,
     data %>% drop_na(!!sym(group_c))%>%
     mutate(!!sym(group_c) := as.factor(!!sym(group_c))) %>%
     as.data.frame()
-
-  #Break ties
-  dat[, timevar_c] <- pmax(0, (dat[, timevar_c] + rnorm(nrow(dat), 0, 0.00000001)))
 
   group_levels <- levels(dat[,group_c])
 

@@ -38,6 +38,8 @@ tablR(
 
 \item{labels}{List specifying labels of the specific labels for each variable}
 
+\item{reference}{List specifying reference group for each variable}
+
 \item{headings}{List specifying labels for variable names}
 
 \item{reverse}{whether the order of groups should start with the highest level (default = T)}

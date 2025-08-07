@@ -13,13 +13,16 @@ reportR(
   type = "simple",
   cols = cancR_palette,
   headings = list(),
+  layout = "vertical",
+  vjust = -0.5,
+  text.color = "White",
   ...
 )
 }
 \arguments{
 \item{data}{matched dataset}
 
-\item{casename}{name or number of cases (e.g. "1" or "CLL")}
+\item{casename}{name or number indicating cases (e.g. "1" or "CLL")}
 
 \item{vars}{vars that should be in the table}
 
@@ -27,7 +30,17 @@ reportR(
 
 \item{plot}{whether a plot should be made (default = F)}
 
+\item{type}{whether non-matched counts should be collapsed to "unmatched" ("simple") or remain stratified ("full")}
+
+\item{cols}{color palette (default is cancR_palette)}
+
 \item{headings}{List specifying labels for variable names}
+
+\item{layout}{layout of the bar chart (horizontal or vertical (default))}
+
+\item{vjust}{vertical adjustment of the counts (pct) labels}
+
+\item{text.color}{label colors}
 
 \item{...}{passed to tablR}
 }
