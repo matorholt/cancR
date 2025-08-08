@@ -39,6 +39,8 @@
 # summarisR(data=df,vars=c(X6))
 # summarisR(df, exclude = "time|event|t_", group = X2)
 # summarisR(df, c(X3,X1), group=X2, layout = "vertical")
+# summarisR(df, c(X3,X1), group=X2, layout = "horizontal", label.size = 3)
+
 
 summarisR <- function(data,
                       vars,
@@ -49,8 +51,10 @@ summarisR <- function(data,
                       bins = 1,
                       cols = cancR_palette,
                       headings = list(),
+                      labels = F,
                       vjust = -0.5,
-                      text.color = "White") {
+                      text.color = "White",
+                      label.size = 3) {
 
 
   if(!is.null(exclude)) {
@@ -176,10 +180,25 @@ summarisR <- function(data,
 
           p <- ggplot(data, aes(x=!!sym(grp_c), fill = !!sym(v))) +
              geom_bar(position = "fill", color = "Black") +
-             geom_text(aes(x = !!sym(grp_c),
-                           label = paste0(after_stat(count), " (", scales::percent(after_stat(count / tapply(count, x, sum)[x])), ")"),
-                           group = !!sym(v)), position = position_fill(0.5), stat = "count", color = text.color,
-                       vjust = vjust)
+            scale_y_continuous(breaks = seq(0,1,0.25), labels = paste0(seq(0,100,25), " %")) +
+            theme_classic() +
+            theme(axis.line = element_blank(),
+                  # axis.text.y = element_blank(),
+                  axis.title = element_blank(),
+                  axis.ticks = element_blank(),
+                  plot.title = element_text(hjust=0.5),
+                  legend.position = "top")
+
+          if(labels) {
+
+            p <- p +
+              geom_text(aes(x = !!sym(grp_c),
+                            label = paste0(after_stat(count), " (", scales::percent(after_stat(count / tapply(count, x, sum)[x])), ")"),
+                            group = !!sym(v)), position = position_fill(0.5), stat = "count", color = text.color,
+                        vjust = vjust,
+                        size = label.size)
+
+          }
 
 
         } else {
@@ -197,24 +216,24 @@ summarisR <- function(data,
         }
         p <- p +
             geom_text(aes(y=after_stat(count)+max(after_stat(count))/15,
-                          label=paste0(after_stat(count), " (", round(after_stat(prop),3)*100, "%)")),
+                          label=paste0(after_stat(count), " (", round(after_stat(prop),2)*100, "%)")),
                       position = position_dodge(width = .9),
-                      size = 3,
-                      stat="count")
-
-        }
-
-        p <- p +
-          scale_fill_manual(values=c) +
-          labs(x=v) +
+                      size = label.size,
+                      stat="count") +
           theme_classic() +
-          labs(title=v, fill = "") +
           theme(axis.line = element_blank(),
                 axis.text.y = element_blank(),
                 axis.title = element_blank(),
                 axis.ticks = element_blank(),
                 plot.title = element_text(hjust=0.5),
                 legend.position = "top")
+
+        }
+
+        p <- p +
+          scale_fill_manual(values=c) +
+          labs(x=v) +
+          labs(title=v, fill = "")
 
       }
     })
@@ -224,3 +243,4 @@ summarisR <- function(data,
 
 
 }
+

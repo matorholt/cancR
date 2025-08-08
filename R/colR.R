@@ -13,7 +13,7 @@ colR <- function(cols = NULL, option = "", show = T) {
 
   if(option %in% "default") {
 
-    cols <- c("#AB5CB8", "#34397D", "#FB8E4B", "#819296", "#6F9580", "#FFB8EE", "#B8D6FF", "#C4C4C4", "#815CB8")
+    cols <- c("#AB5CB8", "#34397D", "#ED7039", "#97AFCC", "#70A184", "#FFB8EE", "#B8D6FF", "#C4C4C4", "#815CB8", "#5164B0")
 
   }
 
@@ -40,5 +40,6 @@ colR <- function(cols = NULL, option = "", show = T) {
 
 }
 
-cancR_palette <- c("#AB5CB8", "#34397D", "#FB8E4B", "#819296", "#6F9580", "#FFB8EE", "#B8D6FF", "#C4C4C4", "#815CB8")
+cancR_palette <- c("#AB5CB8", "#34397D", "#ED7039", "#97AFCC", "#70A184", "#FFB8EE", "#B8D6FF", "#C4C4C4", "#815CB8", "#5164B0")
 
+colR()
