@@ -8,6 +8,8 @@ colR(cols = NULL, option = "", show = T)
 }
 \arguments{
 \item{cols}{Vector to set the default color palette. If "default", the default palette is reverted}
+
+\item{option}{miscellaneous features. Includes "default" to reset to default palette, "shuffle" to shuffle the colors}
 }
 \value{
 Adds cancR_palette to the global environment

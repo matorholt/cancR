@@ -4,6 +4,7 @@
 #' Set default color palette
 #'
 #' @param cols Vector to set the default color palette. If "default", the default palette is reverted
+#' @param option miscellaneous features. Includes "default" to reset to default palette, "shuffle" to shuffle the colors
 #'
 #' @return Adds cancR_palette to the global environment
 #' @export
@@ -14,6 +15,12 @@ colR <- function(cols = NULL, option = "", show = T) {
   if(option %in% "default") {
 
     cols <- c("#AB5CB8", "#34397D", "#ED7039", "#97AFCC", "#70A184", "#FFB8EE", "#B8D6FF", "#C4C4C4", "#815CB8", "#5164B0")
+
+  }
+
+  if(option %in% "shuffle") {
+
+    cols <- sample(c("#AB5CB8", "#34397D", "#ED7039", "#97AFCC", "#70A184", "#FFB8EE", "#B8D6FF", "#C4C4C4", "#815CB8", "#5164B0"))
 
   }
 
@@ -42,4 +49,3 @@ colR <- function(cols = NULL, option = "", show = T) {
 
 cancR_palette <- c("#AB5CB8", "#34397D", "#ED7039", "#97AFCC", "#70A184", "#FFB8EE", "#B8D6FF", "#C4C4C4", "#815CB8", "#5164B0")
 
-colR()

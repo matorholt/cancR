@@ -14,8 +14,10 @@ summarisR(
   bins = 1,
   cols = cancR_palette,
   headings = list(),
+  labels = F,
   vjust = -0.5,
-  text.color = "White"
+  text.color = "White",
+  label.size = 3
 )
 }
 \arguments{
@@ -40,6 +42,8 @@ summarisR(
 \item{vjust}{vertical adjustment of the counts (pct) labels}
 
 \item{text.color}{label colors}
+
+\item{label.size}{label size}
 }
 \value{
 Returns bar charts or density plots depending on format. Numerical variables with less than 5 unique values are considered as factors.
