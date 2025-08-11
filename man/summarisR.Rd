@@ -17,7 +17,8 @@ summarisR(
   labels = F,
   vjust = -0.5,
   text.color = "White",
-  label.size = 3
+  label.size = 3,
+  alpha = 0.8
 )
 }
 \arguments{

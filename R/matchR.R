@@ -105,7 +105,10 @@
 #              exclude = c(skinc, imm_sup),
 #              td.frame = ses_wide,
 #              n.controls=4,
-#              seed=1)
+#              seed=1,
+#              interval=5)
+#
+# reportR(t1)
 
 
 matchR <- function(data, td.frame, index, case, fu, td.date, fixed.vars, td.vars, exclude, n.controls=4, seed=1, cores=4, pnr=pnr, interval = NULL) {
@@ -209,7 +212,7 @@ matchR <- function(data, td.frame, index, case, fu, td.date, fixed.vars, td.vars
 
                               itime <- df[set == i, index_s, env = list(index_s = index_s)]
 
-                              covars <- unlist(df[set == i, .SD, .SDcols = vars_cc])
+                              covars <- unlist(type.convert(df[set == i, .SD, .SDcols = vars_cc], as.is=TRUE))
 
                               df[set == i | case_s == 0 & fu_s > itime & td.date_s < itime, env=list(case_s = case_s,
                                                                                                        fu_s = fu_s,
@@ -218,9 +221,7 @@ matchR <- function(data, td.frame, index, case, fu, td.date, fixed.vars, td.vars
                                 .[, .SD[.N], by = pnr_c] %>%
                                 .[.[, Reduce(`&`, lapply(.SD, function(x) x %in% covars)) | set == i,.SDcols = c(vars_cc)], .SDcols= c(vars_cc)]
 
-
-
-                            }
+                             }
 
 
     control_list <- control_list[order(sapply(control_list, nrow))]
@@ -263,14 +264,12 @@ for(i in seq(1,length(control_list))) {
 
 
 
-  rbindlist(cohort_list)[order(set)][, "index" := nafill(index, "locf"), env=list(index=substitute(index))][, c(exclude_c[exclude_c != "sc_date"], td.date_c, "tvar") := NULL] %>%
-   select({{pnr}}, case, set, index, everything()) %>%
-    as.data.frame()
-
-
-
+ rbindlist(cohort_list)[order(set)][, "index" := nafill(index, "locf"), env=list(index=substitute(index))][, c(exclude_c[exclude_c != "sc_date"], td.date_c, "tvar") := NULL] %>%
+ select({{pnr}}, case, set, index, everything()) %>%
+ as.data.frame()
 
 }
+
 
 
 

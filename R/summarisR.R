@@ -55,7 +55,8 @@ summarisR <- function(data,
                       labels = F,
                       vjust = -0.5,
                       text.color = "White",
-                      label.size = 3) {
+                      label.size = 3,
+                      alpha = 0.8) {
 
 
   if(!is.null(exclude)) {
@@ -113,7 +114,7 @@ summarisR <- function(data,
             geom_boxplot(alpha=0.8)
 
           p2 <- ggplot(data, aes(x=!!sym(v), fill=!!sym(grp_c), color = !!sym(grp_c))) +
-            geom_histogram(binwidth = bins, color = "Black", alpha = 0.8)
+            geom_histogram(binwidth = bins, color = "Black", alpha = alpha)
 
 
           c <- cols
@@ -123,10 +124,10 @@ summarisR <- function(data,
         } else {
 
           p1 <- ggplot(data, aes(y=!!sym(v))) +
-            geom_boxplot(fill = c, alpha = 0.8)
+            geom_boxplot(fill = c, alpha = alpha)
 
           p2 <- ggplot(data, aes(x=!!sym(v))) +
-            geom_histogram(binwidth = bins, fill = c, color = "Black", alpha = 0.8)
+            geom_histogram(binwidth = bins, fill = c, color = "Black", alpha = alpha)
 
           gheight = 2
         }
@@ -180,11 +181,10 @@ summarisR <- function(data,
           c <- cols
 
           p <- ggplot(data, aes(x=!!sym(grp_c), fill = !!sym(v))) +
-             geom_bar(position = "fill", color = "Black", alpha = 0.8) +
+             geom_bar(position = "fill", color = "Black", alpha = alpha) +
             scale_y_continuous(breaks = seq(0,1,0.25), labels = paste0(seq(0,100,25), " %")) +
             theme_classic() +
-            theme(axis.line = element_blank(),
-                  # axis.text.y = element_blank(),
+            theme(axis.line.x = element_blank(),
                   axis.title = element_blank(),
                   axis.ticks = element_blank(),
                   plot.title = element_text(hjust=0.5),
@@ -206,14 +206,14 @@ summarisR <- function(data,
 
         if(!is.null(grp_c)) {
           p <- ggplot(data %>% drop_na(!!sym(v)), aes(x=!!sym(v), fill=!!sym(grp_c), group=!!sym(grp_c))) +
-            geom_bar(position = "dodge", color = "Black", alpha = 0.8)
+            geom_bar(position = "dodge", color = "Black", alpha = alpha)
 
           c <- cols
 
         } else {
 
           p <- ggplot(data %>% drop_na(!!sym(v)), aes(x=!!sym(v), group=1)) +
-               geom_bar(position = "dodge", fill = c, color = "Black", alpha = 0.8)
+               geom_bar(position = "dodge", fill = c, color = "Black", alpha = alpha)
         }
         p <- p +
             geom_text(aes(y=after_stat(count)+max(after_stat(count))/15,
