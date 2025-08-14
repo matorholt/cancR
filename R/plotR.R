@@ -12,6 +12,7 @@
 #' @param labs Character vector of similar length to the number of levels in the group with labels. Reference is first.
 #' @param print.est Whether absolute risks at the time horizon should be printet. Defaults to TRUE
 #' @param contrast The type of contrast that should be provided. Includes risk difference ("rd", default), risk ratio ("rr"), hazard ratio ("hr") or "none".
+#' @param style the formatting style of the contrast. Currently JAMA and italic
 #' @param title Plot title
 #' @param title.size Plot title size
 #' @param x.title X-axis title
@@ -54,7 +55,9 @@
 #                      event = as.factor(event)) %>%
 #   rename(ttt = time)
 #
-# t2 <- estimatR(df2, ttt, event2, X3, time = 60, type = "select", vars = c(X6,X7), pl=FALSE)
+# t1 <- estimatR(df2, ttt, event2, X2, time = 60, type = "select", vars = c(X6,X7), pl=FALSE)
+# t2 <- estimatR(df2, ttt, event2, X1, time = 60, type = "select", vars = c(X6,X7), pl=FALSE)
+# t3 <- estimatR(df2, ttt, event2, X3, time = 60, type = "select", vars = c(X6,X7), pl=FALSE)
 #
 # plotR(t2)
 
@@ -66,6 +69,7 @@ plotR <- function(list,
                   labs = levels,
                   print.est = TRUE,
                   contrast = "rd",
+                  style = NULL,
                   title = "",
                   title.size = 7,
                   x.title = unit,
@@ -109,21 +113,52 @@ plotR <- function(list,
   tab <- list$table %>% filter(time %in% seq(0, horizon, breaks))
   res <- est %>% filter(time %in% horizon)
 
-  if(class(list) %in% c("estimatR", "clustR"))
-    reslist <- lapply(list("hr" = list$hr %>% mutate(type = "hr"),
-                           "rd" = list$difference %>% mutate(type = "rd"),
-                           "rr" = list$ratio %>% mutate(type = "rr")), function(x) {
-                             x %>% rename_with(~ paste0(str_replace(.x, "hr|ratio", "diff")), matches("hr|ratio")) %>%
-                               mutate(print = str_c(str_to_upper(type),
-                                                    " = ",
-                                                    numbR(diff, contrast.digits),
-                                                    " (95%CI ",
-                                                    numbR(lower, contrast.digits),
-                                                    "-",
-                                                    numbR(upper, contrast.digits),
-                                                    "), ",
-                                                    p.value))
-                           })[contrast][[1]]
+  #Contrast labels
+  c_var <- names(list)[str_detect(names(list), paste0(contrast, collapse="|"))]
+
+  switch(contrast,
+         "rd" = c_var <- "difference",
+         "rr" = c_var <- "ratio")
+
+  #Prints
+  c_labels <- str_c(str_to_upper(contrast),
+                    " = ",
+                    numbR(list[[c_var]][,which(names(list[[c_var]]) %in% c("hr", "ratio", "diff"))], contrast.digits),
+                    " (95%CI ",
+                    numbR(list[[c_var]][["lower"]], contrast.digits),
+                    "-",
+                    numbR(list[[c_var]][["upper"]], contrast.digits),
+                    "), ",
+                    list[[c_var]][["p.value"]])
+
+  if(!is.null(style)) {
+
+  if(style == "jama") {
+  c_labels <- sapply(c_labels, function(x) {
+    p <- str_split(str_remove(x, "(?<=(p.{3}))0"), "p")
+
+    bquote(.(p[[1]][[1]])~italic("P")~.(p[[1]][[2]]))
+  })
+  }
+
+  if(style == "italic") {
+
+    c_labels <- sapply(c_labels, function(x) {
+
+      bquote(italic(.(x)))
+    })
+
+  }
+
+
+  }
+
+  if(length(levels) > 2) {
+    c_labels <- c("reference", c_labels[1:(length(levels)-1)])
+  }
+
+  c_labels
+
 
   if(censur) {
     tab <- tab %>% mutate(across(c(cumsum, n.risk), ~ ifelse(between(., 1, 3), "≤3", .)))
@@ -304,7 +339,7 @@ plotR <- function(list,
         p <- p +annotate("text",
                          x=horizon*0.04+res.shift[1],
                          y=rows[i+1]+res.shift[2],
-                         label = paste0(numbR(res$est[i]*100, res.digits), "%, ", c("reference", reslist$print[1:length(levels)-1])[i]),
+                         label = suppressWarnings(bquote(.(numbR(res$est[i]*100, res.digits))~"%"~.(c_labels[[i]]))),
                          fontface=1,
                          hjust="left",
                          size = res.size*tscale)
@@ -327,8 +362,7 @@ plotR <- function(list,
           p <-  p+ annotate("text",
                             x=horizon*0.04+res.shift[1],
                             y = rows[length(levels)+2],
-                            label = reslist$print,
-                            fontface=3,
+                            label = c_labels[[1]],
                             hjust = "left",
                             size = res.size*tscale)
         }
