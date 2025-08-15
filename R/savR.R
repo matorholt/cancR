@@ -78,10 +78,10 @@ savR <- function(object,
                  height,
                  unit = "mm",
                  scale = 2,
-                 dpi=1200,
+                 dpi=900,
                  device= NULL,
                  compression="lzw",
-                 formats = c("pdf", "svg", "tiff", "jpg")) {
+                 formats = c("pdf", "tiff")) {
 
   formats <- match.arg(formats, c("pdf", "svg", "tiff", "jpg", "png"), several.ok=TRUE)
 

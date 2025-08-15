@@ -58,8 +58,8 @@
 # t1 <- estimatR(df2, ttt, event2, X2, time = 60, type = "select", vars = c(X6,X7), pl=FALSE)
 # t2 <- estimatR(df2, ttt, event2, X1, time = 60, type = "select", vars = c(X6,X7), pl=FALSE)
 # t3 <- estimatR(df2, ttt, event2, X3, time = 60, type = "select", vars = c(X6,X7), pl=FALSE)
-#
-# plotR(t2)
+
+#plotR(t1, style = "jama")
 
 plotR <- function(list,
                   y=100,
@@ -135,9 +135,10 @@ plotR <- function(list,
 
   if(style == "jama") {
   c_labels <- sapply(c_labels, function(x) {
-    p <- str_split(str_remove(x, "(?<=(p.{3}))0"), "p")
+    x <- str_replace(x, "RD","ARD")
+    x <- str_split(str_remove(x, "(?<=(p.{3}))0"), "p")
 
-    bquote(.(p[[1]][[1]])~italic("P")~.(p[[1]][[2]]))
+    bquote(.(x[[1]][[1]])~italic("P")~.(x[[1]][[2]]))
   })
   }
 
@@ -149,9 +150,8 @@ plotR <- function(list,
     })
 
   }
-
-
   }
+
 
   if(length(levels) > 2) {
     c_labels <- c("reference", c_labels[1:(length(levels)-1)])
@@ -161,7 +161,7 @@ plotR <- function(list,
 
 
   if(censur) {
-    tab <- tab %>% mutate(across(c(cumsum, n.risk), ~ ifelse(between(., 1, 3), "≤3", .)))
+    tab <- tab %>% mutate(across(c(cumsum, n.risk), ~ ifelse(between(., 1, 3), "\u2264 3", .)))
   }
 
   if(missing(y)) {

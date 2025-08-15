@@ -13,6 +13,7 @@ plotR(
   labs = levels,
   print.est = TRUE,
   contrast = "rd",
+  style = NULL,
   title = "",
   title.size = 7,
   x.title = unit,
@@ -54,6 +55,8 @@ plotR(
 \item{print.est}{Whether absolute risks at the time horizon should be printet. Defaults to TRUE}
 
 \item{contrast}{The type of contrast that should be provided. Includes risk difference ("rd", default), risk ratio ("rr"), hazard ratio ("hr") or "none".}
+
+\item{style}{the formatting style of the contrast. Currently JAMA and italic}
 
 \item{title}{Plot title}
 
