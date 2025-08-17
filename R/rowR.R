@@ -51,9 +51,21 @@
 #            z_z=c(NA,10,10)) %>%
 #   rowR(c(x,y,z), "any.na", filter=T)
 
-rowR <- function(data, vars, type, new, na.rm = T, filter = F, match = "contains") {
+#Rowfill
+# data.frame(x=c(NA,2,3),
+#            y=c(NA,2,NA),
+#            z=c(NA,NA,NA),
+#            z_z=c(10,10,NA)) %>%
+#   rowR(type = "fill", direction = "left")
 
-  type <- match.arg(type, c("pmin", "pmax", "sum", "all.na", "any.na", "sum.na"))
+
+
+
+
+
+rowR <- function(data, vars, type, new, na.rm = T, filter = F, match = "contains", direction) {
+
+  type <- match.arg(type, c("pmin", "pmax", "sum", "all.na", "any.na", "sum.na", "fill"))
   match <- match.arg(match, c("contains", "exact", "start", "end"))
 
   vars_c <- data %>% select({{vars}}) %>% names()
@@ -123,6 +135,24 @@ rowR <- function(data, vars, type, new, na.rm = T, filter = F, match = "contains
   if(type == "sum.na") {
 
     data <- data %>% mutate(!!sym(new) := rowSums(is.na(select(., matches(c(vars_pat))))))
+
+  }
+
+  if(type == "fill") {
+
+    direction <- str_replace_all(direction, c("left" = "up",
+                                       "right" = "down"))
+
+    data <- data %>% mutate(row = row_number()) %>%
+      pivot_longer(cols=-contains("row")) %>%
+      group_by(row) %>%
+      fill(value, .direction = direction) %>%
+      pivot_wider(names_from="name", values_from = "value") %>%
+      ungroup %>%
+      select(-row)
+
+
+
 
   }
 

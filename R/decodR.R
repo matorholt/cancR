@@ -16,27 +16,63 @@
 #'
 #'
 
-# codelist <- list("lpr_case" = list("kidney" = c("a1","b1","c1"),
-#                                    "lung" = c("a2", "b2", "c2")),
-#                  "lpr_ex" = list("immune" = "a3",
+# codelist <- list("lpr_case" = list("abdomen" = list("kidney" = c("tx1a","tx1b","tx1c"),
+#                                                    "liver" = c("tx2a", "tx2b", "tx2c")),
+#                                    "thorax" = list("heart" = c("tx3a", "tx3b", "tx3c"),
+#                                                    "lung" = c("tx4a", "tx4b", "tx3c"))),
+#                  "lpr_ex" = list("immune_diag" = "a3",
 #                                  "cll" = c("a4", "b4")),
-#                  "lmdb_ex" = list("immune" = "a5"),
+#                  "lmdb_ex" = list("immune_drugs" = "a5"),
 #                  "opr_ex" = list("trans" = "t5"),
+#                  "pato_supp" = list("PCC" = "M80"),
 #                  "labels" = list("lpr_case" = "SOTR",
+#                                  "lpr_case_header" = "region",
 #                                  "lpr_ex" = "immsup"),
 #                  "exclusion" = c("z1","z2"))
-# #
+#
 # clist <- decodR(codelist)
 
 
 decodR <- function(codelist) {
 
-  clist <- codelist
+  if(any(str_detect(names(codelist), "cases"))) {
+    return(cat("ERROR: Change suffix to case instead of cases"))
+  }
 
-  codelist <- codelist[str_detect(names(codelist), "lpr|lmdb|opr|pato")]
+  if(sum(str_detect(names(codelist), "case")) > 1) {
+    return(cat("ERROR: Only one list can be named case"))
+  }
+
+  if(sum(str_detect(names(flatten(codelist)), "case$")) > 1) {
+    return(cat("ERROR: Multiple labels named case. Add _header as suffix"))
+  }
+
+  #Copy
+  main <- codelist
+
+  c_lab <- names(codelist)[str_detect(names(codelist), "case")]
+
+  if(pluck_depth(codelist) == 4) {
+  supp_labs <- modify_depth(modify_depth(codelist[[c_lab]], 2, unlist), 1, function(x) unlist(x, use.names=F))
+
+  len <- modify_depth(codelist, 1, function(x) length(x))[c_lab]
+
+  pluck_vector <- c()
+
+  for(i in 1:unlist(len)) {
+
+    pluck_vector <- c(pluck_vector, pluck(codelist, 1,i))
+
+  }
+
+  codelist[[c_lab]] <- pluck_vector
+
+}
+
+ # codelist <- codelist[str_detect(names(codelist), "lpr|lmdb|opr|pato")]
 
   #Registies
-  registries <- unique(str_extract(names(codelist), "lpr|opr|lmdb|cancer|pato"))
+  registries <- unique(str_extract(names(codelist)[str_detect(names(codelist), "lpr|opr|lmdb|cancer|pato")], "lpr|opr|lmdb|cancer|pato"))
 
   #LoadR + searchR
   loadlist <- list()
@@ -55,28 +91,32 @@ decodR <- function(codelist) {
   }
 
   list <- list(
-    codes = clist,
+    main = main,
     loadR.regs = c(registries, "pop", "sc", "meta", "dsd"),
     loadR.list = loadlist,
     searchR.list = searchlist
   )
 
-  if("labels" %in% names(clist)) {
-    list <- append(list, list(searchR.keep = clist[["labels"]]))
+  if("labels" %in% names(codelist)) {
+    list <- append(list, list(searchR.keep = codelist[["labels"]]))
 
     labs <-
-      clist[c(names(clist[["labels"]]))] %>% set_names(clist[["labels"]])
+      codelist[c(names(codelist[["labels"]]))] %>% set_names(codelist[["labels"]])
 
     list <- append(list, list(recodR.labels = labs))
 
+    if(any(str_detect(names(codelist[["labels"]]), "header"))) {
+      list[["recodR.labels"]][[codelist[["labels"]][[names(codelist[["labels"]])[str_detect(names(codelist[["labels"]]), "header")]]]]] <- supp_labs
+    }
+
   }
 
-  if("exclusion" %in% names(clist)) {
+  if("exclusion" %in% names(codelist)) {
 
-    list <- append(list, list(searchR.exclusion = clist[["exclusion"]]))
+    list <- append(list, list(searchR.exclusion = codelist[["exclusion"]]))
   }
 
-  if("lpr_case" %in% names(clist)) {
+  if("lpr_case" %in% names(codelist)) {
 
     if(any(unlist(codelist[["lpr_case"]]) %in% unlist(charlson.codes))) {
 
@@ -89,5 +129,8 @@ decodR <- function(codelist) {
 
   }
 
+  print(viewR(main))
+
   list
+
 }
