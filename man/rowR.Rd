@@ -4,7 +4,16 @@
 \alias{rowR}
 \title{rowR}
 \usage{
-rowR(data, vars, type, new, na.rm = T, filter = F, match = "contains")
+rowR(
+  data,
+  vars,
+  type,
+  new,
+  na.rm = T,
+  filter = F,
+  match = "contains",
+  direction
+)
 }
 \arguments{
 \item{data}{dataset}
@@ -18,6 +27,10 @@ rowR(data, vars, type, new, na.rm = T, filter = F, match = "contains")
 \item{na.rm}{whether NAs should be removed (default = T)}
 
 \item{filter}{whether rows with all.na or any.na should be removed}
+
+\item{match}{whether the provided diagnosis codes should be matched exactly, start with/end with or contain (default)}
+
+\item{direction}{the direction of the rowwise fill. Can be "left", "rigth", "leftright" and "rightleft". Corresponds to "updown".}
 }
 \value{
 the parent data frame with a new variable based on the selected rowwise operator or a filtered dataset

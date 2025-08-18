@@ -10,6 +10,8 @@
 #' @param new name of the new variable. If missing, type is inserted (e.g. pmin)
 #' @param na.rm whether NAs should be removed (default = T)
 #' @param filter whether rows with all.na or any.na should be removed
+#' @param match whether the provided diagnosis codes should be matched exactly, start with/end with or contain (default)
+#' @param direction the direction of the rowwise fill. Can be "left", "rigth", "leftright" and "rightleft". Corresponds to "updown".
 #'
 #' @return the parent data frame with a new variable based on the selected rowwise operator or a filtered dataset
 #' @export
