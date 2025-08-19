@@ -28,11 +28,11 @@
 #                      event = as.factor(event)) %>%
 #   rename(ttt = time)
 #
-# distributR(df, vars=c(X6, X7, X8), test="kolmogorov")
+# distributR(df, vars=c(X6, X7, X8))
 
 distributR <- function(data, vars, bins = 1, test = "shapiro") {
 
-  test <- match.arg(test, c("shapiro",))
+  test <- match.arg(test, c("shapiro","kolmogorov"))
 
   if(missing(vars)) {
     vars_c <- data %>% select(where(~all(length(unique(.))>5 & is.numeric(.)))) %>% names()

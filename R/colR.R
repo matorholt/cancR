@@ -10,17 +10,18 @@
 #' @export
 #'
 #'
-colR <- function(cols = NULL, option = "", show = T) {
+colR <- function(cols = NULL, option = "", show = T, seed = 69) {
 
   if(option %in% "default") {
 
-    cols <- c("#AB5CB8", "#34397D", "#ED7039", "#97AFCC", "#70A184", "#FFB8EE", "#B8D6FF", "#C4C4C4", "#815CB8", "#5164B0")
+    cols <- c("#AB5CB8", "#252A6E", "#FFB347", "#97AFCC", "#5D7A66", "#FFB8EE", "#B8D6FF", "#C4C4C4", "#815CB8", "#5164B0", "#95AD9F")
 
   }
 
   if(option %in% "shuffle") {
 
-    cols <- sample(c("#AB5CB8", "#34397D", "#ED7039", "#97AFCC", "#70A184", "#FFB8EE", "#B8D6FF", "#C4C4C4", "#815CB8", "#5164B0"))
+    set.seed(seed)
+    cols <- sample(c("#AB5CB8", "#252A6E", "#FFB347", "#97AFCC", "#5D7A66", "#FFB8EE", "#B8D6FF", "#C4C4C4", "#815CB8", "#5164B0", "#95AD9F"))
 
   }
 
@@ -49,7 +50,7 @@ colR <- function(cols = NULL, option = "", show = T) {
 
 .onLoad <- function(libname, pkgname) {
 
-  cancR_palette <<- c("#AB5CB8", "#34397D", "#ED7039", "#97AFCC", "#70A184", "#FFB8EE", "#B8D6FF", "#C4C4C4", "#815CB8", "#5164B0")
+  cancR_palette <<- c("#AB5CB8", "#252A6E", "#FFB347", "#97AFCC", "#5D7A66", "#FFB8EE", "#B8D6FF", "#C4C4C4", "#815CB8", "#5164B0", "#95AD9F")
 }
 
 
