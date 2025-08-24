@@ -146,7 +146,15 @@ reportR <- function(data,
     group_by(matches) %>%
     summarise(count = n()) %>%
     mutate(pct = paste0(round(count / sum(count)*100,1), "%")) %>%
-    print()
+   print()
+
+  case_reuse <- sum(unique(data$id[data$case == 1]) %in% unique(data$id[data$case == 0]))
+  counts <- data %>% group_by(!!sym(colnames(data)[1])) %>% filter(n() > 1 & case == 0 & !!sym(colnames(data)[1]) %nin% data$id[data$case == 1]) %>% summarise(cnt = n())
+
+  if(case_reuse > 0 | nrow(counts) > 0) cat("\nOBS\n")
+  if(case_reuse > 0) cat(paste0(case_reuse, " cases were reused\n"))
+  if(nrow(counts) > 0) cat(paste0(nrow(counts), " controls were reused, max reuse: ", max(counts$cnt)))
+
 
   returnlist <- list(report = report)
 
@@ -218,7 +226,6 @@ reportR <- function(data,
 
   }
 
-returnlist
+  invisible(returnlist)
 
 }
-
