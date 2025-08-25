@@ -52,24 +52,16 @@ decodR <- function(codelist) {
 
   c_lab <- names(codelist)[str_detect(names(codelist), "case")]
 
-  if(pluck_depth(codelist) == 4) {
-  supp_labs <- modify_depth(modify_depth(codelist[[c_lab]], 2, unlist), 1, function(x) unlist(x, use.names=F))
+  #Flatten list
+  cl_melt <- rrapply::rrapply(codelist, how = "melt")
 
-  len <- modify_depth(codelist, 1, function(x) length(x))[c_lab]
-
-  pluck_vector <- c()
-
-  for(i in 1:unlist(len)) {
-
-    pluck_vector <- c(pluck_vector, pluck(codelist, 1,i))
-
-  }
-
-  codelist[[c_lab]] <- pluck_vector
-
-}
-
- # codelist <- codelist[str_detect(names(codelist), "lpr|lmdb|opr|pato")]
+  #Fill
+  codelist <-
+    bind_cols(cl_melt[, 1:ncol(cl_melt)-1] %>%
+                rowR(type = "fill", direction = "right"),
+              cl_melt[ncol(cl_melt)]) %>%
+    select(1, (ncol(.)-1), ncol(.)) %>%
+    rrapply::rrapply(how = "unmelt")
 
   #Registies
   registries <- unique(str_extract(names(codelist)[str_detect(names(codelist), "lpr|opr|lmdb|cancer|pato")], "lpr|opr|lmdb|cancer|pato"))
@@ -123,7 +115,7 @@ decodR <- function(codelist) {
       cat("Cases have diagnoses codes as a part of the Charlson Comorbidity Index - remember to use the updatR() function")
 
 
-  list <- append(list, list(updatR.exclusion = unlist(codelist[str_detect(names(codelist), "lpr_case")], use.names = F)))
+      list <- append(list, list(updatR.exclusion = unlist(codelist[str_detect(names(codelist), "lpr_case")], use.names = F)))
 
     }
 
@@ -133,4 +125,7 @@ decodR <- function(codelist) {
 
   list
 
+
+
 }
+

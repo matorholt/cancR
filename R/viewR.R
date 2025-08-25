@@ -34,7 +34,7 @@ viewR <- function(codelist) {
 
   df <- rrapply::rrapply(codelist, how = "melt",
                          f = function(x) paste0(x, collapse = ",")) %>%
-    rename(L4 = value) %>%
+    rename(!!sym(paste0("L", ncol(.))) := value) %>%
     rowR(type = "fill", direction = "left")
 
 
@@ -91,10 +91,10 @@ viewR <- function(codelist) {
     mutate(label = str_to_upper(label))
 
   ggplot(pdf, aes(x=x.axis, y=y.axis)) +
-    geom_line(data=lines, aes(x=x.axis, y=value, group=!!sym(names[length]), color = parent)) +
+    geom_line(data=lines, aes(x=x.axis+.2, y=value, group=!!sym(names[length]), color = parent, alpha = 0.9)) +
     geom_label(aes(label = label, fill=parent), hjust = "left") +
-    scale_fill_manual(values = cancR_palette) +
-    scale_color_manual(values = cancR_palette) +
+    scale_fill_manual(values = cancR_palette[length(cancR_palette):(length(cancR_palette)-length(unique(pdf$parent)))]) +
+    scale_color_manual(values = cancR_palette[length(cancR_palette):(length(cancR_palette)-length(unique(pdf$parent)))]) +
     coord_cartesian(xlim=c(1, pmax(length+0.5, (max(str_count(pdf$label))/15)))) +
     theme_classic() +
     theme(legend.position = "none",
