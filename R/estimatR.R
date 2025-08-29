@@ -17,8 +17,8 @@
 #' @param survtime Whether median time to event should be calculated (default = F)
 #' @param proportions Whether risk of event in different windows should be estimated (default = F)
 #' @param conditional Whether conditional risk at the time horizon should be calculated (default = F)
-#' @param cores Number of cores for parallel processing
 #' @param pl Whether product.limit in ATE shoulde be T or F (default = T)
+#' @param digits for rounding of eventtimes
 #'
 #' @return
 #' time_to_event: Median survival time \cr
@@ -42,7 +42,7 @@
 #' @export
 #'
 #'
-# n <- 1000
+# n <- 3000
 # set.seed(1)
 # df <- riskRegression::sampleData(n, outcome="survival")
 # df$time <- round(df$time,1)*12
@@ -56,10 +56,9 @@
 #                      event = as.factor(event)) %>%
 #   rename(ttt = time)
 #
-# t2 <- estimatR(df2, ttt, event, X3, type = "select", vars = c(X6,X7), break.ties = T)
+# t2 <- estimatR(df2, ttt, event, X3, type = "select", vars = c(X6,X7))
 #
 # extractR(t2)
-# extractR(t3)
 
 estimatR <- function(data,
                      timevar,
@@ -74,8 +73,9 @@ estimatR <- function(data,
                      survtime = F,
                      proportions = F,
                      conditional = F,
-                     cores = pmin(detectCores(), 4),
-                     pl = T){
+                     pl = T,
+                     digits = 3,
+                     eventdigits = 2) {
 
   cat("\nestimatR initialized: ", tickR(), "\n")
 
@@ -85,14 +85,6 @@ estimatR <- function(data,
   horizon <- time
 
   type <- match.arg(type, c("uni", "age-sex", "select", "custom"))
-
-  cl <- parallel::makeCluster(cores)
-  parallel::clusterEvalQ(cl, {
-    library(tidyverse)
-    library(riskRegression)
-    library(prodlim)
-    library(data.table)
-  })
 
   dat <-
     data %>% drop_na(!!sym(group_c))%>%
@@ -190,15 +182,15 @@ estimatR <- function(data,
     pct1 <- survminer::ggcoxzph(ct1)
     pct2 <- survminer::ggcoxzph(ct2)
     diaglist <- list(ct1,pct1,ct2,pct2)
-    names(diaglist)<- c("Cause1_tests", "Cause1_plots", "Cause2_tests", "Cause")
+    names(diaglist)<- c("Cause1_tests", "Cause1_plots", "Cause2_tests", "Cause2_plots")
 
   }
 
   CRest <-
-    invisible(ate(cr, treatment = group_c, data=dat, times = seq(0,horizon,breaks), cl=cl, product.limit = pl))
+    invisible(ate(cr, treatment = group_c, data=dat, times = seq(0,horizon,breaks), product.limit = pl))
 
   CRplot <-
-    invisible(ate(cr, treatment = group_c, data=dat, times = sort(unique(c(0,dat[dat[, event_c] == 1, timevar_c],horizon))), cl=cl, product.limit = pl))
+    invisible(ate(cr, treatment = group_c, data=dat, times = unique(round(sort(c(0,dat[dat[, event_c] == 1 & dat[,timevar_c] < horizon, timevar_c],horizon)),eventdigits)), product.limit = pl))
 
   est <-
     as.data.frame(summary(CRest, short=T, type = "meanRisk")$meanRisk)
@@ -227,21 +219,17 @@ estimatR <- function(data,
   }
   est <- est %>%
     select(time:se, lower, upper) %>%
-    mutate(across(c(est:upper), ~round(.,3)))
+    mutate(across(c(est:upper), ~round(.,digits)))
 
   plot <- plot %>%
     select(time:se, lower, upper)
 
 
   if(survtime) {
-    qs <-
-      quantile(prod, tab[tab[, "time"] == horizon, colnames(tab)[which(colnames(tab) %in% c("surv", "cuminc"))]]/2)
-    msurv <- tibble(!!sym(group_c) := unlist(qs[,1]),
-                    q = qs$q,
-                    time = qs$quantile,
-                    lwr = qs$lower,
-                    upr = qs$upper) %>%
-      slice(1,3,5,8)
+
+    msurv <- as.data.frame(quantile(prodlim(as.formula(paste0("Hist(", timevar_c, ", ", event_c, ") ~", group_c, collapse = "")), data = dat[dat[[event_c]] == 1,]), 0.5)) %>% select(-q)
+
+
   }
 
   hres <- hres %>% filter(str_detect(level, group_c)) %>% mutate(level = str_remove_all(level, group_c),
@@ -257,7 +245,7 @@ estimatR <- function(data,
     rename(diff = estimate) %>%
     select(time, A, B,diff:p.value) %>%
     mutate(across(c(diff:upper), ~.*100),
-           across(c(diff:upper), ~round(.,1)),
+           across(c(diff:upper), ~round(.,digits-2)),
            p.exact = p.value,
            p.value = sapply(p.value, pvertR))
 
@@ -265,7 +253,7 @@ estimatR <- function(data,
     filter(time == horizon) %>%
     rename(ratio = estimate) %>%
     select(time,A, B, ratio:p.value)%>%
-    mutate(across(c(ratio:upper), ~round(.,2)),
+    mutate(across(c(ratio:upper), ~round(.,digits-2)),
            p.exact = p.value,
            p.value = sapply(p.value, pvertR))
 
@@ -372,8 +360,8 @@ estimatR <- function(data,
   cat(paste0("\nTotal runtime: \n"))
   cat(tockR("diff"))
 
-  stopCluster(cl)
   class(list)<- "estimatR"
   return(list)
 
 }
+

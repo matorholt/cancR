@@ -4,12 +4,12 @@
 #' Convenience function for performing multiple estimatR functions (e.g. multiple outcomes or risk factor). Each argument is recycled to avoid repeated names.
 #'
 #'
-#' @param data dataset
+#' @param data list of dataframe(s)
 #' @param timevar Character vector of time variables. If missing "t_" is assumed to be prefix for all names in the "events" vector
 #' @param event Character vector of event variables
 #' @param group Character vector of grouping variables
 #' @param names Element names of the returned list of models. If missing the "events" names are used.
-#' @param ... See arguments in estimatR()
+#' @param ... See arguments in estimatR(). Multiple arguments should be inputted as lists (e.g. time = list(60,60,120))
 
 #'
 #' @return A named list of models with the estimatR function
@@ -31,15 +31,15 @@
 #   rename(ttt = time)
 #
 # t <-
-#   estimatR.multi(df2,
-#              timevar = "ttt",
-#              event = c("event", "event", "event2"),
-#              group = "X3",
-#              survscale = "OS",
-#              names = c("m1", "m2", "m3"),
-#              type = "select",
-#              vars = c("X6", "X7"),
-#              pl=F)
+#   estimatR.multi(list(df2),
+#                  timevar = "ttt",
+#                  event = c("event", "event", "event2"),
+#                  group = "X3",
+#                  survscale = "OS",
+#                  time = list(60,60,120),
+#                  names = c("m1", "m2", "m3"),
+#                  type = "select",
+#                  vars = c("X6", "X7"))
 
 estimatR.multi <- function(data,
                            timevar,
@@ -50,6 +50,10 @@ estimatR.multi <- function(data,
 
   cat("\nestimatR.multi initialized: ", tickR(), "\n")
 
+  start <- tickR.start
+
+  if(class(data) != "list") return(cat("ERROR: Please input the dataframe(s) as a list"))
+
   if(missing(names)) {
     names <- paste(event, group)
   }
@@ -59,7 +63,9 @@ estimatR.multi <- function(data,
   }
 
   arg.list <- append(as.list(environment()), list(...))
-  arg.list[c("data", "names")] <- NULL
+
+  arg.list[c("names")] <- NULL
+  arg.list[c("start")] <- NULL
 
   if("vars" %in% names(arg.list)) {
     arg.list$vars <- list(arg.list$vars)
@@ -68,12 +74,12 @@ estimatR.multi <- function(data,
   out <- pmap(arg.list,
        function(...) {
 
-         estimatR(data=data, ...)
+         estimatR(...)
 
        })  %>% set_names(names)
 
   cat(paste0("\nTotal runtime: \n"))
-  cat(tockR("diff"))
+  cat(tockR("diff", start))
 
   return(out)
 

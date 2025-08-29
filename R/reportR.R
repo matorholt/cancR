@@ -148,12 +148,12 @@ reportR <- function(data,
     mutate(pct = paste0(round(count / sum(count)*100,1), "%")) %>%
    print()
 
-  case_reuse <- sum(unique(data$id[data$case == 1]) %in% unique(data$id[data$case == 0]))
-  counts <- data %>% group_by(!!sym(colnames(data)[1])) %>% filter(n() > 1 & case == 0 & !!sym(colnames(data)[1]) %nin% data$id[data$case == 1]) %>% summarise(cnt = n())
+  case_reuse <- sum(unique(data$pnr[data$case == 1]) %in% unique(data$pnr[data$case == 0]))
+  counts <- as.data.table(data)[case == 0, .N, by = pnr][N > 1]
 
   if(case_reuse > 0 | nrow(counts) > 0) cat("\nOBS\n")
   if(case_reuse > 0) cat(paste0(case_reuse, " cases were reused\n"))
-  if(nrow(counts) > 0) cat(paste0(nrow(counts), " controls were reused, max reuse: ", max(counts$cnt)))
+  if(nrow(counts) > 0) cat(paste0(nrow(counts), " controls were reused, max reuse: ", max(counts$N)))
 
 
   returnlist <- list(report = report)

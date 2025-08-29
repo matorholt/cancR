@@ -17,6 +17,7 @@
 #' @param test.stats Vector of length 2 containing statistical tests that should be performed
 #' @param show.na Whether NAs should be presented
 #' @param censur whether counts <= 3 should be censored
+#' @param digits number of digits
 #'
 #' @return Returns a table and exports a word-file (optional if filename is provided)
 #' @export
@@ -59,7 +60,8 @@ tablR <- function(data,
                   reverse = T,
                   test.stats = c("kwt", "chisq"),
                   show.na = FALSE,
-                  censur=F) {
+                  censur=F,
+                  digits = 1) {
 
   numeric <- match.arg(numeric, c("median", "q1q3", "iqr", "range", "mean", "sd", "min", "max"), several.ok = T)
   direction <- match.arg(direction, c("colwise", "rowwise"))
@@ -107,7 +109,8 @@ tablR <- function(data,
 
 s <- summary(table,
         text=T,
-        labelTranslations = headings)
+        labelTranslations = headings,
+        digits = digits)
 
 if(censur) {
   for(v in c(as.character(unique(data[, group_c])), "Total")) {
