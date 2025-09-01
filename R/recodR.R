@@ -26,7 +26,9 @@
 #
 #
 # df %>%
-#   recodR(nlist,
+#   recodR(list("diag" = list("KOL" = "DX123",
+#                             "Astma" = c("DC123", "DC2"),
+#                             "AMI" = list("DG123", "DG234"))),
 #          match = "exact")
 
 recodR <- function(data, namelist, match = "contains") {
@@ -45,7 +47,7 @@ recodR <- function(data, namelist, match = "contains") {
   )
 
   #Data.frame sensitive
-  data <- as.data.frame()
+  data <- as.data.frame(data)
 
   #Paste diagnosis codes
   namelist <- modify_depth(namelist, 2, function(x) paste0(regex[1], paste0(x, collapse="|"), regex[2]))

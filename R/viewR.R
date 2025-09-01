@@ -28,8 +28,6 @@
 #
 # decodR(codelist)
 
-
-
 viewR <- function(codelist) {
 
   df <- rrapply::rrapply(codelist, how = "melt",
@@ -82,7 +80,8 @@ viewR <- function(codelist) {
 
   }
 
-  lines <- df %>%
+  lines <-
+    df %>%
     select(parent, names[length], contains(newnames)) %>%
     pivot_longer(contains(newnames)) %>%
     mutate(x.axis = as.numeric(rep(seq(1,length), n()/length)))
@@ -91,7 +90,7 @@ viewR <- function(codelist) {
     mutate(label = str_to_upper(label))
 
   ggplot(pdf, aes(x=x.axis, y=y.axis)) +
-    geom_line(data=lines, aes(x=x.axis+.2, y=value, group=!!sym(names[length]), color = parent, alpha = 0.9)) +
+    geom_line(data=lines, aes(x=x.axis, y=value, group=!!sym(names[length]), color = parent, alpha = 0.9)) +
     geom_label(aes(label = label, fill=parent), hjust = "left") +
     scale_fill_manual(values = cancR_palette[length(cancR_palette):(length(cancR_palette)-length(unique(pdf$parent)))]) +
     scale_color_manual(values = cancR_palette[length(cancR_palette):(length(cancR_palette)-length(unique(pdf$parent)))]) +

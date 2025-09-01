@@ -25,12 +25,16 @@
 #                  "lmdb_ex" = list("immune_drugs" = "a5"),
 #                  "opr_ex" = list("trans" = "t5"),
 #                  "pato_supp" = list("PCC" = "M80"),
-#                  "labels" = list("lpr_case" = "SOTR",
-#                                  "lpr_case_header" = "region",
+#                  "labels" = list("lpr_case" = c("SOTR", "region"),
 #                                  "lpr_ex" = "immsup"),
 #                  "exclusion" = c("z1","z2"))
 #
 # clist <- decodR(codelist)
+#
+#
+# list("SOTR" = list("kidney" = c()))
+
+
 
 
 decodR <- function(codelist) {
@@ -90,16 +94,33 @@ decodR <- function(codelist) {
   )
 
   if("labels" %in% names(codelist)) {
+
     list <- append(list, list(searchR.keep = codelist[["labels"]]))
 
-    labs <-
-      codelist[c(names(codelist[["labels"]]))] %>% set_names(codelist[["labels"]])
+    lab_list <- list()
 
-    list <- append(list, list(recodR.labels = labs))
+    for(n in names(codelist[["labels"]])) {
 
-    if(any(str_detect(names(codelist[["labels"]]), "header"))) {
-      list[["recodR.labels"]][[codelist[["labels"]][[names(codelist[["labels"]])[str_detect(names(codelist[["labels"]]), "header")]]]]] <- supp_labs
+      lab_df <- cl_melt[cl_melt[[1]] == n,]
+
+      levels <- codelist[["labels"]][[n]]
+
+      for(l in seq_along(levels)) {
+
+        sub_df <- lab_df[, c(l+1,ncol(lab_df))]
+
+        lab_list[[levels[l]]] <-
+          rrapply::rrapply(sub_df %>%
+                             unnest(value) %>%
+                             group_by(!!sym(colnames(sub_df)[1])) %>%
+                             summarise(value = list(value)),
+                           how = "unmelt")
+
+      }
+
     }
+
+    list <- append(list, list(recodR.labels = lab_list))
 
   }
 
