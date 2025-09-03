@@ -227,7 +227,7 @@ estimatR <- function(data,
 
   if(survtime) {
 
-    msurv <- as.data.frame(quantile(prodlim(as.formula(paste0("Hist(", timevar_c, ", ", event_c, ") ~", group_c, collapse = "")), data = dat[dat[[event_c]] == 1,]), 0.5)) %>% select(-q)
+    msurv <- list2DF(quantile(prodlim(as.formula(paste0("Hist(", timevar_c, ", ", event_c, ") ~", group_c, collapse = "")), data = dat[dat[[event_c]] == 1,]), 0.5)) %>% select(-q)
 
 
   }

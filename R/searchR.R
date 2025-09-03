@@ -20,42 +20,42 @@
 #'
 #'
 #
-set.seed(1)
-dfs <- list(lpr = simAdmissionData(n=100, m=10),
-            opr = simAdmissionData(n=100, m=10) %>% rename(opr = diag),
-            lmdb = simPrescriptionData(n=100))
-
-dfs <- lapply(dfs, as.data.frame)
-
-clist <- decodR(list("lpr_case" =
-                       list(supergroup_a =
-                              list(group_a1 = list("sg1" = c("DB6", "DB7"),
-                                                  "sg2" = c("DD22", "DD23")),
-                                   group_b1 = list("sg3" = c("DD4"))),
-
-                            supergroup_b =
-                              list(group_a2 = list("sg4" = c("DE5", "DF"),
-                                                   "sg5" = c("DF", "DG"))),
-
-                            supergroup_c =
-                              list(group_a3 = list("sg6" = c("DJ", "DK"),
-                                                   "sg7" = c("DL", "DM")),
-                                   group_b3 = list("sg8" = c("DN")))),
-
-                     "lpr_ex" = list("e1" = c("DO", "DP"),
-                                     "c2" = c("DR", "DQ")),
-                     "lmdb_ex" = list("immune" = "C0"),
-                     "opr_ex" = list("sotr" = c("DT", "DG", "DK")),
-                     "labels" = list("lpr_case" = c("sg_level", "g_level", "sub_level"),
-                                     "lpr_ex" = "immsup"),
-                     "exclusion" = c("DQ","ZZ2")))
-
-
-t <- searchR(dfs,
-        clist$searchR.list,
-        sub.list = clist$searchR.keep,
-        sub.labels = clist$recodR.labels,
-        exclusion = clist$searchR.exclusion)
+# set.seed(1)
+# dfs <- list(lpr = simAdmissionData(n=100, m=10),
+#             opr = simAdmissionData(n=100, m=10) %>% rename(opr = diag),
+#             lmdb = simPrescriptionData(n=100))
+#
+# dfs <- lapply(dfs, as.data.frame)
+#
+# clist <- decodR(list("lpr_case" =
+#                        list(supergroup_a =
+#                               list(group_a1 = list("sg1" = c("DB6", "DB7"),
+#                                                   "sg2" = c("DD22", "DD23")),
+#                                    group_b1 = list("sg3" = c("DD4"))),
+#
+#                             supergroup_b =
+#                               list(group_a2 = list("sg4" = c("DE5", "DF"),
+#                                                    "sg5" = c("DF", "DG"))),
+#
+#                             supergroup_c =
+#                               list(group_a3 = list("sg6" = c("DJ", "DK"),
+#                                                    "sg7" = c("DL", "DM")),
+#                                    group_b3 = list("sg8" = c("DN")))),
+#
+#                      "lpr_ex" = list("e1" = c("DO", "DP"),
+#                                      "c2" = c("DR", "DQ")),
+#                      "lmdb_ex" = list("immune" = "C0"),
+#                      "opr_ex" = list("sotr" = c("DT", "DG", "DK")),
+#                      "labels" = list("lpr_case" = c("sg_level", "g_level", "sub_level"),
+#                                      "lpr_ex" = "immsup"),
+#                      "exclusion" = c("DQ","ZZ2")))
+#
+#
+# t <- searchR(dfs,
+#         clist$searchR.list,
+#         sub.list = clist$searchR.keep,
+#         sub.labels = clist$recodR.labels,
+#         exclusion = clist$searchR.exclusion)
 
 searchR <- function(reglist,
                     search.list,
