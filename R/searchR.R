@@ -20,42 +20,42 @@
 #'
 #'
 #
-# set.seed(1)
-# dfs <- list(lpr = simAdmissionData(n=100, m=10),
-#             opr = simAdmissionData(n=100, m=10) %>% rename(opr = diag),
-#             lmdb = simPrescriptionData(n=100))
-#
-# dfs <- lapply(dfs, as.data.frame)
-#
-# clist <- decodR(list("lpr_case" =
-#                        list(supergroup_a =
-#                               list(group_a1 = list("sg1" = c("DB6", "DB7"),
-#                                                   "sg2" = c("DD22", "DD23")),
-#                                    group_b1 = list("sg3" = c("DD4"))),
-#
-#                             supergroup_b =
-#                               list(group_a2 = list("sg4" = c("DE5", "DF"),
-#                                                    "sg5" = c("DF", "DG"))),
-#
-#                             supergroup_c =
-#                               list(group_a3 = list("sg6" = c("DJ", "DK"),
-#                                                    "sg7" = c("DL", "DM")),
-#                                    group_b3 = list("sg8" = c("DN")))),
-#
-#                      "lpr_ex" = list("e1" = c("DO", "DP"),
-#                                      "c2" = c("DR", "DQ")),
-#                      "lmdb_ex" = list("immune" = "C0"),
-#                      "opr_ex" = list("sotr" = c("DT", "DG", "DK")),
-#                      "labels" = list("lpr_case" = c("sg_level", "g_level", "sub_level"),
-#                                      "lpr_ex" = "immsup"),
-#                      "exclusion" = c("DQ","ZZ2")))
-#
-#
-# (t <- searchR(dfs,
-#         clist$searchR.list,
-#         sub.list = clist$searchR.keep,
-#         sub.labels = clist$recodR.labels,
-#         exclusion = clist$searchR.exclusion))
+set.seed(1)
+dfs <- list(lpr = simAdmissionData(n=100, m=10),
+            opr = simAdmissionData(n=100, m=10) %>% rename(opr = diag),
+            lmdb = simPrescriptionData(n=100))
+
+dfs <- lapply(dfs, as.data.frame)
+
+clist <- decodR(list("lpr_case" =
+                       list(supergroup_a =
+                              list(group_a1 = list("sg1" = c("DB6", "DB7"),
+                                                  "sg2" = c("DD22", "DD23")),
+                                   group_b1 = list("sg3" = c("DD4"))),
+
+                            supergroup_b =
+                              list(group_a2 = list("sg4" = c("DE5", "DF"),
+                                                   "sg5" = c("DF", "DG"))),
+
+                            supergroup_c =
+                              list(group_a3 = list("sg6" = c("DJ", "DK"),
+                                                   "sg7" = c("DL", "DM")),
+                                   group_b3 = list("sg8" = c("DN")))),
+
+                     "lpr_ex" = list("e1" = c("DO", "DP"),
+                                     "c2" = c("DR", "DQ")),
+                     "lmdb_ex" = list("immune" = "C0"),
+                     "opr_ex" = list("sotr" = c("DT", "DG", "DK")),
+                     "labels" = list("lpr_case" = c("sg_level", "g_level", "sub_level"),
+                                     "lpr_ex" = "immsup"),
+                     "exclusion" = c("DQ","ZZ2")))
+
+
+t <- searchR(dfs,
+        clist$searchR.list,
+        sub.list = clist$searchR.keep,
+        sub.labels = clist$recodR.labels,
+        exclusion = clist$searchR.exclusion)
 
 searchR <- function(reglist,
                     search.list,
@@ -67,6 +67,12 @@ searchR <- function(reglist,
                     match = "start",
                     casename = "index",
                     pnr = pnr) {
+
+  tickR()
+
+  start <- tickR.start
+
+  cat(paste0("\nInitializing searchR algorithm: ", tockR("time"), "\n\n"))
 
   match <- match.arg(match, c("start", "end", "exact", "contains"))
   format <- match.arg(format, c("categorical", "date"))
@@ -94,6 +100,10 @@ searchR <- function(reglist,
 
   for(i in names(search.list)) {
     reg <- str_extract(i, "lpr|lmdb|opr|pato")
+
+    tickR()
+
+    cat(paste0(reg, ": "))
 
     switch(match,
            "start" = {regex <- c("^(", ")")},
@@ -131,6 +141,9 @@ searchR <- function(reglist,
     data <- data[, .SD[eval(parse(text=range))], by=c(pnr_c), .SDcols = c(i, sub.list[[i]])]
 
     slist[[i]] <- data
+
+    cat(paste0("Completed - ", tockR("time"), ", runtime: ", tockR("diff"), "\n"))
+
   }
 
   joined_data <- plyr::join_all(slist, by = "pnr", type = "full") %>%
@@ -144,6 +157,11 @@ searchR <- function(reglist,
 
   }
 
+  cat("\nSearching complete!\n")
+  cat("Total runtime: \n")
+  cat(tockR("diff", start), "\n\n")
+
   joined_data
 
 }
+

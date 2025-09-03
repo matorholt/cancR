@@ -70,11 +70,11 @@ estimatR <- function(data,
                      form,
                      time=120,
                      breaks = 12,
-                     survtime = F,
+                     survtime = T,
                      proportions = F,
                      conditional = F,
                      pl = T,
-                     digits = 3,
+                     digits = 4,
                      eventdigits = 2) {
 
   cat("\nestimatR initialized: ", tickR(), "\n")

@@ -51,7 +51,7 @@
 #            y=c(NA,NA,5),
 #            z=c(NA,4,7),
 #            z_z=c(NA,10,10)) %>%
-#   rowR(c(x,y,z), "any.na", filter=T)
+#   rowR(c(x,y,z), "all.na", new="test")
 
 #Rowfill
 # data.frame(x=c(NA,2,3),
@@ -65,7 +65,7 @@
 
 
 
-rowR <- function(data, vars, type, new, na.rm = T, filter = F, match = "contains", direction) {
+rowR <- function(data, vars, type, new, na.rm = T, filter = NULL, match = "contains", direction) {
 
   type <- match.arg(type, c("pmin", "pmax", "sum", "all.na", "any.na", "sum.na", "fill"))
   match <- match.arg(match, c("contains", "exact", "start", "end"))
@@ -109,12 +109,19 @@ rowR <- function(data, vars, type, new, na.rm = T, filter = F, match = "contains
 
   if(type == "all.na") {
 
-    if(filter) {
+    if(!is.null(filter)) {
 
-      data <- data %>% filter(if_all(matches(c(vars_pat)), ~ !is.na(.)))
+      if(filter == "remove") {
+
+      data <- data %>% filter(!(if_all(matches(c(vars_pat)), ~ is.na(.))))
+
+
+      } else {
+        data <- data %>% filter(if_all(matches(c(vars_pat)), ~ is.na(.)))
+
+      }
 
     } else {
-
     data <- data %>% mutate(!!sym(new) := if_else(rowSums(is.na(select(., matches(c(vars_pat))))) == ncol(select(., matches(c(vars_pat)))), 1, 0))
 
   }
@@ -123,9 +130,16 @@ rowR <- function(data, vars, type, new, na.rm = T, filter = F, match = "contains
 
   if(type == "any.na") {
 
-    if(filter) {
+    if(!is.null(filter)) {
 
-      data <- data %>% filter(if_any(matches(c(vars_pat)), ~ !is.na(.)))
+      if(filter == "remove") {
+
+        data <- data %>% filter(!(if_any(matches(c(vars_pat)), ~ is.na(.))))
+
+      } else {
+
+        data <- data %>% filter(if_any(matches(c(vars_pat)), ~ is.na(.)))
+      }
 
     } else {
 
@@ -161,4 +175,6 @@ rowR <- function(data, vars, type, new, na.rm = T, filter = F, match = "contains
  data
 
 }
+
+
 

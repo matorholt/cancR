@@ -11,6 +11,9 @@
 #' @param nsep The separator between event counts (default = /)
 #' @param sep The separator between all other ranges (default = to)
 #' @param censur Whether counts <= 3 should be censured (default = FALSE)
+#' @param risk_digits number of digits on risk estimates
+#' @param diff_digits number of digits on risk differences
+#' @param ratio_digits number of digits on risk ratios
 #'
 #' @return Returns a data frame compatible with flextable
 #' @export
@@ -33,7 +36,14 @@
 #
 # t2 <- estimatR(df2, ttt, event2, X2, type = "select", vars = c(X6,X7))
 #
-# (t <- extractR(t2, vars=c("counts", "risks", "ratio"), shape = "long", ci = "", nsep = " of ", sep =" to ", censur=T))
+# (t <- extractR(t2,
+#                vars=c("counts", "risks", "diff", "ratio"),
+#                shape = "long",
+#                ci = "",
+#                nsep = " of ",
+#                sep =" to ",
+#                censur=T,
+#                diff_digits = 1))
 
 extractR <- function(list,
                      vars = c("counts", "risks", "diff"),
@@ -41,7 +51,10 @@ extractR <- function(list,
                      ci = "95%CI ",
                      nsep = " / ",
                      sep = " to ",
-                     censur = F) {
+                     censur = F,
+                     risk_digits = 1,
+                     diff_digits = 1,
+                     ratio_digits = 1) {
 
   vars <- match.arg(vars, c("counts", "risks", "diff", "ratio"), several.ok=TRUE)
 
@@ -58,18 +71,18 @@ extractR <- function(list,
     as.data.frame()
 
   risks <-
-    list$risks %>% filter(time %in% list$info$time) %>% mutate(across(c(est, lower, upper), ~ numbR(.*100)),
+    list$risks %>% filter(time %in% list$info$time) %>% mutate(across(c(est, lower, upper), ~ numbR(.*100, risk_digits)),
                                                     risks = str_c(est, "%x(", ci, lower, sep, upper, ")")) %>%
     select(risks)
   diff <-
     list$difference %>% slice(1,1:(length(grps)-1)) %>%
-    mutate(diff = ifelse(row_number() > 1, str_c(numbR(diff), "%x(", ci, numbR(lower), sep, numbR(upper), ")x", p.value), "reference")) %>%
+    mutate(diff = ifelse(row_number() > 1, str_c(numbR(diff, diff_digits), "%x(", ci, numbR(lower, diff_digits), sep, numbR(upper, diff_digits), ")x", p.value), "reference")) %>%
     select(diff)
 
   ratio <-
     list$ratio %>% slice(1,1:(length(grps)-1)) %>%
     rename(rr = ratio) %>%
-    mutate(ratio = ifelse(row_number() > 1, str_c(rr, "%x(", ci, numbR(lower), sep, numbR(upper), ")x", p.value), "reference")) %>%
+    mutate(ratio = ifelse(row_number() > 1, str_c(rr, "x(", ci, numbR(lower, ratio_digits), sep, numbR(upper, ratio_digits), ")x", p.value), "reference")) %>%
     select(ratio)
 
   total <- bind_cols(counts, risks, diff, ratio)
