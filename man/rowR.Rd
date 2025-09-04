@@ -10,7 +10,7 @@ rowR(
   type,
   new,
   na.rm = T,
-  filter = F,
+  filter = NULL,
   match = "contains",
   direction
 )

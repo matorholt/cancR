@@ -1,4 +1,4 @@
-#' estimatR
+#' estimatR "\u2264 3"
 #'
 #' @description
 #' Absolute risk estimation and comparison of two or more groups with a time-to-event outcome.
@@ -56,7 +56,7 @@
 #                      event = as.factor(event)) %>%
 #   rename(ttt = time)
 #
-# t2 <- estimatR(df2, ttt, event, X3, type = "select", vars = c(X6,X7))
+# t2 <- estimatR(df2, ttt, event, X1, type = "select", vars = c(X6,X7))
 #
 # extractR(t2)
 
@@ -222,7 +222,11 @@ estimatR <- function(data,
     mutate(across(c(est:upper), ~round(.,digits)))
 
   plot <- plot %>%
-    select(time:se, lower, upper)
+    select(time:se, lower, upper) %>%
+    group_by(!!sym(group_c)) %>%
+    slice(1:n(),n()) %>%
+    mutate(time = ifelse(row_number() == n(), time+0.6, time)) %>%
+    as.data.frame()
 
 
   if(survtime) {
@@ -364,4 +368,3 @@ estimatR <- function(data,
   return(list)
 
 }
-

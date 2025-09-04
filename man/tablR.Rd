@@ -18,7 +18,8 @@ tablR(
   reverse = T,
   test.stats = c("kwt", "chisq"),
   show.na = FALSE,
-  censur = F
+  censur = F,
+  digits = 1
 )
 }
 \arguments{
@@ -49,6 +50,8 @@ tablR(
 \item{show.na}{Whether NAs should be presented}
 
 \item{censur}{whether counts <= 3 should be censored}
+
+\item{digits}{number of digits}
 }
 \value{
 Returns a table and exports a word-file (optional if filename is provided)

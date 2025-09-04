@@ -7,7 +7,7 @@
 estimatR.multi(data, timevar, event, group, names, ...)
 }
 \arguments{
-\item{data}{dataset}
+\item{data}{list of dataframe(s)}
 
 \item{timevar}{Character vector of time variables. If missing "t_" is assumed to be prefix for all names in the "events" vector}
 
@@ -17,7 +17,7 @@ estimatR.multi(data, timevar, event, group, names, ...)
 
 \item{names}{Element names of the returned list of models. If missing the "events" names are used.}
 
-\item{...}{See arguments in estimatR()}
+\item{...}{See arguments in estimatR(). Multiple arguments should be inputted as lists (e.g. time = list(60,60,120))}
 }
 \value{
 A named list of models with the estimatR function

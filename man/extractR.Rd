@@ -11,7 +11,10 @@ extractR(
   ci = "95\%CI ",
   nsep = " / ",
   sep = " to ",
-  censur = F
+  censur = F,
+  risk_digits = 1,
+  diff_digits = 1,
+  ratio_digits = 1
 )
 }
 \arguments{
@@ -28,6 +31,12 @@ extractR(
 \item{sep}{The separator between all other ranges (default = to)}
 
 \item{censur}{Whether counts <= 3 should be censured (default = FALSE)}
+
+\item{risk_digits}{number of digits on risk estimates}
+
+\item{diff_digits}{number of digits on risk differences}
+
+\item{ratio_digits}{number of digits on risk ratios}
 }
 \value{
 Returns a data frame compatible with flextable

@@ -4,6 +4,7 @@
 #' Automatic plot function for the functions estimatR, incidencR and clustR
 #'
 #'
+#'
 #' @param list an object of class estimatR, incidencR or clustR
 #' @param y Upper limit for y-axis
 #' @param col Vector of colors
@@ -12,11 +13,15 @@
 #' @param labs Character vector of similar length to the number of levels in the group with labels. Reference is first.
 #' @param print.est Whether absolute risks at the time horizon should be printet. Defaults to TRUE
 #' @param contrast The type of contrast that should be provided. Includes risk difference ("rd", default), risk ratio ("rr"), hazard ratio ("hr") or "none".
+#' @param se whether the confidence interval should be shown
+#' @param border whether there should be borders around the results
 #' @param style the formatting style of the contrast. Currently JAMA and italic
+#' @param linewidth thickness of the risk curve lines
 #' @param title Plot title
 #' @param title.size Plot title size
 #' @param x.title X-axis title
 #' @param x.title.size X-axis title size
+#' @param x.title.shift X-axis vertical shift
 #' @param x.text.size X-axis text size
 #' @param y.title Y-axis title
 #' @param y.title.size Y-axis title size
@@ -55,11 +60,11 @@
 #                      event = as.factor(event)) %>%
 #   rename(ttt = time)
 #
-# t1 <- estimatR(df2, ttt, event2, X2, time = 60, type = "select", vars = c(X6,X7), pl=FALSE)
-# t2 <- estimatR(df2, ttt, event2, X1, time = 60, type = "select", vars = c(X6,X7), pl=FALSE)
-# t3 <- estimatR(df2, ttt, event2, X3, time = 60, type = "select", vars = c(X6,X7), pl=FALSE)
-
-#plotR(t1, style = "jama")
+# t1 <- estimatR(df2, ttt, event2, X2, time = 120, type = "select", vars = c(X6,X7), pl=T)
+# t2 <- estimatR(df2, ttt, event2, X1, time = 60, type = "select", vars = c(X6,X7), pl=T)
+# t3 <- estimatR(df2, ttt, event2, X3, time = 60, type = "select", vars = c(X6,X7), pl=T)
+#
+# plotR(t1, style = "jama")
 
 plotR <- function(list,
                   y=100,
@@ -69,11 +74,15 @@ plotR <- function(list,
                   labs = levels,
                   print.est = TRUE,
                   contrast = "rd",
+                  se = T,
+                  border = T,
                   style = NULL,
+                  linewidth = 1.5,
                   title = "",
                   title.size = 7,
                   x.title = unit,
                   x.title.size = 6,
+                  x.title.shift = 0,
                   x.text.size = 6,
                   y.title = "Risk of Event (%)",
                   y.title.size = 6,
@@ -157,11 +166,11 @@ plotR <- function(list,
     c_labels <- c("reference", c_labels[1:(length(levels)-1)])
   }
 
-  c_labels
+
 
 
   if(censur) {
-    tab <- tab %>% mutate(across(c(cumsum, n.risk), ~ ifelse(between(., 1, 3), "\u2264 3", .)))
+    tab <- tab %>% mutate(across(c(cumsum, n.risk), ~ ifelse(between(., 1, 3), "hej", .)))
   }
 
   if(missing(y)) {
@@ -221,11 +230,12 @@ plotR <- function(list,
     ggplot(plot, aes(x=time, y=est, color = !!sym(group), fill = !!sym(group))) +
     geom_segment(x = -1, xend=horizon*1.04, y=-(y*0.04), yend=-(y*0.04), color = "Black", linewidth = 1.5) +
     geom_segment(x = -1, xend=-1, y=-(y*0.04), yend=y, color = "Black", linewidth = 1.5) +
-    geom_step(linewidth = 1.5) +
+    geom_step(linewidth = linewidth) +
     scale_color_manual(values = c(col[1:length(levels)]), labels = labs) +
-    scale_fill_manual(values = c(col[1:length(levels)]), labels = labs) +
-    geom_stepribbon(aes(ymin = lower, ymax = upper), alpha = 0.2, color = NA) +
-    coord_cartesian(xlim=c(-(horizon*0.1),horizon), ylim = c(zmin,1.2*y)) +
+    scale_fill_manual(values = c(col[1:length(levels)]), labels = labs)
+  if(se) p <- p + geom_stepribbon(aes(ymin = lower, ymax = upper), alpha = 0.2, color = NA)
+  p <- p +
+    coord_cartesian(xlim=c(horizon*-0.1-y.title.shift,horizon), ylim = c(zmin,1.2*y)) +
     theme_classic() +
     theme(axis.line = element_blank(),
           axis.ticks = element_blank(),
@@ -241,7 +251,7 @@ plotR <- function(list,
   #Labels
   p <-
     #X-title
-    p + annotate("text", x=horizon/2, y = -(y*0.15), label = x.title, size = x.title.size*tscale) +
+    p + annotate("text", x=horizon/2, y = y*-0.2+x.title.shift, label = x.title, size = x.title.size*tscale) +
     #Y-title
     annotate("text", x=-(horizon*0.11)-y.title.shift, y = y/2, label = y.title, size = y.title.size*tscale, angle = 90) +
     #X-breaks
@@ -307,7 +317,8 @@ plotR <- function(list,
     contrast <- "none"
   }
 
-  rows <- y*(seq(0.95, 0.95-((0.06*res.spacing)*(length(levels)+1)), -0.06*res.spacing))
+  xstart <- horizon*0.05
+  rows <- (y*(seq(0.92, 0.92-((0.07*res.spacing)*(length(levels)+1)), -0.07*res.spacing)))+res.shift[2]
 
   if(survscale == "OS") {
     rows <- rev(1-rows)
@@ -317,8 +328,8 @@ plotR <- function(list,
 
     #Header
     p <- p + annotate("text",
-                      x=horizon*0.04+res.shift[1],
-                      y=rows[1]+res.shift[2],
+                      x=xstart+res.shift[1],
+                      y=rows[1],
                       label = paste0(horizon/u, "-", ifelse(unit %in% "Years", str_remove(unit, "s"), unit), " Risk", collapse=""),
                       fontface = 2,
                       hjust="left",
@@ -329,16 +340,16 @@ plotR <- function(list,
       #Segments
       p <- p +
         annotate("segment",
-                 x=horizon*0.01+res.shift[1],
-                 xend=horizon*0.03+res.shift[1],
+                 x=xstart*0.3+res.shift[1],
+                 xend=xstart*0.8+res.shift[1],
                  y=rows[i+1],
                  yend=rows[i+1], color = col[i], linewidth = 1.5)
 
       #Groups > 2 with contrasts
       if(length(levels) > 2 & contrast != "none") {
         p <- p +annotate("text",
-                         x=horizon*0.04+res.shift[1],
-                         y=rows[i+1]+res.shift[2],
+                         x=xstart+res.shift[1],
+                         y=rows[i+1],
                          label = suppressWarnings(bquote(.(numbR(res$est[i]*100, res.digits))~"%"~.(c_labels[[i]]))),
                          fontface=1,
                          hjust="left",
@@ -350,7 +361,7 @@ plotR <- function(list,
       else{
         p <- p +
           annotate("text",
-                   x=horizon*0.04+res.shift[1],
+                   x=xstart+res.shift[1],
                    y=rows[i+1],
                    label = paste(c(numbR(res$est[i]*100,res.digits),"% (95%CI ", numbR(res$lower[i]*100, res.digits),"-", numbR(res$upper[i]*100, res.digits),")"), collapse=""),
                    fontface=1,
@@ -360,7 +371,7 @@ plotR <- function(list,
         if(contrast != "none") {
 
           p <-  p+ annotate("text",
-                            x=horizon*0.04+res.shift[1],
+                            x=xstart+res.shift[1],
                             y = rows[length(levels)+2],
                             label = c_labels[[1]],
                             hjust = "left",
@@ -371,10 +382,26 @@ plotR <- function(list,
     }
   }
 
+  if(border) {
+
+    top <- rows[1] + (rows[1]-rows[2])*res.spacing
+    buttom <- rows[length(rows)] - (rows[length(rows)-1]-rows[length(rows)])*res.spacing
+    left <- (xstart*0.2-0.1)+res.shift[1]
+    right <- (xstart*0.2+horizon*0.39)+res.shift[1]
+    if(!is.null(style)) right <- right + horizon/60
+
+    p <- p + annotate("segment", x=left, xend = right, y=top, yend = top, linewidth = 0.8) +
+      annotate("segment", x=left, xend = right, y=buttom, yend = buttom, linewidth = 0.8) +
+      annotate("segment", x=left, xend = left, y = top, yend = buttom, linewidth = 0.8) +
+      annotate("segment", x=right, xend = right, y = top, yend = buttom, linewidth = 0.8)
+  }
+
   p$y <- y*100
   p$grps <- length(levels)
 
-  return(p)
+ return(p)
 
 
 }
+
+

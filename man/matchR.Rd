@@ -15,8 +15,9 @@ matchR(
   td.vars,
   exclude,
   n.controls = 4,
+  replace = T,
   seed = 1,
-  cores = 4,
+  cores = NULL,
   pnr = pnr,
   interval = NULL
 )
@@ -41,6 +42,8 @@ matchR(
 \item{exclude}{Vector of parameters that are not allowed to occur before index}
 
 \item{n.controls}{Number of desired controls per case}
+
+\item{replace}{whether controls should be sampled with replacement (default = T)}
 
 \item{seed}{Seed}
 

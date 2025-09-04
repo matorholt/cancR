@@ -13,11 +13,15 @@ plotR(
   labs = levels,
   print.est = TRUE,
   contrast = "rd",
+  se = T,
+  border = T,
   style = NULL,
+  linewidth = 1.5,
   title = "",
   title.size = 7,
   x.title = unit,
   x.title.size = 6,
+  x.title.shift = 0,
   x.text.size = 6,
   y.title = "Risk of Event (\%)",
   y.title.size = 6,
@@ -56,7 +60,13 @@ plotR(
 
 \item{contrast}{The type of contrast that should be provided. Includes risk difference ("rd", default), risk ratio ("rr"), hazard ratio ("hr") or "none".}
 
+\item{se}{whether the confidence interval should be shown}
+
+\item{border}{whether there should be borders around the results}
+
 \item{style}{the formatting style of the contrast. Currently JAMA and italic}
+
+\item{linewidth}{thickness of the risk curve lines}
 
 \item{title}{Plot title}
 
@@ -65,6 +75,8 @@ plotR(
 \item{x.title}{X-axis title}
 
 \item{x.title.size}{X-axis title size}
+
+\item{x.title.shift}{X-axis vertical shift}
 
 \item{x.text.size}{X-axis text size}
 

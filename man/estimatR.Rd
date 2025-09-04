@@ -2,7 +2,7 @@
 % Please edit documentation in R/estimatR.R
 \name{estimatR}
 \alias{estimatR}
-\title{estimatR}
+\title{estimatR "\u2264 3"}
 \usage{
 estimatR(
   data,
@@ -15,11 +15,12 @@ estimatR(
   form,
   time = 120,
   breaks = 12,
-  survtime = F,
+  survtime = T,
   proportions = F,
   conditional = F,
-  cores = pmin(detectCores(), 4),
-  pl = T
+  pl = T,
+  digits = 4,
+  eventdigits = 2
 )
 }
 \arguments{
@@ -49,9 +50,9 @@ estimatR(
 
 \item{conditional}{Whether conditional risk at the time horizon should be calculated (default = F)}
 
-\item{cores}{Number of cores for parallel processing}
-
 \item{pl}{Whether product.limit in ATE shoulde be T or F (default = T)}
+
+\item{digits}{for rounding of eventtimes}
 }
 \value{
 time_to_event: Median survival time \cr
