@@ -9,6 +9,7 @@
 #' @param y Upper limit for y-axis
 #' @param col Vector of colors
 #' @param table.col Grid color
+#' @param risk.col Whether risk table numbers should be colored (T/F)
 #' @param time_unit Specification of the time-unit and optional conversion. Conversions include Months to years ("m2y"), days to years ("d2y") and days to months ("d2m")
 #' @param labs Character vector of similar length to the number of levels in the group with labels. Reference is first.
 #' @param print.est Whether absolute risks at the time horizon should be printet. Defaults to TRUE
@@ -31,6 +32,7 @@
 #' @param res.shift Vector of XY shifting of the results
 #' @param res.spacing Vertical spacing between results
 #' @param res.digits Number of digits on the risk estimates
+#' @param border.shift Horizontal shifting of right border
 #' @param contrast.digits Number of digits on the contrasts
 #' @param table Which parts of the risk table should be provided ("event", "risk", "none"). Default is c("event", "risk")
 #' @param table.space Spacing between counts in risk table
@@ -38,6 +40,7 @@
 #' @param table.title.size Risk table titles size
 #' @param table.text.size Risk table text size
 #' @param table.linewidth Risk table linewidth
+#' @param border.linewidth Results box linewidth
 #' @param legend.pos XY vector of legend position in percentage
 #' @param tscale Global size scaler
 #' @param censur Whether values <= 3 should be censored. Default = FALSE
@@ -60,8 +63,8 @@
 #                      event = as.factor(event)) %>%
 #   rename(ttt = time)
 #
-# t1 <- estimatR(df2, ttt, event2, X2, time = 120, type = "select", vars = c(X6,X7), pl=T)
-# t2 <- estimatR(df2, ttt, event2, X1, time = 60, type = "select", vars = c(X6,X7), pl=T)
+# t1 <- estimatR(df2, ttt, event2, X2, time = 60, type = "select", vars = c(X6,X7), pl=T)
+#t2 <- estimatR(df2, ttt, event2, X1, time = 120, type = "select", vars = c(X6,X7), pl=T)
 # t3 <- estimatR(df2, ttt, event2, X3, time = 60, type = "select", vars = c(X6,X7), pl=T)
 #
 # plotR(t1, style = "jama")
@@ -70,6 +73,7 @@ plotR <- function(list,
                   y=100,
                   col=cancR_palette,
                   table.col = "#616161",
+                  risk.col = T,
                   time_unit = "m2y",
                   labs = levels,
                   print.est = TRUE,
@@ -77,7 +81,7 @@ plotR <- function(list,
                   se = T,
                   border = T,
                   style = NULL,
-                  linewidth = 1.5,
+                  linewidth = 1,
                   title = "",
                   title.size = 7,
                   x.title = unit,
@@ -92,6 +96,7 @@ plotR <- function(list,
                   res.shift = c(0,0),
                   res.spacing = 1,
                   res.digits = 1,
+                  border.shift = 0,
                   contrast.digits = 1,
                   table = c("event", "risk"),
                   table.space = 1,
@@ -99,6 +104,7 @@ plotR <- function(list,
                   table.title.size = 6,
                   table.text.size = 5,
                   table.linewidth = 1,
+                  border.linewidth = 1,
                   legend.pos = c(0.5,0.9),
                   tscale = 1,
                   censur=F) {
@@ -170,7 +176,7 @@ plotR <- function(list,
 
 
   if(censur) {
-    tab <- tab %>% mutate(across(c(cumsum, n.risk), ~ ifelse(between(., 1, 3), "hej", .)))
+    tab <- tab %>% mutate(across(c(cumsum, n.risk), ~ ifelse(between(., 1, 3), "\u2264 3", .)))
   }
 
   if(missing(y)) {
@@ -228,9 +234,9 @@ plotR <- function(list,
   #PLOT BODY
   p <-
     ggplot(plot, aes(x=time, y=est, color = !!sym(group), fill = !!sym(group))) +
-    geom_segment(x = -1, xend=horizon*1.04, y=-(y*0.04), yend=-(y*0.04), color = "Black", linewidth = 1.5) +
-    geom_segment(x = -1, xend=-1, y=-(y*0.04), yend=y, color = "Black", linewidth = 1.5) +
     geom_step(linewidth = linewidth) +
+    geom_segment(x = 0, xend=horizon*1.04, y=-(y*0.02), yend=-(y*0.02), color = "Black", linewidth = linewidth) +
+    geom_segment(x = 0, xend=0, y=-(y*0.02), yend=y, color = "Black", linewidth = linewidth) +
     scale_color_manual(values = c(col[1:length(levels)]), labels = labs) +
     scale_fill_manual(values = c(col[1:length(levels)]), labels = labs)
   if(se) p <- p + geom_stepribbon(aes(ymin = lower, ymax = upper), alpha = 0.2, color = NA)
@@ -251,21 +257,21 @@ plotR <- function(list,
   #Labels
   p <-
     #X-title
-    p + annotate("text", x=horizon/2, y = y*-0.2+x.title.shift, label = x.title, size = x.title.size*tscale) +
+    p + annotate("text", x=horizon/2, y = y*-0.18+x.title.shift, label = x.title, size = x.title.size*tscale) +
     #Y-title
-    annotate("text", x=-(horizon*0.11)-y.title.shift, y = y/2, label = y.title, size = y.title.size*tscale, angle = 90) +
+    annotate("text", x=-(horizon*0.10)-y.title.shift, y = y/2, label = y.title, size = y.title.size*tscale, angle = 90) +
     #X-breaks
-    annotate("text", x=seq(0,horizon,breaks), y=-(y*0.1), label=round(seq(0,horizon,breaks)/u,0), size = x.text.size*tscale)
+    annotate("text", x=seq(0,horizon,breaks), y=-(y*0.08), label=round(seq(0,horizon,breaks)/u,0), size = x.text.size*tscale)
 
   yscale <- case_when(y>=0.5 ~ 1/10,
                       y<=0.01 ~ 2.5/1000,
                       y<=0.1 ~ 1/100,
                       T ~ 5/100)
-  #Y-breaks
-  p <- p + annotate("text", x=-(horizon*0.03), y=seq(0,y,yscale), label = paste(seq(0,y*100,yscale*100), "%", sep=""), size = y.text.size*tscale, hjust="right") +
+  #Y-breaks/labels
+  p <- p + annotate("text", x=-(horizon*0.01), y=seq(0,y,yscale), label = paste(seq(0,y*100,yscale*100), "%", sep=""), size = y.text.size*tscale, hjust="right") +
 
   #Title
-    annotate("text", x=-1, y=y*1.06, label=title, size = title.size*tscale, hjust="left")
+    annotate("text", x=0, y=y*1.09, label=title, size = title.size*tscale, hjust="left")
 
   #Risk table
   if(any(table %nin% "none")) {
@@ -297,11 +303,25 @@ plotR <- function(list,
     tcols <- str_replace_all(table, c("risk" = "n.risk",
                                       "event" = "cumsum"))
 
+    if(risk.col) {
+
+      rc <- col
+    } else {
+      rc <- rep("Black",length(levels))
+    }
+
     for(i in 1:length(levels)) {
 
       for(j in 1:length(table)) {
         p <- p +
-          suppressWarnings(annotate("text", label = tab[tab[, group] == levels[i], tcols[j]], x = seq(0,horizon,12), y = rows[[j]][i], color = col[i], size = table.text.size*tscale))
+          suppressWarnings(annotate("text", label = tab[tab[, group] == levels[i], tcols[j]], x = seq(0,horizon,12), y = rev(rows[[j]])[i], color = rc[i], size = table.text.size*tscale))
+
+        if(!risk.col) {
+
+          p <- p +
+            annotate("segment", x=-(horizon*0.065), xend =-(horizon*0.04), y = rev(rows[[j]])[i], yend = rev(rows[[j]])[i], color=col[i], linewidth = linewidth*1.5)
+
+        }
 
       }
 
@@ -343,7 +363,7 @@ plotR <- function(list,
                  x=xstart*0.3+res.shift[1],
                  xend=xstart*0.8+res.shift[1],
                  y=rows[i+1],
-                 yend=rows[i+1], color = col[i], linewidth = 1.5)
+                 yend=rows[i+1], color = col[i], linewidth = linewidth*1.5)
 
       #Groups > 2 with contrasts
       if(length(levels) > 2 & contrast != "none") {
@@ -354,6 +374,12 @@ plotR <- function(list,
                          fontface=1,
                          hjust="left",
                          size = res.size*tscale)
+
+        #Border settings
+        buttom <- rows[length(rows)]
+        shift <- ifelse(horizon == 60, 4, 12)
+        right <- (xstart*0.2+horizon*0.39)+res.shift[1]+shift+border.shift
+
 
       }
 
@@ -368,6 +394,8 @@ plotR <- function(list,
                    hjust="left",
                    size = res.size*tscale)
 
+
+
         if(contrast != "none") {
 
           p <-  p+ annotate("text",
@@ -377,6 +405,12 @@ plotR <- function(list,
                             hjust = "left",
                             size = res.size*tscale)
         }
+
+        #Border settings
+        buttom <- rows[length(rows)] - (rows[length(rows)-1]-rows[length(rows)])
+        right <- (xstart*0.2+horizon*0.39)+res.shift[1]+border.shift
+
+
       }
 
     }
@@ -384,24 +418,26 @@ plotR <- function(list,
 
   if(border) {
 
-    top <- rows[1] + (rows[1]-rows[2])*res.spacing
-    buttom <- rows[length(rows)] - (rows[length(rows)-1]-rows[length(rows)])*res.spacing
+    top <- rows[1] + (rows[1]-rows[2])
     left <- (xstart*0.2-0.1)+res.shift[1]
-    right <- (xstart*0.2+horizon*0.39)+res.shift[1]
     if(!is.null(style)) right <- right + horizon/60
 
-    p <- p + annotate("segment", x=left, xend = right, y=top, yend = top, linewidth = 0.8) +
-      annotate("segment", x=left, xend = right, y=buttom, yend = buttom, linewidth = 0.8) +
-      annotate("segment", x=left, xend = left, y = top, yend = buttom, linewidth = 0.8) +
-      annotate("segment", x=right, xend = right, y = top, yend = buttom, linewidth = 0.8)
+    p <- p + annotate("segment", x=left, xend = right, y=top, yend = top, linewidth = border.linewidth) +
+      annotate("segment", x=left, xend = right, y=buttom, yend = buttom, linewidth = border.linewidth) +
+      annotate("segment", x=left, xend = left, y = top, yend = buttom, linewidth = border.linewidth) +
+      annotate("segment", x=right, xend = right, y = top, yend = buttom, linewidth = border.linewidth)
   }
 
   p$y <- y*100
   p$grps <- length(levels)
 
+
+
  return(p)
 
 
+
 }
+
 
 

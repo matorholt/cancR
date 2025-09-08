@@ -93,6 +93,14 @@ savR <- function(object,
     dir.create(paste0(getwd(), "/Tables and Figures"))
   }
 
+  if("summary.tableby" %in% class(object)) {
+    object <- as.data.frame(object) %>%
+      rename("char" = 1) %>%
+      flextable() %>%
+      set_header_labels(values = list("char" = ""))
+
+  }
+
   if("flextable" %in% class(object)) {
 
     cat("Exports")
@@ -147,11 +155,6 @@ savR <- function(object,
     }
   }
 
-  if("summary.tableby" %in% class(object)) {
-    write2word(object,
-               paste0(getwd(), "/Tables and Figures/", name, ".docx"),
-               quiet = TRUE)
-  }
 }
 
 

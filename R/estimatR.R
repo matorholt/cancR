@@ -1,4 +1,4 @@
-#' estimatR "\u2264 3"
+#' estimatR
 #'
 #' @description
 #' Absolute risk estimation and comparison of two or more groups with a time-to-event outcome.

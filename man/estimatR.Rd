@@ -2,7 +2,7 @@
 % Please edit documentation in R/estimatR.R
 \name{estimatR}
 \alias{estimatR}
-\title{estimatR "\u2264 3"}
+\title{estimatR}
 \usage{
 estimatR(
   data,

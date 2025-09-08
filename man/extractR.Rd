@@ -7,14 +7,17 @@
 extractR(
   list,
   vars = c("counts", "risks", "diff"),
-  shape = "long",
+  format = "long",
   ci = "95\%CI ",
   nsep = " / ",
   sep = " to ",
   censur = F,
   risk_digits = 1,
   diff_digits = 1,
-  ratio_digits = 1
+  ratio_digits = 1,
+  sep.ci = F,
+  flextable = F,
+  reverse = T
 )
 }
 \arguments{
@@ -22,7 +25,7 @@ extractR(
 
 \item{vars}{Which outcome measures to provide (counts, risks, differneces and/or ratios)}
 
-\item{shape}{Format of the table (long or wide).}
+\item{format}{Format of the table (long or wide).}
 
 \item{ci}{The format of the confidence intervals (default = 95\%CI)}
 

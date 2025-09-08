@@ -34,7 +34,7 @@
 #
 # df <- as.data.frame(df)
 #
-# tablR(df,
+# t1 <- tablR(df,
 #       group=X2,
 #       vars=c(X1,X3,X4,X6,X7, age_group),
 #       labels = list("age_group" = c("0-40" = "<=40"),

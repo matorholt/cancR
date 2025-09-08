@@ -9,6 +9,7 @@ plotR(
   y = 100,
   col = cancR_palette,
   table.col = "#616161",
+  risk.col = T,
   time_unit = "m2y",
   labs = levels,
   print.est = TRUE,
@@ -16,7 +17,7 @@ plotR(
   se = T,
   border = T,
   style = NULL,
-  linewidth = 1.5,
+  linewidth = 1,
   title = "",
   title.size = 7,
   x.title = unit,
@@ -31,6 +32,7 @@ plotR(
   res.shift = c(0, 0),
   res.spacing = 1,
   res.digits = 1,
+  border.shift = 0,
   contrast.digits = 1,
   table = c("event", "risk"),
   table.space = 1,
@@ -38,6 +40,7 @@ plotR(
   table.title.size = 6,
   table.text.size = 5,
   table.linewidth = 1,
+  border.linewidth = 1,
   legend.pos = c(0.5, 0.9),
   tscale = 1,
   censur = F
@@ -51,6 +54,8 @@ plotR(
 \item{col}{Vector of colors}
 
 \item{table.col}{Grid color}
+
+\item{risk.col}{Whether risk table numbers should be colored (T/F)}
 
 \item{time_unit}{Specification of the time-unit and optional conversion. Conversions include Months to years ("m2y"), days to years ("d2y") and days to months ("d2m")}
 
@@ -96,6 +101,8 @@ plotR(
 
 \item{res.digits}{Number of digits on the risk estimates}
 
+\item{border.shift}{Horizontal shifting of right border}
+
 \item{contrast.digits}{Number of digits on the contrasts}
 
 \item{table}{Which parts of the risk table should be provided ("event", "risk", "none"). Default is c("event", "risk")}
@@ -109,6 +116,8 @@ plotR(
 \item{table.text.size}{Risk table text size}
 
 \item{table.linewidth}{Risk table linewidth}
+
+\item{border.linewidth}{Results box linewidth}
 
 \item{legend.pos}{XY vector of legend position in percentage}
 
