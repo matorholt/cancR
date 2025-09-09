@@ -11,9 +11,9 @@
 #' @param nsep The separator between event counts (default = /)
 #' @param sep The separator between all other ranges (default = to)
 #' @param censur Whether counts <= 3 should be censured (default = FALSE)
-#' @param risk_digits number of digits on risk estimates
-#' @param diff_digits number of digits on risk differences
-#' @param ratio_digits number of digits on risk ratios
+#' @param risk.digits number of digits on risk estimates
+#' @param diff.digits number of digits on risk differences
+#' @param ratio.digits number of digits on risk ratios
 #'
 #' @return Returns a data frame compatible with flextable
 #' @export
@@ -37,14 +37,12 @@
 #
 # t2 <- estimatR(df2, ttt, event2, X2, type = "select", vars = c(X6,X7))
 # t3 <- estimatR(df2, ttt, event2, X3, type = "select", vars = c(X6,X7))
-
+#
 # extractR(t3)
 # extractR(t2, format = "wide")
+#
 
 
-# extractR(t2, format = "wide", vars = c("counts", "risks", "diff", "ratio"), flextable = T, sep.ci = F, reverse = F) %>%
-#   flextable() %>%
-#   separate_header()
 
 
 
@@ -56,10 +54,13 @@ extractR <- function(list,
                      ci = "95%CI ",
                      nsep = " / ",
                      sep = " to ",
+                     total.count = T,
+                     labs = NULL,
+                     headings = NULL,
                      censur = F,
-                     risk_digits = 1,
-                     diff_digits = 1,
-                     ratio_digits = 1,
+                     risk.digits = 1,
+                     diff.digits = 1,
+                     ratio.digits = 1,
                      sep.ci = F,
                      flextable = F,
                      reverse = T) {
@@ -74,23 +75,24 @@ extractR <- function(list,
   }
 
   counts <-
-    list$counts %>% mutate(counts = str_c(n.events, nsep, total)) %>%
+    list$counts %>% mutate(counts = ifelse(total.count, str_c(n.events, nsep, total), n.events)) %>%
     select(counts) %>%
     as.data.frame()
 
   risks <-
-    list$risks %>% filter(time %in% list$info$time) %>% mutate(across(c(est, lower, upper), ~ numbR(.*100, risk_digits)),
+    list$risks %>% filter(time %in% list$info$time) %>% mutate(across(c(est, lower, upper), ~ numbR(.*100, risk.digits)),
                                                     risks = str_c(est, "%x(", ci, lower, sep, upper, ")")) %>%
     select(risks)
-  diff <-
+
+   diff <-
     list$difference %>% slice(1,1:(length(grps)-1)) %>%
-    mutate(diff = ifelse(row_number() > 1, str_c(numbR(diff, diff_digits), "%x(", ci, numbR(lower, diff_digits), sep, numbR(upper, diff_digits), ")xz", p.value), "reference")) %>%
+    mutate(diff = ifelse(row_number() > 1, str_c(numbR(diff, diff.digits), "%x(", ci, numbR(lower, diff.digits), sep, numbR(upper, diff.digits), ")xz", p.value), "reference")) %>%
     select(diff)
 
   ratio <-
     list$ratio %>% slice(1,1:(length(grps)-1)) %>%
     rename(rr = ratio) %>%
-    mutate(ratio = ifelse(row_number() > 1, str_c(rr, "x(", ci, numbR(lower, ratio_digits), sep, numbR(upper, ratio_digits), ")xz", p.value), "reference")) %>%
+    mutate(ratio = ifelse(row_number() > 1, str_c(rr, "x(", ci, numbR(lower, ratio.digits), sep, numbR(upper, ratio.digits), ")xz", p.value), "reference")) %>%
     select(ratio)
 
   total <- bind_cols(counts, risks, diff, ratio)
@@ -238,25 +240,50 @@ for(i in names(tab)[str_detect(names(tab), "(risks|diff|ratio)(?!(_))")]) {
 
       if(flextable) {
 
-        labs <- c("Absolute Risk (95%CI)",
-                  "Risk Difference (95%CI)",
-                  "Risk Ratio (95%CI)")
+        labs.default <- list(
+          "counts" = "Events/Total",
+          "risk" = "Absolute Risk (95%CI)",
+          "diff" = "Risk Difference (95%CI)",
+          "ratio" = "Risk Ratio (95%CI)",
+          "ci" = "(95%CI)")
 
+        if(!is.null(labs)) {
+          labs <- modifyList(labs.default, labs)
+        } else {
+          labs <- labs.default
+        }
 
-        if(sep.ci) {
+        for(x in seq_along(labs)) {
 
-          labs <- str_remove_all(labs, "\\s\\(95%CI\\)")
+          if(names(labs)[[x]] != "ci" & sep.ci) {
+            labs[[x]] <- str_remove_all(labs[[x]], "\\s\\(95%CI\\)")
+          }
+
+          if(!total.count) {
+            labs[[x]] <- str_remove_all(labs[[x]], "/Total")
+          }
 
         }
 
+
           names(tab) <- str_replace_all(names(tab),
-                                        c("counts" = "Counts (events/total)",
+                                        c("counts" = labs[["counts"]],
                                           "(.*)diff_p.value" = "\\1P-Value",
                                           "(.*)ratio_p.value" = "\\1P-Value ",
-                                          "risks" = labs[1],
-                                          "diff" = labs[2],
-                                          "ratio" = labs[3],
-                                          "ci" = "(95%CI)"))
+                                          "risks" = labs[["risk"]],
+                                          "diff" = labs[["diff"]],
+                                          "ratio" = labs[["ratio"]],
+                                          "ci" = labs[["ci"]]))
+
+          if(!is.null(headings)) {
+
+            for(x in seq_along(headings)) {
+
+              names(tab) <-
+                str_replace(names(tab), paste0("^",names(headings)[[x]]), headings[[x]])
+            }
+
+          }
 
 
       }
@@ -264,7 +291,22 @@ for(i in names(tab)[str_detect(names(tab), "(risks|diff|ratio)(?!(_))")]) {
 
 tab
 
-
 }
+
+
+(tab <- extractR(t2,
+                format = "wide",
+                vars = c("counts", "risks", "diff", "ratio"),
+                total.count = F,
+                flextable = T,
+                sep.ci = F,
+                reverse = F,
+                labs = list("diff" = "Absolute Risk Difference (95%CI)"),
+                headings = list("No CLL" = "No CLL (n=123)",
+                                "CLL" = "CLL (n=345)"),
+                ci = ""))
+
+tab %>% flextable() %>%
+  separate_header()
 
 

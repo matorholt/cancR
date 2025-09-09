@@ -81,7 +81,9 @@ savR <- function(object,
                  dpi=900,
                  device= NULL,
                  compression="lzw",
-                 formats = c("pdf", "tiff")) {
+                 formats = c("pdf", "tiff"),
+                 size = 9,
+                 table.width = 1) {
 
   formats <- match.arg(formats, c("pdf", "svg", "tiff", "jpg", "png"), several.ok=TRUE)
 
@@ -107,7 +109,9 @@ savR <- function(object,
     cat(paste0("\nFlextable: "))
 
     object %>%
-      set_table_properties(layout = "autofit", width = 1) %>%
+      fontsize(size = size, part = "all") %>%
+      autofit() %>%
+      width(width=table.width) %>%
       save_as_docx(path = paste0(getwd(), "/Tables and Figures/", name, ".docx", collapse=""))
 
     cat("Done")

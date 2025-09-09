@@ -265,6 +265,7 @@ plotR <- function(list,
 
   yscale <- case_when(y>=0.5 ~ 1/10,
                       y<=0.01 ~ 2.5/1000,
+                      y<=0.05 ~ 5/1000,
                       y<=0.1 ~ 1/100,
                       T ~ 5/100)
   #Y-breaks/labels
@@ -307,7 +308,7 @@ plotR <- function(list,
 
       rc <- col
     } else {
-      rc <- rep("Black",length(levels))
+      rc <- rep(table.col,length(levels))
     }
 
     for(i in 1:length(levels)) {
@@ -337,7 +338,7 @@ plotR <- function(list,
     contrast <- "none"
   }
 
-  xstart <- horizon*0.05
+  xstart <- horizon*0.07
   rows <- (y*(seq(0.92, 0.92-((0.07*res.spacing)*(length(levels)+1)), -0.07*res.spacing)))+res.shift[2]
 
   if(survscale == "OS") {
@@ -360,8 +361,8 @@ plotR <- function(list,
       #Segments
       p <- p +
         annotate("segment",
-                 x=xstart*0.3+res.shift[1],
-                 xend=xstart*0.8+res.shift[1],
+                 x=xstart*0.5+res.shift[1],
+                 xend=xstart*0.9+res.shift[1],
                  y=rows[i+1],
                  yend=rows[i+1], color = col[i], linewidth = linewidth*1.5)
 
@@ -408,7 +409,7 @@ plotR <- function(list,
 
         #Border settings
         buttom <- rows[length(rows)] - (rows[length(rows)-1]-rows[length(rows)])
-        right <- (xstart*0.2+horizon*0.39)+res.shift[1]+border.shift
+        right <- (xstart*0.3+horizon*0.39)+res.shift[1]+border.shift
 
 
       }
@@ -419,7 +420,7 @@ plotR <- function(list,
   if(border) {
 
     top <- rows[1] + (rows[1]-rows[2])
-    left <- (xstart*0.2-0.1)+res.shift[1]
+    left <- (xstart*0.3)+res.shift[1]
     if(!is.null(style)) right <- right + horizon/60
 
     p <- p + annotate("segment", x=left, xend = right, y=top, yend = top, linewidth = border.linewidth) +

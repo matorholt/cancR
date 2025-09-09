@@ -6,11 +6,6 @@
 #' @param x A p-value
 #' @return Prints the raw p-value according to AMA manual of style
 #' @export
-#' @examples
-#' pfun(0.0245)
-#' pfun(0.000001)
-#' pfun(0.048)
-#' pfun(0.056)
 
 pvertR <- function(x) {
   sapply(x, function(x) {
