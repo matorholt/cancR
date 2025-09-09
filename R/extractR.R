@@ -40,7 +40,20 @@
 #
 # extractR(t3)
 # extractR(t2, format = "wide")
+# (tab <- extractR(t2,
+#                  format = "wide",
+#                  vars = c("counts", "risks", "diff", "ratio"),
+#                  total.count = T,
+#                  flextable = T,
+#                  sep.ci = F,
+#                  reverse = F,
+#                  labs = list("diff" = "Absolute Risk Difference (95%CI)"),
+#                  headings = list("No CLL" = "No CLL (n=123)",
+#                                  "CLL" = "CLL (n=345)"),
+#                  ci = ""))
 #
+# tab %>% flextable() %>%
+#   separate_header()
 
 
 
@@ -75,9 +88,13 @@ extractR <- function(list,
   }
 
   counts <-
-    list$counts %>% mutate(counts = ifelse(total.count, str_c(n.events, nsep, total), n.events)) %>%
+    list$counts %>%
+    rowwise() %>%
+    mutate(counts = ifelse(total.count, str_c(n.events, nsep, total), n.events)) %>%
     select(counts) %>%
     as.data.frame()
+
+
 
   risks <-
     list$risks %>% filter(time %in% list$info$time) %>% mutate(across(c(est, lower, upper), ~ numbR(.*100, risk.digits)),
@@ -294,19 +311,5 @@ tab
 }
 
 
-(tab <- extractR(t2,
-                format = "wide",
-                vars = c("counts", "risks", "diff", "ratio"),
-                total.count = F,
-                flextable = T,
-                sep.ci = F,
-                reverse = F,
-                labs = list("diff" = "Absolute Risk Difference (95%CI)"),
-                headings = list("No CLL" = "No CLL (n=123)",
-                                "CLL" = "CLL (n=345)"),
-                ci = ""))
-
-tab %>% flextable() %>%
-  separate_header()
 
 

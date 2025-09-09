@@ -15,9 +15,3 @@ Prints the raw p-value according to AMA manual of style
 \description{
 The function takes a raw p-value and prints it according to the AMA manual of style
 }
-\examples{
-pfun(0.0245)
-pfun(0.000001)
-pfun(0.048)
-pfun(0.056)
-}

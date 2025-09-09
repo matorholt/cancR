@@ -14,7 +14,9 @@ savR(
   dpi = 900,
   device = NULL,
   compression = "lzw",
-  formats = c("pdf", "tiff")
+  formats = c("pdf", "tiff"),
+  size = 9,
+  table.width = 1
 )
 }
 \arguments{

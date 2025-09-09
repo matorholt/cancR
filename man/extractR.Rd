@@ -11,10 +11,13 @@ extractR(
   ci = "95\%CI ",
   nsep = " / ",
   sep = " to ",
+  total.count = T,
+  labs = NULL,
+  headings = NULL,
   censur = F,
-  risk_digits = 1,
-  diff_digits = 1,
-  ratio_digits = 1,
+  risk.digits = 1,
+  diff.digits = 1,
+  ratio.digits = 1,
   sep.ci = F,
   flextable = F,
   reverse = T
@@ -35,11 +38,11 @@ extractR(
 
 \item{censur}{Whether counts <= 3 should be censured (default = FALSE)}
 
-\item{risk_digits}{number of digits on risk estimates}
+\item{risk.digits}{number of digits on risk estimates}
 
-\item{diff_digits}{number of digits on risk differences}
+\item{diff.digits}{number of digits on risk differences}
 
-\item{ratio_digits}{number of digits on risk ratios}
+\item{ratio.digits}{number of digits on risk ratios}
 }
 \value{
 Returns a data frame compatible with flextable
