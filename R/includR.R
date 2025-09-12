@@ -7,18 +7,19 @@
 #' @param data joined data frame
 #' @param exclusion_ex vector of exposure variables that should not be present before index
 #' @param exclusion_out vector of outcome variables that should not be present before index
-#' @param filter filter for subgroups in the format: "level %in% c('a', 'b')"
+#' @param subgroup filter for subgroups in the format: "level %in% c('a', 'b')" Can also be applied as custom filter
 #' @param age_limit age limit for inclusion as numeric value
 #' @param period enrollement period in the format: c("1980-01-01", "2022-01-01")
 #' @param fu name of the follow-up date (default: fu)
 #' @param birth name of the birth date variable (default: birth)
+#' @param export whether a data frame of the flowchart should be exported
 #'
 #' @return A data frame with filtered cases and all controls + an rds file for flow chart
 #' @export
 #'
-#'
 
-#set.seed(1)
+#
+# set.seed(1)
 #
 # n=500
 #
@@ -69,27 +70,28 @@
 #
 # data <- pre_join
 
-# includR(pre_join,
-#         exclusion_ex = c(lpr_ex, lmdb_ex, opr_ex),
-#         exclusion_out = c(sc_date, meta_date),
-#         filter = "sg_level %in% c('supergroup_a', 'supergroup_b')",
-#         age_limit = 18,
-#         period = c("1980-01-01", "2022-01-01"),
-#         fu = doddate,
-#         birth = birthdate)
+# i <- includR(pre_join,
+#              exclusion_ex = c(lpr_ex, lmdb_ex, opr_ex),
+#              exclusion_out = c(sc_date, meta_date),
+#              subgroup = "sg_level %in% c('supergroup_a', 'supergroup_b') | is.na(sg_level)",
+#              age_limit = 18,
+#              period = c("1990-01-01", "2022-01-01"),
+#              fu = doddate,
+#              birth = birthdate,
+#              export = F)
 
 
 includR <- function(data,
                     exclusion_ex,
                     exclusion_out,
-                    filter = NULL,
+                    subgroup = NULL,
                     age_limit = NULL,
                     period = NULL,
                     fu=fu,
-                    birth = birth) {
+                    birth = birth,
+                    export = F) {
 
-
-    exe_c <- data %>% select({{exclusion_ex}}) %>% names()
+  exe_c <- data %>% select({{exclusion_ex}}) %>% names()
     exo_c <- data %>% select({{exclusion_out}}) %>% names()
     fu_c <- data %>% select({{fu}}) %>% names()
     birth_c <- data %>% select({{birth}}) %>% names()
@@ -100,40 +102,67 @@ includR <- function(data,
 #split
 setDT(data)
 
-if(any(str_detect(names(data), "supp"))) {
+if(!missing(exclusion_ex)) {
 
-  supp_c <- data %>% select(contains("supp")) %>% names()
-
-data <- data[,index := pmin(index, get(supp_c), na.rm=T)][
-  , case := ifelse(!is.na(index), 1, 0)
-]
-
-
+data[, exclusion_date := do.call(pmin, c(.SD, list(na.rm=TRUE))),
+    .SDcols= c(exe_c)]
 
 }
 
-data <- data[get(fu_c) > index | is.na(index),]
+flow_list[["entry"]][["main"]] <- paste0("- / ", nrow(data[!is.na(data[["index"]]),]))
 
+if(any(str_detect(names(data), "supp"))) {
+
+supp_c <- data %>% select(contains("supp")) %>% names()
+
+data[,index := pmin(index, get(supp_c), na.rm=T)]
+
+flow_list[["entry"]][["supp"]] <- paste0("- / ", nrow(data[!is.na(data[[supp_c]]),]))
+
+flow_list[["entry"]][["total"]] <- paste0("- / ", nrow(data[!is.na(data[["index"]]),]))
+
+}
+
+data[, case := ifelse(!is.na(index), 1, 0)]
 
 #Split
 cases <- data[case == 1,]
-conts <- data[case == 0]
+conts <- data[case == 0,]
+
+cur_n <- nrow(cases)
+
+cases <- cases[get(fu_c) > index,]
+
+flow_list[["entry"]][["autopsy"]] <- paste0(cur_n - nrow(cases), " / ", nrow(cases))
+
+cur_n <- nrow(cases)
+
 
 #Subgroup
-if(!is.null(filter)) {
+if(!is.null(subgroup)) {
 
-  cases <- cases[eval(parse(text = filter)),]
+  if(any(str_detect(names(data), "supp"))) {cat("Warning: NAs in subgroups due to supplemental case codes\n")}
+
+  for(i in subgroup) {
+
+    cases <- cases[eval(parse(text = i)),]
+
+    flow_list[["inclusion"]][[i]] <- paste0(cur_n - nrow(cases), " / ", nrow(cases))
+
+    cur_n <- nrow(cases)
+  }
 
 }
 
-flow_list[["total"]] <- nrow(cases)
 
 #Enrollment period
 if(!is.null(period)) {
 
   cases <- cases[between(index, as.Date(period[1]), as.Date(period[2])),]
 
-  flow_list[["period"]] <- nrow(cases)
+  flow_list[["inclusion"]][["period"]] <- paste0(cur_n - nrow(cases), " / ", nrow(cases))
+
+  cur_n <- nrow(cases)
 
 }
 
@@ -142,25 +171,28 @@ if(!is.null(age_limit)) {
 
   cases <- cases[(index - get(birth_c)) >= age_limit*365.25]
 
-  flow_list[["age"]] <- nrow(cases)
+  flow_list[["inclusion"]][["age"]] <- paste0(cur_n - nrow(cases), " / ", nrow(cases))
+
+  cur_n <- nrow(cases)
 
 }
 
 
-#Exclusions, outcome
+# #Exclusions, outcome
 if(!missing(exclusion_out)) {
 
   for(i in exo_c) {
 
     cases <- cases[get(i) > index | is.na(get(i))]
 
-    flow_list[[i]] <- nrow(cases)
+    flow_list[["exclusion"]][[i]] <- paste0(cur_n - nrow(cases), " / ", nrow(cases))
 
+    cur_n <- nrow(cases)
   }
 
 }
-
-#Exclusions, exposure
+#
+# #Exclusions, exposure
 if(!missing(exclusion_ex)) {
 
   for(i in exe_c) {
@@ -168,28 +200,31 @@ if(!missing(exclusion_ex)) {
 
     cases <- cases[get(i) > index | is.na(get(i))]
 
-    flow_list[[i]] <- nrow(cases)
+    flow_list[["exclusion"]][[i]] <- paste0(cur_n - nrow(cases), " / ", nrow(cases))
+
+    cur_n <- nrow(cases)
 
 
   }
 
 }
 
-flow_list[["pre_match"]] <- nrow(cases)
+flow_list[["final"]][["pre_match"]] <- paste0("- / ", nrow(cases))
 
-fdf <-
-  data.frame(step = names(flow_list),
-           n = unlist(flow_list)) %>%
-  mutate(n2 = lag(n)-n,
-  x.axis = ifelse(row_number() %in% c(1, length(flow_list)), 1, 2),
-         y.axis = rev(row_number()))
 
-ggplot(fdf, aes(x=x.axis, y=y.axis)) +
-  geom_label(aes(label = paste0(step, " = ", n2)), label.r = unit(0, units = "mm"))
+print(flow_df <- rrapply::rrapply(flow_list, how = "melt") %>%
+        mutate(excluded = str_extract(value, ".*\\s(?=(\\/))"),
+               total = str_extract(value, "(?<=(\\/))\\s.*")) %>%
+  rename(step = L1,
+         variable = L2) %>%
+  select(-value))
 
-bind_rows(cases, conts)
+if(export) {
 
+  saveRDS(flow_df, "PRE_FLOW.rds")
 
 }
 
+return(bind_rows(cases, conts))
 
+}

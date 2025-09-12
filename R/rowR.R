@@ -98,6 +98,8 @@ rowR <- function(data, vars, type, new, na.rm = T, filter = NULL, match = "conta
     data <- data %>%
       mutate(!!sym(new) := select(., matches(c(vars_pat))) %>% reduce(pmin, na.rm = na.rm))
 
+    #DT: dat[, col_max:= do.call(pmax, c(.SD, list(na.rm=TRUE))), .SDcols= c("x","y","z")]
+
   }
 
   if(type == "pmax") {

@@ -8,11 +8,12 @@ includR(
   data,
   exclusion_ex,
   exclusion_out,
-  filter = NULL,
+  subgroup = NULL,
   age_limit = NULL,
   period = NULL,
   fu = fu,
-  birth = birth
+  birth = birth,
+  export = F
 )
 }
 \arguments{
@@ -22,7 +23,7 @@ includR(
 
 \item{exclusion_out}{vector of outcome variables that should not be present before index}
 
-\item{filter}{filter for subgroups in the format: "level \%in\% c('a', 'b')"}
+\item{subgroup}{filter for subgroups in the format: "level \%in\% c('a', 'b')" Can also be applied as custom filter}
 
 \item{age_limit}{age limit for inclusion as numeric value}
 
@@ -31,6 +32,8 @@ includR(
 \item{fu}{name of the follow-up date (default: fu)}
 
 \item{birth}{name of the birth date variable (default: birth)}
+
+\item{export}{whether a data frame of the flowchart should be exported}
 }
 \value{
 A data frame with filtered cases and all controls + an rds file for flow chart
