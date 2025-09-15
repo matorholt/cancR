@@ -16,20 +16,20 @@
 #'
 #'
 
-# codelist <- list("lpr_case" = list("abdomen" = list("kidney" = c("tx1a","tx1b","tx1c"),
-#                                                    "liver" = c("tx2a", "tx2b", "tx2c")),
-#                                    "thorax" = list("heart" = c("tx3a", "tx3b", "tx3c"),
-#                                                    "lung" = c("tx4a", "tx4b", "tx3c"))),
-#                  "lpr_ex" = list("immune_diag" = "a3",
-#                                  "cll" = c("a4", "b4")),
-#                  "lmdb_ex" = list("immune_drugs" = "a5"),
-#                  "opr_ex" = list("trans" = "t5"),
-#                  "pato_supp" = list("PCC" = "M80"),
-#                  "labels" = list("lpr_case" = c("SOTR", "region"),
-#                                  "lpr_ex" = "immsup"),
-#                  "exclusion" = c("z1","z2"))
-#
-# clist <- decodR(codelist)
+codelist <- list("lpr_case" = list("abdomen" = list("kidney" = c("tx1a","tx1b","tx1c"),
+                                                   "liver" = c("tx2a", "tx2b", "tx2c")),
+                                   "thorax" = list("heart" = c("tx3a", "tx3b", "tx3c"),
+                                                   "lung" = c("tx4a", "tx4b", "tx3c"))),
+                 "lpr_ex" = list("immune_diag" = "a3",
+                                 "cll" = c("a4", "b4")),
+                 "lmdb_ex" = list("immune_drugs" = "a5"),
+                 "opr_ex" = list("trans" = "t5"),
+                 "pato_supp" = list("PCC" = "M80"),
+                 "labels" = list("lpr_case" = c("SOTR", "region"),
+                                 "lpr_ex" = "immsup"),
+                 "exclusion" = c("z1","z2"))
+
+clist <- decodR(codelist)
 #
 #
 # list("SOTR" = list("kidney" = c()))
@@ -37,7 +37,8 @@
 
 
 
-decodR <- function(codelist) {
+decodR <- function(codelist,
+                   regs = c("pop", "sc", "meta", "dsd")) {
 
   if(any(str_detect(names(codelist), "cases"))) {
     return(cat("ERROR: Change suffix to case instead of cases"))
@@ -86,11 +87,15 @@ decodR <- function(codelist) {
 
   }
 
+  #Exclusions
+  ex_list <- unique(str_extract(names(codelist)[str_detect(names(codelist), "_ex")], ".*_ex"))
+
   list <- list(
     main = main,
-    loadR.regs = c(registries, "pop", "sc", "meta", "dsd"),
+    loadR.regs = c(registries, regs),
     loadR.list = loadlist,
-    searchR.list = searchlist
+    searchR.list = searchlist,
+    includR.exclude = ex_list
   )
 
   if("labels" %in% names(codelist)) {
