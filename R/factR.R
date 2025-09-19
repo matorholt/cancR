@@ -35,74 +35,65 @@
 #                v3 = sample(letters[1:5], size = 20, replace=TRUE),
 #                vnum = sample(c("<40", "50-60", "10-20", "100-110", ">110", "cci_0"), size = n, replace=TRUE)))
 #
-
+#
 #
 # # #Lazy_coding
-# (tdf1 <-
-#     df %>%
-#     factR(vars = c(v1, v2,v3)))
-#
-# str(tdf1)
+# df %>%
+#     factR(vars = c(v1, v2,v3)) %>%
+#   str
 #
 # #Setting reference level(s)
-# (tdf2 <-
-#     df %>%
+# df %>%
 #     factR(vars = c(v1, v2,v3),
-#           reference = list("v1" = "c")))
-#
-# str(tdf2)
+#           reference = list("v1" = "c")) %>%
+#   str
 #
 # #Changing levels manually
-# (tdf3 <-
-#     df %>%
+# df %>%
 #     factR(vars = c(v1, v2,v3),
 #           levels = list("v1" = c("e","d","c","b","a"),
-#                         "v2" = c("a", "b","c","d","e"))))
+#                         "v2" = c("a", "b","c","d","e"))) %>%
+#   str
 #
-# str(tdf3)
 #
 # #Change labels without changing levels
-# (tdf4 <-
-#   df %>%
-#   factR(c(v1, v2, v3), labels = list("v3" = c("a" = "alpha")), lab_to_lev = F))
-#
-# str(tdf4)
+# df %>%
+#   factR(c(v1, v2, v3), labels = list("v3" = c("alpha" = "a")), lab_to_lev = F) %>%
+#   str
 #
 # #Changing everything
-# (tdf5 <-
-#     df %>%
+# df %>%
 #     factR(vars = c(v1, v2,v3),
 #           reference = list("v1" = "b",
 #                            "v3" = "d"),
 #           levels = list("v2" = c("a","b","c","d","e")),
-#           labels = list("v3" = c("e" = "epsilon", "d" = "delta"))))
-#
-#
-# str(tdf5)
+#           labels = list("v3" = c("epsilon" = "e", "delta" = "d"))) %>%
+#   str
 #
 # #Setting levels by labels
-# (tdf6 <-
-#     df %>%
+# df %>%
 #     factR(vars = c("v1", "v2", "v3"),
 #           labels = list(
-#             "v1" = c("b" = "beta", "a" = "alfa"),
-#             "v2" = c("c" = "charlie"),
-#             "v3" = c("e" = "epsilon", "d" = "delta", "a" = "alfa", "b" = "beta", "c" = "charlie")), lab_to_lev=T))
-#
-# str(tdf6)
+#             "v1" = c("beta" = "b", "alfa" = "a"),
+#             "v2" = c("charlie" = "c"),
+#             "v3" = c("epsilon" = "e", "delta" = "d", "alfa" = "a", "beta" = "b", "charlie" = "c")), lab_to_lev=T) %>%
+#   str
 #
 # #Single variable
-# (tdf7 <-
-#     df %>%
-#     factR(vars = v1, levels = c("a", "b")))
 #
-# str(tdf7)
+#     df %>%
+#     factR(vars = v1, levels = c("b", "e")) %>%
+#       str
 #
 # # Sort pseudo numeric character variable
-# (tdf8 <- df %>%
+# df %>%
 #     factR(num_vars=vnum,
-#           labels = list("vnum" = c("cci_0" = "test"))))
-# str(tdf8)
+#           labels = list("vnum" = c("test" = "cci_0"))) %>%
+#   str
+#
+
+
+
 
 factR <- function(data, vars, num_vars, reference = list(), levels = list(), labels = list(), lab_to_lev = FALSE, reverse = F) {
 
@@ -127,18 +118,23 @@ factR <- function(data, vars, num_vars, reference = list(), levels = list(), lab
     names(reference) <- vars_c
   }
 
-  for(v in vars_c) {
+   for(v in vars_c) {
 
     if(lab_to_lev) {
 
-      levels[[v]] <- names(labels[[v]])
+      levels[[v]] <- labels[[v]]
     }
 
       data <- data %>%
-      mutate(!!sym(v) := forcats::fct_infreq(as.character(!!sym(v))),
-            !!sym(v) := forcats::fct_relevel(!!sym(v), reference[[v]]),
-            !!sym(v) := forcats::fct_relevel(!!sym(v), levels[[v]]),
-            !!sym(v) := forcats::fct_recode(!!sym(v), !!!setNames(as.character(names(labels[[v]])), labels[[v]])))
+        mutate(!!sym(v) := forcats::fct_infreq(as.character(!!sym(v))),
+               !!sym(v) := forcats::fct_relevel(!!sym(v), reference[[v]]),
+               !!sym(v) := forcats::fct_relevel(!!sym(v), levels[[v]]))
+
+      if(v %in% names(labels)) {
+        data <- data %>%
+          mutate(!!sym(v) := forcats::fct_recode(!!sym(v), !!!setNames(labels[[v]], as.character(names(labels[[v]])))))
+
+      }
 
 
 
@@ -168,7 +164,7 @@ factR <- function(data, vars, num_vars, reference = list(), levels = list(), lab
 
       data <- data %>%
       mutate(!!sym(v) := forcats::fct_relevel(!!sym(v), n),
-             !!sym(v) := forcats::fct_recode(!!sym(v), !!!setNames(as.character(names(labels[[v]])), labels[[v]])))
+             !!sym(v) := forcats::fct_recode(!!sym(v), !!!setNames(labels[[v]], as.character(names(labels[[v]])))))
 
 
     }
@@ -178,4 +174,3 @@ factR <- function(data, vars, num_vars, reference = list(), levels = list(), lab
 data
 
 }
-

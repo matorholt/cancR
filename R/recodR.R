@@ -13,23 +13,25 @@
 #'
 #'
 
-# set.seed(1)
-# df <-
-#   data.frame(diag = sample(c("DX123", "DC123", "DC234", "DG123", "DG234"), 20, replace=TRUE),
-#              type = sample(c("DY", "DY234", "DY123"), 20, replace=TRUE),
-#              type2 = sample(c("DC123", "DC234", "DG123"), 20, replace=TRUE))
-#
-# nlist <- list("diag" = list("KOL" = "DX123",
-#                                "Astma" = c("DC123", "DC2"),
-#                                "AMI" = list("DG123", "DG234")),
-#      "type" = list("Cancer" = "DY"))
-#
-#
-# df %>%
-#   recodR(list("diag" = list("KOL" = "DX123",
-#                             "Astma" = c("DC123", "DC2"),
-#                             "AMI" = list("DG123", "DG234"))),
-#          match = "exact")
+set.seed(1)
+df <-
+  data.frame(diag = sample(c("DX123", "DC123", "DC234", "DG123", "DG234"), 20, replace=TRUE),
+             type = sample(c("DY", "DY234", "DY123"), 20, replace=TRUE),
+             type2 = sample(c("DC123", "DC234", "DG123"), 20, replace=TRUE))
+
+df %>%
+  recodR(list("diag" = list("KOL" = "DX123",
+                            "Astma" = c("DC123", "DC2"),
+                            "AMI" = list("DG123", "DG234"))),
+         match = "exact")
+
+df %>%
+  factR(c(diag, type, type2)) %>%
+  recodR(list("diag" = list("KOL" = "DX123",
+                            "Astma" = c("DC123", "DC234"),
+                            "AMI" = list("DG123", "DG234"))),
+         match = "exact")
+
 
 recodR <- function(data, namelist, match = "contains") {
 
@@ -46,24 +48,42 @@ recodR <- function(data, namelist, match = "contains") {
          "contains" = {regex <- c("(", ")")}
   )
 
-  #Data.frame sensitive
-  data <- as.data.frame(data)
+  setDT(data)
+
 
   #Paste diagnosis codes
-  namelist <- modify_depth(namelist, 2, function(x) paste0(regex[1], paste0(x, collapse="|"), regex[2]))
+  reglist <- modify_depth(namelist, 2, function(x) paste0(regex[1], paste0(x, collapse="|"), regex[2]))
 
   #Seq through variables (1st order in namelist)
-  for(i in names(namelist)) {
+  for(i in names(reglist)) {
 
     #Seq through names (2nd order in namelist)
-    for(j in names(namelist[[i]])) {
+    for(j in seq_along(names(reglist[[i]]))) {
 
-      data[,i][str_detect(data[[i]], namelist[[i]][[j]])] <- j
+      if(is.factor(data %>% select(i) %>% pull)) {
 
+        data <- as.data.frame(data)
+
+        #Looping through all indiviual diag codes
+        for(k in seq_along(namelist[[i]][[j]])) {
+
+       data <- data %>%
+       factR(i, labels = unlist(c(namelist[[i]][[j]][k])) %>% set_names(names(namelist[[i]])[[j]]))
+
+
+        }
+
+
+      } else {
+
+        data[, substitute(i) := ifelse(str_detect(get(i), reglist[[i]][[j]]), names(reglist[[i]])[j], get(i))]
+
+      }
     }
 
   }
 
-  data
+ as.data.frame(data)
+
 
 }

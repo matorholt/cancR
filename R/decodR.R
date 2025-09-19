@@ -16,20 +16,20 @@
 #'
 #'
 
-codelist <- list("lpr_case" = list("abdomen" = list("kidney" = c("tx1a","tx1b","tx1c"),
-                                                   "liver" = c("tx2a", "tx2b", "tx2c")),
-                                   "thorax" = list("heart" = c("tx3a", "tx3b", "tx3c"),
-                                                   "lung" = c("tx4a", "tx4b", "tx3c"))),
-                 "lpr_ex" = list("immune_diag" = "a3",
-                                 "cll" = c("a4", "b4")),
-                 "lmdb_ex" = list("immune_drugs" = "a5"),
-                 "opr_ex" = list("trans" = "t5"),
-                 "pato_supp" = list("PCC" = "M80"),
-                 "labels" = list("lpr_case" = c("SOTR", "region"),
-                                 "lpr_ex" = "immsup"),
-                 "exclusion" = c("z1","z2"))
-
-clist <- decodR(codelist)
+# codelist <- list("lpr_case" = list("abdomen" = list("kidney" = c("tx1a","tx1b","tx1c"),
+#                                                    "liver" = c("tx2a", "tx2b", "tx2c")),
+#                                    "thorax" = list("heart" = c("tx3a", "tx3b", "tx3c"),
+#                                                    "lung" = c("tx4a", "tx4b", "tx3c"))),
+#                  "lpr_ex" = list("immune_diag" = "a3",
+#                                  "cll" = c("a4", "b4")),
+#                  "lmdb_ex" = list("immune_drugs" = "a5"),
+#                  "opr_ex" = list("trans" = "t5"),
+#                  "pato_supp" = list("PCC" = "M80"),
+#                  "labels" = list("lpr_case" = c("SOTR", "region"),
+#                                  "lpr_ex" = "immsup"),
+#                  "exclusion" = c("z1","z2"))
+#
+# clist <- decodR(codelist)
 #
 #
 # list("SOTR" = list("kidney" = c()))
