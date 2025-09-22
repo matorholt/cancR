@@ -13,24 +13,24 @@
 #'
 #'
 
-set.seed(1)
-df <-
-  data.frame(diag = sample(c("DX123", "DC123", "DC234", "DG123", "DG234"), 20, replace=TRUE),
-             type = sample(c("DY", "DY234", "DY123"), 20, replace=TRUE),
-             type2 = sample(c("DC123", "DC234", "DG123"), 20, replace=TRUE))
-
-df %>%
-  recodR(list("diag" = list("KOL" = "DX123",
-                            "Astma" = c("DC123", "DC2"),
-                            "AMI" = list("DG123", "DG234"))),
-         match = "exact")
-
-df %>%
-  factR(c(diag, type, type2)) %>%
-  recodR(list("diag" = list("KOL" = "DX123",
-                            "Astma" = c("DC123", "DC234"),
-                            "AMI" = list("DG123", "DG234"))),
-         match = "exact")
+# set.seed(1)
+# df <-
+#   data.frame(diag = sample(c("DX123", "DC123", "DC234", "DG123", "DG234"), 20, replace=TRUE),
+#              type = sample(c("DY", "DY234", "DY123"), 20, replace=TRUE),
+#              type2 = sample(c("DC123", "DC234", "DG123"), 20, replace=TRUE))
+#
+# df %>%
+#   recodR(list("diag" = list("KOL" = "DX123",
+#                             "Astma" = c("DC123", "DC2"),
+#                             "AMI" = list("DG123", "DG234"))),
+#          match = "exact")
+#
+# df %>%
+#   factR(c(diag, type, type2)) %>%
+#   recodR(list("diag" = list("KOL" = "DX123",
+#                             "Astma" = c("DC123", "DC234"),
+#                             "AMI" = list("DG123", "DG234"))),
+#          match = "exact")
 
 
 recodR <- function(data, namelist, match = "contains") {
@@ -69,7 +69,6 @@ recodR <- function(data, namelist, match = "contains") {
 
        data <- data %>%
        factR(i, labels = unlist(c(namelist[[i]][[j]][k])) %>% set_names(names(namelist[[i]])[[j]]))
-
 
         }
 

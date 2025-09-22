@@ -56,6 +56,30 @@
 #         sub.list = clist$searchR.keep,
 #         sub.labels = clist$recodR.labels,
 #         exclusion = clist$searchR.exclusion)
+#
+#Simple example
+# t <- searchR(dfs$lpr,
+#         list("t_var" = c("DP"),
+#              "d_var" = c("DQ")),
+#         format = "code",
+#         date.filter = "1997-01-01")
+#
+# yframe <- data.frame()
+#
+# for(i in c("1996-01-01","2006-01-01","2010-01-01")) {
+#
+#   yframe <- bind_rows(yframe, as.data.table(searchR(dfs$lpr,
+#           list("t_var" = c("DP"),
+#                "d_var" = c("DQ")),
+#           format = "categorical",
+#           date.filter = i))[, year := i])
+#
+#
+# }
+#
+# yframe %>% arrange(pnr)
+
+
 
 searchR <- function(reglist,
                     search.list,
@@ -64,6 +88,7 @@ searchR <- function(reglist,
                     exclusion = "NULL",
                     slice = "first",
                     format = "date",
+                    date.filter = NULL,
                     match = "start",
                     casename = "index",
                     pnr = pnr) {
@@ -75,11 +100,11 @@ searchR <- function(reglist,
   cat(paste0("\nInitializing searchR algorithm: ", tockR("time"), "\n\n"))
 
   match <- match.arg(match, c("start", "end", "exact", "contains"))
-  format <- match.arg(format, c("categorical", "date"))
+  format <- match.arg(format, c("categorical", "date", "code"))
   slice <- match.arg(slice, c("first", "last", "all"))
 
   if(class(reglist) == "data.frame") {
-    reglist <- lst(reglist)
+    reglist <- lst("dframe" = reglist)
   }
 
   if(sum(str_detect(names(search.list), "case")) > 1) {
@@ -98,12 +123,27 @@ searchR <- function(reglist,
 
   slist <- list()
 
-  for(i in names(search.list)) {
-    reg <- str_extract(i, "lpr|lmdb|opr|pato")
+  for(k in seq_along(names(search.list))) {
+
+    i <- names(search.list)[k]
 
     tickR()
 
-    cat(paste0(reg, ": "))
+    if(any(str_detect(i, "lpr|lmdb|opr|pato"))) {
+    reg <- str_extract(i, "lpr|lmdb|opr|pato")
+
+
+    cat(paste0(reg," - ", i, ": "))
+
+    } else {
+      reg <- names(reglist)
+
+      cat(paste0(i, ": "))
+    }
+
+
+
+
 
     switch(match,
            "start" = {regex <- c("^(", ")")},
@@ -119,11 +159,21 @@ searchR <- function(reglist,
 
     data <- as.data.table(reglist[[reg]])[str_detect(code, pattern) & str_detect(code, exclude, negate=T)]
 
+    if(!is.null(date.filter)) {
+
+      data <- data[date <= as.Date(date.filter), ]
+
+    }
+
+
     if(format == "categorical") {
       data <- data[, c(i) := 1]
+    } else if(format == "code") {
+      data <- data[, c(i) := code]
     } else {
       data <- data[, c(i) := date]
     }
+
 
     if(i %in% names(sub.list)) {
 
@@ -147,8 +197,12 @@ searchR <- function(reglist,
   }
 
   joined_data <- plyr::join_all(slist, by = "pnr", type = "full") %>%
-    arrange(pnr) %>%
-    rename_with(~ paste0(casename), contains("case"))
+    arrange(pnr)
+
+  if(any(str_detect(colnames(joined_data), "case"))) {
+    joined_data <- joined_data %>%
+      rename_with(~ paste0(casename), contains("case"))
+  }
 
   if(!is.null(sub.labels)) {
 
@@ -162,6 +216,7 @@ searchR <- function(reglist,
   cat(tockR("diff", start), "\n\n")
 
   joined_data
+
 
 }
 

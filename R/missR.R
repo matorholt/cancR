@@ -14,25 +14,25 @@
 #'
 #'
 
-# n=200
-# set.seed(1)
-# df <- data.frame(id=seq(1:n),
-#                  group=sample(c("pre", "sub"), n, replace=T),
-#                  sex=factor(sample(c("M","F"), n, replace=T)),
-#                  age_group=sample(c("<50",">50"),n,replace=T),
-#                  chemo = sample(c("yes","no"), n, replace=T),
-#                  age = sample(c(seq(50,60), 50), n, replace=TRUE),
-#                  hospital = sample(c("rh","herlev","roskilde"), n, replace=T)) %>%
-#   mutate(hospital = ifelse(group %in% "sub", "roskilde", hospital),
-#          chemo = ifelse(group %in% "pre", "yes", chemo),
-#          age_group = ifelse(group %in% "sub", "<50", age_group),
-#          hospital = as.factor(hospital))
-#
-# #add random NA
-# df <- apply (df, 2, function(x) {x[sample( c(1:n), floor(n/10))] <- NA; x} ) %>%
-#   as_tibble()
-#
-# missR(df)
+n=200
+set.seed(1)
+df <- data.frame(id=seq(1:n),
+                 group=sample(c("pre", "sub"), n, replace=T),
+                 sex=factor(sample(c("M","F"), n, replace=T)),
+                 age_group=sample(c("<50",">50"),n,replace=T),
+                 chemo = sample(c("yes","no"), n, replace=T),
+                 age = sample(c(seq(50,60), 50), n, replace=TRUE),
+                 hospital = sample(c("rh","herlev","roskilde"), n, replace=T)) %>%
+  mutate(hospital = ifelse(group %in% "sub", "roskilde", hospital),
+         chemo = ifelse(group %in% "pre", "yes", chemo),
+         age_group = ifelse(group %in% "sub", "<50", age_group),
+         hospital = as.factor(hospital))
+
+#add random NA
+df <- apply (df, 2, function(x) {x[sample( c(1:n), floor(n/10))] <- NA; x} ) %>%
+  as_tibble()
+
+missR(df)
 
 missR <- function(data, vars, id=id, print=T) {
 
@@ -87,12 +87,11 @@ missR <- function(data, vars, id=id, print=T) {
     if(print) {
     cat("Nas detected in the following variables:\n\n")
     print(d)
-    cat("\n\nNAs in", nrow(ind), "IDs:\n")
-    print(ind %>% pull(!!sym(id_c)))
     }
-    invisible(list(counts=d, idframe=ind))
+    invisible(list(counts=d, idframe=ind, ids = ind %>% select({{id_c}}) %>% pull({{id_c}})))
   }
 
 }
+
 
 
