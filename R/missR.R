@@ -14,25 +14,25 @@
 #'
 #'
 
-n=200
-set.seed(1)
-df <- data.frame(id=seq(1:n),
-                 group=sample(c("pre", "sub"), n, replace=T),
-                 sex=factor(sample(c("M","F"), n, replace=T)),
-                 age_group=sample(c("<50",">50"),n,replace=T),
-                 chemo = sample(c("yes","no"), n, replace=T),
-                 age = sample(c(seq(50,60), 50), n, replace=TRUE),
-                 hospital = sample(c("rh","herlev","roskilde"), n, replace=T)) %>%
-  mutate(hospital = ifelse(group %in% "sub", "roskilde", hospital),
-         chemo = ifelse(group %in% "pre", "yes", chemo),
-         age_group = ifelse(group %in% "sub", "<50", age_group),
-         hospital = as.factor(hospital))
-
-#add random NA
-df <- apply (df, 2, function(x) {x[sample( c(1:n), floor(n/10))] <- NA; x} ) %>%
-  as_tibble()
-
-missR(df)
+# n=200
+# set.seed(1)
+# df <- data.frame(id=seq(1:n),
+#                  group=sample(c("pre", "sub"), n, replace=T),
+#                  sex=factor(sample(c("M","F"), n, replace=T)),
+#                  age_group=sample(c("<50",">50"),n,replace=T),
+#                  chemo = sample(c("yes","no"), n, replace=T),
+#                  age = sample(c(seq(50,60), 50), n, replace=TRUE),
+#                  hospital = sample(c("rh","herlev","roskilde"), n, replace=T)) %>%
+#   mutate(hospital = ifelse(group %in% "sub", "roskilde", hospital),
+#          chemo = ifelse(group %in% "pre", "yes", chemo),
+#          age_group = ifelse(group %in% "sub", "<50", age_group),
+#          hospital = as.factor(hospital))
+#
+# #add random NA
+# df <- apply (df, 2, function(x) {x[sample( c(1:n), floor(n/10))] <- NA; x} ) %>%
+#   as_tibble()
+#
+# missR(df)
 
 missR <- function(data, vars, id=id, print=T) {
 
@@ -44,11 +44,11 @@ missR <- function(data, vars, id=id, print=T) {
     }
     id_c <- data %>% select(matches(id_syn)) %>% names()
   } else {
-  id_c <- data %>% select({{id}}) %>% names()
+    id_c <- data %>% select({{id}}) %>% names()
   }
 
   if(!missing(vars)) {
-  vars_c <- data %>% select({{vars}}, -{{id}}) %>% names()
+    vars_c <- data %>% select({{vars}}, -{{id}}) %>% names()
 
   } else {
     vars_c <- data %>% select(-{{id}}) %>% names()
@@ -62,36 +62,36 @@ missR <- function(data, vars, id=id, print=T) {
     d[v, "NAs"] <- sum(is.na(data[,vars_c[v]]))
   }
 
+  d <- d %>% filter(NAs > 0) %>% arrange(desc(NAs))
+
 
   #Invididual data frame
   ind <- data %>% select({{id}}) %>% drop_na({{id}})
 
   for(v in vars_c) {
     ind <- left_join(ind,
-              data %>%
-                select({{id}}, !!sym(v)) %>%
-                filter(is.na(!!sym(v))) %>%
-                mutate(!!sym(v) := v),
-              by= id_c)
+                     data %>%
+                       select({{id}}, !!sym(v)) %>%
+                       filter(is.na(!!sym(v))) %>%
+                       mutate(!!sym(v) := v),
+                     by= id_c)
   }
 
-  ind %>% filter(if_any(matches(vars_c), ~ !is.na(.)))
+  ind <- ind %>% rowR(vars = vars_c, type = "all.na", filter = "remove")
 
-
-  if(nrow(ind) == nrow(data)) {
+  if(max(d$NAs) == 0) {
     if(print) {
-    cat("No NAs detected")
+      cat("No NAs detected")
     }
     invisible(NULL)
   } else {
     if(print) {
-    cat("Nas detected in the following variables:\n\n")
-    print(d)
+      cat("Nas detected in the following variables:\n\n")
+      print(d)
     }
     invisible(list(counts=d, idframe=ind, ids = ind %>% select({{id_c}}) %>% pull({{id_c}})))
   }
 
+
+
 }
-
-
-

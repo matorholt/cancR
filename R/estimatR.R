@@ -19,6 +19,7 @@
 #' @param conditional Whether conditional risk at the time horizon should be calculated (default = F)
 #' @param pl Whether product.limit in ATE shoulde be T or F (default = T)
 #' @param digits for rounding of eventtimes
+#' @param event.digits whether eventtimes should be rounded. Default is 2 to preserve exact times
 #'
 #' @return
 #' time_to_event: Median survival time \cr
@@ -75,7 +76,7 @@ estimatR <- function(data,
                      conditional = F,
                      pl = T,
                      digits = 4,
-                     eventdigits = 2) {
+                     event.digits = 2) {
 
   cat("\nestimatR initialized: ", tickR(), "\n")
 
@@ -190,7 +191,7 @@ estimatR <- function(data,
     invisible(ate(cr, treatment = group_c, data=dat, times = seq(0,horizon,breaks), product.limit = pl))
 
   CRplot <-
-    invisible(ate(cr, treatment = group_c, data=dat, times = unique(round(sort(c(0,dat[dat[, event_c] == 1 & dat[,timevar_c] < horizon, timevar_c],horizon)),eventdigits)), product.limit = pl))
+    invisible(ate(cr, treatment = group_c, data=dat, times = unique(round(sort(c(0,dat[dat[, event_c] == 1 & dat[,timevar_c] < horizon, timevar_c],horizon)),event.digits)), product.limit = pl))
 
   est <-
     as.data.frame(summary(CRest, short=T, type = "meanRisk")$meanRisk)

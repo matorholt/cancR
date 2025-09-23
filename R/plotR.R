@@ -109,7 +109,7 @@ plotR <- function(list,
                   tscale = 1,
                   censur=F) {
 
-  if(class(list) %nin% c("estimatR", "clustR", "incidencR")) {
+  if(class(list) %nin% c("estimatR", "clustR", "incidencR", "inferencR")) {
     return(cat("Data not generated with the functions estimatR, clustR or incidencR from the cancR package"))
   }
 
