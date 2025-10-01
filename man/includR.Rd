@@ -6,10 +6,10 @@
 \usage{
 includR(
   data,
-  exclusion_ex,
-  exclusion_out,
+  exclusion.ex,
+  exclusion.out,
   subgroup = NULL,
-  age_limit = NULL,
+  age.limit = NULL,
   period = NULL,
   fu = fu,
   birth = birth,
@@ -19,13 +19,13 @@ includR(
 \arguments{
 \item{data}{joined data frame}
 
-\item{exclusion_ex}{vector of exposure variables that should not be present before index}
+\item{exclusion.ex}{vector of exposure variables that should not be present before index}
 
-\item{exclusion_out}{vector of outcome variables that should not be present before index}
+\item{exclusion.out}{vector of outcome variables that should not be present before index}
 
 \item{subgroup}{filter for subgroups in the format: "level \%in\% c('a', 'b')" Can also be applied as custom filter}
 
-\item{age_limit}{age limit for inclusion as numeric value}
+\item{age.limit}{age limit for inclusion as numeric value}
 
 \item{period}{enrollement period in the format: c("1980-01-01", "2022-01-01")}
 

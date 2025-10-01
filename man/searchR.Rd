@@ -12,6 +12,7 @@ searchR(
   exclusion = "NULL",
   slice = "first",
   format = "date",
+  date.filter = NULL,
   match = "start",
   casename = "index",
   pnr = pnr

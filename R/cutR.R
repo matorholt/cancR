@@ -18,12 +18,16 @@
 #
 # df <-
 #   data.frame(birth = sample(c(sample(seq(as.Date('1990/01/01'), as.Date('2010/01/01'), by="day"))), size = n, replace=TRUE),
-#              age = sample(seq(50,80), size = n, replace=TRUE))
+#              age = sample(seq(50,80), size = n, replace=TRUE),
+#              norm = rnorm(n, mean = 50, sd = 10))
 #
-#Simple
+# #Simple
 # df %>%
 #   cutR(age, round(quantile(df %>% pull(age), seq(0,1,0.1)),0), "age2")
 #
+# #With digits
+# df %>%
+#   cutR(norm, quantile(df %>% pull(norm), seq(0,1,0.1)), "norm2")
 #
 # #Multiple
 # (tdf <-
@@ -78,7 +82,7 @@ cutR <- function(data, vars, seqlist, names = list()) {
                                                     include.lowest = TRUE,
                                                     right = F,
                                                     dig.lab=4),
-                                                ".(\\d+).(\\d+).",
+                                                "\\W(\\d+\\.?\\d*)\\,(\\d+\\.?\\d*)\\W",
                                                 "\\1-\\2")) %>%
       factR(!!sym(newvars[[v]]))
 

@@ -18,6 +18,16 @@
 #' @param event.digits whether eventtimes should be rounded. Default is 2 to preserve exact times
 #'
 #' @return
+#' time_to_event: Median survival time \cr
+#' table: Event table \cr
+#' plot_data: Data for plotting CIF curves \cr
+#' models: Model objects (cause1 and cause2) \cr
+#' diag: Diagnostics for assessing proportionality \cr
+#' risks: Absolute risk estimates at the specified time points \cr
+#' differences: Absolute risk difference at the specified time horizons \cr
+#' ratios: Absolute risk ratios at the the specified time horizon \cr
+#' counts: Event and group counts in the contrasted groups \cr
+#' info: information on arguments for extraction
 #' @export
 #'
 

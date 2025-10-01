@@ -79,7 +79,7 @@ missR <- function(data, vars, id=id, print=T) {
 
   ind <- ind %>% rowR(vars = vars_c, type = "all.na", filter = "remove")
 
-  if(max(d$NAs) == 0) {
+  if(nrow(d) == 0) {
     if(print) {
       cat("No NAs detected")
     }

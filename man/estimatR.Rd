@@ -20,7 +20,7 @@ estimatR(
   conditional = F,
   pl = T,
   digits = 4,
-  eventdigits = 2
+  event.digits = 2
 )
 }
 \arguments{
@@ -53,6 +53,8 @@ estimatR(
 \item{pl}{Whether product.limit in ATE shoulde be T or F (default = T)}
 
 \item{digits}{for rounding of eventtimes}
+
+\item{event.digits}{whether eventtimes should be rounded. Default is 2 to preserve exact times}
 }
 \value{
 time_to_event: Median survival time \cr

@@ -63,11 +63,30 @@
 #                      event = as.factor(event)) %>%
 #   rename(ttt = time)
 #
-# t1 <- estimatR(df2, ttt, event2, X2, time = 60, type = "select", vars = c(X6,X7), pl=T)
+# t1 <- estimatR(df, time, event2, X2, time = 120, type = "select", vars = c(X6,X7), pl=T)
 #t2 <- estimatR(df2, ttt, event2, X1, time = 120, type = "select", vars = c(X6,X7), pl=T)
 # t3 <- estimatR(df2, ttt, event2, X3, time = 60, type = "select", vars = c(X6,X7), pl=T)
 #
 # plotR(t1, style = "jama")
+
+# t1 <- inferencR(df,
+#                 treatment = X2,
+#                 timevar = time,
+#                 event = event2,
+#                 vars = c(X1, X3, X6, X7))
+#
+# plotR(t1)
+
+# t2 <- inferencR(df,
+#                 treatment = X2,
+#                 timevar = time,
+#                 event = event,
+#                 vars = c(X1, X3, X6, X7),
+#                 survscale = "AM")
+#
+# plotR(t2)
+
+
 
 plotR <- function(list,
                   y=100,

@@ -4,7 +4,7 @@
 \alias{decodR}
 \title{decodR}
 \usage{
-decodR(codelist)
+decodR(codelist, regs = c("pop", "sc", "meta", "dsd"))
 }
 \arguments{
 \item{codelist}{List of lists with registries, diagnosis codes and labels. See example.}
