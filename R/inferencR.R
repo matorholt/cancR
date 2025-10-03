@@ -129,7 +129,7 @@ inferencR <- function(data,
   treat.form <- paste0(treat_c, " == '", levels[2], "' ~ ", tvars)
   treat.model <- glm(as.formula(treat.form), data=dat,family=binomial(link="logit"))
 
-  weights <- df %>% mutate(ps = predict(treat.model, newdata=df, type="response"),
+  weights <- dat %>% mutate(ps = predict(treat.model, newdata=dat, type="response"),
                             w = ifelse(!!sym(treat_c) %in% levels[2], 1/ps, 1/(1-ps))) %>%
     select({{treatment}}, ps, w)
 
