@@ -15,6 +15,7 @@
 #' @param estimator whether the estimator should be "IPTW", "GFORMULA" or "AIPTW" (default)
 #' @param survtime Whether median time to event should be calculated (default = F)
 #' @param survscale Whether overall survial should be estimated as survival or all-cause mortality (1-survival)
+#' @param bins bins for the weights plot, default = 0.5
 #' @param digits for rounding of eventtimes
 #' @param event.digits whether eventtimes should be rounded. Default is 2 to preserve exact times
 #'
@@ -72,6 +73,7 @@ inferencR <- function(data,
                       estimator = "AIPTW",
                       survtime = T,
                       survscale = "AM",
+                      bins = 0.5,
                       digits = 4,
                       event.digits = 2) {
 
@@ -137,7 +139,8 @@ inferencR <- function(data,
                             vars = c(ps, w),
                             group = !!sym(treat_c),
                             headings = list("w" = "Weights",
-                                            "ps" = "Propensity Scores"))
+                                            "ps" = "Propensity Scores"),
+                            bins = bins)
 
   #Censoring
   censor.form <- paste0("Surv(", timevar_c, ", ", event_c, "==0) ~ ", cvars)

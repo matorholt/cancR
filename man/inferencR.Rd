@@ -16,6 +16,7 @@ inferencR(
   estimator = "AIPTW",
   survtime = T,
   survscale = "AM",
+  bins = 0.5,
   digits = 4,
   event.digits = 2
 )
@@ -42,6 +43,8 @@ inferencR(
 \item{survtime}{Whether median time to event should be calculated (default = F)}
 
 \item{survscale}{Whether overall survial should be estimated as survival or all-cause mortality (1-survival)}
+
+\item{bins}{bins for the weights plot, default = 0.5}
 
 \item{digits}{for rounding of eventtimes}
 
