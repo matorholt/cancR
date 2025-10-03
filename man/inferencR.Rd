@@ -10,6 +10,7 @@ inferencR(
   timevar,
   event,
   vars,
+  outcome.vars,
   time = 120,
   breaks = 12,
   estimator = "AIPTW",
@@ -28,7 +29,9 @@ inferencR(
 
 \item{event}{Status indicator}
 
-\item{vars}{Only applicable when "select" is chosen as type. The variables are added to the model as an additive model}
+\item{vars}{variables that the treatment, censoring and event models should include}
+
+\item{outcome.vars}{variables that should only be included in the outcome models}
 
 \item{time}{Time horizon of interest. Defaults to 60 (e.g. 5-years)}
 

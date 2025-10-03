@@ -102,12 +102,9 @@ summarisR <- function(data,
  plist <-
  lapply(headings, function(v) {
 
-      if(length(unique(data[,v]))>10) {
+      if(length(unique(data[,v]))>10 & class(data[,v]) != "character") {
 
         c <- sample(cols, 1)
-
-        s <- round(summary(data[,v])[c(1:3,5:6)],1)
-
 
         if(!is.null(grp_c)) {
 

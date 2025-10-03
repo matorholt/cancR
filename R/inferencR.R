@@ -8,7 +8,8 @@
 #' @param treatment column indicating treatment variable. Currently only binary treatments are supported.
 #' @param timevar Time variable
 #' @param event Status indicator
-#' @param vars Only applicable when "select" is chosen as type. The variables are added to the model as an additive model
+#' @param vars variables that the treatment, censoring and event models should include
+#' @param outcome.vars variables that should only be included in the outcome models
 #' @param time Time horizon of interest. Defaults to 60 (e.g. 5-years)
 #' @param breaks Interim time points of interest. Defaults to 12 months (1-year gaps)
 #' @param estimator whether the estimator should be "IPTW", "GFORMULA" or "AIPTW" (default)
@@ -41,11 +42,13 @@
 # df$event2 <- rbinom(n, 2, prob=.3)
 # df <- as.data.frame(df)
 #
+#
 # t1 <- inferencR(df,
 #                 treatment = X2,
 #                 timevar = time,
 #                 event = event2,
-#                 vars = c(X1, X3, X6, X7))
+#                 vars = c(X1, X3, X6, X7),
+#                 outcome.vars = X10)
 #
 # plotR(t1)
 #
@@ -63,6 +66,7 @@ inferencR <- function(data,
                       timevar,
                       event,
                       vars,
+                      outcome.vars,
                       time = 120,
                       breaks = 12,
                       estimator = "AIPTW",
@@ -82,6 +86,8 @@ inferencR <- function(data,
   event_c <- data %>% select({{event}}) %>% names()
 
   vars_c <- data %>% select({{vars}}) %>% names()
+
+  ovars_c <- data %>% select({{outcome.vars}}) %>% names()
 
   levels <- levels(data[[treat_c]])
 
@@ -113,18 +119,34 @@ inferencR <- function(data,
   }
 
   #MODELS
+
+  tvars <- paste0(vars_c, collapse = " + ")
+  cvars <- paste0(c(treat_c, vars_c), collapse = " + ")
+  ovars <- paste0(c(treat_c, vars_c, ovars_c), collapse = " + ")
+
+
   #Treatment
-  treat.form <- paste0(treat_c, " == '", levels[2], "' ~ ", paste0(vars_c, collapse = " + "))
+  treat.form <- paste0(treat_c, " == '", levels[2], "' ~ ", tvars)
   treat.model <- glm(as.formula(treat.form), data=dat,family=binomial(link="logit"))
 
+  weights <- df %>% mutate(ps = predict(treat.model, newdata=df, type="response"),
+                            w = ifelse(!!sym(treat_c) %in% levels[2], 1/ps, 1/(1-ps))) %>%
+    select({{treatment}}, ps, w)
+
+  plot_weights <- summarisR(weights,
+                            vars = c(ps, w),
+                            group = !!sym(treat_c),
+                            headings = list("w" = "Weights",
+                                            "ps" = "Propensity Scores"))
+
   #Censoring
-  censor.form <- paste0("Surv(", timevar_c, ", ", event_c, "==0) ~ ", paste0(c(treat_c, vars_c), collapse = " + "))
+  censor.form <- paste0("Surv(", timevar_c, ", ", event_c, "==0) ~ ", cvars)
   censor.model <- coxph(as.formula(censor.form), data=dat,  x=TRUE)
   censor.model$call$formula <- censor.form
 
   #Event
   if(surv) {
-    event.form <- paste0("Surv(", timevar_c, ", ", event_c, ") ~ ", paste0(c(treat_c, vars_c), collapse = " + "))
+    event.form <- paste0("Surv(", timevar_c, ", ", event_c, ") ~ ", ovars)
     event.model <- coxph(as.formula(event.form), data=dat, x=TRUE)
 
     #Diagnostics
@@ -134,7 +156,7 @@ inferencR <- function(data,
     names(diaglist)<- c("Cox_tests", "Cox_plots")
 
   } else {
-    event.form <- paste0("Hist(", timevar_c, ", ", event_c, ") ~ ", paste0(c(treat_c, vars_c), collapse = " + "))
+    event.form <- paste0("Hist(", timevar_c, ", ", event_c, ") ~ ", ovars)
     event.model <- CSC(as.formula(event.form), data=dat)
 
     #Diagnostics
@@ -255,7 +277,12 @@ inferencR <- function(data,
 
   list <- list("table" = tab,
                "plot_data" = plot,
-               "models" =  lst(summary(treat.model), event.model, censor.model),
+               "models" =  lst("treatment" = summary(treat.model),
+                               "event" = event.model,
+                               "censoring" = censor.model,
+                               "formulas" = data.frame(model = c("treatment", "event", "censoring"),
+                                                       formula = c(treat.form, event.form, censor.form))),
+               "weights" = list(weights, plot_weights),
                "risks" = est,
                "difference" = rd,
                "ratio" = rr,
@@ -282,3 +309,5 @@ inferencR <- function(data,
 
 
 }
+
+
