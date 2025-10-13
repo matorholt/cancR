@@ -40,6 +40,28 @@
 #                  names = c("m1", "m2", "m3"),
 #                  type = "select",
 #                  vars = c("X6", "X7"))
+#
+# vars <- c("X1", "X2", "X3")
+#
+# var_list <- list()
+#
+# for(i in seq_along(vars)) {
+#
+#   var_list[[i]] <- vars[vars != vars[i]]
+#
+# }
+#
+# var_list
+#
+#
+# test <- estimatR.multi(
+#   list(df2),
+#   timevar = "ttt",
+#   event = "event",
+#   group = vars,
+#   type = "select",
+#   vars = var_list
+# )
 
 estimatR.multi <- function(data,
                            timevar,
@@ -67,9 +89,13 @@ estimatR.multi <- function(data,
   arg.list[c("names")] <- NULL
   arg.list[c("start")] <- NULL
 
-  if("vars" %in% names(arg.list)) {
-    arg.list$vars <- list(arg.list$vars)
-  }
+if("vars" %in% names(arg.list)) {
+
+    if(class(arg.list[["vars"]]) != "list") {
+
+  arg.list$vars <- list(arg.list$vars)
+    }
+}
 
   out <- pmap(arg.list,
        function(...) {
@@ -82,6 +108,10 @@ estimatR.multi <- function(data,
   cat(tockR("diff", start))
 
   return(out)
+
+
+
+
 
 }
 

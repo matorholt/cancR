@@ -23,6 +23,7 @@ Depends:
     patchwork,
     prodlim,
     purrr,
+    R (>= 3.5),
     riskRegression,
     stringr,
     survival,
@@ -31,3 +32,4 @@ Depends:
 Imports: 
     ggpubr,
     tibble
+LazyData: true

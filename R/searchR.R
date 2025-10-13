@@ -57,12 +57,12 @@
 #         sub.labels = clist$recodR.labels,
 #         exclusion = clist$searchR.exclusion)
 #
-#Simple example
+# Simple example
 # t <- searchR(dfs$lpr,
 #         list("t_var" = c("DP"),
 #              "d_var" = c("DQ")),
-#         format = "code",
-#         date.filter = "1997-01-01")
+#         format = "date",
+#         date.filter = "1995-12-31")
 #
 # yframe <- data.frame()
 #
@@ -78,6 +78,7 @@
 # }
 #
 # yframe %>% arrange(pnr)
+
 
 
 
