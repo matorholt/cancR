@@ -1,0 +1,61 @@
+---
+title: "Introduction to cancR"
+author: "Mathias Ørholt"
+output:
+  html_document:
+    toc: true
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+This is an introduction to the cancR package.The article describes the workflow and main functions in the cancR package with in-depth examples. 
+
+# Preparation
+
+The cancR package is installed through github, see separate article.
+
+```{r message = FALSE, warning = FALSE}
+library(cancR)
+```
+
+To demonstrate the functions useful in data management, we load the simulated redcap dataframe
+
+```{r}
+df <- redcap_df
+```
+
+# Data management
+
+The following functions are useful in data management tasks
+
+## summarisR
+
+To get a graphical glimpse of the data we can use the summarisR() function:
+
+```{r}
+#summarisR(df, 
+       #   vars = c(sex, size, type, localisation, necrosis, cd10, sox10, ck))
+```
+
+## missR
+And to exploit the number of missing values we use the missR() function
+
+```{r}
+missR(df)
+```
+
+
+We can also check if numerical variables are normally distributed with the distributR() function
+
+## distributR
+
+```{r}
+distributR(df,
+           vars = size)
+```
+
