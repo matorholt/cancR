@@ -30,9 +30,7 @@
 #                  "exclusion" = c("z1","z2"))
 #
 # clist <- decodR(codelist)
-#
-#
-# list("SOTR" = list("kidney" = c()))
+
 
 
 

@@ -17,21 +17,47 @@
 #                                                    "lung" = c("tx4a", "tx4b", "tx3c"))),
 #                  "lpr_ex" = list("immune_diag" = "a3",
 #                                  "cll" = c("a4", "b4")),
-#                  "lmdb_ex" = list("immune" = "a5"),
+#                  "lmdb_ex" = list("immune_drugs" = "a5"),
 #                  "opr_ex" = list("trans" = "t5"),
 #                  "pato_supp" = list("PCC" = "M80"),
-#                  "labels" = list("lpr_case" = "SOTR",
-#                                  "lpr_case_header" = "region",
+#                  "labels" = list("lpr_case" = c("SOTR", "region"),
 #                                  "lpr_ex" = "immsup"),
-#                  "exclusion" = c("z1","z2","z3"))
+#                  "exclusion" = c("z1","z2"))
 #
+# clist <- decodR(codelist)
+# l1 <- list("main" = list("sub1", "sub2"))
+# l2a <- list("main" = list("sub1" = list("val1" = "v1",
+#                                         "val2" = "v2",
+#                                         "val3" = "v3"),
+#                           "sub2" = list("val4" = "v4",
+#                                         "val5" = "v5",
+#                                         "val6" = "v6")))
+# l2b <- list("main" = list("sub1" = list("test" = "v1",
+#                                         "v2",
+#                                         "v3"),
+#                           "sub2" = list("val4", "val5", "val6")))
+# l3 <- list("main" = list("sub1" = c("val1", "val2", "val3"),
+#                          "sub2" = c("val4", "val5", "val6")))
 #
-# decodR(codelist)
+# viewR(l1)
+# viewR(l2a)
+# viewR(l2b)
+# viewR(l3)
 
 viewR <- function(codelist) {
 
   df <- rrapply::rrapply(codelist, how = "melt",
-                         f = function(x) paste0(x, collapse = ",")) %>%
+                         f = function(x) paste0(x, collapse = ","))
+
+  named <- unlist(map_depth(codelist, pluck_depth(codelist)-2, names))
+
+  #If last level is not named or partially named, it will be dropped
+  if(is.null(named) | any(named %in% "")) {
+
+    df <- df[, c(1:(ncol(df)-2), ncol(df))]
+  }
+
+  df <- df %>%
     rename(!!sym(paste0("L", ncol(.))) := value) %>%
     rowR(type = "fill", direction = "left")
 
@@ -103,6 +129,4 @@ viewR <- function(codelist) {
           axis.title = element_blank())
 
 
-
 }
-
