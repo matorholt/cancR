@@ -11,7 +11,7 @@ recodR(data, namelist, match = "contains")
 
 \item{namelist}{list og variables with named vector(s) containing diagnosis codes (e.g. list(var1 = list(name = diagnosis codes)))}
 
-\item{match}{Whether the provided diagnosis codes should be matched exactly, start with/end with or contain (default)}
+\item{match}{Whether the provided diagnosis codes should be matched exactly, start with/end with, be bounded by or contain (default)}
 }
 \value{
 the input data frame with recoded variables

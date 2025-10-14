@@ -21,16 +21,34 @@
 #' For patients without an event the function returns the time to last follow-up if status = 0 and time to death if status = 2
 #' @export
 #'
-# df <- data.frame(index = c(as.Date("1995-01-01"), as.Date("1995-05-02"))) %>%
-#   mutate(fu = c(as.Date("2010-05-02"), as.Date("2010-05-02")),
-#          death = c(0,1),
-#          explant = c(0,1),
-#          exp_date = c(as.Date("2005-05-02"), as.Date("2006-05-02")),
+# df <- data.frame(index = c(as.Date("1995-01-01"), as.Date("1995-05-02"), as.Date("1995-05-02"))) %>%
+#   mutate(fu = c(as.Date("2010-05-02"), as.Date("2010-05-02"), as.Date("2010-05-02")),
+#          death = c(0,1,1),
+#          explant = c(0,1,1),
+#          exp_date = c(as.Date("2005-05-02"), as.Date("2006-05-02"), as.Date("2006-05-02")),
 #          hudc_date = index+500,
-#          other_date = c(1,2),
-#          mm_date = c(as.Date("1996-01-01"), as.Date(NA)))
+#          mm_date = c(as.Date("1996-01-01"), as.Date(NA), as.Date("2023-05-02")),
+#          other_date = c(1,2,3))
 #
-# structR(df, index, fu, outcomes=c(hudc_date, mm_date), competing = exp_date, unit = "days", keep_dates = T)
+# structR(df,
+#         index,
+#         fu,
+#         outcomes=c(hudc_date, mm_date),
+#         keep_dates = T)
+# structR(df,
+#         index,
+#         fu,
+#         outcomes=c(hudc_date, mm_date),
+#         competing = exp_date,
+#         unit = "days",
+#         keep_dates = T)
+#
+# structR(df,
+#         index,
+#         fu,
+#         outcomes=c(hudc_date, mm_date),
+#         competing = explant,
+#         unit = "days", keep_dates = T)
 
 structR <- function(data,
                          index,
@@ -67,8 +85,8 @@ structR <- function(data,
 
     d <- data %>%
       mutate(t_fu = as.numeric({{fu}} - {{index}})/t,
-             across(c({{outcomes}}), ~ ifelse(!is.na(.), as.numeric(. - {{index}})/t, t_fu), .names=paste0(c("{str_remove({.col},'", pattern, "') %>% paste0('t_', .)}"), collapse="")),
-             across(c({{outcomes}}), ~ ifelse(!is.na(.), 1, 0), .names=paste0("{str_remove_all({.col},'", pattern, "')}", collapse="")))
+             across(c({{outcomes}}), ~ ifelse(!is.na(.) & . < {{fu}}, as.numeric(. - {{index}})/t, t_fu), .names=paste0(c("{str_remove({.col},'", pattern, "') %>% paste0('t_', .)}"), collapse="")),
+             across(c({{outcomes}}), ~ ifelse(!is.na(.) & . < {{fu}}, 1, 0), .names=paste0("{str_remove_all({.col},'", pattern, "')}", collapse="")))
 
   } else{
 
@@ -79,17 +97,17 @@ structR <- function(data,
     d <- data %>%
       mutate(t_fu = as.numeric({{fu}} - {{index}})/t,
              !!(sym(paste0("t_", comp_name))) := t_fu,
-             across(c({{outcomes}}), ~ifelse(!is.na(.), as.numeric(. - {{index}})/t, t_fu), .names=paste0(c("{str_remove({.col},'", pattern, "') %>% paste0('t_', .)}"), collapse="")),
-             across(c({{outcomes}}), ~ifelse(!is.na(.), 1, ifelse(!!(sym(comp_name)) == 1, 2, 0)), .names=paste0("{str_remove_all({.col},'", pattern, "')}", collapse="")))
+             across(c({{outcomes}}), ~ifelse(!is.na(.) & . < {{fu}}, as.numeric(. - {{index}})/t, t_fu), .names=paste0(c("{str_remove({.col},'", pattern, "') %>% paste0('t_', .)}"), collapse="")),
+             across(c({{outcomes}}), ~ifelse(!is.na(.) & . < {{fu}}, 1, ifelse(!!(sym(comp_name)) == 1, 2, 0)), .names=paste0("{str_remove_all({.col},'", pattern, "')}", collapse="")))
 
   } else {
 
     d <- data %>%
     mutate(t_fu = as.numeric({{fu}} - {{index}})/t,
            !!(sym(paste0("t_", comp_name))) := ifelse(!is.na({{competing}}), as.numeric({{competing}} - {{index}})/t, t_fu),
-           across(c({{outcomes}}), ~ifelse(!is.na(.), as.numeric(. - {{index}})/t, t_fu), .names=paste0(c("{str_remove({.col},'", pattern, "') %>% paste0('t_', .)}"), collapse="")),
+           across(c({{outcomes}}), ~ifelse(!is.na(.) & . < {{fu}}, as.numeric(. - {{index}})/t, t_fu), .names=paste0(c("{str_remove({.col},'", pattern, "') %>% paste0('t_', .)}"), collapse="")),
            !!(sym(comp_name)) := ifelse(!is.na({{competing}}), 1, 0),
-           across(c({{outcomes}}), ~ifelse(!is.na(.), 1, ifelse(!!(sym(comp_name)) == 1, 2, 0)), .names=paste0("{str_remove_all({.col},'", pattern, "')}", collapse="")))
+           across(c({{outcomes}}), ~ifelse(!is.na(.) & . < {{fu}}, 1, ifelse(!!(sym(comp_name)) == 1, 2, 0)), .names=paste0("{str_remove_all({.col},'", pattern, "')}", collapse="")))
 
   }
   }
@@ -104,6 +122,8 @@ structR <- function(data,
 
   return(d)
 }
+
+
 
 
 
