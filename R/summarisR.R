@@ -20,28 +20,17 @@
 #' @return Returns bar charts or density plots depending on format. Numerical variables with less than 5 unique values are considered as factors.
 #' @export
 #'
+#' @examples
 #'
-# n <- 500
-# set.seed(1)
-# df <- riskRegression::sampleData(n, outcome="survival")
-# df$time <- round(df$time,1)*12
-# df$time2 <- df$time + rnorm(n)
-# df$X1 <- factor(rbinom(n, prob = c(0.3,0.4) , size = 2), labels = paste0("T",0:2))
-# df$X3 <- factor(rbinom(n, prob = c(0.3,0.4,0.3) , size = 3), labels = paste0("T",0:3))
-# df$bad_name <- factor(rbinom(n, prob = c(0.3,0.4,0.3) , size = 3), labels = paste0("T",0:3))
-# df$event2 <- rbinom(n, 2, prob=.3)
-# df <- as.data.frame(df)
-#
-# df <- df %>% mutate(X2 = ifelse(row_number()==1, NA, X2),
-#                      event = as.factor(event),
-#                     event_date = sample(c(seq(as.Date("1980-01-01"), as.Date("2000-01-01"), by = "years"), NA), size = n, replace = TRUE)) %>%
-#   rename(ttt = time)
-#
-# summarisR(df, vars = c(X6, X7, event_date))
-# summarisR(data=df,vars=c(X6, X7, X1, X3), group = X2)
-# summarisR(df, exclude = "time|event|t_", group = X2)
-# summarisR(df, c(X3,X1), group=X2, layout = "vertical")
-# summarisR(df, c(X3,X1), group=X2, layout = "horizontal", label.size = 3)
+#' df <- analysis_df %>%
+#'mutate(event_date = sample(c(seq(as.Date("1980-01-01"), as.Date("2000-01-01"), by = "years"), NA), size = n(), replace = TRUE))
+#'
+#'summarisR(df, vars = c(X6, X7, event_date))
+#'summarisR(data=df,vars=c(X6, X7, X1, X3), group = X2)
+#'summarisR(df, exclude = "time|event|t_", group = X2)
+#'summarisR(df, c(X3,X1), group=X2, layout = "vertical")
+#'summarisR(df, c(X3,X1), group=X2, layout = "horizontal", label.size = 3)
+
 
 
 summarisR <- function(data,
@@ -132,8 +121,36 @@ summarisR <- function(data,
 
         p1 <- p1 +
           geom_label(
-            aes(y=stage(!!sym(v), c(min, lower,middle,upper, max)),
-                label = round(after_stat(c(min, lower, middle, upper, max)),1)),
+            aes(y=stage(!!sym(v), c(ymin)),
+                label = round(after_stat(c(ymin)),1)),
+            stat = StatBoxplot,
+            show.legend=F,
+            size = 3
+          ) +
+          geom_label(
+            aes(y=stage(!!sym(v), c(lower)),
+                label = round(after_stat(c(lower)),1)),
+            stat = StatBoxplot,
+            show.legend=F,
+            size = 3
+          ) +
+          geom_label(
+            aes(y=stage(!!sym(v), c(middle)),
+                label = round(after_stat(c(middle)),1)),
+            stat = StatBoxplot,
+            show.legend=F,
+            size = 3
+          ) +
+          geom_label(
+            aes(y=stage(!!sym(v), c(upper)),
+                label = round(after_stat(c(upper)),1)),
+            stat = StatBoxplot,
+            show.legend=F,
+            size = 3
+          ) +
+          geom_label(
+            aes(y=stage(!!sym(v), c(ymax)),
+                label = round(after_stat(c(ymax)),1)),
             stat = StatBoxplot,
             show.legend=F,
             size = 3
@@ -149,7 +166,7 @@ summarisR <- function(data,
                     legend.position = "none") +
               labs(title = v) +
           coord_flip()
-
+        #
         p2 <- p2 +
           scale_fill_manual(values=c) +
           scale_color_manual(values=c) +
@@ -203,10 +220,15 @@ summarisR <- function(data,
         } else {
 
         if(!is.null(grp_c)) {
+
           p <- ggplot(data %>% drop_na(!!sym(v)), aes(x=!!sym(v), fill=!!sym(grp_c), group=!!sym(grp_c))) +
             geom_bar(position = "dodge", color = "Black", alpha = alpha)
 
           c <- cols
+
+          p <- p +
+            scale_fill_manual(values=c) +
+            labs(x=v, title=v, fill = "")
 
         } else {
 
@@ -231,8 +253,7 @@ summarisR <- function(data,
 
         p <- p +
           scale_fill_manual(values=c) +
-          labs(x=v) +
-          labs(title=v, fill = "")
+          labs(x=v, title=v, fill = "")
 
       }
     })

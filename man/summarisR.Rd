@@ -52,3 +52,14 @@ Returns bar charts or density plots depending on format. Numerical variables wit
 \description{
 Graphical overview of an entire dataset
 }
+\examples{
+
+df <- analysis_df \%>\%
+mutate(event_date = sample(c(seq(as.Date("1980-01-01"), as.Date("2000-01-01"), by = "years"), NA), size = n(), replace = TRUE))
+
+summarisR(df, vars = c(X6, X7, event_date))
+summarisR(data=df,vars=c(X6, X7, X1, X3), group = X2)
+summarisR(df, exclude = "time|event|t_", group = X2)
+summarisR(df, c(X3,X1), group=X2, layout = "vertical")
+summarisR(df, c(X3,X1), group=X2, layout = "horizontal", label.size = 3)
+}
