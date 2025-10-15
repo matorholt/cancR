@@ -13,13 +13,41 @@ knitr::opts_chunk$set(
 )
 ```
 
-# cancR
+# cancR <img src="man/figures/logo.png" align="right" height="88" alt="" />
 
 <!-- badges: start -->
 <!-- badges: end -->
 
-The cancR package aids in data management and analysis of mainly time-to-event data in registry-based projects. The package is internally used by the Research Group at the Department of Plastic Surgery, Rigshospitalet, Copenhagen, Denmark. 
+## Purpose
 
-All types of use of the cancR package should be discussed with the package developer and we take no responsibility for the use of the cancR package without our permission or knowledge.
+The cancR package is developed for conducting epidemiological cancer research with R. The package functions spans across the entire project workflow, from data management to outputting results.
+
+## Installation
+
+A detailed walkthrough on how to install the cancR package is provided as the article "Get Started"
+
+## Functions
+
+The functions are divided into the chapters:  
+- Data management \
+- Statistical analyses \
+- Tables and figures \
+- Register-specific functions \
+- Miscellaneous utility functions \
+
+Furthermore the package offers internal simulated dataset for testing the functions.
+
+## Articles
+
+The website includes numerous articles both related directly to the package and with more general R-guides.
+Each chapter above has separate articles with thorough examples of all functions. 
+
+## Maintenance
+
+The package is regularly maintained and updated. Bugs and suggestions are very welcome and should be sent to the package developer.
 
 
+
+##### The small print
+
+The cancR package is mainly for internal use for the Research Group at the Department of Plastic Surgery, Rigshospitalet, Copenhagen, Denmark. All use of the cancR package must be consulted with the developer of the package. We do not take responsibility for any use of the package without prior consultation with us, nor for any consequences that may result from such use.
