@@ -1,7 +1,4 @@
-#' rowR
-#'
-#' @description
-#' Common rowwise operations
+#' Perform rowwise operations
 #'
 #'
 #' @param data dataset

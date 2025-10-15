@@ -2,7 +2,7 @@
 % Please edit documentation in R/decodR.R
 \name{decodR}
 \alias{decodR}
-\title{decodR}
+\title{Decoding of the main codelist for loading and searching in registries}
 \usage{
 decodR(codelist, regs = c("pop", "sc", "meta", "dsd"))
 }

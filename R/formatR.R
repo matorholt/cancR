@@ -1,6 +1,3 @@
-#' formatR
-#'
-#' @description
 #' Auto-formatting of a data frame with layout option for typical levels and labels
 #'
 #'

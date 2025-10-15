@@ -2,7 +2,7 @@
 % Please edit documentation in R/estimatR.multi.R
 \name{estimatR.multi}
 \alias{estimatR.multi}
-\title{estimatR.multi}
+\title{Perform multiple estimatR analyses}
 \usage{
 estimatR.multi(data, timevar, event, group, names, ...)
 }
@@ -23,5 +23,5 @@ estimatR.multi(data, timevar, event, group, names, ...)
 A named list of models with the estimatR function
 }
 \description{
-Convenience function for performing multiple estimatR functions (e.g. multiple outcomes or risk factor). Each argument is recycled to avoid repeated names.
+Perform multiple estimatR analyses
 }

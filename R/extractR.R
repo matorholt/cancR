@@ -1,7 +1,4 @@
-#' extractR
-#'
-#' @description
-#' Automatic extraction of key results from the estimatR function
+#' Extraction of key results from the estimatR function
 #'
 #'
 #' @param list estimatR object

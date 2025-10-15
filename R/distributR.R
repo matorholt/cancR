@@ -1,7 +1,4 @@
-#' distributR
-#'
-#' @description
-#' Fast assessment of distribution of continuous variables with histograms, QQ-plots and the Shapiro-Wilks test
+#' Assessment of distribution of continuous variables with histograms, QQ-plots and the Shapiro-Wilks test
 #'
 #'
 #' @param data dataframe

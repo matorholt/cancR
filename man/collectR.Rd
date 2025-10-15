@@ -2,7 +2,7 @@
 % Please edit documentation in R/collectR.R
 \name{collectR}
 \alias{collectR}
-\title{collectR}
+\title{Collect multiple plots into one}
 \usage{
 collectR(plots, collect = T, nrow = 1, ncol = 3, ...)
 }

@@ -1,8 +1,4 @@
-#' incidencR
-#'
-#' @description
-#' Convenience wrapper
-#'
+#' Estimate absolute risks in a single group with competing risks
 #'
 #' @param data dataframe
 #' @param timevar time to event column

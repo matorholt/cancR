@@ -2,7 +2,7 @@
 % Please edit documentation in R/distributR.R
 \name{distributR}
 \alias{distributR}
-\title{distributR}
+\title{Assessment of distribution of continuous variables with histograms, QQ-plots and the Shapiro-Wilks test}
 \usage{
 distributR(data, vars, bins = 1, test = "shapiro")
 }
@@ -19,5 +19,5 @@ distributR(data, vars, bins = 1, test = "shapiro")
 Combined plotframe of histograms, QQ-plots and the Shapiro-Wilks tests
 }
 \description{
-Fast assessment of distribution of continuous variables with histograms, QQ-plots and the Shapiro-Wilks test
+Assessment of distribution of continuous variables with histograms, QQ-plots and the Shapiro-Wilks test
 }

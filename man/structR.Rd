@@ -2,7 +2,7 @@
 % Please edit documentation in R/structR.R
 \name{structR}
 \alias{structR}
-\title{structR}
+\title{Convert dates to status indicator and time-to-event}
 \usage{
 structR(
   data,

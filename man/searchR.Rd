@@ -2,7 +2,7 @@
 % Please edit documentation in R/searchR.R
 \name{searchR}
 \alias{searchR}
-\title{searchR}
+\title{Find covariates or outcomes from the registers}
 \usage{
 searchR(
   reglist,
@@ -43,5 +43,5 @@ searchR(
 A dataframe with the selected columns with corresponding diagnosis codes
 }
 \description{
-Function to obtain covariates or outcomes from the most common registers
+Find covariates or outcomes from the registers
 }

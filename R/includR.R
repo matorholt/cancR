@@ -1,7 +1,4 @@
-#' includR
-#'
-#' @description
-#' Apply inclusion criteria more conveniently
+#' Inclusion criteria for registry-studies
 #'
 #'
 #' @param data joined data frame

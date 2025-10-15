@@ -2,7 +2,7 @@
 % Please edit documentation in R/groupR.R
 \name{groupR}
 \alias{groupR}
-\title{groupR}
+\title{Extract first n groups in data frame}
 \usage{
 groupR(data, grps, n)
 }

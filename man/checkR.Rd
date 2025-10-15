@@ -2,7 +2,7 @@
 % Please edit documentation in R/checkR.R
 \name{checkR}
 \alias{checkR}
-\title{checkR}
+\title{Detection of positivity violations (empty levels)}
 \usage{
 checkR(data, treatment, outcome, vars, levels = 1, quantiles = 0.1, id = id)
 }

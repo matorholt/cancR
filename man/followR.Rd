@@ -2,7 +2,7 @@
 % Please edit documentation in R/followR.R
 \name{followR}
 \alias{followR}
-\title{followR}
+\title{Calculate median follow-up time using the inverse Kaplan-Meier method}
 \usage{
 followR(df, timevar, event, group)
 }
@@ -19,5 +19,5 @@ followR(df, timevar, event, group)
 Returns the median follow-up time with IQR for the whole sample or groupwise
 }
 \description{
-Function to calculate median follow-up time using the inverse Kaplan-Meier method
+Calculate median follow-up time using the inverse Kaplan-Meier method
 }

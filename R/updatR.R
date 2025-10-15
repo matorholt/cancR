@@ -1,7 +1,4 @@
-#' updatR
-#'
-#' @description
-#' Updating of Charlson Comorbidity Index values over time#'
+#' Update of Charlson Comorbidity Index or covariate values over time
 #'
 #' @param data data frame with case IDS
 #' @param exclusion Vector of diagnosis codes to be excluded (e.g. c("DC1", "DC2", "DC3"))

@@ -53,6 +53,7 @@ reference:
   - cci_timR
   - updatR
   - reportR
+  - formatR
 
 - title: Built in datasets
   contents:
@@ -69,9 +70,8 @@ reference:
   - closR
   - colR
   - combinR
-  - formatR
   - geom_stepribbon
-  - mode
+  - modeR
   - numbR
   - powR
   - rollR

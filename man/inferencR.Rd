@@ -2,7 +2,7 @@
 % Please edit documentation in R/inferencR.R
 \name{inferencR}
 \alias{inferencR}
-\title{inferencR}
+\title{Causal inference of time-to-event data}
 \usage{
 inferencR(
   data,

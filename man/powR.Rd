@@ -2,7 +2,7 @@
 % Please edit documentation in R/powR.R
 \name{powR}
 \alias{powR}
-\title{powR}
+\title{Converter from Rscript to powershell format}
 \usage{
 powR(text)
 }

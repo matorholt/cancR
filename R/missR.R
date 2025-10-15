@@ -1,7 +1,4 @@
-#' missR
-#'
-#' @description
-#' Fast overview of NAs in a dataframe
+#' Overview of NAs in a dataframe
 #'
 #'
 #' @param data data frame

@@ -1,4 +1,6 @@
-#' geom_stepribbon
+#' Stepribbon geom for survival curves
+#'
+#' @description
 #' Copy of the geom_stepribbon function by adibender/pammtools
 #' @export
 #'

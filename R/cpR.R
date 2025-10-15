@@ -1,7 +1,4 @@
-#' cpR
-#'
-#' @description
-#' Fixes CPR numbers with removed leading zeros. Works with piping
+#' Fix CPR numbers with removed leading zeros
 #'
 #'
 #' @param data dataset

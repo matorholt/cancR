@@ -2,7 +2,7 @@
 % Please edit documentation in R/plotR.R
 \name{plotR}
 \alias{plotR}
-\title{plotR}
+\title{Autoplot for estimatR, incidencR, inferencR and clustR}
 \usage{
 plotR(
   list,
@@ -129,5 +129,5 @@ plotR(
 Plot of the adjusted cumulative incidence or Kaplan-Meier curve
 }
 \description{
-Automatic plot function for the functions estimatR, incidencR and clustR
+Autoplot for estimatR, incidencR, inferencR and clustR
 }

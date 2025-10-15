@@ -1,4 +1,4 @@
-#' cutR
+#' Cut numeric variables into intervals
 #'
 #' @description
 #' Wrapper for cut() with simplified labels and automatic conversion to factor based on most frequent levels

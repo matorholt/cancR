@@ -2,7 +2,7 @@
 % Please edit documentation in R/includR.R
 \name{includR}
 \alias{includR}
-\title{includR}
+\title{Inclusion criteria for registry-studies}
 \usage{
 includR(
   data,
@@ -39,5 +39,5 @@ includR(
 A data frame with filtered cases and all controls + an rds file for flow chart
 }
 \description{
-Apply inclusion criteria more conveniently
+Inclusion criteria for registry-studies
 }

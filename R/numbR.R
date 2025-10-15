@@ -1,7 +1,4 @@
-#' numbR
-#'
-#' @description
-#' Organizes numeric vectors to uniform digit-formatting (e.g. showing zeros)
+#' Format numeric vectors
 #'
 #'
 #' @param numbers numeric value or vector for formatting

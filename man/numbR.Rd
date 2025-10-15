@@ -2,7 +2,7 @@
 % Please edit documentation in R/numbR.R
 \name{numbR}
 \alias{numbR}
-\title{numbR}
+\title{Format numeric vectors}
 \usage{
 numbR(numbers, digits = 1, nsmall)
 }
@@ -17,5 +17,5 @@ numbR(numbers, digits = 1, nsmall)
 returns a vector of same lentgh with formatted digits
 }
 \description{
-Organizes numeric vectors to uniform digit-formatting (e.g. showing zeros)
+Format numeric vectors
 }

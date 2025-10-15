@@ -2,7 +2,7 @@
 % Please edit documentation in R/cci_timR.R
 \name{cci_timR}
 \alias{cci_timR}
-\title{cci_timR}
+\title{Generation of time-dependent CCI and comorbidities from the Charlson Comorbidity Index}
 \usage{
 cci_timR(
   data,

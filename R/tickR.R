@@ -1,4 +1,4 @@
-#' tickR
+#' First timestamp for taking time
 #'
 #' @description
 #' tickR starts the clock by adding the timestamp "start" to global environment

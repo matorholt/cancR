@@ -2,7 +2,7 @@
 % Please edit documentation in R/tablR.R
 \name{tablR}
 \alias{tablR}
-\title{tablR}
+\title{Create baseline table}
 \usage{
 tablR(
   data,

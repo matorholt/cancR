@@ -1,4 +1,4 @@
-#' tablR
+#' Create baseline table
 #'
 #' @description
 #' Wrapper for the tableby function in the Arsenal package

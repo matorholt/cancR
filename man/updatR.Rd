@@ -2,7 +2,7 @@
 % Please edit documentation in R/updatR.R
 \name{updatR}
 \alias{updatR}
-\title{updatR}
+\title{Update of Charlson Comorbidity Index or covariate values over time}
 \usage{
 updatR(data, exclusion, match = "start")
 }
@@ -19,5 +19,5 @@ updatR(data, exclusion, match = "start")
 An updated td.frame
 }
 \description{
-Updating of Charlson Comorbidity Index values over time#'
+Update of Charlson Comorbidity Index or covariate values over time
 }

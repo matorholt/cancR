@@ -1,4 +1,4 @@
-#' collectR
+#' Collect multiple plots into one
 #'
 #' @description
 #' Collection of multiple plots into one. Wrapper for ggarrange. Input must be a list of plots.

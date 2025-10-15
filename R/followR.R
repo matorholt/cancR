@@ -1,7 +1,4 @@
-#' followR
-#'
-#' @description
-#' Function to calculate median follow-up time using the inverse Kaplan-Meier method
+#' Calculate median follow-up time using the inverse Kaplan-Meier method
 #'
 #'
 #' @param df Input dataframe

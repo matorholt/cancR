@@ -1,6 +1,3 @@
-#' ClosR
-#'
-#' @description
 #' Pick the closest value from a range in vector.
 #'
 #'

@@ -2,7 +2,7 @@
 % Please edit documentation in R/rowR.R
 \name{rowR}
 \alias{rowR}
-\title{rowR}
+\title{Perform rowwise operations}
 \usage{
 rowR(
   data,
@@ -36,5 +36,5 @@ rowR(
 the parent data frame with a new variable based on the selected rowwise operator or a filtered dataset
 }
 \description{
-Common rowwise operations
+Perform rowwise operations
 }

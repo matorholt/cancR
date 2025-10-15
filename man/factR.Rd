@@ -2,7 +2,7 @@
 % Please edit documentation in R/factR.R
 \name{factR}
 \alias{factR}
-\title{factR}
+\title{Factorize variables}
 \usage{
 factR(
   data,

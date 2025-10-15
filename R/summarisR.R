@@ -1,6 +1,3 @@
-#' summarisR
-#'
-#' @description
 #' Graphical overview of an entire dataset
 #'
 #'

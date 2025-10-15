@@ -2,7 +2,7 @@
 % Please edit documentation in R/clustR.R
 \name{clustR}
 \alias{clustR}
-\title{clustR}
+\title{Causal inference on time-to-event data with clustering and competing risks}
 \usage{
 clustR(
   data,

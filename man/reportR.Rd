@@ -2,7 +2,7 @@
 % Please edit documentation in R/reportR.R
 \name{reportR}
 \alias{reportR}
-\title{reportR}
+\title{Overview of matched and unmatched cases}
 \usage{
 reportR(
   data,
@@ -48,5 +48,5 @@ reportR(
 Prints the matching report, table and plot. Returns af list of the table and plot.
 }
 \description{
-Automatic tablR function for overview of matched and unmatched cases
+Overview of matched and unmatched cases
 }

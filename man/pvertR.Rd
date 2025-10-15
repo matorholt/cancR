@@ -2,7 +2,7 @@
 % Please edit documentation in R/pvertR.R
 \name{pvertR}
 \alias{pvertR}
-\title{pvertR}
+\title{Format p-values to AMA manual of style}
 \usage{
 pvertR(x)
 }
@@ -13,5 +13,5 @@ pvertR(x)
 Prints the raw p-value according to AMA manual of style
 }
 \description{
-The function takes a raw p-value and prints it according to the AMA manual of style
+Format p-values to AMA manual of style
 }

@@ -2,8 +2,7 @@
 % Please edit documentation in R/geom_stepribbon.R
 \name{geom_stepribbon}
 \alias{geom_stepribbon}
-\title{geom_stepribbon
-Copy of the geom_stepribbon function by adibender/pammtools}
+\title{Stepribbon geom for survival curves}
 \usage{
 geom_stepribbon(
   mapping = NULL,
@@ -18,6 +17,5 @@ geom_stepribbon(
 )
 }
 \description{
-geom_stepribbon
 Copy of the geom_stepribbon function by adibender/pammtools
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/cpR.R
 \name{cpR}
 \alias{cpR}
-\title{cpR}
+\title{Fix CPR numbers with removed leading zeros}
 \usage{
 cpR(data, cpr = cpr, extract = F)
 }
@@ -17,5 +17,5 @@ cpR(data, cpr = cpr, extract = F)
 Returns same dataset with correct CPR numbers and optionally age and date of birth. Invalid CPRs stops the function and returns the invalid CPRs as a vector.
 }
 \description{
-Fixes CPR numbers with removed leading zeros. Works with piping
+Fix CPR numbers with removed leading zeros
 }

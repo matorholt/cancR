@@ -1,7 +1,4 @@
-#' plotR
-#'
-#' @description
-#' Automatic plot function for the functions estimatR, incidencR and clustR
+#' Autoplot for estimatR, incidencR, inferencR and clustR
 #'
 #'
 #'

@@ -1,4 +1,4 @@
-#' clustR
+#' Causal inference on time-to-event data with clustering and competing risks
 #'
 #' @description
 #' Wrapper for the binregATE in the mets package for performing causal inference on time-to-event data in a competing risk setting with clustering

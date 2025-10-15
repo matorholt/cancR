@@ -1,4 +1,4 @@
-#' SavR
+#' Save plots and tables
 #'
 #' @description
 #' Wrapper for ggsave with default settings and automatic saving of multiple formats

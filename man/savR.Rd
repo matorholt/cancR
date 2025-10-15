@@ -2,7 +2,7 @@
 % Please edit documentation in R/savR.R
 \name{savR}
 \alias{savR}
-\title{SavR}
+\title{Save plots and tables}
 \usage{
 savR(
   object,

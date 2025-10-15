@@ -1,6 +1,3 @@
-#' powR
-#'
-#' @description
 #' Converter from Rscript to powershell format
 #'
 #'

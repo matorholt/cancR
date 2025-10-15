@@ -2,7 +2,7 @@
 % Please edit documentation in R/viewR.R
 \name{viewR}
 \alias{viewR}
-\title{viewR}
+\title{Graphical overview of the structure of a multilevel list}
 \usage{
 viewR(codelist)
 }
@@ -13,5 +13,5 @@ viewR(codelist)
 graphical overview of the levels and groups in the codelist
 }
 \description{
-Graphical overview of the codelist hierarchy
+Graphical overview of the structure of a multilevel list
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/estimatR.R
 \name{estimatR}
 \alias{estimatR}
-\title{estimatR}
+\title{Absolute risk estimation of time-to-event data with competing risks}
 \usage{
 estimatR(
   data,

@@ -1,7 +1,4 @@
-#' recodR
-#'
-#' @description
-#' Simultaneous recoding of multiple variables. Works with piping and
+#' Recode multiple variables
 #'
 #'
 #' @param data dataframe

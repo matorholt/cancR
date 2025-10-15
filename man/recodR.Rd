@@ -2,7 +2,7 @@
 % Please edit documentation in R/recodR.R
 \name{recodR}
 \alias{recodR}
-\title{recodR}
+\title{Recode multiple variables}
 \usage{
 recodR(data, namelist, match = "contains")
 }
@@ -17,5 +17,5 @@ recodR(data, namelist, match = "contains")
 the input data frame with recoded variables
 }
 \description{
-Simultaneous recoding of multiple variables. Works with piping and
+Recode multiple variables
 }

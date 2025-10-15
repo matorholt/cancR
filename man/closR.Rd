@@ -2,7 +2,7 @@
 % Please edit documentation in R/closR.R
 \name{closR}
 \alias{closR}
-\title{ClosR}
+\title{Pick the closest value from a range in vector.}
 \usage{
 closR(x, vec = NULL, str, split = T)
 }

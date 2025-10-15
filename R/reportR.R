@@ -1,7 +1,4 @@
-#' reportR
-#'
-#' @description
-#' Automatic tablR function for overview of matched and unmatched cases
+#' Overview of matched and unmatched cases
 #'
 #' @param data matched dataset
 #' @param casename name or number indicating cases (e.g. "1" or "CLL")

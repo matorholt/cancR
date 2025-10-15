@@ -1,7 +1,4 @@
-#' viewR
-#'
-#' @description
-#' Graphical overview of the codelist hierarchy
+#' Graphical overview of the structure of a multilevel list
 #'
 #'
 #' @param codelist A codelist of max depth 3

@@ -1,4 +1,4 @@
-#' loadR
+#' Load registers
 #'
 #' @description
 #' Simple loading function of the most used registers including variable selection, regex filtering and id_list filtering.

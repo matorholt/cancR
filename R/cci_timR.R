@@ -1,6 +1,3 @@
-#' cci_timR
-#'
-#' @description
 #' Generation of time-dependent CCI and comorbidities from the Charlson Comorbidity Index
 #'
 #'

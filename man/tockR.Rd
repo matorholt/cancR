@@ -2,7 +2,7 @@
 % Please edit documentation in R/tockR.R
 \name{tockR}
 \alias{tockR}
-\title{tockR}
+\title{Last timestamp for taking time}
 \usage{
 tockR(format = "diff", start, digits = 2)
 }

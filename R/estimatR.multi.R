@@ -1,7 +1,4 @@
-#' estimatR.multi
-#'
-#' @description
-#' Convenience function for performing multiple estimatR functions (e.g. multiple outcomes or risk factor). Each argument is recycled to avoid repeated names.
+#' Perform multiple estimatR analyses
 #'
 #'
 #' @param data list of dataframe(s)

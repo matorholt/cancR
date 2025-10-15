@@ -1,4 +1,4 @@
-#' inferencR
+#' Causal inference of time-to-event data
 #'
 #' @description
 #' Average treatment effect of point intervention. Wrapper for the ATE function in riskRegression

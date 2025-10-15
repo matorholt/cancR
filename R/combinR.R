@@ -1,4 +1,4 @@
-#' combinR
+#' Generate all possible cominations/permutations
 #'
 #' @description
 #' All possible combinations of a single vector (ABC: ABC, ACB, BAC, BCA, CAB, CBA) or two separate vectors (AB, CD: ABCD, CDAB)

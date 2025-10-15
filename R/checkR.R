@@ -1,6 +1,3 @@
-#' checkR
-#'
-#' @description
 #' Detection of positivity violations (empty levels)
 #'
 #'

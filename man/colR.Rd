@@ -2,7 +2,7 @@
 % Please edit documentation in R/colR.R
 \name{colR}
 \alias{colR}
-\title{colR}
+\title{Set default color palette}
 \usage{
 colR(cols = NULL, option = "", show = T, seed = 69)
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/cutR.R
 \name{cutR}
 \alias{cutR}
-\title{cutR}
+\title{Cut numeric variables into intervals}
 \usage{
 cutR(data, vars, seqlist, names = list())
 }

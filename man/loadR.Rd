@@ -2,7 +2,7 @@
 % Please edit documentation in R/loadR.R
 \name{loadR}
 \alias{loadR}
-\title{loadR}
+\title{Load registers}
 \usage{
 loadR(
   regs,

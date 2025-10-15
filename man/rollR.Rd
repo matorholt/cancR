@@ -2,7 +2,7 @@
 % Please edit documentation in R/rollR.R
 \name{rollR}
 \alias{rollR}
-\title{rollR}
+\title{Assign rolling ID.}
 \usage{
 rollR(data, id = id, lab = order)
 }
@@ -17,5 +17,5 @@ rollR(data, id = id, lab = order)
 adds a new column to the dataset with unique ids based on original id conditional on a sorting
 }
 \description{
-Assigns rolling ID. Useful after sorting a dataset, which changes the ID order. Works with piping
+Useful after sorting a dataset, which changes the ID order. Works with piping
 }

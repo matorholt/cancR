@@ -1,4 +1,4 @@
-#' estimatR
+#' Absolute risk estimation of time-to-event data with competing risks
 #'
 #' @description
 #' Absolute risk estimation and comparison of two or more groups with a time-to-event outcome.

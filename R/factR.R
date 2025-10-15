@@ -1,4 +1,4 @@
-#' factR
+#' Factorize variables
 #'
 #' @description
 #' Convenience function for levelling, labelling and referencing multiple factors in one step. Works with piping.

@@ -1,4 +1,4 @@
-#' tockR
+#' Last timestamp for taking time
 #'
 #' @description
 #' tockR stops the clock and prints either a date/time or a time difference

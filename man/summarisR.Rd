@@ -2,7 +2,7 @@
 % Please edit documentation in R/summarisR.R
 \name{summarisR}
 \alias{summarisR}
-\title{summarisR}
+\title{Graphical overview of an entire dataset}
 \usage{
 summarisR(
   data,

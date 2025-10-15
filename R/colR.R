@@ -1,6 +1,3 @@
-#' colR
-#'
-#' @description
 #' Set default color palette
 #'
 #' @param cols Vector to set the default color palette. If "default", the default palette is reverted

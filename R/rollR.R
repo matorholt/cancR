@@ -1,7 +1,7 @@
-#' rollR
+#' Assign rolling ID.
 #'
 #' @description
-#' Assigns rolling ID. Useful after sorting a dataset, which changes the ID order. Works with piping
+#' Useful after sorting a dataset, which changes the ID order. Works with piping
 #'
 #'
 #' @param data dataset

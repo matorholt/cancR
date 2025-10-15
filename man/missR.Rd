@@ -2,7 +2,7 @@
 % Please edit documentation in R/missR.R
 \name{missR}
 \alias{missR}
-\title{missR}
+\title{Overview of NAs in a dataframe}
 \usage{
 missR(data, vars, id = id, print = T)
 }
@@ -19,5 +19,5 @@ missR(data, vars, id = id, print = T)
 Prints whether any NAs are detected and returns a data frame with IDs and columns with NA
 }
 \description{
-Fast overview of NAs in a dataframe
+Overview of NAs in a dataframe
 }

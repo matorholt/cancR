@@ -2,7 +2,7 @@
 % Please edit documentation in R/formatR.R
 \name{formatR}
 \alias{formatR}
-\title{formatR}
+\title{Auto-formatting of a data frame with layout option for typical levels and labels}
 \usage{
 formatR(
   data,

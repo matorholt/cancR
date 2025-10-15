@@ -1,7 +1,4 @@
-#' pvertR
-#'
-#' @description
-#' The function takes a raw p-value and prints it according to the AMA manual of style
+#' Format p-values to AMA manual of style
 #'
 #' @param x A p-value
 #' @return Prints the raw p-value according to AMA manual of style

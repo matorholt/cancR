@@ -1,6 +1,3 @@
-#' Mode
-#'
-#' @description
 #' Get the mode (most common value) of a vector.
 #'
 #'
@@ -27,7 +24,7 @@
 # mode(char3, "last")
 
 
-mode <- function(x, ties = "first", na.rm=T) {
+modeR <- function(x, ties = "first", na.rm=T) {
   ties <- match.arg(ties, c("first", "last"))
 
   if(na.rm) {

@@ -2,7 +2,7 @@
 % Please edit documentation in R/combinR.R
 \name{combinR}
 \alias{combinR}
-\title{combinR}
+\title{Generate all possible cominations/permutations}
 \usage{
 combinR(letters, letters2 = NULL, list = F)
 }

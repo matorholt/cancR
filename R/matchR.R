@@ -1,7 +1,4 @@
-#' matchR
-#'
-#' @description
-#' Function for time dependent exact matching
+#' Perform exposure-density matching for multilevel data
 #'
 #'
 #' @param data Dataset containing case/control indicator with index date for cases and fixed matching parameters

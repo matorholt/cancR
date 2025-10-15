@@ -1,7 +1,4 @@
-#' searchR
-#'
-#' @description
-#' Function to obtain covariates or outcomes from the most common registers
+#' Find covariates or outcomes from the registers
 #'
 #'
 #' @param reglist list of dataframe(s)

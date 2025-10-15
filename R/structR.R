@@ -1,4 +1,4 @@
-#' structR
+#' Convert dates to status indicator and time-to-event
 #'
 #' @description
 #' Converts event dates to status indicator and a time-to-event variable.

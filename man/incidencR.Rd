@@ -2,7 +2,7 @@
 % Please edit documentation in R/incidencR.R
 \name{incidencR}
 \alias{incidencR}
-\title{incidencR}
+\title{Estimate absolute risks in a single group with competing risks}
 \usage{
 incidencR(
   data,
@@ -39,5 +39,5 @@ Median_surv: Median survival time \cr
 Surv: Indicator for the type of time-to-event analysis
 }
 \description{
-Convenience wrapper
+Estimate absolute risks in a single group with competing risks
 }

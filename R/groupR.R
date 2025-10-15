@@ -1,6 +1,3 @@
-#' groupR
-#'
-#' @description
 #' Extract first n groups in data frame
 #'
 #'

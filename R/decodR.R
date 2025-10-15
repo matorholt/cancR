@@ -1,6 +1,3 @@
-#' decodR
-#'
-#' @description
 #' Decoding of the main codelist for loading and searching in registries
 #'
 #'

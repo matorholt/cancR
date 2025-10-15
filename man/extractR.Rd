@@ -2,7 +2,7 @@
 % Please edit documentation in R/extractR.R
 \name{extractR}
 \alias{extractR}
-\title{extractR}
+\title{Extraction of key results from the estimatR function}
 \usage{
 extractR(
   list,
@@ -48,5 +48,5 @@ extractR(
 Returns a data frame compatible with flextable
 }
 \description{
-Automatic extraction of key results from the estimatR function
+Extraction of key results from the estimatR function
 }

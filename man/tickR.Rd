@@ -2,7 +2,7 @@
 % Please edit documentation in R/tickR.R
 \name{tickR}
 \alias{tickR}
-\title{tickR}
+\title{First timestamp for taking time}
 \usage{
 tickR()
 }

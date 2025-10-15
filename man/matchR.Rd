@@ -2,7 +2,7 @@
 % Please edit documentation in R/matchR.R
 \name{matchR}
 \alias{matchR}
-\title{matchR}
+\title{Perform exposure-density matching for multilevel data}
 \usage{
 matchR(
   data,
@@ -57,5 +57,5 @@ matchR(
 Returns the same dataframe as the original but with n_control matches and pairs indicated with a "set" column.
 }
 \description{
-Function for time dependent exact matching
+Perform exposure-density matching for multilevel data
 }
