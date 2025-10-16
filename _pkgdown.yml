@@ -1,7 +1,6 @@
 url: https://matorholt.github.io/cancR/
 template:
   bootstrap: 5
-  bootswatch: lux
 
 reference:
 - title: Data management functions
