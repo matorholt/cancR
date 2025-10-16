@@ -47,7 +47,3 @@ jobs:
           clean: false
           branch: gh-pages
           folder: docs
-
-      - name: Install dependencies
-      run: |
-         devtools::install_github("tagteam/heaven")
