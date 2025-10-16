@@ -37,9 +37,8 @@ The following functions are useful in data management tasks
 
 To get a graphical glimpse of the data we can use the summarisR() function:
 
-```{r}
-#summarisR(df, 
-       #   vars = c(sex, size, type, localisation, necrosis, cd10, sox10, ck))
+```{r, echo=F, out.width="20%"}
+knitr::include_graphics("ss_logo.png")
 ```
 
 ## missR

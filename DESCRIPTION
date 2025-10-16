@@ -34,3 +34,4 @@ Imports:
     tibble
 LazyData: true
 Config/Needs/website: rmarkdown
+URL: https://matorholt.github.io/cancR/
