@@ -1,0 +1,41 @@
+---
+title: "Install and Update R"
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## Introduction
+
+This article is for installing R if it has not been installed before and for updating R if this is needed. If R is already installed, skip the installation chapter.
+
+## Installation of R
+
+R is installed from "softwareshoppen" which is found at the desktop. Click "installer" and "bestil" and wait for a couple of minutes.
+
+```{r, echo=F, out.width="100%"}
+knitr::include_graphics("ss_1.png")
+```
+
+
+
+After the instillation of R, we also need to install R-studio
+
+```{r, echo=F, out.width="100%"}
+knitr::include_graphics("ss_2.png")
+```
+
+## Update R
+
+R can be updated directly in R, as "softwareshoppen" is not always up-to-date. This requires a specific package called "installr". The installation needs to be run directly from R and not R-studio.
+
+```{r, echo=F, out.width="20%"}
+knitr::include_graphics("u_1.png")
+```
+
+
+
