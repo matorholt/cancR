@@ -49,4 +49,4 @@ jobs:
           folder: docs
 
       - name: Install dependencies
-        run: devtools::install_github("tagteam/heaven")
+        run: remotes::install_github("tagteam/heaven")
