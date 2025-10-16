@@ -1,4 +1,83 @@
 url: https://matorholt.github.io/cancR/
 template:
   bootstrap: 5
+  bootswatch: slate
+
+reference:
+- title: Data management functions
+  desc: >
+    Functions that aids in typical data management tasks
+  contents:
+  - cpR
+  - cutR
+  - distributR
+  - factR
+  - groupR
+  - missR
+  - pvertR
+  - structR
+  - recodR
+  - rowR
+  - summarisR
+
+- title: Statistical Analyses
+  desc: >
+    Functions that perform statistical analysis
+  contents:
+  - incidencR
+  - estimatR
+  - estimatR.multi
+  - extractR
+  - inferencR
+  - clustR
+  - followR
+
+- title: Tables and figures
+  desc: >
+    Functions for producing and formatting tables and figures
+  contents:
+  - tablR
+  - plotR
+  - collectR
+  - savR
+
+- title: Register-specific functions
+  desc: >
+    Functions customized for the danish registers
+  contents:
+  - decodR
+  - loadR
+  - searchR
+  - includR
+  - matchR
+  - cci_timR
+  - updatR
+  - reportR
+  - formatR
+
+- title: Built in datasets
+  contents:
+  - analysis_df
+  - match_df
+  - redcap_df
+  - covariates_df
+
+- title: Miscellaneous functions
+  desc: >
+    Small utiliy functions
+  contents:
+  - checkR
+  - closR
+  - colR
+  - combinR
+  - formatR
+  - geom_stepribbon
+  - mode
+  - modeR
+  - numbR
+  - powR
+  - rollR
+  - tickR
+  - tockR
+  - viewR
 
