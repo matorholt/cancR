@@ -1,5 +1,5 @@
 ---
-title: "Introduction to cancR"
+title: "Installing the cancR package"
 author: "Mathias Ørholt"
 output:
   html_document:
@@ -27,34 +27,5 @@ To demonstrate the functions useful in data management, we load the simulated re
 
 ```{r}
 df <- redcap_df
-```
-
-# Data management
-
-The following functions are useful in data management tasks
-
-## summarisR
-
-To get a graphical glimpse of the data we can use the summarisR() function:
-
-```{r, echo=F, out.width="20%"}
-knitr::include_graphics("ss_logo.png")
-```
-
-## missR
-And to exploit the number of missing values we use the missR() function
-
-```{r}
-missR(df)
-```
-
-
-We can also check if numerical variables are normally distributed with the distributR() function
-
-## distributR
-
-```{r}
-distributR(df,
-           vars = size)
 ```
 
