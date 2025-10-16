@@ -6,7 +6,7 @@ template:
 reference:
 - title: Data management functions
   desc: >
-    Functions that aids in typical data management tasks
+    Functions for typical data management tasks
   contents:
   - cpR
   - cutR
