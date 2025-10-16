@@ -39,7 +39,7 @@ articles with thorough examples of all functions.
 ## Maintenance
 
 The package is regularly maintained and updated. Bugs and suggestions
-are very welcome and should be sent to the package developer.
+are very welcome and should be sent to the package developer.  
 
 ##### The small print
 

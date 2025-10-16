@@ -54,7 +54,9 @@ reference:
   - reportR
   - formatR
 
-- title: Built in datasets
+- title: Built-in datasets
+  desc: >
+    Datasets for testing functions
   contents:
   - analysis_df
   - match_df
