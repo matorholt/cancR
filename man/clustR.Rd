@@ -13,6 +13,7 @@ clustR(
   cluster,
   time,
   breaks,
+  event.digits = 2,
   cores = detectCores()/2
 )
 }
@@ -32,6 +33,8 @@ clustR(
 \item{time}{time horizon}
 
 \item{breaks}{subdivisions between time = 0 and fu}
+
+\item{event.digits}{whether eventtimes should be rounded. Default is 2 to preserve exact times}
 
 \item{cores}{number of cores for parallel processing. Defaults to half of the available cores}
 }

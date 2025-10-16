@@ -56,9 +56,9 @@
 # df2 <- df %>% mutate(X2 = ifelse(row_number()==1, NA, X2),
 #                      event = as.factor(event)) %>%
 #   rename(ttt = time)
-#
-# t2 <- estimatR(df2, ttt, event, X1, type = "select", vars = c(X6,X7))
-#
+
+#t2 <- estimatR(analysis_df, ttt, event, X1, type = "select", vars = c(X6,X7))
+
 # extractR(t2)
 
 estimatR <- function(data,

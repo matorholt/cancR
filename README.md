@@ -39,7 +39,16 @@ articles with thorough examples of all functions.
 ## Maintenance
 
 The package is regularly maintained and updated. Bugs and suggestions
-are very welcome and should be sent to the package developer.  
+are very welcome and should be sent to the package developer.
+
+## Acknowledgements
+
+The package developer wishes to thank the developers of prodlim,
+riskRegression, heaven, mets, rrapply and tidyverse for their incredible
+work. This package is merely just highlighting the qualities of those
+packages.
+
+#### 
 
 ##### The small print
 

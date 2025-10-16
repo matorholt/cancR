@@ -60,7 +60,7 @@
 #                      event = as.factor(event)) %>%
 #   rename(ttt = time)
 #
-# t1 <- estimatR(df, time, event2, X2, time = 120, type = "select", vars = c(X6,X7), pl=T)
+#t1 <- estimatR(analysis_df, ttt, event2, X2, time = 120, type = "select", vars = c(X6,X7), pl=T)
 #t2 <- estimatR(df2, ttt, event2, X1, time = 120, type = "select", vars = c(X6,X7), pl=T)
 # t3 <- estimatR(df2, ttt, event2, X3, time = 60, type = "select", vars = c(X6,X7), pl=T)
 #
@@ -290,7 +290,7 @@ plotR <- function(list,
   #Title
     annotate("text", x=0, y=y*1.09, label=title, size = title.size*tscale, hjust="left")
 
-  #Risk table
+ #Risk table
   if(any(table %nin% "none")) {
     tablabs <- str_replace_all(table, c("risk" = "At Risk",
                                      "event" = "Cumulative Events"))
@@ -331,7 +331,7 @@ plotR <- function(list,
 
       for(j in 1:length(table)) {
         p <- p +
-          suppressWarnings(annotate("text", label = tab[tab[, group] == levels[i], tcols[j]], x = seq(0,horizon,12), y = rev(rows[[j]])[i], color = rc[i], size = table.text.size*tscale))
+          suppressWarnings(annotate("text", label = tab[tab[, group] == levels[i], tcols[j]], x = seq(0,horizon,breaks), y = rev(rows[[j]])[i], color = rc[i], size = table.text.size*tscale))
 
         if(!risk.col) {
 
@@ -372,65 +372,66 @@ plotR <- function(list,
                       hjust="left",
                       size = 5*tscale)
 
-    for(i in 1:length(levels)) {
+ for(i in 1:length(levels)) {
 
-      #Segments
-      p <- p +
-        annotate("segment",
-                 x=xstart*0.5+res.shift[1],
-                 xend=xstart*0.9+res.shift[1],
-                 y=rows[i+1],
-                 yend=rows[i+1], color = col[i], linewidth = linewidth*1.5)
+   #Segments
+   p <- p +
+     annotate("segment",
+              x=xstart*0.5+res.shift[1],
+              xend=xstart*0.9+res.shift[1],
+              y=rows[i+1],
+              yend=rows[i+1], color = col[i], linewidth = linewidth*1.5)
 
-      #Groups > 2 with contrasts
-      if(length(levels) > 2 & contrast != "none") {
-        p <- p +annotate("text",
+   #Groups > 2 with contrasts
+   if(length(levels) > 2 & contrast != "none") {
+     p <- p + annotate("text",
+                      x=xstart+res.shift[1],
+                      y=rows[i+1],
+                      label = paste0(numbR(res$est[i]*100, res.digits),"%, ",c_labels[[i]]),
+                      #label = bquote(.(numbR(res$est[i]*100, res.digits))~"%"~.(c_labels[[i]])), #original bquote
+                      fontface=1,
+                      hjust="left",
+                      size = res.size*tscale)
+
+     #Border settings
+     buttom <- rows[length(rows)]
+     shift <- ifelse(horizon == 60, 4, 12)
+     right <- (xstart*0.2+horizon*0.39)+res.shift[1]+shift+border.shift
+
+
+   }
+
+   #Groups == 2 or >2 without contrasts
+   else{
+     p <- p +
+       annotate("text",
+                x=xstart+res.shift[1],
+                y=rows[i+1],
+                label = paste(c(numbR(res$est[i]*100,res.digits),"% (95%CI ", numbR(res$lower[i]*100, res.digits),"-", numbR(res$upper[i]*100, res.digits),")"), collapse=""),
+                fontface=1,
+                hjust="left",
+                size = res.size*tscale)
+
+
+
+     if(contrast != "none") {
+
+       p <-  p+ annotate("text",
                          x=xstart+res.shift[1],
-                         y=rows[i+1],
-                         label = suppressWarnings(bquote(.(numbR(res$est[i]*100, res.digits))~"%"~.(c_labels[[i]]))),
-                         fontface=1,
-                         hjust="left",
+                         y = rows[length(levels)+2],
+                         label = c_labels[[1]],
+                         hjust = "left",
                          size = res.size*tscale)
+     }
 
-        #Border settings
-        buttom <- rows[length(rows)]
-        shift <- ifelse(horizon == 60, 4, 12)
-        right <- (xstart*0.2+horizon*0.39)+res.shift[1]+shift+border.shift
-
-
-      }
-
-      #Groups == 2 or >2 without contrasts
-      else{
-        p <- p +
-          annotate("text",
-                   x=xstart+res.shift[1],
-                   y=rows[i+1],
-                   label = paste(c(numbR(res$est[i]*100,res.digits),"% (95%CI ", numbR(res$lower[i]*100, res.digits),"-", numbR(res$upper[i]*100, res.digits),")"), collapse=""),
-                   fontface=1,
-                   hjust="left",
-                   size = res.size*tscale)
+     #Border settings
+     buttom <- rows[length(rows)] - (rows[length(rows)-1]-rows[length(rows)])
+     right <- (xstart*0.3+horizon*0.39)+res.shift[1]+border.shift
 
 
+   }
 
-        if(contrast != "none") {
-
-          p <-  p+ annotate("text",
-                            x=xstart+res.shift[1],
-                            y = rows[length(levels)+2],
-                            label = c_labels[[1]],
-                            hjust = "left",
-                            size = res.size*tscale)
-        }
-
-        #Border settings
-        buttom <- rows[length(rows)] - (rows[length(rows)-1]-rows[length(rows)])
-        right <- (xstart*0.3+horizon*0.39)+res.shift[1]+border.shift
-
-
-      }
-
-    }
+ }
   }
 
   if(border) {
@@ -452,9 +453,6 @@ plotR <- function(list,
 
  return(p)
 
-
-
 }
-
 
 
