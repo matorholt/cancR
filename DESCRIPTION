@@ -15,6 +15,7 @@ Depends:
     flextable,
     forcats,
     ggplot2,
+    heaven,
     magrittr,
     mets,
     parallel,
@@ -30,7 +31,6 @@ Depends:
     tidyr
 Imports: 
     ggpubr,
-    heaven,
     tibble
 LazyData: true
 Config/Needs/website: rmarkdown
