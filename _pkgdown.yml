@@ -64,7 +64,7 @@ reference:
 
 - title: Miscellaneous functions
   desc: >
-    Small utiliy functions
+    Small utility functions
   contents:
   - checkR
   - closR
