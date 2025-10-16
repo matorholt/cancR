@@ -3,7 +3,7 @@ pkgdown: 2.1.3
 pkgdown_sha: ~
 articles:
   articles/cancR: cancR.html
-last_built: 2025-10-16T11:01Z
+last_built: 2025-10-16T11:29Z
 urls:
   reference: https://matorholt.github.io/cancR/reference
   article: https://matorholt.github.io/cancR/articles
