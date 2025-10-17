@@ -50,6 +50,7 @@
 <span>  <span class="va">cluster</span>,</span>
 <span>  <span class="va">time</span>,</span>
 <span>  <span class="va">breaks</span>,</span>
+<span>  digits <span class="op">=</span> <span class="fl">4</span>,</span>
 <span>  event.digits <span class="op">=</span> <span class="fl">2</span>,</span>
 <span>  cores <span class="op">=</span> <span class="fu">detectCores</span><span class="op">(</span><span class="op">)</span><span class="op">/</span><span class="fl">2</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -91,6 +92,10 @@
 <dd><p>subdivisions between time = 0 and fu</p></dd>
 
 
+<dt id="arg-digits">digits<a class="anchor" aria-label="anchor" href="#arg-digits"></a></dt>
+<dd><p>for rounding of eventtimes</p></dd>
+
+
 <dt id="arg-event-digits">event.digits<a class="anchor" aria-label="anchor" href="#arg-event-digits"></a></dt>
 <dd><p>whether eventtimes should be rounded. Default is 2 to preserve exact times</p></dd>
 
@@ -101,11 +106,11 @@
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>Life_table: Event table <br>
-Plot_data: Data for plotting CIF curves <br>
-Risks: Absolute risk estimates at the specified time points <br>
-Risk_differences: Absolute risk difference at the specified time point <br>
-Surv: Indicator of the surv-argument</p>
+    <p>table: Event table <br>
+plot_data: Data for plotting CIF curves <br>
+risks: Absolute risk estimates at the specified time points <br>
+differences: Absolute risk difference at the specified time point <br>
+info: information on arguments for extraction</p>
     </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
