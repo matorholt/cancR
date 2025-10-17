@@ -35,7 +35,7 @@
 #          across(c(X6:X10), ~ as.factor(.))) %>%
 #   drop_na(time, event, X1, X2, X3, X6, X7) %>%
 #   as.data.frame()
-(t <- clustR(df, ttt, event, X1, vars = c(X2, X3, X6), cluster = id, time = 90, breaks = 10))
+#(t <- clustR(df, ttt, event, X1, vars = c(X2, X3, X6), cluster = id, time = 90, breaks = 10))
 # plotR(t, time_unit = "days")
 
 clustR <- function(data,

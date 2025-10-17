@@ -6,8 +6,6 @@
 #' @return Printed text compatible with powershell
 #' @export
 #'
-#' @examples
-#' powershell('rscript')
 #'
 
 powR <- function(text) {

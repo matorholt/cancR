@@ -10,7 +10,7 @@ plotR(
   col = cancR_palette,
   table.col = "#616161",
   risk.col = T,
-  time_unit = "m2y",
+  time.unit = "m2y",
   labs = levels,
   print.est = TRUE,
   contrast = "rd",
@@ -57,7 +57,7 @@ plotR(
 
 \item{risk.col}{Whether risk table numbers should be colored (T/F)}
 
-\item{time_unit}{Specification of the time-unit and optional conversion. Conversions include Months to years ("m2y"), days to years ("d2y") and days to months ("d2m")}
+\item{time.unit}{Specification of the time-unit and optional conversion. Conversions include Months to years ("m2y"), days to years ("d2y") and days to months ("d2m")}
 
 \item{labs}{Character vector of similar length to the number of levels in the group with labels. Reference is first.}
 

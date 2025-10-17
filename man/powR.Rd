@@ -15,7 +15,3 @@ Printed text compatible with powershell
 \description{
 Converter from Rscript to powershell format
 }
-\examples{
-powershell('rscript')
-
-}

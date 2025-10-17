@@ -13,6 +13,7 @@ clustR(
   cluster,
   time,
   breaks,
+  digits = 4,
   event.digits = 2,
   cores = detectCores()/2
 )
@@ -34,16 +35,18 @@ clustR(
 
 \item{breaks}{subdivisions between time = 0 and fu}
 
+\item{digits}{for rounding of eventtimes}
+
 \item{event.digits}{whether eventtimes should be rounded. Default is 2 to preserve exact times}
 
 \item{cores}{number of cores for parallel processing. Defaults to half of the available cores}
 }
 \value{
-Life_table: Event table \cr
-Plot_data: Data for plotting CIF curves \cr
-Risks: Absolute risk estimates at the specified time points \cr
-Risk_differences: Absolute risk difference at the specified time point \cr
-Surv: Indicator of the surv-argument
+table: Event table \cr
+plot_data: Data for plotting CIF curves \cr
+risks: Absolute risk estimates at the specified time points \cr
+differences: Absolute risk difference at the specified time point \cr
+info: information on arguments for extraction
 }
 \description{
 Wrapper for the binregATE in the mets package for performing causal inference on time-to-event data in a competing risk setting with clustering

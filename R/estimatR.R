@@ -43,7 +43,7 @@
 #' @export
 #'
 #'
-t2 <- estimatR(analysis_df, ttt, event, X1, type = "select", vars = c(X6,X7))
+#t2 <- estimatR(analysis_df, ttt, event, X1, type = "select", vars = c(X6,X7))
 
 # extractR(t2)
 
