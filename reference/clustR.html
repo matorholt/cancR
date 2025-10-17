@@ -47,6 +47,8 @@
 <span>  <span class="va">event</span>,</span>
 <span>  <span class="va">treatment</span>,</span>
 <span>  <span class="va">vars</span>,</span>
+<span>  <span class="va">outcome.vars</span>,</span>
+<span>  <span class="va">censoring.vars</span>,</span>
 <span>  <span class="va">cluster</span>,</span>
 <span>  <span class="va">time</span>,</span>
 <span>  <span class="va">breaks</span>,</span>
@@ -78,6 +80,14 @@
 
 <dt id="arg-vars">vars<a class="anchor" aria-label="anchor" href="#arg-vars"></a></dt>
 <dd><p>vector of covariates. All variables must be coded as factors and continouous variables must be binned</p></dd>
+
+
+<dt id="arg-outcome-vars">outcome.vars<a class="anchor" aria-label="anchor" href="#arg-outcome-vars"></a></dt>
+<dd><p>variables that should only be included in the outcome models</p></dd>
+
+
+<dt id="arg-censoring-vars">censoring.vars<a class="anchor" aria-label="anchor" href="#arg-censoring-vars"></a></dt>
+<dd><p>variables that should only be included in the censoring models</p></dd>
 
 
 <dt id="arg-cluster">cluster<a class="anchor" aria-label="anchor" href="#arg-cluster"></a></dt>
