@@ -7,7 +7,7 @@
 #' @param col Vector of colors
 #' @param table.col Grid color
 #' @param risk.col Whether risk table numbers should be colored (T/F)
-#' @param time_unit Specification of the time-unit and optional conversion. Conversions include Months to years ("m2y"), days to years ("d2y") and days to months ("d2m")
+#' @param time.unit Specification of the time-unit and optional conversion. Conversions include Months to years ("m2y"), days to years ("d2y") and days to months ("d2m")
 #' @param labs Character vector of similar length to the number of levels in the group with labels. Reference is first.
 #' @param print.est Whether absolute risks at the time horizon should be printet. Defaults to TRUE
 #' @param contrast The type of contrast that should be provided. Includes risk difference ("rd", default), risk ratio ("rr"), hazard ratio ("hr") or "none".
@@ -90,7 +90,7 @@ plotR <- function(list,
                   col=cancR_palette,
                   table.col = "#616161",
                   risk.col = T,
-                  time_unit = "m2y",
+                  time.unit = "m2y",
                   labs = levels,
                   print.est = TRUE,
                   contrast = "rd",
@@ -129,7 +129,7 @@ plotR <- function(list,
     return(cat("Data not generated with the functions estimatR, clustR or incidencR from the cancR package"))
   }
 
-  time_unit <- match.arg(time_unit, c("m2y", "d2m", "d2y", "days", "months", "years"))
+  time.unit <- match.arg(time.unit, c("m2y", "d2m", "d2y", "days", "months", "years"))
   diff <- match.arg(contrast, c("rd", "rr", "hr", "none"))
   table <- match.arg(table, c("event", "risk", "none"), several.ok=T)
 
@@ -143,6 +143,7 @@ plotR <- function(list,
   survscale <- list$info$survscale
   tab <- list$table %>% filter(time %in% seq(0, horizon, breaks))
   res <- est %>% filter(time %in% horizon)
+  event.digits <- list$info$event.digits
 
   #Contrast labels
   c_var <- names(list)[str_detect(names(list), paste0(contrast, collapse="|"))]
@@ -196,7 +197,7 @@ plotR <- function(list,
   }
 
   if(missing(y)) {
-    y <- closR(pmin(max(plot$upper[plot$time == horizon]*1.3), 1)*100, c(seq(1,5), seq(10, 100, 10)))
+    y <- closR(pmin(max(plot$upper[plot$time == round(horizon, event.digits)]*1.3), 1)*100, c(seq(1,5), seq(10, 100, 10)))
   }
 
   #Grid
@@ -229,7 +230,7 @@ plotR <- function(list,
     zmin <- -(y*0.15)
   }
 
-  switch(time_unit,
+  switch(time.unit,
          "m2y" = {
            u <- 12
            unit <- "Years"},
@@ -244,7 +245,7 @@ plotR <- function(list,
          "months" = ,
          "years" = {
            u <- 1
-           unit <- str_to_title(time_unit)
+           unit <- str_to_title(time.unit)
          })
 
   #PLOT BODY
@@ -452,6 +453,7 @@ plotR <- function(list,
 
 
  return(p)
+
 
 }
 

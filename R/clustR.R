@@ -12,15 +12,16 @@
 #' @param cluster column indicating cluster variable (e.g. ID)
 #' @param time time horizon
 #' @param breaks subdivisions between time = 0 and fu
+#' @param digits for rounding of eventtimes
 #' @param event.digits whether eventtimes should be rounded. Default is 2 to preserve exact times
 #' @param cores number of cores for parallel processing. Defaults to half of the available cores
 #'
 #' @return
-#' Life_table: Event table \cr
-#' Plot_data: Data for plotting CIF curves \cr
-#' Risks: Absolute risk estimates at the specified time points \cr
-#' Risk_differences: Absolute risk difference at the specified time point \cr
-#' Surv: Indicator of the surv-argument
+#' table: Event table \cr
+#' plot_data: Data for plotting CIF curves \cr
+#' risks: Absolute risk estimates at the specified time points \cr
+#' differences: Absolute risk difference at the specified time point \cr
+#' info: information on arguments for extraction
 #' @export
 #'
 #'
@@ -29,23 +30,25 @@
 # n=1000
 # df <- riskRegression::sampleData(n) %>%
 #   mutate(id = sample(seq(1,700), size = n, replace=TRUE),
-#          time = time*30,
+#          ttt = time*30,
 #          across(c(X6:X10), ~ cut(., breaks = unique(quantile(., c(0, 0.25,0.5,0.75, 1))))),
 #          across(c(X6:X10), ~ as.factor(.))) %>%
 #   drop_na(time, event, X1, X2, X3, X6, X7) %>%
 #   as.data.frame()
-# (t <- clustR(df, time, event, X1, vars = c(X2, X3, X6), cluster = id, time = 90, breaks = 10))
+(t <- clustR(df, ttt, event, X1, vars = c(X2, X3, X6), cluster = id, time = 90, breaks = 10))
+# plotR(t, time_unit = "days")
 
 clustR <- function(data,
-                      timevar,
-                      event,
-                      treatment,
-                      vars,
-                      cluster,
-                      time,
-                      breaks,
+                   timevar,
+                   event,
+                   treatment,
+                   vars,
+                   cluster,
+                   time,
+                   breaks,
+                   digits = 4,
                    event.digits = 2,
-                      cores = detectCores()/2) {
+                   cores = detectCores()/2) {
 
   cl <- makeCluster(cores)
   clusterEvalQ(cl, {
@@ -61,11 +64,12 @@ clustR <- function(data,
   suppressWarnings(timevar_c <- data %>% select({{timevar}}) %>% names())
   suppressWarnings(event_c <- data %>% select({{event}}) %>% names())
   suppressWarnings(treat_c <- data %>% select({{treatment}}) %>% names())
-  vars_c <-
-    data %>% select({{vars}}) %>% names()
+  vars_c <- data %>% select({{vars}}) %>% names()
   cluster <- data %>% select({{cluster}}) %>% names()
 
   group_levels <- levels(data[,treat_c])
+
+  horizon <- time
 
   data <- data %>% drop_na(!!sym(treat_c))%>%
     mutate(!!sym(treat_c) := as.factor(!!sym(treat_c))) %>%
@@ -84,7 +88,7 @@ clustR <- function(data,
     paste0("~strata(", substitute(treatment), ",", paste0(vars_c, collapse=","), ")", collapse = "")
 
   risk <-
-    rbindlist(parLapply(cl, seq(0,time,breaks), function(x){
+    rbindlist(parLapply(cl, seq(0,horizon,breaks), function(x){
     bin_obj <- binregATE(formula = as.formula(out.mod),
                         data=data,cause=1,
                         treat.model = as.formula(treat.mod),
@@ -102,6 +106,7 @@ clustR <- function(data,
        select(time, !!sym(treat_c), est, lower, upper)
     })) %>%
     arrange(!!sym(treat_c), time) %>%
+    mutate(across(c(est:upper), ~round(.,digits))) %>%
     as.data.frame()
 
       bin_obj <- binregATE(data=data,
@@ -117,15 +122,16 @@ clustR <- function(data,
                lower = "2.5%",
                upper = "97.5%",
                p.value = "P-value") %>%
-        mutate(across(c(diff, lower, upper), ~ round(.*100,2)),
+        mutate(across(c(diff:upper), ~.*100),
+               across(c(diff:upper), ~round(.,digits-2)),
                p.exact = p.value,
                p.value = pvertR(p.value),
-               time=time) %>%
+               time=horizon) %>%
         select(time, diff, lower, upper, p.value, p.exact) %>%
         as.data.frame()
 
   plot <-
-    rbindlist(parLapply(cl, unique(round(sort(c(0,data[data[, event_c] == 1 & data[,timevar_c] < time, timevar_c],time)),event.digits)), function(x){
+    rbindlist(parLapply(cl, unique(round(sort(c(0,data[data[, event_c] == 1 & data[,timevar_c] < horizon, timevar_c],horizon)),event.digits)), function(x){
     object <- binregATE(formula = as.formula(out.mod),
                         data=data,cause=1,
                         treat.model = as.formula(treat.mod),
@@ -155,7 +161,7 @@ clustR <- function(data,
   form_g <- as.formula(paste(c(lhs, rhs_g), collapse = ""))
   pobj <- prodlim(form_g, data=data)
 
-  tab <- summary(pobj, interval=T, times = seq(0,time, breaks), cause = 1) %>%
+  tab <- summary(pobj, interval=T, times = seq(0,horizon, breaks), cause = 1) %>%
     group_by({{treatment}}) %>%
     mutate(cumsum = cumsum(n.event)) %>%
     ungroup() %>%
@@ -163,23 +169,37 @@ clustR <- function(data,
     select({{treatment}}, time, cumsum, n.risk) %>%
     as.data.frame()
 
+  counts <-
+    bind_cols(
+      data %>% group_by(!!sym(treat_c)) %>%
+        filter(!!sym(event_c) == 1) %>%
+        summarise(n.events = n()),
+      data %>% group_by(!!sym(treat_c)) %>%
+        summarise(total = n()) %>%
+        select(-!!sym(treat_c)))
+
 
   stopCluster(cl)
   l <- list("table" = tab,
             "risks" = risk,
             "difference" = dif,
+            "counts" = counts,
             "plot_data" = plot,
+            "models" =  data.frame(model = c("treatment", "event", "censoring"),
+                                   formula = c(treat.mod, out.mod, c.mod)),
             "info" = list("timevar" = timevar_c,
                           "event" = event_c,
                           "group" = treat_c,
                           "group_levels" = group_levels,
                           "surv" = surv,
                           "survscale" = "AM",
-                          "time" = time,
-                          "breaks" = breaks))
+                          "time" = horizon,
+                          "breaks" = breaks,
+                          "event.digits" = event.digits))
   class(l) <- "clustR"
 
   return(l)
 
 }
+
 

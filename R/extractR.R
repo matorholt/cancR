@@ -53,11 +53,6 @@
 #   separate_header()
 
 
-
-
-
-
-
 extractR <- function(list,
                      vars = c("counts", "risks", "diff"),
                      format ="long",
@@ -99,15 +94,23 @@ extractR <- function(list,
     select(risks)
 
    diff <-
-    list$difference %>% slice(1,1:(length(grps)-1)) %>%
+    list$difference %>%
+     tibble::remove_rownames() %>%
+     slice(1,1:(length(grps)-1)) %>%
     mutate(diff = ifelse(row_number() > 1, str_c(numbR(diff, diff.digits), "%x(", ci, numbR(lower, diff.digits), sep, numbR(upper, diff.digits), ")xz", p.value), "reference")) %>%
     select(diff)
 
+   if(class(list) == "clustR") {
+     cat("clustR cannot report risk ratios currently\n")
+     ratio <- data.frame(ratio = rep("NA", length(grps)))
+   } else {
   ratio <-
     list$ratio %>% slice(1,1:(length(grps)-1)) %>%
     rename(rr = ratio) %>%
     mutate(ratio = ifelse(row_number() > 1, str_c(rr, "x(", ci, numbR(lower, ratio.digits), sep, numbR(upper, ratio.digits), ")xz", p.value), "reference")) %>%
     select(ratio)
+
+   }
 
   total <- bind_cols(counts, risks, diff, ratio)
 
@@ -306,7 +309,3 @@ for(i in names(tab)[str_detect(names(tab), "(risks|diff|ratio)(?!(_))")]) {
 tab
 
 }
-
-
-
-
