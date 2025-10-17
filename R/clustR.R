@@ -9,6 +9,8 @@
 #' @param event status indicator as either 0/1 or 0/1/2
 #' @param treatment treatment variable, must be coded as factor
 #' @param vars vector of covariates. All variables must be coded as factors and continouous variables must be binned
+#' @param outcome.vars variables that should only be included in the outcome models
+#' @param censoring.vars variables that should only be included in the censoring models
 #' @param cluster column indicating cluster variable (e.g. ID)
 #' @param time time horizon
 #' @param breaks subdivisions between time = 0 and fu
@@ -35,14 +37,16 @@
 #          across(c(X6:X10), ~ as.factor(.))) %>%
 #   drop_na(time, event, X1, X2, X3, X6, X7) %>%
 #   as.data.frame()
-#(t <- clustR(df, ttt, event, X1, vars = c(X2, X3, X6), cluster = id, time = 90, breaks = 10))
-# plotR(t, time_unit = "days")
+#(t <- clustR(df, ttt, event, X1, vars = c(X2, X3, X6), outcome.vars = X7, censoring.vars = X7, cluster = id, time = 90, breaks = 10))
+# plotR(t, time.unit = "days")
 
 clustR <- function(data,
                    timevar,
                    event,
                    treatment,
                    vars,
+                   outcome.vars,
+                   censoring.vars,
                    cluster,
                    time,
                    breaks,
@@ -66,6 +70,8 @@ clustR <- function(data,
   suppressWarnings(treat_c <- data %>% select({{treatment}}) %>% names())
   vars_c <- data %>% select({{vars}}) %>% names()
   cluster <- data %>% select({{cluster}}) %>% names()
+  ovars_c <- data %>% select({{outcome.vars}}) %>% names()
+  cvars_c <- data %>% select({{censoring.vars}}) %>% names()
 
   group_levels <- levels(data[,treat_c])
 
@@ -76,16 +82,16 @@ clustR <- function(data,
     as.data.frame()
 
   out.mod <-
-    paste0("Event(", substitute(timevar), ",", substitute(event), ")~", substitute(treatment), "+",
-           paste0(vars_c, collapse="+"), "+", paste0("cluster(", cluster, ")", collapse = ""))
+    paste0("Event(", timevar_c, ",", event_c, ")~", treat_c, "+",
+           paste0(c(vars_c, ovars_c) , collapse="+"), "+", paste0("cluster(", cluster, ")", collapse = ""))
 
 
  treat.mod <-
-    paste0(substitute(treatment), "~", paste0(vars_c, collapse="+"), collapse = "")
+    paste0(treat_c, "~", paste0(vars_c, collapse="+"), collapse = "")
 
 
   c.mod <-
-    paste0("~strata(", substitute(treatment), ",", paste0(vars_c, collapse=","), ")", collapse = "")
+    paste0("~strata(", treat_c, ",", paste0(c(vars_c, cvars_c), collapse=","), ")", collapse = "")
 
   risk <-
     rbindlist(parLapply(cl, seq(0,horizon,breaks), function(x){
@@ -201,5 +207,4 @@ clustR <- function(data,
   return(l)
 
 }
-
 

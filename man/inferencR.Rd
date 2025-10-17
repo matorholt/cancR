@@ -11,6 +11,7 @@ inferencR(
   event,
   vars,
   outcome.vars,
+  censoring.vars,
   time = 120,
   breaks = 12,
   estimator = "AIPTW",

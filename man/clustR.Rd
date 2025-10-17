@@ -10,6 +10,8 @@ clustR(
   event,
   treatment,
   vars,
+  outcome.vars,
+  censoring.vars,
   cluster,
   time,
   breaks,
@@ -28,6 +30,10 @@ clustR(
 \item{treatment}{treatment variable, must be coded as factor}
 
 \item{vars}{vector of covariates. All variables must be coded as factors and continouous variables must be binned}
+
+\item{outcome.vars}{variables that should only be included in the outcome models}
+
+\item{censoring.vars}{variables that should only be included in the censoring models}
 
 \item{cluster}{column indicating cluster variable (e.g. ID)}
 

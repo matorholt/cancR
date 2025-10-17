@@ -34,18 +34,20 @@
 #
 # df <- as.data.frame(df)
 #
-# t1 <- tablR(df,
-#       group=X2,
-#       vars=c(X1,X3,X4,X6,X7, age_group),
-#       labels = list("age_group" = c("0-40" = "<=40"),
-#                     "X1" = c("T2" = "T2-T3")),
-#       headings = list("age_group" = "Age2",
-#                       "X6" = "New_var"),
-#       total = T,
-#       numeric = c("median", "q1q3", "range"),
-#       test = T,
-#       show.na=T,
-#       censur = F)
+
+# (t1 <- tablR(df,
+#              group=X2,
+#              vars=c(X1,X3,X4,X6,X7, age_group),
+#              labels = list("age_group" = c("0-40" = "<=40"),
+#                            "X1" = c("T2" = "T2-T3")),
+#              headings = list("age_group" = "Age2",
+#                              "X6" = "New_var"),
+#              total = T,
+#              numeric = c("median", "q1q3", "range"),
+#              test = T,
+#              show.na=F,
+#              censur = F,
+#              simplify = T))
 
 tablR <- function(data,
                   group,
@@ -61,7 +63,8 @@ tablR <- function(data,
                   test.stats = c("kwt", "chisq"),
                   show.na = FALSE,
                   censur=F,
-                  digits = 1) {
+                  digits = 1,
+                  simplify = F) {
 
   numeric <- match.arg(numeric, c("median", "q1q3", "iqr", "range", "mean", "sd", "min", "max"), several.ok = T)
   direction <- match.arg(direction, c("colwise", "rowwise"))
@@ -79,11 +82,14 @@ tablR <- function(data,
   }
 
 
-  vars_c <- data %>% select({{vars}}) %>% names()
-  group_c <- data %>% select({{group}}) %>% names()
+   vars_c <- data %>% select({{vars}}) %>% names()
+  if(!missing(group)) {
+    group_c <- data %>% select({{group}}) %>% names()
 
-  if(reverse) {
-  data <- data %>% mutate(!!sym(group_c) := fct_rev(!!sym(group_c)))
+    if(reverse) {
+      data <- data %>% mutate(!!sym(group_c) := fct_rev(!!sym(group_c)))
+    }
+
   }
 
   for(v in names(labels)) {
@@ -92,6 +98,14 @@ tablR <- function(data,
 
   }
 
+   if(simplify) {
+
+     data <- data %>%
+       mutate(across(c({{vars}}), ~ if_else(. %in% c("0", 0, "No", "no"), NA, .)),
+              across(c(where(is.factor)), ~ fct_drop(.)))
+
+   }
+
   c <- tableby.control(test=test, total=total,
                        numeric.test=test.stats[1], cat.test=test.stats[2],
                        numeric.stats=numeric,
@@ -99,7 +113,13 @@ tablR <- function(data,
                        stats.labels=list(median="Median", q1q3="Q1, Q3", iqr = "IQR", mean = "Mean", sd="SD", range = "Range", Nmiss = "Missing")
                        )
 
+
+  if(missing(group)) {
+    form <- paste0(" ~ ", paste0(vars_c, collapse="+"))
+  } else {
   form <- paste0(group_c, " ~ ", paste0(vars_c, collapse="+"))
+  }
+
 
   table <- tableby(as.formula(form), data=data, control=c)
 
@@ -113,7 +133,15 @@ s <- summary(table,
         digits = digits)
 
 if(censur) {
-  for(v in c(as.character(unique(data[, group_c])), "Total")) {
+
+  if(missing(group)) {
+    loop_string <- "Total"
+
+  } else {
+  loop_string <- c(as.character(unique(data[, group_c])), "Total")
+  }
+
+  for(v in loop_string) {
 
     for(i in 1:length(s$object[[1]][v][[1]])) {
 
@@ -129,5 +157,6 @@ if(censur) {
 
 s
 }
+
 
 

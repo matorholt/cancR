@@ -68,6 +68,7 @@ inferencR <- function(data,
                       event,
                       vars,
                       outcome.vars,
+                      censoring.vars,
                       time = 120,
                       breaks = 12,
                       estimator = "AIPTW",
@@ -90,6 +91,7 @@ inferencR <- function(data,
   vars_c <- data %>% select({{vars}}) %>% names()
 
   ovars_c <- data %>% select({{outcome.vars}}) %>% names()
+  cvars_c <- data %>% select({{censoring.vars}}) %>% names()
 
   levels <- levels(data[[treat_c]])
 
@@ -123,7 +125,7 @@ inferencR <- function(data,
   #MODELS
 
   tvars <- paste0(vars_c, collapse = " + ")
-  cvars <- paste0(c(treat_c, vars_c), collapse = " + ")
+  cvars <- paste0(c(treat_c, vars_c, cvars_c), collapse = " + ")
   ovars <- paste0(c(treat_c, vars_c, ovars_c), collapse = " + ")
 
 

@@ -19,7 +19,8 @@ tablR(
   test.stats = c("kwt", "chisq"),
   show.na = FALSE,
   censur = F,
-  digits = 1
+  digits = 1,
+  simplify = F
 )
 }
 \arguments{
