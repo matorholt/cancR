@@ -4,7 +4,7 @@ pkgdown_sha: ~
 articles:
   articles/cancR: cancR.html
   articles/install: install.html
-last_built: 2025-10-21T13:07Z
+last_built: 2025-10-21T14:11Z
 urls:
   reference: https://matorholt.github.io/cancR/reference
   article: https://matorholt.github.io/cancR/articles
