@@ -6,7 +6,7 @@
 \usage{
 extractR(
   list,
-  vars = c("counts", "risks", "diff"),
+  outcome = c("counts", "risks", "diff"),
   format = "long",
   ci = "95\%CI ",
   nsep = " / ",
@@ -26,7 +26,7 @@ extractR(
 \arguments{
 \item{list}{estimatR object}
 
-\item{vars}{Which outcome measures to provide (counts, risks, differneces and/or ratios)}
+\item{outcome}{Which outcome measures to provide (counts, risks, differneces and/or ratios)}
 
 \item{format}{Format of the table (long or wide).}
 

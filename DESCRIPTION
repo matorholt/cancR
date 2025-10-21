@@ -33,5 +33,7 @@ Imports:
     ggpubr,
     tibble
 LazyData: true
-Config/Needs/website: rmarkdown
+Config/Needs/website: rmarkdown, quarto
 URL: https://matorholt.github.io/cancR/
+Suggests: 
+    quarto

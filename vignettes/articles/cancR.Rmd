@@ -28,6 +28,7 @@ If the cancR package has not been installed before, there are four steps.
 ### Step 1
 
 Install the packages "devtools" and "pak" using the command install.packages(c("devtools", "pak"))
+
 ```{r, echo=F, out.width="80%"}
 knitr::include_graphics("c_2.png")
 ```

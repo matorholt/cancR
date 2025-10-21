@@ -2,7 +2,7 @@
 #'
 #'
 #' @param list estimatR object
-#' @param vars Which outcome measures to provide (counts, risks, differneces and/or ratios)
+#' @param outcome Which outcome measures to provide (counts, risks, differneces and/or ratios)
 #' @param format Format of the table (long or wide).
 #' @param ci The format of the confidence intervals (default = 95%CI)
 #' @param nsep The separator between event counts (default = /)
@@ -17,19 +17,7 @@
 #'
 #'
 
-# n <- 3000
-# set.seed(1)
-# df <- riskRegression::sampleData(n, outcome="survival")
-# df$time <- round(df$time,1)*12
-# df$time2 <- df$time + rnorm(n)
-# df$X1 <- factor(rbinom(n, prob = c(0.3,0.4) , size = 2), labels = paste0("T",0:2))
-# df$X3 <- factor(rbinom(n, prob = c(0.3,0.4,0.3) , size = 3), labels = paste0("T",0:3))
-# df$event2 <- rbinom(n, 2, prob=.3)
-# df <- as.data.frame(df)
-#
-# df2 <- df %>% mutate(X2 = ifelse(row_number()==1, NA, X2),
-#                      event = as.factor(event)) %>%
-#   rename(ttt = time) %>%
+# df2 <- analysis_df %>%
 #   mutate(X2 = ifelse(X2 == 1, "No CLL", "CLL"))
 #
 # t2 <- estimatR(df2, ttt, event2, X2, type = "select", vars = c(X6,X7))
@@ -39,7 +27,7 @@
 # extractR(t2, format = "wide")
 # (tab <- extractR(t2,
 #                  format = "wide",
-#                  vars = c("counts", "risks", "diff", "ratio"),
+#                  outcome = c("counts", "risks", "diff", "ratio"),
 #                  total.count = T,
 #                  flextable = T,
 #                  sep.ci = F,
@@ -54,7 +42,7 @@
 
 
 extractR <- function(list,
-                     vars = c("counts", "risks", "diff"),
+                     outcome = c("counts", "risks", "diff"),
                      format ="long",
                      ci = "95%CI ",
                      nsep = " / ",
@@ -70,7 +58,9 @@ extractR <- function(list,
                      flextable = F,
                      reverse = T) {
 
-  vars <- match.arg(vars, c("counts", "risks", "diff", "ratio"), several.ok=TRUE)
+  outcome <- match.arg(outcome, c("counts", "risks", "diff", "ratio"), several.ok=TRUE)
+
+  if(class(list) %in% c("incidencR", "clustR")) outcome <- c("counts", "risks")
 
   grps <- list$info$group_levels
 
@@ -93,15 +83,18 @@ extractR <- function(list,
                                                     risks = str_c(est, "%x(", ci, lower, sep, upper, ")")) %>%
     select(risks)
 
+  if(class(list) == "incidencR") {
+    diff <- data.frame(diff = rep("NA", length(grps)))
+  } else {
    diff <-
     list$difference %>%
      tibble::remove_rownames() %>%
      slice(1,1:(length(grps)-1)) %>%
     mutate(diff = ifelse(row_number() > 1, str_c(numbR(diff, diff.digits), "%x(", ci, numbR(lower, diff.digits), sep, numbR(upper, diff.digits), ")xz", p.value), "reference")) %>%
     select(diff)
+  }
 
-   if(class(list) == "clustR") {
-     cat("clustR cannot report risk ratios currently\n")
+   if(class(list) %in% c("incidencR", "clustR")) {
      ratio <- data.frame(ratio = rep("NA", length(grps)))
    } else {
   ratio <-
@@ -118,7 +111,7 @@ extractR <- function(list,
   if(format == "long") {
     tab <- total %>%
       mutate(!!sym(list$info$group) := grps) %>%
-      select(!!sym(list$info$group), {{vars}})
+      select(!!sym(list$info$group), {{outcome}})
 
 
     for(i in names(tab)[str_detect(names(tab), "diff|ratio")]) {
@@ -167,11 +160,11 @@ for(i in names(tab)[str_detect(names(tab), "(risks|diff|ratio)(?!(_))")]) {
 
     for(i in 1:length(grps)) {
 
-      frames[[i]] <- lapply(vars, function(j) {
+      frames[[i]] <- lapply(outcome, function(j) {
 
         total[i, j]
 
-      }) %>% set_names(paste0(grps[i], "_", vars))
+      }) %>% set_names(paste0(grps[i], "_", outcome))
 
       names <- c(names, names(frames[[i]]))
 
@@ -182,7 +175,7 @@ for(i in names(tab)[str_detect(names(tab), "(risks|diff|ratio)(?!(_))")]) {
 
 
 
-    tab <- tab[-which(vars %in% c("diff", "ratio"))]
+    tab <- tab[-which(outcome %in% c("diff", "ratio"))]
 
 
 
@@ -309,3 +302,4 @@ for(i in names(tab)[str_detect(names(tab), "(risks|diff|ratio)(?!(_))")]) {
 tab
 
 }
+

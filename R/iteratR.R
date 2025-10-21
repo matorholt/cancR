@@ -1,9 +1,9 @@
 #' Perform multiple estimatR analyses
 #'
 #'
-#' @param data list of dataframe(s)
-#' @param names vector of names for the returned list of models. If missing the "events" names are used.
-#' @param method which cancR function to use. Choose between "estimatR", "incidencR", "clustR" and "inferencR".
+#' @param data data frame, list of data frames or object of class "iteratR"
+#' @param names vector of names for the returned list of models. If missing the "events" names or names in the iteratR object are used.
+#' @param method which cancR function to use. Choose between "estimatR", "incidencR", "clustR" and "inferencR". The previous can be passed to "extractR" and "plotR"
 #' @param ... See arguments in the specific function documentations. Multiple arguments should be inputted as lists (e.g. time = list(60,60,120))
 
 #'
@@ -21,18 +21,6 @@
 #                names = c("m1", "m2", "m3"),
 #                method = "inferencR")
 #
-# plotR(inf$m1)
-#
-# ii <- inferencR(analysis_df,
-#                 treatment = X2,
-#                 timevar = ttt,
-#                 event = event2,
-#                 vars = c(X1, X3, X6, X7),
-#                 outcome.vars = X10)
-#
-# plotR(t1)
-#
-#
 # clu <-
 #   iteratR(analysis_df,
 #           timevar = "ttt",
@@ -46,9 +34,6 @@
 #           event.digits=0,
 #           method = "clustR")
 #
-# plotR(clu$m1)
-#
-#
 # inc <-
 #   iteratR(analysis_df,
 #           timevar = "ttt",
@@ -57,21 +42,26 @@
 #           time = 60,
 #           names = c("m1", "m2", "m3"),
 #           method = "incidencR")
-# plotR(inc$m1)
 #
 # est <-
 #   iteratR(analysis_df,
 #           timevar = "ttt",
 #           event = c("event", "event", "event2"),
 #           group = "X3",
-#           survscale = "OS",
+#           survscale = c("OS", "OS", "AM"),
 #           time = list(60,60,120),
 #           names = c("m1", "m2", "m3"),
 #           type = "select",
 #           vars = c("X6", "X7"),
 #           method = "estimatR")
+# #plotR
+# iteratR(est, method = "plotR",
+#         title = names(est),
+#         y = c(100,100,90))
+# #extractR
+# iteratR(est, method = "extractR", format = "wide")
 #
-# plotR(est$m1)
+# iteratR(inc, method = "extractR")
 
 
 iteratR <- function(data,
@@ -81,9 +71,38 @@ iteratR <- function(data,
 
   cat("\niteratR initialized: ", tickR(), "\n")
 
+  method_choices <- c("extractR", "plotR", "estimatR", "incidencR", "inferencR", "clustR")
+
+  if(method %nin% method_choices) {
+    return(cat(paste0("Error: Invalid choice of method. Choose between:\n", paste0(method_choices, collapse="\n"))))
+  }
+
   start <- tickR.start
 
-  #if(class(data) != "list") return(cat("ERROR: Please input the dataframe(s) as a list"))
+    if(method == "extractR") {
+
+      names <- NULL
+
+      out <- bind_rows(lapply(seq_along(data), function(x) {
+
+        extractR(data[[x]], ...) %>%
+        mutate(model = names(data)[[x]])
+
+      }))
+
+  } else if(method == "plotR") {
+
+    arg.list <- append(list(list = data), list(...))
+
+    out <- pmap(arg.list,
+                function(...) {
+
+                  plotR(...)
+
+                })
+
+
+  } else {
 
   if(missing(names)) {
     names <- paste(event, group)
@@ -94,7 +113,10 @@ iteratR <- function(data,
   arg.list[c("names")] <- NULL
   arg.list[c("start")] <- NULL
   arg.list[c("method")] <- NULL
+
+  if(class(data) != "list") {
   arg.list[["data"]] <- list(data)
+  }
 
 if("vars" %in% names(arg.list)) {
 
@@ -125,13 +147,15 @@ if("vars" %in% names(arg.list)) {
 
        })  %>% set_names(names)
 
+  class(out) <- "iteratR"
+
+  }
+
+
   cat(paste0("\nTotal runtime: \n"))
   cat(tockR("diff", start))
 
   return(out)
 
 }
-
-
-
 

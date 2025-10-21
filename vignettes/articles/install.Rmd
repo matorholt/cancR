@@ -1,6 +1,5 @@
 ---
 title: "Install and Update R"
-author: "Mathias Ørholt"
 output:
   html_document:
     toc: true
