@@ -13,8 +13,8 @@ clustR(
   outcome.vars,
   censoring.vars,
   cluster,
-  time,
-  breaks,
+  time = 60,
+  breaks = 12,
   digits = 4,
   event.digits = 2,
   cores = detectCores()/2
@@ -55,5 +55,5 @@ differences: Absolute risk difference at the specified time point \cr
 info: information on arguments for extraction
 }
 \description{
-Wrapper for the binregATE in the mets package for performing causal inference on time-to-event data in a competing risk setting with clustering
+Wrapper for the binregATE in the mets package for performing causal inference on time-to-event data in a competing risk setting with clustering. All covariates needs to be factorized.
 }

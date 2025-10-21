@@ -7,6 +7,8 @@
 #' @param survscale Whether estimates should be presented as Overall survival or All-Cause Mortality
 #' @param time time horizon (default=60 months)
 #' @param breaks Interim time points of interest. Defaults to 12 months (1-year gaps)
+#' @param digits for rounding of eventtimes
+#' @param event.digits whether eventtimes should be rounded. Default is 2 to preserve exact times
 #' @param quantiles Whether median time to event should be calculated (default = TRUE)
 #'
 #' @return
@@ -17,31 +19,14 @@
 #'
 #' @export
 #'
-# n <- 3000
-# set.seed(1)
-# df <- riskRegression::sampleData(n, outcome="survival")
-# df$time <- round(df$time,1)*12
-# df$time2 <- df$time + rnorm(n)
-# df$X1 <- factor(rbinom(n, prob = c(0.3,0.4) , size = 2), labels = paste0("T",0:2))
-# df$X3 <- factor(rbinom(n, prob = c(0.3,0.4,0.3) , size = 3), labels = paste0("T",0:3))
-# df$event2 <- rbinom(n, 2, prob=.3)
-# df <- as.data.frame(df)
+
+# i <- incidencR(analysis_df,
+#           timevar = ttt,
+#           event = event,
+#           group = X3,
+#           time = 60)
 #
-# df2 <- df %>% mutate(X2 = ifelse(row_number()==1, NA, X2),
-#                      event = as.factor(event)) %>%
-#   rename(ttt = time)
-#
-# #Survival
-# is0 <- incidencR(df2, ttt, event, survscale = "OS")
-# is1 <- incidencR(df2, ttt, event, X2, survscale = "OS")
-# is2 <- incidencR(df2, ttt, event, X1, survscale = "OS")
-# is3 <- incidencR(df2, ttt, event, X3, survscale = "OS")
-#
-# #Competing risks
-# ic0 <- incidencR(df2, ttt, event2)
-# ic1 <- incidencR(df2, ttt, event2, X2)
-# ic2 <- incidencR(df2, ttt, event2, X1)
-# ic3 <- incidencR(df2, ttt, event2, X3)
+# plotR(i)
 
 incidencR <- function(data,
                    timevar,
@@ -50,16 +35,15 @@ incidencR <- function(data,
                    survscale = "AM",
                    time=60,
                    breaks = 12,
+                   digits = 4,
+                   event.digits = 2,
                    quantiles = T) {
 
   dat <- data
 
-  timevar <- rlang::enquo(timevar)
-  event <- rlang::enquo(event)
-
-  timevar_c <- rlang::as_name(timevar)
-  event_c <- rlang::as_name(event)
-
+  suppressWarnings(timevar_c <- data %>% select({{timevar}}) %>% names())
+  suppressWarnings( event_c <- data %>% select({{event}}) %>% names())
+  suppressWarnings(group_c <- data %>% select({{group}}) %>% names())
   horizon <- time
 
   if(length(levels(dat[,event_c])) == 2) {
@@ -82,14 +66,13 @@ incidencR <- function(data,
       dat %>% mutate(grp = " ")
 
   } else {
-    group <- rlang::enquo(group)
-    group_c <- rlang::as_name(group)
+    group_c <- dat %>% select({{group}}) %>% names()
 
   }
 
     dat <-
-      dat %>% drop_na(!!group)%>%
-      mutate(!!group := as.factor(!!group))
+      dat %>% drop_na(!!sym(group_c)) %>%
+      mutate(!!sym(group_c) := as.factor(!!sym(group_c)))
 
     group_levels <- levels(dat[,group_c])
 
@@ -101,10 +84,8 @@ incidencR <- function(data,
 
     prod <- prodlim(as.formula(paste0("Hist(", timevar_c, ",", event_c, ") ~", group_c, collapse = "")), data=dat)
 
-
-
     tab <- summary(prod, times = seq(0,horizon,1), intervals = TRUE, cause=1) %>%
-      group_by(!!group) %>%
+      group_by(!!sym(group_c)) %>%
       mutate(cumsum = cumsum(n.event)) %>%
       ungroup() %>%
       rename(time = time1) %>%
@@ -114,13 +95,13 @@ incidencR <- function(data,
 
     est <- tab %>%
       filter(time %in% seq(0,horizon,breaks)) %>%
-      select(time, !!group, est:upper) %>%
+      select(time, !!sym(group_c), est:upper) %>%
       rename(se = se.est) %>%
-      mutate(across(c(est:upper), ~round(.,3)))
+      mutate(across(c(est:upper), ~round(.,digits)))
 
 
     plot <-
-      summary(prod, times = sort(unique(c(0,data[data[, event_c] == 1, timevar_c],horizon))), intervals = TRUE, cause=1) %>%
+      summary(prod, times = unique(round(sort(c(0,dat[dat[, event_c] == 1 & dat[,timevar_c] < horizon, timevar_c],horizon)),event.digits)), intervals = TRUE, cause=1) %>%
       select(-time0, -n.lost, -contains("se.")) %>%
       rename(time = time1) %>%
       rename_with(~ paste0(str_replace(.x, "cuminc|surv", "est")), matches("cuminc|surv")) %>%
@@ -142,7 +123,7 @@ incidencR <- function(data,
     if(quantiles) {
       qs <-
         as.data.frame(quantile(prod, tab[tab[, "time"] == horizon, "est"]/2))
-      msurv <- tibble(!!group := qs[,group_c],
+      msurv <- tibble(!!sym(group_c) := qs[,group_c],
                       q = qs$q,
                       time = qs$quantile,
                       lwr = qs$lower,
@@ -150,7 +131,16 @@ incidencR <- function(data,
         slice(1,3,5,8)
     }
 
-    prop <- est %>%group_by(!!group)%>%
+    counts <-
+      bind_cols(
+        dat %>% group_by(!!sym(group_c)) %>%
+          filter(!!sym(event_c) == 1) %>%
+          summarise(n.events = n()),
+        dat %>% group_by(!!sym(group_c)) %>%
+          summarise(total = n()) %>%
+          select(-!!sym(group_c)))
+
+    prop <- est %>%group_by(!!sym(group_c))%>%
       mutate(est = ifelse(rep(survscale == "OS", n()), 1-est, est),
              before = est / last(est)* 100,
              after = 100-before,
@@ -161,12 +151,12 @@ incidencR <- function(data,
              rescil = (pmax((residual - (1.96*rse)), 0)),
              resciu = (pmin((residual +(1.96*rse)),100)),
              across(c(residual, rescil, resciu), ~. * 100))%>%
-      select(time, !!group, before, after, window, residual, rescil, resciu)%>%
+      select(time, !!sym(group_c), before, after, window, residual, rescil, resciu)%>%
       filter(time < horizon)
 
     conditional <- rbindlist(lapply(group_levels, function(x){
-      tab2 <- tab %>%filter(!!group %in% x)
-      risk2 <- est %>%filter(!!group %in% x)
+      tab2 <- tab %>%filter(!!sym(group_c) %in% x)
+      risk2 <- est %>%filter(!!sym(group_c) %in% x)
       condi <- rbindlist(lapply(seq(breaks,horizon,breaks), function(t1){
 
         if(surv & survscale == "OS") {
@@ -201,8 +191,8 @@ incidencR <- function(data,
       })) %>% rbind(risk2[risk2$time %in% horizon ,c("est","lower","upper")], .)%>%
         mutate(grp = x,
                time = seq(0,horizon,breaks))%>%
-        rename(!!group := grp) %>%
-        select(time, !!group, est, lower, upper) %>%
+        rename(!!sym(group_c) := grp) %>%
+        select(time, !!sym(group_c), est, lower, upper) %>%
         tibble::remove_rownames()
 
       return(condi)
@@ -211,6 +201,7 @@ incidencR <- function(data,
     list <- list("table" = tab,
                  "plot_data" = plot,
                  "risks" = est,
+                 "counts" = counts,
                 "event_proportions" = prop,
                 "conditional" = conditional,
                  "info" = list("timevar" = timevar_c,
@@ -221,8 +212,12 @@ incidencR <- function(data,
                                "survscale" = survscale,
                                "time" = horizon,
                                "breaks" = breaks,
+                               "event.digits" = event.digits,
                                "multi" = multi))
   class(list)<- "incidencR"
   return(list)
 
+
 }
+
+

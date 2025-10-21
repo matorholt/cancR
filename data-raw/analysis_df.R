@@ -9,7 +9,12 @@ df$event2 <- rbinom(n, 2, prob=.3)
 df <- as.data.frame(df)
 
 analysis_df <- df %>% mutate(X2 = ifelse(row_number()==1, NA, X2),
-                     event = as.factor(event)) %>%
+                     id = sample(seq(1,700), size = n, replace=TRUE)) %>%
+  factR(c(X2, event)) %>%
+  cutR(c(X6:X10),
+       list("quantile", c(0, 0.25,0.5,0.75, 1)),
+       name.pattern = "_bin",
+       digits = 4) %>%
   rename(ttt = time) %>%
   select(-eventtime, -censtime)
 

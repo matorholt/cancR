@@ -41,7 +41,7 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">cutR</span><span class="op">(</span><span class="va">data</span>, <span class="va">vars</span>, <span class="va">seqlist</span>, names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">cutR</span><span class="op">(</span><span class="va">data</span>, <span class="va">vars</span>, <span class="va">seqlist</span>, name.list <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>, name.pattern <span class="op">=</span> <span class="cn">NULL</span>, digits <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -60,8 +60,12 @@
 <dd><p>List of the split patterns for each var. E.g. list("v1" = seq(0,10), "v2" = round(quantile(df %&gt;% pull(age), seq(0,1,0.1)),0))</p></dd>
 
 
-<dt id="arg-names">names<a class="anchor" aria-label="anchor" href="#arg-names"></a></dt>
+<dt id="arg-name-list">name.list<a class="anchor" aria-label="anchor" href="#arg-name-list"></a></dt>
 <dd><p>Whether the split should overwrite or as a new variable</p></dd>
+
+
+<dt id="arg-name-pattern">name.pattern<a class="anchor" aria-label="anchor" href="#arg-name-pattern"></a></dt>
+<dd><p>Optional naming pattern that should automatically be pasted on the end of the variable name.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -69,6 +73,30 @@
     <p>The inputted dataframe with the cut variables</p>
     </div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">redcap_df</span> <span class="op">%&gt;%</span></span></span>
+<span class="r-in"><span>  <span class="fu">cutR</span><span class="op">(</span><span class="va">size</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">100</span>,<span class="fl">10</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span></span></span>
+<span class="r-in"><span>  <span class="va">str</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 'data.frame':	500 obs. of  15 variables:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ id             : int  1 2 3 4 5 6 7 8 9 10 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ sex            : num  1 1 2 1 1 2 1 1 1 1 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ birth          : chr  "13-10-1966" "31-10-1934" "04-04-1942" "27-10-1933" ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ followup       : chr  "02-03-2023" "17-08-2023" "24-01-2021" "06-10-2022" ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ date_of_surgery: chr  "2002-07-07" "1997-03-10" "2000-01-29" "1992-10-28" ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ size           : Factor w/ 5 levels "30-40","20-30",..: 2 3 3 3 5 2 4 3 4 3 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ type           : int  1 1 0 2 0 2 2 2 1 2 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ localisation   : int  3 4 2 4 2 2 2 1 4 3 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ necrosis       : num  0 NA NA 0 1 0 0 NA NA NA ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ cd10           : num  NA NA NA NA 1 1 1 1 1 1 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ sox10          : num  NA NA 0 0 0 0 0 NA 0 0 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ ck             : num  NA NA NA 1 0 1 0 1 NA NA ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ death_date     : chr  NA "2017-04-11" NA NA ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ recurrence_date: chr  "2011-08-28" NA "2012-12-23" NA ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ metastasis_date: chr  NA "2014-08-19" "2014-09-15" "2012-12-25" ...</span>
+<span class="r-in"><span></span></span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
 

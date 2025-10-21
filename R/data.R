@@ -59,6 +59,8 @@
 #'   \item{ttt, time2}{event times}
 #'   \item{event}{binary status indicator (e.g. alive/death)}
 #'   \item{event2}{status indicator where 0 is censoring, 1 is event of interest and 2 is death as a competing risk}
+#'   \item{id}{patient id}
+#'   \item{X6_bin, X7_bin, X8_bin, X9_bin, X10_bin}{X6-X10 binned based on quintiles}
 #'   ...
 #' }
 "analysis_df"

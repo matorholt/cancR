@@ -145,6 +145,9 @@ plotR <- function(list,
   res <- est %>% filter(time %in% horizon)
   event.digits <- list$info$event.digits
 
+  if(class(list) == "incidencR") contrast <- "none"
+
+  if(contrast != "none") {
   #Contrast labels
   c_var <- names(list)[str_detect(names(list), paste0(contrast, collapse="|"))]
 
@@ -184,10 +187,14 @@ plotR <- function(list,
   }
   }
 
-
   if(length(levels) > 2) {
     c_labels <- c("reference", c_labels[1:(length(levels)-1)])
   }
+
+  }
+
+
+
 
 
 
@@ -197,7 +204,11 @@ plotR <- function(list,
   }
 
   if(missing(y)) {
-    y <- closR(pmin(max(plot$upper[plot$time == round(horizon, event.digits)]*1.3), 1)*100, c(seq(1,5), seq(10, 100, 10)))
+    if(list$info$survscale == "AM") {
+      y <- closR(pmin(max(plot$upper[plot$time == round(horizon, event.digits)]*1.3), 1)*100, c(seq(1,5), seq(10, 100, 10)))
+    } else {
+      y <- 100
+    }
   }
 
   #Grid
@@ -456,5 +467,4 @@ plotR <- function(list,
 
 
 }
-
 

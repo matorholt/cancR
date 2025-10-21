@@ -4,7 +4,7 @@
 \alias{cutR}
 \title{Cut numeric variables into intervals}
 \usage{
-cutR(data, vars, seqlist, names = list())
+cutR(data, vars, seqlist, name.list = list(), name.pattern = NULL, digits = 0)
 }
 \arguments{
 \item{data}{dataframe. Works with piping.}
@@ -13,11 +13,19 @@ cutR(data, vars, seqlist, names = list())
 
 \item{seqlist}{List of the split patterns for each var. E.g. list("v1" = seq(0,10), "v2" = round(quantile(df \%>\% pull(age), seq(0,1,0.1)),0))}
 
-\item{names}{Whether the split should overwrite or as a new variable}
+\item{name.list}{Whether the split should overwrite or as a new variable}
+
+\item{name.pattern}{Optional naming pattern that should automatically be pasted on the end of the variable name.}
 }
 \value{
 The inputted dataframe with the cut variables
 }
 \description{
 Wrapper for cut() with simplified labels and automatic conversion to factor based on most frequent levels
+}
+\examples{
+redcap_df \%>\%
+  cutR(size, seq(0,100,10)) \%>\%
+  str
+
 }

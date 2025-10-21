@@ -43,19 +43,22 @@
 # df$event2 <- rbinom(n, 2, prob=.3)
 # df <- as.data.frame(df)
 #
+# tdf <- analysis_df %>%
+#   drop_na(X2) %>%
+#   mutate(X2 = fct_drop(X2))
 #
-# t1 <- inferencR(df,
+# t1 <- inferencR(analysis_df,
 #                 treatment = X2,
-#                 timevar = time,
+#                 timevar = ttt,
 #                 event = event2,
 #                 vars = c(X1, X3, X6, X7),
 #                 outcome.vars = X10)
 #
 # plotR(t1)
 #
-# t2 <- inferencR(df,
+# t2 <- inferencR(analysis_df,
 #                 treatment = X2,
-#                 timevar = time,
+#                 timevar = ttt,
 #                 event = event,
 #                 vars = c(X1, X3, X6, X7),
 #                 survscale = "AM")
@@ -81,7 +84,8 @@ inferencR <- function(data,
 
   cat("\ninferencR initialized: ", tickR(), "\n")
 
-  dat <- data
+  dat <- data %>%
+    drop_na({{treatment}})
   horizon <- time
 
   treat_c <- data %>% select({{treatment}}) %>% names()
@@ -236,7 +240,8 @@ inferencR <- function(data,
       group_by(!!sym(treat_c)) %>%
       #Fix drops in risk but retain CI width
       mutate(across(c(lower, upper), ~ . + (cummin(est) - est)),
-             est = cummin(est)) %>%
+             est = cummin(est),
+             across(c(est, lower, upper), ~ cummax(.))) %>%
   ungroup() %>%
   as.data.frame()
 
@@ -300,7 +305,8 @@ inferencR <- function(data,
                              "surv" = surv,
                              "survscale" = survscale,
                              "time" = horizon,
-                             "breaks" = breaks))
+                             "breaks" = breaks,
+                             "event.digits" = event.digits))
 
   if(survtime) {
     list <- append(list, list("time_to_event" = msurv))

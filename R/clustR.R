@@ -1,7 +1,7 @@
 #' Causal inference on time-to-event data with clustering and competing risks
 #'
 #' @description
-#' Wrapper for the binregATE in the mets package for performing causal inference on time-to-event data in a competing risk setting with clustering
+#' Wrapper for the binregATE in the mets package for performing causal inference on time-to-event data in a competing risk setting with clustering. All covariates needs to be factorized.
 #'
 #'
 #' @param data dataset
@@ -28,17 +28,8 @@
 #'
 #'
 
-# set.seed(1)
-# n=1000
-# df <- riskRegression::sampleData(n) %>%
-#   mutate(id = sample(seq(1,700), size = n, replace=TRUE),
-#          ttt = time*30,
-#          across(c(X6:X10), ~ cut(., breaks = unique(quantile(., c(0, 0.25,0.5,0.75, 1))))),
-#          across(c(X6:X10), ~ as.factor(.))) %>%
-#   drop_na(time, event, X1, X2, X3, X6, X7) %>%
-#   as.data.frame()
-#(t <- clustR(df, ttt, event, X1, vars = c(X2, X3, X6), outcome.vars = X7, censoring.vars = X7, cluster = id, time = 90, breaks = 10))
-# plotR(t, time.unit = "days")
+# t <- clustR(analysis_df, ttt, event2, X1, vars = c(X3, X6_bin, X7_bin), outcome.vars = X8_bin, censoring.vars = X8_bin, cluster = id, time = 60, breaks = 12)
+# plotR(t)
 
 clustR <- function(data,
                    timevar,
@@ -48,22 +39,15 @@ clustR <- function(data,
                    outcome.vars,
                    censoring.vars,
                    cluster,
-                   time,
-                   breaks,
+                   time=60,
+                   breaks = 12,
                    digits = 4,
                    event.digits = 2,
                    cores = detectCores()/2) {
 
-  cl <- makeCluster(cores)
-  clusterEvalQ(cl, {
-    library(tidyverse)
-    library(mets)
-    library(cancR)
-  })
+  cat("\nclustR initialized: ", tickR(), "\n")
 
-  if(length(unique(data %>% pull({{event}}) == 2))) {
-    surv <- TRUE
-  } else {surv <- FALSE}
+
 
   suppressWarnings(timevar_c <- data %>% select({{timevar}}) %>% names())
   suppressWarnings(event_c <- data %>% select({{event}}) %>% names())
@@ -77,9 +61,32 @@ clustR <- function(data,
 
   horizon <- time
 
-  data <- data %>% drop_na(!!sym(treat_c))%>%
+  classes <- c()
+
+  for(v in c(vars_c, ovars_c, cvars_c, treat_c)) {
+
+    if(any(class(data[[v]]) %nin% c("factor"))) {
+      classes <- c(classes, v)
+    }
+
+
+  }
+
+  if(length(classes) > 0) {
+    return(cat(paste0("Error: The following variables are not factors: ", paste0(classes, collapse = ", "))))
+  }
+
+  if(length(levels(data[,event_c])) == 2) {
+    data[,event_c] <- as.numeric(data[,event_c]) - 1
+  }
+
+  data <- data %>% drop_na(!!sym(treat_c)) %>%
     mutate(!!sym(treat_c) := as.factor(!!sym(treat_c))) %>%
     as.data.frame()
+
+  if(length(unique(data %>% pull({{event}}) == 2))) {
+    surv <- TRUE
+  } else {surv <- FALSE}
 
   out.mod <-
     paste0("Event(", timevar_c, ",", event_c, ")~", treat_c, "+",
@@ -92,6 +99,14 @@ clustR <- function(data,
 
   c.mod <-
     paste0("~strata(", treat_c, ",", paste0(c(vars_c, cvars_c), collapse=","), ")", collapse = "")
+
+  #Prepare parallelization
+  cl <- makeCluster(cores)
+  clusterEvalQ(cl, {
+    library(tidyverse)
+    library(mets)
+    library(cancR)
+  })
 
   risk <-
     rbindlist(parLapply(cl, seq(0,horizon,breaks), function(x){
@@ -158,21 +173,22 @@ clustR <- function(data,
     mutate(across(c(time, est, lower, upper), ~ ifelse(row_number() == 1, 0, .)),
          time = ifelse(row_number() == n(), time+0.6, time),
          across(c(lower, upper), ~ . + (cummax(est) - est)),
-         est = cummax(est)) %>%
+         across(c(est, lower, upper), ~ cummax(.))) %>%
    ungroup() %>%
    as.data.frame()
 
-  lhs <- paste(c("Hist(", paste(substitute(timevar)), ",", paste(substitute(event)), ") ~"), collapse = "")
-  rhs_g <- paste(substitute(treatment))
-  form_g <- as.formula(paste(c(lhs, rhs_g), collapse = ""))
-  pobj <- prodlim(form_g, data=data)
+  # lhs <- paste(c("Hist(", timevar_c), ",", event_c), ") ~"), collapse = "")
+  # rhs_g <- treat_c
+  # form_g <- as.formula(paste(c(lhs, rhs_g), collapse = ""))
+  # pobj <- prodlim(form_g, data=data)
+  prod <- prodlim(as.formula(paste0("Hist(", timevar_c, ", ", event_c, ") ~", treat_c, collapse = "")), data=data)
 
-  tab <- summary(pobj, interval=T, times = seq(0,horizon, breaks), cause = 1) %>%
-    group_by({{treatment}}) %>%
+  tab <- summary(prod, interval=T, times = seq(0,horizon, breaks), cause = 1) %>%
+    group_by(!!sym(treat_c)) %>%
     mutate(cumsum = cumsum(n.event)) %>%
     ungroup() %>%
     rename(time = time1) %>%
-    select({{treatment}}, time, cumsum, n.risk) %>%
+    select(!!sym(treat_c), time, cumsum, n.risk) %>%
     as.data.frame()
 
   counts <-
@@ -203,6 +219,9 @@ clustR <- function(data,
                           "breaks" = breaks,
                           "event.digits" = event.digits))
   class(l) <- "clustR"
+
+  cat(paste0("\nTotal runtime: \n"))
+  cat(tockR("diff"))
 
   return(l)
 

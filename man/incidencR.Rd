@@ -12,6 +12,8 @@ incidencR(
   survscale = "AM",
   time = 60,
   breaks = 12,
+  digits = 4,
+  event.digits = 2,
   quantiles = T
 )
 }
@@ -29,6 +31,10 @@ incidencR(
 \item{time}{time horizon (default=60 months)}
 
 \item{breaks}{Interim time points of interest. Defaults to 12 months (1-year gaps)}
+
+\item{digits}{for rounding of eventtimes}
+
+\item{event.digits}{whether eventtimes should be rounded. Default is 2 to preserve exact times}
 
 \item{quantiles}{Whether median time to event should be calculated (default = TRUE)}
 }
