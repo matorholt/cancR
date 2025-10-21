@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Install and Update R • cancR</title>
+<title>Setup and New Projects • cancR</title>
 <!-- favicons --><link rel="icon" type="image/png" sizes="96x96" href="../favicon-96x96.png">
 <link rel="icon" type="”image/svg+xml”" href="../favicon.svg">
 <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
@@ -15,7 +15,7 @@
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Install and Update R">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Setup and New Projects">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -60,72 +60,54 @@
 
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
-      <img src="../logo.png" class="logo" alt=""><h1>Install and Update R</h1>
+      <img src="../logo.png" class="logo" alt=""><h1>Setup and New Projects</h1>
             
       
 
-      <div class="d-none name"><code>install.Rmd</code></div>
+      <div class="d-none name"><code>setup.Rmd</code></div>
     </div>
 
     
     
 <div class="section level2">
-<h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
+<h2 id="basic-setup">Basic setup<a class="anchor" aria-label="anchor" href="#basic-setup"></a>
 </h2>
-<p>This article is for installing R if it has not been installed before
-and for updating R if this is needed. If R is already installed, skip
-the installation chapter.</p>
+<p>The first time you use R, it should be properly set up for optimal
+use. The main page looks like this:</p>
+<p><img src="p_1.png" width="100%"></p>
+<p>In the tools pane, choose global settings and pane layout. Here we
+switch the placment of the console and environment and save the
+choices.</p>
+<p><img src="p_2.png" width="50%" style="display: block; margin: auto;"></p>
+<p><img src="p_3.png" width="80%" style="display: block; margin: auto;"></p>
+<p>Now R should look like this and is ready for use.</p>
+<p><img src="p_4.png" width="100%"></p>
 </div>
 <div class="section level2">
-<h2 id="installation-of-r">Installation of R<a class="anchor" aria-label="anchor" href="#installation-of-r"></a>
+<h2 id="setup-new-projects">Setup new projects<a class="anchor" aria-label="anchor" href="#setup-new-projects"></a>
 </h2>
-<p>R is installed from softwareshoppen which is found at the desktop.
-Click “installer” and “bestil” and wait for 10 to 15 minutes.</p>
-<p><img src="ss_1.png" width="100%"></p>
-<p>After the instillation of R, we also need to install R-studio and
-wait again.</p>
-<p><img src="ss_2.png" width="100%"></p>
-</div>
-<div class="section level2">
-<h2 id="update-r">Update R<a class="anchor" aria-label="anchor" href="#update-r"></a>
-</h2>
-<p>R can be updated directly in R, as softwareshoppen is not always
-up-to-date. This requires a specific package called “installr”. The
-installation needs to be run directly from R and not R-studio.</p>
-<div class="section level3">
-<h3 id="step-1">Step 1<a class="anchor" aria-label="anchor" href="#step-1"></a>
-</h3>
-<p>Open R (not R studio)</p>
-<p><img src="u_1.png" width="30%"></p>
-</div>
-<div class="section level3">
-<h3 id="step-2">Step 2<a class="anchor" aria-label="anchor" href="#step-2"></a>
-</h3>
-<p>Install the package “installr” by typing install.packages(“installr”)
-in R.</p>
-<p><img src="u_2.png" width="100%"></p>
-</div>
-<div class="section level3">
-<h3 id="step-3">Step 3<a class="anchor" aria-label="anchor" href="#step-3"></a>
-</h3>
-<p>Once the package has been installed, use the function “updateR()” by
-typing installr::updateR()</p>
-<p><img src="u_3.png" width="100%"></p>
-</div>
-<div class="section level3">
-<h3 id="step-4">Step 4<a class="anchor" aria-label="anchor" href="#step-4"></a>
-</h3>
-<p>Follow the installation process</p>
-<p><img src="u_4.png" width="50%" style="display: block; margin: auto;"><img src="u_5.png" width="50%" style="display: block; margin: auto;"><img src="u_6.png" width="50%" style="display: block; margin: auto;"><img src="u_7.png" width="50%" style="display: block; margin: auto;"><img src="u_8.png" width="50%" style="display: block; margin: auto;"><img src="u_9.png" width="50%" style="display: block; margin: auto;"></p>
-</div>
-<div class="section level3">
-<h3 id="step-5">Step 5<a class="anchor" aria-label="anchor" href="#step-5"></a>
-</h3>
-<p>To confirm that R has correctly been updated, open R-studio and
-notice the version in the upper right corner</p>
-<p><img src="u_10.png" width="80%"></p>
-<p>You have now successfully updated R</p>
-</div>
+<p>All projects should always be set up using the R project structure.
+This ensures that R will always be able to identify the correct project
+folder. It makes loading and saving data more easy as this will always
+be placed in the correct folder.</p>
+<p>First, find the folder of your project and create a new statistics
+folder</p>
+<p><img src="p_5.png" width="100%"></p>
+<p>Next open R and create a new R project file in the upper left corner,
+under file:</p>
+<p><img src="p_6.png" width="50%" style="display: block; margin: auto;"></p>
+<p>Choose existing directory and choose the statistics folder you just
+created</p>
+<p><img src="p_7.png" width="80%" style="display: block; margin: auto;"><img src="p_8.png" width="80%" style="display: block; margin: auto;"></p>
+<p>Now, create a folder named data for datasheets in the statistics
+folder</p>
+<p><img src="p_9.png" width="100%"></p>
+<p>Lastly, create a new R script in the upper left corner, under file
+and save it at the blue disc in the left corner.</p>
+<p><img src="p_10.png" width="50%" style="display: block; margin: auto;"></p>
+<p>If everything is correctly set up, you should see an R script, an R
+project file and a data folder in the lower right corner:</p>
+<p><img src="p_11.png" width="100%"></p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
