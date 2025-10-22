@@ -108,11 +108,8 @@ iteratR <- function(data,
     names <- paste(event, group)
   }
 
-  arg.list <- append(as.list(environment()), list(...))
-
-  arg.list[c("names")] <- NULL
-  arg.list[c("start")] <- NULL
-  arg.list[c("method")] <- NULL
+  arg.list <- list(...)
+    #append(as.list(environment()), list(...))
 
   if(class(data) != "list") {
   arg.list[["data"]] <- list(data)
@@ -158,4 +155,3 @@ if("vars" %in% names(arg.list)) {
   return(out)
 
 }
-

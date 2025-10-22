@@ -126,41 +126,42 @@ overview of the dataset.</p>
 rows:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">redcap_df</span><span class="op">)</span></span>
-<span><span class="co">#&gt;   id sex      birth   followup date_of_surgery     size type localisation</span></span>
-<span><span class="co">#&gt; 1  1   1 13-10-1966 02-03-2023      2002-07-07 24.10520    1            3</span></span>
-<span><span class="co">#&gt; 2  2   1 31-10-1934 17-08-2023      1997-03-10 42.34623    1            4</span></span>
-<span><span class="co">#&gt; 3  3   2 04-04-1942 24-01-2021      2000-01-29 40.90360    0            2</span></span>
-<span><span class="co">#&gt; 4  4   1 27-10-1933 06-10-2022      1992-10-28 42.93259    2            4</span></span>
-<span><span class="co">#&gt; 5  5   1 12-12-1927 31-03-2023      2001-03-31 18.67687    0            2</span></span>
-<span><span class="co">#&gt; 6  6   2 14-11-1932 30-07-2025      2004-01-11 20.99129    2            2</span></span>
+<span><span class="co">#&gt;   id sex  age      birth   followup date_of_surgery      size type localisation</span></span>
+<span><span class="co">#&gt; 1  1   1 40.9 26-04-1958 23-04-2021      1999-03-29  3.991349    0            2</span></span>
+<span><span class="co">#&gt; 2  2   2 57.8 18-01-1941 12-08-2024      1998-10-20 48.688670    0            1</span></span>
+<span><span class="co">#&gt; 3  3   2 32.2 30-07-1963 20-02-2022      1995-10-26 11.245841    0            4</span></span>
+<span><span class="co">#&gt; 4  4   2 58.7 31-12-1936 29-06-2024      1995-09-14 11.609164    2            1</span></span>
+<span><span class="co">#&gt; 5  5   2 29.3 12-01-1961 14-05-2023      1990-04-22  6.980464    0            3</span></span>
+<span><span class="co">#&gt; 6  6   2 18.3 10-12-1975 06-04-2025      1994-03-21 49.029171    2            0</span></span>
 <span><span class="co">#&gt;   necrosis cd10 sox10 ck death_date recurrence_date metastasis_date</span></span>
-<span><span class="co">#&gt; 1        0   NA    NA NA       &lt;NA&gt;      2011-08-28            &lt;NA&gt;</span></span>
-<span><span class="co">#&gt; 2       NA   NA    NA NA 2017-04-11            &lt;NA&gt;      2014-08-19</span></span>
-<span><span class="co">#&gt; 3       NA   NA     0 NA       &lt;NA&gt;      2012-12-23      2014-09-15</span></span>
-<span><span class="co">#&gt; 4        0   NA     0  1       &lt;NA&gt;            &lt;NA&gt;      2012-12-25</span></span>
-<span><span class="co">#&gt; 5        1    1     0  0 2018-09-24      2010-03-25            &lt;NA&gt;</span></span>
-<span><span class="co">#&gt; 6        0    1     0  1 2019-04-02      2015-04-17            &lt;NA&gt;</span></span></code></pre></div>
+<span><span class="co">#&gt; 1        0   NA     1  0       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 2        1    0     0  0       &lt;NA&gt;      2014-12-09            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 3        0    0     1 NA       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 4        1    1    NA  0 2019-07-27            &lt;NA&gt;      2012-04-04</span></span>
+<span><span class="co">#&gt; 5        0    0     0  0 2018-04-19            &lt;NA&gt;      2011-01-16</span></span>
+<span><span class="co">#&gt; 6       NA   NA    NA  0       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span></span></code></pre></div>
 <p>It is also important to assess the structure of the data to check for
 correct formatting. E.g. are date-variables coded as dates, continouous
 variables as numeric etc.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">redcap_df</span><span class="op">)</span></span>
-<span><span class="co">#&gt; 'data.frame':    500 obs. of  15 variables:</span></span>
+<span><span class="co">#&gt; 'data.frame':    500 obs. of  16 variables:</span></span>
 <span><span class="co">#&gt;  $ id             : int  1 2 3 4 5 6 7 8 9 10 ...</span></span>
-<span><span class="co">#&gt;  $ sex            : num  1 1 2 1 1 2 1 1 1 1 ...</span></span>
-<span><span class="co">#&gt;  $ birth          : chr  "13-10-1966" "31-10-1934" "04-04-1942" "27-10-1933" ...</span></span>
-<span><span class="co">#&gt;  $ followup       : chr  "02-03-2023" "17-08-2023" "24-01-2021" "06-10-2022" ...</span></span>
-<span><span class="co">#&gt;  $ date_of_surgery: chr  "2002-07-07" "1997-03-10" "2000-01-29" "1992-10-28" ...</span></span>
-<span><span class="co">#&gt;  $ size           : num  24.1 42.3 40.9 42.9 18.7 ...</span></span>
-<span><span class="co">#&gt;  $ type           : int  1 1 0 2 0 2 2 2 1 2 ...</span></span>
-<span><span class="co">#&gt;  $ localisation   : int  3 4 2 4 2 2 2 1 4 3 ...</span></span>
-<span><span class="co">#&gt;  $ necrosis       : num  0 NA NA 0 1 0 0 NA NA NA ...</span></span>
-<span><span class="co">#&gt;  $ cd10           : num  NA NA NA NA 1 1 1 1 1 1 ...</span></span>
-<span><span class="co">#&gt;  $ sox10          : num  NA NA 0 0 0 0 0 NA 0 0 ...</span></span>
-<span><span class="co">#&gt;  $ ck             : num  NA NA NA 1 0 1 0 1 NA NA ...</span></span>
-<span><span class="co">#&gt;  $ death_date     : chr  NA "2017-04-11" NA NA ...</span></span>
-<span><span class="co">#&gt;  $ recurrence_date: chr  "2011-08-28" NA "2012-12-23" NA ...</span></span>
-<span><span class="co">#&gt;  $ metastasis_date: chr  NA "2014-08-19" "2014-09-15" "2012-12-25" ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  $ sex            : num  1 2 2 2 2 2 2 1 1 2 ...</span></span>
+<span><span class="co">#&gt;  $ age            : num  40.9 57.8 32.2 58.7 29.3 18.3 52.7 36.2 42.6 55.8 ...</span></span>
+<span><span class="co">#&gt;  $ birth          : chr  "26-04-1958" "18-01-1941" "30-07-1963" "31-12-1936" ...</span></span>
+<span><span class="co">#&gt;  $ followup       : chr  "23-04-2021" "12-08-2024" "20-02-2022" "29-06-2024" ...</span></span>
+<span><span class="co">#&gt;  $ date_of_surgery: chr  "1999-03-29" "1998-10-20" "1995-10-26" "1995-09-14" ...</span></span>
+<span><span class="co">#&gt;  $ size           : num  3.99 48.69 11.25 11.61 6.98 ...</span></span>
+<span><span class="co">#&gt;  $ type           : int  0 0 0 2 0 2 0 2 2 1 ...</span></span>
+<span><span class="co">#&gt;  $ localisation   : int  2 1 4 1 3 0 3 5 4 1 ...</span></span>
+<span><span class="co">#&gt;  $ necrosis       : num  0 1 0 1 0 NA 1 NA 0 0 ...</span></span>
+<span><span class="co">#&gt;  $ cd10           : num  NA 0 0 1 0 NA 1 1 1 NA ...</span></span>
+<span><span class="co">#&gt;  $ sox10          : num  1 0 1 NA 0 NA 0 0 0 1 ...</span></span>
+<span><span class="co">#&gt;  $ ck             : num  0 0 NA 0 0 0 NA 0 0 1 ...</span></span>
+<span><span class="co">#&gt;  $ death_date     : chr  NA NA NA "2019-07-27" ...</span></span>
+<span><span class="co">#&gt;  $ recurrence_date: chr  NA "2014-12-09" NA NA ...</span></span>
+<span><span class="co">#&gt;  $ metastasis_date: chr  NA NA NA "2012-04-04" ...</span></span></code></pre></div>
 <p>Here we see that all date variables are coded as characters and not
 date. The conversion to date are described in the chapter: “Date
 formatting”</p>
@@ -177,13 +178,13 @@ function</p>
 <span><span class="co">#&gt; Nas detected in the following variables:</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;          variable NAs</span></span>
-<span><span class="co">#&gt; 1 metastasis_date 335</span></span>
-<span><span class="co">#&gt; 2      death_date 302</span></span>
-<span><span class="co">#&gt; 3 recurrence_date 258</span></span>
-<span><span class="co">#&gt; 4        necrosis 183</span></span>
-<span><span class="co">#&gt; 5           sox10 168</span></span>
-<span><span class="co">#&gt; 6              ck 156</span></span>
-<span><span class="co">#&gt; 7            cd10 149</span></span></code></pre></div>
+<span><span class="co">#&gt; 1 metastasis_date 329</span></span>
+<span><span class="co">#&gt; 2      death_date 322</span></span>
+<span><span class="co">#&gt; 3 recurrence_date 261</span></span>
+<span><span class="co">#&gt; 4              ck 174</span></span>
+<span><span class="co">#&gt; 5        necrosis 169</span></span>
+<span><span class="co">#&gt; 6            cd10 167</span></span>
+<span><span class="co">#&gt; 7           sox10 164</span></span></code></pre></div>
 <p>We can also check if numerical variables are normally distributed
 with the distributR() function</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
@@ -204,73 +205,1082 @@ function.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">redcap_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">sex</span>, <span class="va">birth</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>  <span class="va">head</span></span>
 <span><span class="co">#&gt;   id sex      birth</span></span>
-<span><span class="co">#&gt; 1  1   1 13-10-1966</span></span>
-<span><span class="co">#&gt; 2  2   1 31-10-1934</span></span>
-<span><span class="co">#&gt; 3  3   2 04-04-1942</span></span>
-<span><span class="co">#&gt; 4  4   1 27-10-1933</span></span>
-<span><span class="co">#&gt; 5  5   1 12-12-1927</span></span>
-<span><span class="co">#&gt; 6  6   2 14-11-1932</span></span></code></pre></div>
+<span><span class="co">#&gt; 1  1   1 26-04-1958</span></span>
+<span><span class="co">#&gt; 2  2   2 18-01-1941</span></span>
+<span><span class="co">#&gt; 3  3   2 30-07-1963</span></span>
+<span><span class="co">#&gt; 4  4   2 31-12-1936</span></span>
+<span><span class="co">#&gt; 5  5   2 12-01-1961</span></span>
+<span><span class="co">#&gt; 6  6   2 10-12-1975</span></span></code></pre></div>
 <p>Variables are removed with a minus sign.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">redcap_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">id</span>, <span class="op">-</span><span class="va">birth</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;   sex   followup date_of_surgery     size type localisation necrosis cd10 sox10</span></span>
-<span><span class="co">#&gt; 1   1 02-03-2023      2002-07-07 24.10520    1            3        0   NA    NA</span></span>
-<span><span class="co">#&gt; 2   1 17-08-2023      1997-03-10 42.34623    1            4       NA   NA    NA</span></span>
-<span><span class="co">#&gt; 3   2 24-01-2021      2000-01-29 40.90360    0            2       NA   NA     0</span></span>
-<span><span class="co">#&gt; 4   1 06-10-2022      1992-10-28 42.93259    2            4        0   NA     0</span></span>
-<span><span class="co">#&gt; 5   1 31-03-2023      2001-03-31 18.67687    0            2        1    1     0</span></span>
-<span><span class="co">#&gt; 6   2 30-07-2025      2004-01-11 20.99129    2            2        0    1     0</span></span>
-<span><span class="co">#&gt;   ck death_date recurrence_date metastasis_date</span></span>
-<span><span class="co">#&gt; 1 NA       &lt;NA&gt;      2011-08-28            &lt;NA&gt;</span></span>
-<span><span class="co">#&gt; 2 NA 2017-04-11            &lt;NA&gt;      2014-08-19</span></span>
-<span><span class="co">#&gt; 3 NA       &lt;NA&gt;      2012-12-23      2014-09-15</span></span>
-<span><span class="co">#&gt; 4  1       &lt;NA&gt;            &lt;NA&gt;      2012-12-25</span></span>
-<span><span class="co">#&gt; 5  0 2018-09-24      2010-03-25            &lt;NA&gt;</span></span>
-<span><span class="co">#&gt; 6  1 2019-04-02      2015-04-17            &lt;NA&gt;</span></span></code></pre></div>
+<span>  <span class="va">head</span></span>
+<span><span class="co">#&gt;   sex  age   followup date_of_surgery      size type localisation necrosis cd10</span></span>
+<span><span class="co">#&gt; 1   1 40.9 23-04-2021      1999-03-29  3.991349    0            2        0   NA</span></span>
+<span><span class="co">#&gt; 2   2 57.8 12-08-2024      1998-10-20 48.688670    0            1        1    0</span></span>
+<span><span class="co">#&gt; 3   2 32.2 20-02-2022      1995-10-26 11.245841    0            4        0    0</span></span>
+<span><span class="co">#&gt; 4   2 58.7 29-06-2024      1995-09-14 11.609164    2            1        1    1</span></span>
+<span><span class="co">#&gt; 5   2 29.3 14-05-2023      1990-04-22  6.980464    0            3        0    0</span></span>
+<span><span class="co">#&gt; 6   2 18.3 06-04-2025      1994-03-21 49.029171    2            0       NA   NA</span></span>
+<span><span class="co">#&gt;   sox10 ck death_date recurrence_date metastasis_date</span></span>
+<span><span class="co">#&gt; 1     1  0       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 2     0  0       &lt;NA&gt;      2014-12-09            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 3     1 NA       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 4    NA  0 2019-07-27            &lt;NA&gt;      2012-04-04</span></span>
+<span><span class="co">#&gt; 5     0  0 2018-04-19            &lt;NA&gt;      2011-01-16</span></span>
+<span><span class="co">#&gt; 6    NA  0       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span></span></code></pre></div>
 <p>It is also possible to choose variable based on text patterns, which
 is useful for variables with a common prefix/suffix such as _date</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">redcap_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html" class="external-link">contains</a></span><span class="op">(</span><span class="st">"_date"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>  <span class="va">head</span></span>
 <span><span class="co">#&gt;   death_date recurrence_date metastasis_date</span></span>
-<span><span class="co">#&gt; 1       &lt;NA&gt;      2011-08-28            &lt;NA&gt;</span></span>
-<span><span class="co">#&gt; 2 2017-04-11            &lt;NA&gt;      2014-08-19</span></span>
-<span><span class="co">#&gt; 3       &lt;NA&gt;      2012-12-23      2014-09-15</span></span>
-<span><span class="co">#&gt; 4       &lt;NA&gt;            &lt;NA&gt;      2012-12-25</span></span>
-<span><span class="co">#&gt; 5 2018-09-24      2010-03-25            &lt;NA&gt;</span></span>
-<span><span class="co">#&gt; 6 2019-04-02      2015-04-17            &lt;NA&gt;</span></span></code></pre></div>
+<span><span class="co">#&gt; 1       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 2       &lt;NA&gt;      2014-12-09            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 3       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 4 2019-07-27            &lt;NA&gt;      2012-04-04</span></span>
+<span><span class="co">#&gt; 5 2018-04-19            &lt;NA&gt;      2011-01-16</span></span>
+<span><span class="co">#&gt; 6       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span></span></code></pre></div>
 <p>The text pattern can also be starts_with, ends_with and matches for
 an exact match.</p>
+<p>If we need to select a large range of variables we call the first and
+last separated by a colon:</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">redcap_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">sex</span><span class="op">:</span><span class="va">sox10</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="va">head</span></span>
+<span><span class="co">#&gt;   sex  age      birth   followup date_of_surgery      size type localisation</span></span>
+<span><span class="co">#&gt; 1   1 40.9 26-04-1958 23-04-2021      1999-03-29  3.991349    0            2</span></span>
+<span><span class="co">#&gt; 2   2 57.8 18-01-1941 12-08-2024      1998-10-20 48.688670    0            1</span></span>
+<span><span class="co">#&gt; 3   2 32.2 30-07-1963 20-02-2022      1995-10-26 11.245841    0            4</span></span>
+<span><span class="co">#&gt; 4   2 58.7 31-12-1936 29-06-2024      1995-09-14 11.609164    2            1</span></span>
+<span><span class="co">#&gt; 5   2 29.3 12-01-1961 14-05-2023      1990-04-22  6.980464    0            3</span></span>
+<span><span class="co">#&gt; 6   2 18.3 10-12-1975 06-04-2025      1994-03-21 49.029171    2            0</span></span>
+<span><span class="co">#&gt;   necrosis cd10 sox10</span></span>
+<span><span class="co">#&gt; 1        0   NA     1</span></span>
+<span><span class="co">#&gt; 2        1    0     0</span></span>
+<span><span class="co">#&gt; 3        0    0     1</span></span>
+<span><span class="co">#&gt; 4        1    1    NA</span></span>
+<span><span class="co">#&gt; 5        0    0     0</span></span>
+<span><span class="co">#&gt; 6       NA   NA    NA</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="renaming-variables">Renaming variables<a class="anchor" aria-label="anchor" href="#renaming-variables"></a>
 </h3>
 <p>Renaming of variable names can be done using rename(). The syntax is
 “new name” = “old name”</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">redcap_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span>index <span class="op">=</span> <span class="va">date_of_surgery</span>,</span>
 <span>         cytokeratin <span class="op">=</span> <span class="va">ck</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="va">head</span></span>
+<span><span class="co">#&gt;   id sex  age      birth   followup      index      size type localisation</span></span>
+<span><span class="co">#&gt; 1  1   1 40.9 26-04-1958 23-04-2021 1999-03-29  3.991349    0            2</span></span>
+<span><span class="co">#&gt; 2  2   2 57.8 18-01-1941 12-08-2024 1998-10-20 48.688670    0            1</span></span>
+<span><span class="co">#&gt; 3  3   2 32.2 30-07-1963 20-02-2022 1995-10-26 11.245841    0            4</span></span>
+<span><span class="co">#&gt; 4  4   2 58.7 31-12-1936 29-06-2024 1995-09-14 11.609164    2            1</span></span>
+<span><span class="co">#&gt; 5  5   2 29.3 12-01-1961 14-05-2023 1990-04-22  6.980464    0            3</span></span>
+<span><span class="co">#&gt; 6  6   2 18.3 10-12-1975 06-04-2025 1994-03-21 49.029171    2            0</span></span>
+<span><span class="co">#&gt;   necrosis cd10 sox10 cytokeratin death_date recurrence_date metastasis_date</span></span>
+<span><span class="co">#&gt; 1        0   NA     1           0       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 2        1    0     0           0       &lt;NA&gt;      2014-12-09            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 3        0    0     1          NA       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 4        1    1    NA           0 2019-07-27            &lt;NA&gt;      2012-04-04</span></span>
+<span><span class="co">#&gt; 5        0    0     0           0 2018-04-19            &lt;NA&gt;      2011-01-16</span></span>
+<span><span class="co">#&gt; 6       NA   NA    NA           0       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="createmodify-variables">Create/modify variables<a class="anchor" aria-label="anchor" href="#createmodify-variables"></a>
+</h3>
+<p>Variables can be created or modified with the mutate() function with
+the syntax: mutate(variable = condition). If the variable already exists
+in the dataset, it is modified automatically.</p>
+<p>We now recode necrosis, so that 1 = yes and everything else is
+“no”.</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">redcap_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>necrosis <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">necrosis</span> <span class="op">==</span> <span class="fl">1</span>, <span class="st">"yes"</span>, <span class="st">"no"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="va">head</span></span>
+<span><span class="co">#&gt;   id sex  age      birth   followup date_of_surgery      size type localisation</span></span>
+<span><span class="co">#&gt; 1  1   1 40.9 26-04-1958 23-04-2021      1999-03-29  3.991349    0            2</span></span>
+<span><span class="co">#&gt; 2  2   2 57.8 18-01-1941 12-08-2024      1998-10-20 48.688670    0            1</span></span>
+<span><span class="co">#&gt; 3  3   2 32.2 30-07-1963 20-02-2022      1995-10-26 11.245841    0            4</span></span>
+<span><span class="co">#&gt; 4  4   2 58.7 31-12-1936 29-06-2024      1995-09-14 11.609164    2            1</span></span>
+<span><span class="co">#&gt; 5  5   2 29.3 12-01-1961 14-05-2023      1990-04-22  6.980464    0            3</span></span>
+<span><span class="co">#&gt; 6  6   2 18.3 10-12-1975 06-04-2025      1994-03-21 49.029171    2            0</span></span>
+<span><span class="co">#&gt;   necrosis cd10 sox10 ck death_date recurrence_date metastasis_date</span></span>
+<span><span class="co">#&gt; 1       no   NA     1  0       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 2      yes    0     0  0       &lt;NA&gt;      2014-12-09            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 3       no    0     1 NA       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 4      yes    1    NA  0 2019-07-27            &lt;NA&gt;      2012-04-04</span></span>
+<span><span class="co">#&gt; 5       no    0     0  0 2018-04-19            &lt;NA&gt;      2011-01-16</span></span>
+<span><span class="co">#&gt; 6     &lt;NA&gt;   NA    NA  0       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span></span></code></pre></div>
+<p>Notice that now there were missing values in necrosis which have been
+replaced by “no”. This is the main side effect of ifelse - if the
+condition is not satisfied (here necrosis = 1), then everything else
+must be no including missing values.</p>
+<p>If we want more explicit control with the recoding or we have more
+than one condition, we use case_when</p>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">redcap_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>necrosis <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/case_when.html" class="external-link">case_when</a></span><span class="op">(</span><span class="va">necrosis</span> <span class="op">==</span> <span class="fl">1</span> <span class="op">~</span> <span class="st">"yes"</span>,</span>
+<span>                              <span class="va">necrosis</span> <span class="op">==</span> <span class="fl">0</span> <span class="op">~</span> <span class="st">"no"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="va">head</span></span>
+<span><span class="co">#&gt;   id sex  age      birth   followup date_of_surgery      size type localisation</span></span>
+<span><span class="co">#&gt; 1  1   1 40.9 26-04-1958 23-04-2021      1999-03-29  3.991349    0            2</span></span>
+<span><span class="co">#&gt; 2  2   2 57.8 18-01-1941 12-08-2024      1998-10-20 48.688670    0            1</span></span>
+<span><span class="co">#&gt; 3  3   2 32.2 30-07-1963 20-02-2022      1995-10-26 11.245841    0            4</span></span>
+<span><span class="co">#&gt; 4  4   2 58.7 31-12-1936 29-06-2024      1995-09-14 11.609164    2            1</span></span>
+<span><span class="co">#&gt; 5  5   2 29.3 12-01-1961 14-05-2023      1990-04-22  6.980464    0            3</span></span>
+<span><span class="co">#&gt; 6  6   2 18.3 10-12-1975 06-04-2025      1994-03-21 49.029171    2            0</span></span>
+<span><span class="co">#&gt;   necrosis cd10 sox10 ck death_date recurrence_date metastasis_date</span></span>
+<span><span class="co">#&gt; 1       no   NA     1  0       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 2      yes    0     0  0       &lt;NA&gt;      2014-12-09            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 3       no    0     1 NA       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 4      yes    1    NA  0 2019-07-27            &lt;NA&gt;      2012-04-04</span></span>
+<span><span class="co">#&gt; 5       no    0     0  0 2018-04-19            &lt;NA&gt;      2011-01-16</span></span>
+<span><span class="co">#&gt; 6     &lt;NA&gt;   NA    NA  0       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span></span></code></pre></div>
+<p>Now we have preserved the missing values. We can also control what to
+do with values that does not satisfy any of the criteria</p>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">redcap_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>necrosis <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/case_when.html" class="external-link">case_when</a></span><span class="op">(</span><span class="va">necrosis</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fl">1</span> <span class="op">~</span> <span class="st">"yes"</span>,</span>
+<span>                              <span class="va">necrosis</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fl">0</span> <span class="op">~</span> <span class="st">"no"</span>,</span>
+<span>                              <span class="cn">T</span> <span class="op">~</span> <span class="st">"missing"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="va">head</span></span>
+<span><span class="co">#&gt;   id sex  age      birth   followup date_of_surgery      size type localisation</span></span>
+<span><span class="co">#&gt; 1  1   1 40.9 26-04-1958 23-04-2021      1999-03-29  3.991349    0            2</span></span>
+<span><span class="co">#&gt; 2  2   2 57.8 18-01-1941 12-08-2024      1998-10-20 48.688670    0            1</span></span>
+<span><span class="co">#&gt; 3  3   2 32.2 30-07-1963 20-02-2022      1995-10-26 11.245841    0            4</span></span>
+<span><span class="co">#&gt; 4  4   2 58.7 31-12-1936 29-06-2024      1995-09-14 11.609164    2            1</span></span>
+<span><span class="co">#&gt; 5  5   2 29.3 12-01-1961 14-05-2023      1990-04-22  6.980464    0            3</span></span>
+<span><span class="co">#&gt; 6  6   2 18.3 10-12-1975 06-04-2025      1994-03-21 49.029171    2            0</span></span>
+<span><span class="co">#&gt;   necrosis cd10 sox10 ck death_date recurrence_date metastasis_date</span></span>
+<span><span class="co">#&gt; 1       no   NA     1  0       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 2      yes    0     0  0       &lt;NA&gt;      2014-12-09            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 3       no    0     1 NA       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 4      yes    1    NA  0 2019-07-27            &lt;NA&gt;      2012-04-04</span></span>
+<span><span class="co">#&gt; 5       no    0     0  0 2018-04-19            &lt;NA&gt;      2011-01-16</span></span>
+<span><span class="co">#&gt; 6  missing   NA    NA  0       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span></span></code></pre></div>
+<p>Multiple mutate functions can be collected in one call</p>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">redcap_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>new_variable <span class="op">=</span> <span class="st">"new"</span>,</span>
+<span>         sex <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">sex</span> <span class="op">==</span> <span class="fl">1</span>, <span class="st">"f"</span>, <span class="st">"m"</span><span class="op">)</span>,</span>
+<span>         size <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/case_when.html" class="external-link">case_when</a></span><span class="op">(</span><span class="va">size</span> <span class="op">&gt;</span> <span class="fl">40</span> <span class="op">~</span> <span class="st">"large"</span>,</span>
+<span>                          <span class="va">size</span> <span class="op">&lt;</span> <span class="fl">10</span> <span class="op">~</span> <span class="st">"small"</span>,</span>
+<span>                          <span class="cn">T</span> <span class="op">~</span> <span class="st">"intermediate"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="va">head</span></span>
+<span><span class="co">#&gt;   id sex  age      birth   followup date_of_surgery         size type</span></span>
+<span><span class="co">#&gt; 1  1   f 40.9 26-04-1958 23-04-2021      1999-03-29        small    0</span></span>
+<span><span class="co">#&gt; 2  2   m 57.8 18-01-1941 12-08-2024      1998-10-20        large    0</span></span>
+<span><span class="co">#&gt; 3  3   m 32.2 30-07-1963 20-02-2022      1995-10-26 intermediate    0</span></span>
+<span><span class="co">#&gt; 4  4   m 58.7 31-12-1936 29-06-2024      1995-09-14 intermediate    2</span></span>
+<span><span class="co">#&gt; 5  5   m 29.3 12-01-1961 14-05-2023      1990-04-22        small    0</span></span>
+<span><span class="co">#&gt; 6  6   m 18.3 10-12-1975 06-04-2025      1994-03-21        large    2</span></span>
+<span><span class="co">#&gt;   localisation necrosis cd10 sox10 ck death_date recurrence_date</span></span>
+<span><span class="co">#&gt; 1            2        0   NA     1  0       &lt;NA&gt;            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 2            1        1    0     0  0       &lt;NA&gt;      2014-12-09</span></span>
+<span><span class="co">#&gt; 3            4        0    0     1 NA       &lt;NA&gt;            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 4            1        1    1    NA  0 2019-07-27            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 5            3        0    0     0  0 2018-04-19            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 6            0       NA   NA    NA  0       &lt;NA&gt;            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt;   metastasis_date new_variable</span></span>
+<span><span class="co">#&gt; 1            &lt;NA&gt;          new</span></span>
+<span><span class="co">#&gt; 2            &lt;NA&gt;          new</span></span>
+<span><span class="co">#&gt; 3            &lt;NA&gt;          new</span></span>
+<span><span class="co">#&gt; 4      2012-04-04          new</span></span>
+<span><span class="co">#&gt; 5      2011-01-16          new</span></span>
+<span><span class="co">#&gt; 6            &lt;NA&gt;          new</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="recoding-of-variables">Recoding of variables<a class="anchor" aria-label="anchor" href="#recoding-of-variables"></a>
+</h3>
+<p>Recoding of variables can be done with the recodR() function in the
+cancR package. The syntax here is a list of lists, so that list(variable
+= list(new name = old name))</p>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">redcap_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="../reference/recodR.html">recodR</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"sex"</span> <span class="op">=</span> </span>
+<span>                <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"female"</span> <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>                           <span class="st">"male"</span> <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>,</span>
+<span>              <span class="st">"type"</span> <span class="op">=</span> </span>
+<span>                <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"benign"</span> <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>                            <span class="st">"in_situ"</span> <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>                            <span class="st">"malignant"</span> <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>,</span>
+<span>              <span class="st">"localisation"</span> <span class="op">=</span> </span>
+<span>                <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"head"</span> <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>                     <span class="st">"neck"</span> <span class="op">=</span> <span class="fl">2</span>,</span>
+<span>                     <span class="st">"trunk"</span> <span class="op">=</span> <span class="fl">3</span>,</span>
+<span>                     <span class="st">"upper_extremity"</span> <span class="op">=</span> <span class="fl">4</span>,</span>
+<span>                     <span class="st">"lower_extremity"</span> <span class="op">=</span> <span class="fl">5</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="va">head</span></span>
+<span><span class="co">#&gt;   id    sex  age      birth   followup date_of_surgery      size      type</span></span>
+<span><span class="co">#&gt; 1  1 female 40.9 26-04-1958 23-04-2021      1999-03-29  3.991349    benign</span></span>
+<span><span class="co">#&gt; 2  2   male 57.8 18-01-1941 12-08-2024      1998-10-20 48.688670    benign</span></span>
+<span><span class="co">#&gt; 3  3   male 32.2 30-07-1963 20-02-2022      1995-10-26 11.245841    benign</span></span>
+<span><span class="co">#&gt; 4  4   male 58.7 31-12-1936 29-06-2024      1995-09-14 11.609164 malignant</span></span>
+<span><span class="co">#&gt; 5  5   male 29.3 12-01-1961 14-05-2023      1990-04-22  6.980464    benign</span></span>
+<span><span class="co">#&gt; 6  6   male 18.3 10-12-1975 06-04-2025      1994-03-21 49.029171 malignant</span></span>
+<span><span class="co">#&gt;      localisation necrosis cd10 sox10 ck death_date recurrence_date</span></span>
+<span><span class="co">#&gt; 1            neck        0   NA     1  0       &lt;NA&gt;            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 2            head        1    0     0  0       &lt;NA&gt;      2014-12-09</span></span>
+<span><span class="co">#&gt; 3 upper_extremity        0    0     1 NA       &lt;NA&gt;            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 4            head        1    1    NA  0 2019-07-27            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 5           trunk        0    0     0  0 2018-04-19            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 6               0       NA   NA    NA  0       &lt;NA&gt;            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt;   metastasis_date</span></span>
+<span><span class="co">#&gt; 1            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 2            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 3            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 4      2012-04-04</span></span>
+<span><span class="co">#&gt; 5      2011-01-16</span></span>
+<span><span class="co">#&gt; 6            &lt;NA&gt;</span></span></code></pre></div>
+<p>If the recoding should be more advanced and should be based on one or
+more conditions, we can use ifelse() or case_when() (see examples under
+“Create/modify variables”).</p>
+</div>
+<div class="section level3">
+<h3 id="date-formatting">Date formatting<a class="anchor" aria-label="anchor" href="#date-formatting"></a>
+</h3>
+<p>Dates are often formatted as character strings and need to be
+converted to correct date format. This can easily be done with the
+datR() function:</p>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">redcap_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="../reference/datR.html">datR</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html" class="external-link">contains</a></span><span class="op">(</span><span class="st">"date"</span><span class="op">)</span>, <span class="va">birth</span>, <span class="va">followup</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="va">head</span></span>
+<span><span class="co">#&gt;       id   sex   age      birth   followup date_of_surgery      size  type</span></span>
+<span><span class="co">#&gt;    &lt;int&gt; &lt;num&gt; &lt;num&gt;     &lt;Date&gt;     &lt;Date&gt;          &lt;Date&gt;     &lt;num&gt; &lt;int&gt;</span></span>
+<span><span class="co">#&gt; 1:     1     1  40.9 1958-04-26 2021-04-23      1999-03-29  3.991349     0</span></span>
+<span><span class="co">#&gt; 2:     2     2  57.8 1941-01-18 2024-08-12      1998-10-20 48.688670     0</span></span>
+<span><span class="co">#&gt; 3:     3     2  32.2 1963-07-30 2022-02-20      1995-10-26 11.245841     0</span></span>
+<span><span class="co">#&gt; 4:     4     2  58.7 1936-12-31 2024-06-29      1995-09-14 11.609164     2</span></span>
+<span><span class="co">#&gt; 5:     5     2  29.3 1961-01-12 2023-05-14      1990-04-22  6.980464     0</span></span>
+<span><span class="co">#&gt; 6:     6     2  18.3 1975-12-10 2025-04-06      1994-03-21 49.029171     2</span></span>
+<span><span class="co">#&gt;    localisation necrosis  cd10 sox10    ck death_date recurrence_date</span></span>
+<span><span class="co">#&gt;           &lt;int&gt;    &lt;num&gt; &lt;num&gt; &lt;num&gt; &lt;num&gt;     &lt;Date&gt;          &lt;Date&gt;</span></span>
+<span><span class="co">#&gt; 1:            2        0    NA     1     0       &lt;NA&gt;            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 2:            1        1     0     0     0       &lt;NA&gt;      2014-12-09</span></span>
+<span><span class="co">#&gt; 3:            4        0     0     1    NA       &lt;NA&gt;            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 4:            1        1     1    NA     0 2019-07-27            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 5:            3        0     0     0     0 2018-04-19            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 6:            0       NA    NA    NA     0       &lt;NA&gt;            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt;    metastasis_date</span></span>
+<span><span class="co">#&gt;             &lt;Date&gt;</span></span>
+<span><span class="co">#&gt; 1:            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 2:            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 3:            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 4:      2012-04-04</span></span>
+<span><span class="co">#&gt; 5:      2011-01-16</span></span>
+<span><span class="co">#&gt; 6:            &lt;NA&gt;</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="categorization-of-continuous-variables">Categorization of continuous variables<a class="anchor" aria-label="anchor" href="#categorization-of-continuous-variables"></a>
+</h3>
+<p>The optimal method for splitting continuous variables depends on the
+number of splits: - One splits: ifelse() - More than one split:
+case_when() - Splits based on a sequence or quantiles: cutR()</p>
+<p>One split with ifelse()</p>
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">redcap_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>size_bin <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">size</span> <span class="op">&gt;</span> <span class="fl">20</span>, <span class="st">"large"</span>, <span class="st">"small"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="va">head</span></span>
+<span><span class="co">#&gt;       id   sex   age      birth   followup date_of_surgery      size  type</span></span>
+<span><span class="co">#&gt;    &lt;int&gt; &lt;num&gt; &lt;num&gt;     &lt;char&gt;     &lt;char&gt;          &lt;char&gt;     &lt;num&gt; &lt;int&gt;</span></span>
+<span><span class="co">#&gt; 1:     1     1  40.9 26-04-1958 23-04-2021      1999-03-29  3.991349     0</span></span>
+<span><span class="co">#&gt; 2:     2     2  57.8 18-01-1941 12-08-2024      1998-10-20 48.688670     0</span></span>
+<span><span class="co">#&gt; 3:     3     2  32.2 30-07-1963 20-02-2022      1995-10-26 11.245841     0</span></span>
+<span><span class="co">#&gt; 4:     4     2  58.7 31-12-1936 29-06-2024      1995-09-14 11.609164     2</span></span>
+<span><span class="co">#&gt; 5:     5     2  29.3 12-01-1961 14-05-2023      1990-04-22  6.980464     0</span></span>
+<span><span class="co">#&gt; 6:     6     2  18.3 10-12-1975 06-04-2025      1994-03-21 49.029171     2</span></span>
+<span><span class="co">#&gt;    localisation necrosis  cd10 sox10    ck death_date recurrence_date</span></span>
+<span><span class="co">#&gt;           &lt;int&gt;    &lt;num&gt; &lt;num&gt; &lt;num&gt; &lt;num&gt;     &lt;char&gt;          &lt;char&gt;</span></span>
+<span><span class="co">#&gt; 1:            2        0    NA     1     0       &lt;NA&gt;            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 2:            1        1     0     0     0       &lt;NA&gt;      2014-12-09</span></span>
+<span><span class="co">#&gt; 3:            4        0     0     1    NA       &lt;NA&gt;            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 4:            1        1     1    NA     0 2019-07-27            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 5:            3        0     0     0     0 2018-04-19            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 6:            0       NA    NA    NA     0       &lt;NA&gt;            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt;    metastasis_date size_bin</span></span>
+<span><span class="co">#&gt;             &lt;char&gt;   &lt;char&gt;</span></span>
+<span><span class="co">#&gt; 1:            &lt;NA&gt;    small</span></span>
+<span><span class="co">#&gt; 2:            &lt;NA&gt;    large</span></span>
+<span><span class="co">#&gt; 3:            &lt;NA&gt;    small</span></span>
+<span><span class="co">#&gt; 4:      2012-04-04    small</span></span>
+<span><span class="co">#&gt; 5:      2011-01-16    small</span></span>
+<span><span class="co">#&gt; 6:            &lt;NA&gt;    large</span></span></code></pre></div>
+<p>More splits with case_when()</p>
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">redcap_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>size_bin <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/case_when.html" class="external-link">case_when</a></span><span class="op">(</span><span class="va">size</span> <span class="op">&gt;</span> <span class="fl">40</span> <span class="op">~</span> <span class="st">"large"</span>,</span>
+<span>                          <span class="va">size</span> <span class="op">&lt;</span> <span class="fl">10</span> <span class="op">~</span> <span class="st">"small"</span>,</span>
+<span>                          <span class="cn">T</span> <span class="op">~</span> <span class="st">"intermediate"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="va">head</span></span>
+<span><span class="co">#&gt;       id   sex   age      birth   followup date_of_surgery      size  type</span></span>
+<span><span class="co">#&gt;    &lt;int&gt; &lt;num&gt; &lt;num&gt;     &lt;char&gt;     &lt;char&gt;          &lt;char&gt;     &lt;num&gt; &lt;int&gt;</span></span>
+<span><span class="co">#&gt; 1:     1     1  40.9 26-04-1958 23-04-2021      1999-03-29  3.991349     0</span></span>
+<span><span class="co">#&gt; 2:     2     2  57.8 18-01-1941 12-08-2024      1998-10-20 48.688670     0</span></span>
+<span><span class="co">#&gt; 3:     3     2  32.2 30-07-1963 20-02-2022      1995-10-26 11.245841     0</span></span>
+<span><span class="co">#&gt; 4:     4     2  58.7 31-12-1936 29-06-2024      1995-09-14 11.609164     2</span></span>
+<span><span class="co">#&gt; 5:     5     2  29.3 12-01-1961 14-05-2023      1990-04-22  6.980464     0</span></span>
+<span><span class="co">#&gt; 6:     6     2  18.3 10-12-1975 06-04-2025      1994-03-21 49.029171     2</span></span>
+<span><span class="co">#&gt;    localisation necrosis  cd10 sox10    ck death_date recurrence_date</span></span>
+<span><span class="co">#&gt;           &lt;int&gt;    &lt;num&gt; &lt;num&gt; &lt;num&gt; &lt;num&gt;     &lt;char&gt;          &lt;char&gt;</span></span>
+<span><span class="co">#&gt; 1:            2        0    NA     1     0       &lt;NA&gt;            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 2:            1        1     0     0     0       &lt;NA&gt;      2014-12-09</span></span>
+<span><span class="co">#&gt; 3:            4        0     0     1    NA       &lt;NA&gt;            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 4:            1        1     1    NA     0 2019-07-27            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 5:            3        0     0     0     0 2018-04-19            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 6:            0       NA    NA    NA     0       &lt;NA&gt;            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt;    metastasis_date     size_bin</span></span>
+<span><span class="co">#&gt;             &lt;char&gt;       &lt;char&gt;</span></span>
+<span><span class="co">#&gt; 1:            &lt;NA&gt;        small</span></span>
+<span><span class="co">#&gt; 2:            &lt;NA&gt;        large</span></span>
+<span><span class="co">#&gt; 3:            &lt;NA&gt; intermediate</span></span>
+<span><span class="co">#&gt; 4:      2012-04-04 intermediate</span></span>
+<span><span class="co">#&gt; 5:      2011-01-16        small</span></span>
+<span><span class="co">#&gt; 6:            &lt;NA&gt;        large</span></span></code></pre></div>
+<p>Splits based on a sequence can be done with the cutR() function:</p>
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">redcap_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="../reference/cutR.html">cutR</a></span><span class="op">(</span><span class="va">size</span>, </span>
+<span>       <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">50</span>,<span class="fl">10</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="va">head</span></span>
+<span><span class="co">#&gt;       id   sex   age      birth   followup date_of_surgery   size  type</span></span>
+<span><span class="co">#&gt;    &lt;int&gt; &lt;num&gt; &lt;num&gt;     &lt;char&gt;     &lt;char&gt;          &lt;char&gt; &lt;fctr&gt; &lt;int&gt;</span></span>
+<span><span class="co">#&gt; 1:     1     1  40.9 26-04-1958 23-04-2021      1999-03-29   0-10     0</span></span>
+<span><span class="co">#&gt; 2:     2     2  57.8 18-01-1941 12-08-2024      1998-10-20  40-50     0</span></span>
+<span><span class="co">#&gt; 3:     3     2  32.2 30-07-1963 20-02-2022      1995-10-26  10-20     0</span></span>
+<span><span class="co">#&gt; 4:     4     2  58.7 31-12-1936 29-06-2024      1995-09-14  10-20     2</span></span>
+<span><span class="co">#&gt; 5:     5     2  29.3 12-01-1961 14-05-2023      1990-04-22   0-10     0</span></span>
+<span><span class="co">#&gt; 6:     6     2  18.3 10-12-1975 06-04-2025      1994-03-21  40-50     2</span></span>
+<span><span class="co">#&gt;    localisation necrosis  cd10 sox10    ck death_date recurrence_date</span></span>
+<span><span class="co">#&gt;           &lt;int&gt;    &lt;num&gt; &lt;num&gt; &lt;num&gt; &lt;num&gt;     &lt;char&gt;          &lt;char&gt;</span></span>
+<span><span class="co">#&gt; 1:            2        0    NA     1     0       &lt;NA&gt;            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 2:            1        1     0     0     0       &lt;NA&gt;      2014-12-09</span></span>
+<span><span class="co">#&gt; 3:            4        0     0     1    NA       &lt;NA&gt;            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 4:            1        1     1    NA     0 2019-07-27            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 5:            3        0     0     0     0 2018-04-19            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 6:            0       NA    NA    NA     0       &lt;NA&gt;            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt;    metastasis_date</span></span>
+<span><span class="co">#&gt;             &lt;char&gt;</span></span>
+<span><span class="co">#&gt; 1:            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 2:            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 3:            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 4:      2012-04-04</span></span>
+<span><span class="co">#&gt; 5:      2011-01-16</span></span>
+<span><span class="co">#&gt; 6:            &lt;NA&gt;</span></span></code></pre></div>
+<p>Multiple splits can also be performed with cutR() with name
+assigning</p>
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">redcap_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/cutR.html">cutR</a></span><span class="op">(</span>vars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">age</span>, <span class="va">size</span><span class="op">)</span>,</span>
+<span>       seqlist <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"age"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">100</span>,<span class="fl">10</span><span class="op">)</span>,</span>
+<span>                      <span class="st">"size"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"quantile"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">0.25</span>,<span class="fl">0.5</span>,<span class="fl">0.75</span>,<span class="fl">1</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>       name.list <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"age"</span> <span class="op">=</span> <span class="st">"age_group"</span>,</span>
+<span>                        <span class="st">"size"</span> <span class="op">=</span> <span class="st">"size_bin"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="va">head</span></span>
+<span><span class="co">#&gt;       id   sex   age      birth   followup date_of_surgery      size  type</span></span>
+<span><span class="co">#&gt;    &lt;int&gt; &lt;num&gt; &lt;num&gt;     &lt;char&gt;     &lt;char&gt;          &lt;char&gt;     &lt;num&gt; &lt;int&gt;</span></span>
+<span><span class="co">#&gt; 1:     1     1  40.9 26-04-1958 23-04-2021      1999-03-29  3.991349     0</span></span>
+<span><span class="co">#&gt; 2:     2     2  57.8 18-01-1941 12-08-2024      1998-10-20 48.688670     0</span></span>
+<span><span class="co">#&gt; 3:     3     2  32.2 30-07-1963 20-02-2022      1995-10-26 11.245841     0</span></span>
+<span><span class="co">#&gt; 4:     4     2  58.7 31-12-1936 29-06-2024      1995-09-14 11.609164     2</span></span>
+<span><span class="co">#&gt; 5:     5     2  29.3 12-01-1961 14-05-2023      1990-04-22  6.980464     0</span></span>
+<span><span class="co">#&gt; 6:     6     2  18.3 10-12-1975 06-04-2025      1994-03-21 49.029171     2</span></span>
+<span><span class="co">#&gt;    localisation necrosis  cd10 sox10    ck death_date recurrence_date</span></span>
+<span><span class="co">#&gt;           &lt;int&gt;    &lt;num&gt; &lt;num&gt; &lt;num&gt; &lt;num&gt;     &lt;char&gt;          &lt;char&gt;</span></span>
+<span><span class="co">#&gt; 1:            2        0    NA     1     0       &lt;NA&gt;            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 2:            1        1     0     0     0       &lt;NA&gt;      2014-12-09</span></span>
+<span><span class="co">#&gt; 3:            4        0     0     1    NA       &lt;NA&gt;            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 4:            1        1     1    NA     0 2019-07-27            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 5:            3        0     0     0     0 2018-04-19            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 6:            0       NA    NA    NA     0       &lt;NA&gt;            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt;    metastasis_date age_group size_bin</span></span>
+<span><span class="co">#&gt;             &lt;char&gt;    &lt;fctr&gt;   &lt;fctr&gt;</span></span>
+<span><span class="co">#&gt; 1:            &lt;NA&gt;     40-50     2-14</span></span>
+<span><span class="co">#&gt; 2:            &lt;NA&gt;     50-60    39-50</span></span>
+<span><span class="co">#&gt; 3:            &lt;NA&gt;     30-40     2-14</span></span>
+<span><span class="co">#&gt; 4:      2012-04-04     50-60     2-14</span></span>
+<span><span class="co">#&gt; 5:      2011-01-16     20-30     2-14</span></span>
+<span><span class="co">#&gt; 6:            &lt;NA&gt;     10-20    39-50</span></span></code></pre></div>
+<p>The new variables can also be given the same name pattern if the
+input variables are similar such as dates</p>
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">redcap_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="co">#Conversion into date format</span></span>
+<span>  <span class="fu"><a href="../reference/datR.html">datR</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html" class="external-link">contains</a></span><span class="op">(</span><span class="st">"date"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="../reference/cutR.html">cutR</a></span><span class="op">(</span>vars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">recurrence_date</span>, <span class="va">metastasis_date</span><span class="op">)</span>,</span>
+<span>       seqlist <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">1900</span>,<span class="fl">2030</span>,<span class="fl">10</span><span class="op">)</span>,</span>
+<span>       name.pattern <span class="op">=</span> <span class="st">"_bin"</span><span class="op">)</span></span>
+<span><span class="co">#&gt;         id   sex   age      birth   followup date_of_surgery      size  type</span></span>
+<span><span class="co">#&gt;      &lt;int&gt; &lt;num&gt; &lt;num&gt;     &lt;char&gt;     &lt;char&gt;          &lt;Date&gt;     &lt;num&gt; &lt;int&gt;</span></span>
+<span><span class="co">#&gt;   1:     1     1  40.9 26-04-1958 23-04-2021      1999-03-29  3.991349     0</span></span>
+<span><span class="co">#&gt;   2:     2     2  57.8 18-01-1941 12-08-2024      1998-10-20 48.688670     0</span></span>
+<span><span class="co">#&gt;   3:     3     2  32.2 30-07-1963 20-02-2022      1995-10-26 11.245841     0</span></span>
+<span><span class="co">#&gt;   4:     4     2  58.7 31-12-1936 29-06-2024      1995-09-14 11.609164     2</span></span>
+<span><span class="co">#&gt;   5:     5     2  29.3 12-01-1961 14-05-2023      1990-04-22  6.980464     0</span></span>
+<span><span class="co">#&gt;  ---                                                                        </span></span>
+<span><span class="co">#&gt; 496:   496     1  47.7 29-04-1955 07-11-2022      2002-12-30 44.123152     2</span></span>
+<span><span class="co">#&gt; 497:   497     1  42.9 17-03-1956 16-06-2025      1999-02-18 41.460467     2</span></span>
+<span><span class="co">#&gt; 498:   498     1  29.2 29-07-1961 25-03-2024      1990-10-28 24.048037     0</span></span>
+<span><span class="co">#&gt; 499:   499     2  25.0 13-09-1980 25-09-2025      2005-08-26 49.166849     1</span></span>
+<span><span class="co">#&gt; 500:   500     2  51.4 29-05-1947 24-04-2022      1998-10-24 33.284086     1</span></span>
+<span><span class="co">#&gt;      localisation necrosis  cd10 sox10    ck death_date recurrence_date</span></span>
+<span><span class="co">#&gt;             &lt;int&gt;    &lt;num&gt; &lt;num&gt; &lt;num&gt; &lt;num&gt;     &lt;Date&gt;          &lt;Date&gt;</span></span>
+<span><span class="co">#&gt;   1:            2        0    NA     1     0       &lt;NA&gt;            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt;   2:            1        1     0     0     0       &lt;NA&gt;      2014-12-09</span></span>
+<span><span class="co">#&gt;   3:            4        0     0     1    NA       &lt;NA&gt;            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt;   4:            1        1     1    NA     0 2019-07-27            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt;   5:            3        0     0     0     0 2018-04-19            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt;  ---                                                                   </span></span>
+<span><span class="co">#&gt; 496:            3       NA    NA    NA     0       &lt;NA&gt;            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 497:            2        1     0    NA     1       &lt;NA&gt;            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 498:            2        0     1     1     0       &lt;NA&gt;      2013-11-04</span></span>
+<span><span class="co">#&gt; 499:            3       NA     1    NA    NA 2016-03-26      2011-07-29</span></span>
+<span><span class="co">#&gt; 500:            1        1     1     1    NA 2020-04-18      2015-02-01</span></span>
+<span><span class="co">#&gt;      metastasis_date recurrence_date_bin metastasis_date_bin</span></span>
+<span><span class="co">#&gt;               &lt;Date&gt;              &lt;fctr&gt;              &lt;fctr&gt;</span></span>
+<span><span class="co">#&gt;   1:            &lt;NA&gt;                &lt;NA&gt;                &lt;NA&gt;</span></span>
+<span><span class="co">#&gt;   2:            &lt;NA&gt;           2010-2020                &lt;NA&gt;</span></span>
+<span><span class="co">#&gt;   3:            &lt;NA&gt;                &lt;NA&gt;                &lt;NA&gt;</span></span>
+<span><span class="co">#&gt;   4:      2012-04-04                &lt;NA&gt;           2010-2020</span></span>
+<span><span class="co">#&gt;   5:      2011-01-16                &lt;NA&gt;           2010-2020</span></span>
+<span><span class="co">#&gt;  ---                                                        </span></span>
+<span><span class="co">#&gt; 496:            &lt;NA&gt;                &lt;NA&gt;                &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 497:            &lt;NA&gt;                &lt;NA&gt;                &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 498:            &lt;NA&gt;           2010-2020                &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 499:      2010-10-20           2010-2020           2010-2020</span></span>
+<span><span class="co">#&gt; 500:            &lt;NA&gt;           2010-2020                &lt;NA&gt;</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="conversion-to-factor">Conversion to factor<a class="anchor" aria-label="anchor" href="#conversion-to-factor"></a>
+</h3>
+<p>In many cases it is of interest to specify a categorical variable
+with certain levels or reference groups. This is done with factR(). If
+nothing else is specified, factR() converts a character string into a
+factor, with the level with most observations as reference. The function
+str() is used to show the formatting of the type variable has changed to
+factor.</p>
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">redcap_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="../reference/factR.html">factR</a></span><span class="op">(</span><span class="va">type</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="va">str</span></span>
+<span><span class="co">#&gt; Classes 'data.table' and 'data.frame':   500 obs. of  16 variables:</span></span>
+<span><span class="co">#&gt;  $ id             : int  1 2 3 4 5 6 7 8 9 10 ...</span></span>
+<span><span class="co">#&gt;  $ sex            : num  1 2 2 2 2 2 2 1 1 2 ...</span></span>
+<span><span class="co">#&gt;  $ age            : num  40.9 57.8 32.2 58.7 29.3 18.3 52.7 36.2 42.6 55.8 ...</span></span>
+<span><span class="co">#&gt;  $ birth          : chr  "26-04-1958" "18-01-1941" "30-07-1963" "31-12-1936" ...</span></span>
+<span><span class="co">#&gt;  $ followup       : chr  "23-04-2021" "12-08-2024" "20-02-2022" "29-06-2024" ...</span></span>
+<span><span class="co">#&gt;  $ date_of_surgery: chr  "1999-03-29" "1998-10-20" "1995-10-26" "1995-09-14" ...</span></span>
+<span><span class="co">#&gt;  $ size           : num  3.99 48.69 11.25 11.61 6.98 ...</span></span>
+<span><span class="co">#&gt;  $ type           : Factor w/ 3 levels "1","0","2": 2 2 2 3 2 3 2 3 3 1 ...</span></span>
+<span><span class="co">#&gt;  $ localisation   : int  2 1 4 1 3 0 3 5 4 1 ...</span></span>
+<span><span class="co">#&gt;  $ necrosis       : num  0 1 0 1 0 NA 1 NA 0 0 ...</span></span>
+<span><span class="co">#&gt;  $ cd10           : num  NA 0 0 1 0 NA 1 1 1 NA ...</span></span>
+<span><span class="co">#&gt;  $ sox10          : num  1 0 1 NA 0 NA 0 0 0 1 ...</span></span>
+<span><span class="co">#&gt;  $ ck             : num  0 0 NA 0 0 0 NA 0 0 1 ...</span></span>
+<span><span class="co">#&gt;  $ death_date     : chr  NA NA NA "2019-07-27" ...</span></span>
+<span><span class="co">#&gt;  $ recurrence_date: chr  NA "2014-12-09" NA NA ...</span></span>
+<span><span class="co">#&gt;  $ metastasis_date: chr  NA NA NA "2012-04-04" ...</span></span></code></pre></div>
+<p>The reference group is specified using the reference argument</p>
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">redcap_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="../reference/factR.html">factR</a></span><span class="op">(</span><span class="va">type</span>,</span>
+<span>        reference <span class="op">=</span> <span class="st">"0"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="va">str</span></span>
+<span><span class="co">#&gt; Classes 'data.table' and 'data.frame':   500 obs. of  16 variables:</span></span>
+<span><span class="co">#&gt;  $ id             : int  1 2 3 4 5 6 7 8 9 10 ...</span></span>
+<span><span class="co">#&gt;  $ sex            : num  1 2 2 2 2 2 2 1 1 2 ...</span></span>
+<span><span class="co">#&gt;  $ age            : num  40.9 57.8 32.2 58.7 29.3 18.3 52.7 36.2 42.6 55.8 ...</span></span>
+<span><span class="co">#&gt;  $ birth          : chr  "26-04-1958" "18-01-1941" "30-07-1963" "31-12-1936" ...</span></span>
+<span><span class="co">#&gt;  $ followup       : chr  "23-04-2021" "12-08-2024" "20-02-2022" "29-06-2024" ...</span></span>
+<span><span class="co">#&gt;  $ date_of_surgery: chr  "1999-03-29" "1998-10-20" "1995-10-26" "1995-09-14" ...</span></span>
+<span><span class="co">#&gt;  $ size           : num  3.99 48.69 11.25 11.61 6.98 ...</span></span>
+<span><span class="co">#&gt;  $ type           : Factor w/ 3 levels "0","1","2": 1 1 1 3 1 3 1 3 3 2 ...</span></span>
+<span><span class="co">#&gt;  $ localisation   : int  2 1 4 1 3 0 3 5 4 1 ...</span></span>
+<span><span class="co">#&gt;  $ necrosis       : num  0 1 0 1 0 NA 1 NA 0 0 ...</span></span>
+<span><span class="co">#&gt;  $ cd10           : num  NA 0 0 1 0 NA 1 1 1 NA ...</span></span>
+<span><span class="co">#&gt;  $ sox10          : num  1 0 1 NA 0 NA 0 0 0 1 ...</span></span>
+<span><span class="co">#&gt;  $ ck             : num  0 0 NA 0 0 0 NA 0 0 1 ...</span></span>
+<span><span class="co">#&gt;  $ death_date     : chr  NA NA NA "2019-07-27" ...</span></span>
+<span><span class="co">#&gt;  $ recurrence_date: chr  NA "2014-12-09" NA NA ...</span></span>
+<span><span class="co">#&gt;  $ metastasis_date: chr  NA NA NA "2012-04-04" ...</span></span></code></pre></div>
+<p>Levels can be manually assigned</p>
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">redcap_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="../reference/factR.html">factR</a></span><span class="op">(</span><span class="va">type</span>,</span>
+<span>        levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"2"</span>,<span class="st">"1"</span>,<span class="st">"0"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="va">str</span></span>
+<span><span class="co">#&gt; Classes 'data.table' and 'data.frame':   500 obs. of  16 variables:</span></span>
+<span><span class="co">#&gt;  $ id             : int  1 2 3 4 5 6 7 8 9 10 ...</span></span>
+<span><span class="co">#&gt;  $ sex            : num  1 2 2 2 2 2 2 1 1 2 ...</span></span>
+<span><span class="co">#&gt;  $ age            : num  40.9 57.8 32.2 58.7 29.3 18.3 52.7 36.2 42.6 55.8 ...</span></span>
+<span><span class="co">#&gt;  $ birth          : chr  "26-04-1958" "18-01-1941" "30-07-1963" "31-12-1936" ...</span></span>
+<span><span class="co">#&gt;  $ followup       : chr  "23-04-2021" "12-08-2024" "20-02-2022" "29-06-2024" ...</span></span>
+<span><span class="co">#&gt;  $ date_of_surgery: chr  "1999-03-29" "1998-10-20" "1995-10-26" "1995-09-14" ...</span></span>
+<span><span class="co">#&gt;  $ size           : num  3.99 48.69 11.25 11.61 6.98 ...</span></span>
+<span><span class="co">#&gt;  $ type           : Factor w/ 3 levels "2","1","0": 3 3 3 1 3 1 3 1 1 2 ...</span></span>
+<span><span class="co">#&gt;  $ localisation   : int  2 1 4 1 3 0 3 5 4 1 ...</span></span>
+<span><span class="co">#&gt;  $ necrosis       : num  0 1 0 1 0 NA 1 NA 0 0 ...</span></span>
+<span><span class="co">#&gt;  $ cd10           : num  NA 0 0 1 0 NA 1 1 1 NA ...</span></span>
+<span><span class="co">#&gt;  $ sox10          : num  1 0 1 NA 0 NA 0 0 0 1 ...</span></span>
+<span><span class="co">#&gt;  $ ck             : num  0 0 NA 0 0 0 NA 0 0 1 ...</span></span>
+<span><span class="co">#&gt;  $ death_date     : chr  NA NA NA "2019-07-27" ...</span></span>
+<span><span class="co">#&gt;  $ recurrence_date: chr  NA "2014-12-09" NA NA ...</span></span>
+<span><span class="co">#&gt;  $ metastasis_date: chr  NA NA NA "2012-04-04" ...</span></span></code></pre></div>
+<p>New labels can also be assigned and automatically specify levels
+simultaneously</p>
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">redcap_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="../reference/factR.html">factR</a></span><span class="op">(</span><span class="va">type</span>,</span>
+<span>        labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"benign"</span> <span class="op">=</span> <span class="st">"0"</span>,</span>
+<span>                      <span class="st">"intermediate"</span> <span class="op">=</span> <span class="st">"1"</span>,</span>
+<span>                      <span class="st">"malignant"</span> <span class="op">=</span> <span class="st">"2"</span><span class="op">)</span>,</span>
+<span>        lab_to_lev <span class="op">=</span> <span class="cn">T</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="va">str</span></span>
+<span><span class="co">#&gt; Classes 'data.table' and 'data.frame':   500 obs. of  16 variables:</span></span>
+<span><span class="co">#&gt;  $ id             : int  1 2 3 4 5 6 7 8 9 10 ...</span></span>
+<span><span class="co">#&gt;  $ sex            : num  1 2 2 2 2 2 2 1 1 2 ...</span></span>
+<span><span class="co">#&gt;  $ age            : num  40.9 57.8 32.2 58.7 29.3 18.3 52.7 36.2 42.6 55.8 ...</span></span>
+<span><span class="co">#&gt;  $ birth          : chr  "26-04-1958" "18-01-1941" "30-07-1963" "31-12-1936" ...</span></span>
+<span><span class="co">#&gt;  $ followup       : chr  "23-04-2021" "12-08-2024" "20-02-2022" "29-06-2024" ...</span></span>
+<span><span class="co">#&gt;  $ date_of_surgery: chr  "1999-03-29" "1998-10-20" "1995-10-26" "1995-09-14" ...</span></span>
+<span><span class="co">#&gt;  $ size           : num  3.99 48.69 11.25 11.61 6.98 ...</span></span>
+<span><span class="co">#&gt;  $ type           : Factor w/ 3 levels "benign","intermediate",..: 1 1 1 3 1 3 1 3 3 2 ...</span></span>
+<span><span class="co">#&gt;  $ localisation   : int  2 1 4 1 3 0 3 5 4 1 ...</span></span>
+<span><span class="co">#&gt;  $ necrosis       : num  0 1 0 1 0 NA 1 NA 0 0 ...</span></span>
+<span><span class="co">#&gt;  $ cd10           : num  NA 0 0 1 0 NA 1 1 1 NA ...</span></span>
+<span><span class="co">#&gt;  $ sox10          : num  1 0 1 NA 0 NA 0 0 0 1 ...</span></span>
+<span><span class="co">#&gt;  $ ck             : num  0 0 NA 0 0 0 NA 0 0 1 ...</span></span>
+<span><span class="co">#&gt;  $ death_date     : chr  NA NA NA "2019-07-27" ...</span></span>
+<span><span class="co">#&gt;  $ recurrence_date: chr  NA "2014-12-09" NA NA ...</span></span>
+<span><span class="co">#&gt;  $ metastasis_date: chr  NA NA NA "2012-04-04" ...</span></span></code></pre></div>
+<p>Lastly, all the arguments can be specified for multiple variables at
+once</p>
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">redcap_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="../reference/factR.html">factR</a></span><span class="op">(</span>vars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">type</span>, <span class="va">sex</span><span class="op">)</span>,</span>
+<span>        reference <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"sex"</span> <span class="op">=</span> <span class="st">"2"</span><span class="op">)</span>,</span>
+<span>        levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"type"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"0"</span>, <span class="st">"1"</span>, <span class="st">"2"</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>        labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"sex"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"f"</span> <span class="op">=</span> <span class="st">"1"</span>,</span>
+<span>                                <span class="st">"m"</span> <span class="op">=</span> <span class="st">"2"</span><span class="op">)</span>,</span>
+<span>                      <span class="st">"type"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"benign"</span> <span class="op">=</span> <span class="st">"0"</span>,</span>
+<span>                      <span class="st">"intermediate"</span> <span class="op">=</span> <span class="st">"1"</span>,</span>
+<span>                      <span class="st">"malignant"</span> <span class="op">=</span> <span class="st">"2"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="va">str</span></span>
+<span><span class="co">#&gt; Classes 'data.table' and 'data.frame':   500 obs. of  16 variables:</span></span>
+<span><span class="co">#&gt;  $ id             : int  1 2 3 4 5 6 7 8 9 10 ...</span></span>
+<span><span class="co">#&gt;  $ sex            : Factor w/ 2 levels "m","f": 2 1 1 1 1 1 1 2 2 1 ...</span></span>
+<span><span class="co">#&gt;  $ age            : num  40.9 57.8 32.2 58.7 29.3 18.3 52.7 36.2 42.6 55.8 ...</span></span>
+<span><span class="co">#&gt;  $ birth          : chr  "26-04-1958" "18-01-1941" "30-07-1963" "31-12-1936" ...</span></span>
+<span><span class="co">#&gt;  $ followup       : chr  "23-04-2021" "12-08-2024" "20-02-2022" "29-06-2024" ...</span></span>
+<span><span class="co">#&gt;  $ date_of_surgery: chr  "1999-03-29" "1998-10-20" "1995-10-26" "1995-09-14" ...</span></span>
+<span><span class="co">#&gt;  $ size           : num  3.99 48.69 11.25 11.61 6.98 ...</span></span>
+<span><span class="co">#&gt;  $ type           : Factor w/ 3 levels "benign","intermediate",..: 1 1 1 3 1 3 1 3 3 2 ...</span></span>
+<span><span class="co">#&gt;  $ localisation   : int  2 1 4 1 3 0 3 5 4 1 ...</span></span>
+<span><span class="co">#&gt;  $ necrosis       : num  0 1 0 1 0 NA 1 NA 0 0 ...</span></span>
+<span><span class="co">#&gt;  $ cd10           : num  NA 0 0 1 0 NA 1 1 1 NA ...</span></span>
+<span><span class="co">#&gt;  $ sox10          : num  1 0 1 NA 0 NA 0 0 0 1 ...</span></span>
+<span><span class="co">#&gt;  $ ck             : num  0 0 NA 0 0 0 NA 0 0 1 ...</span></span>
+<span><span class="co">#&gt;  $ death_date     : chr  NA NA NA "2019-07-27" ...</span></span>
+<span><span class="co">#&gt;  $ recurrence_date: chr  NA "2014-12-09" NA NA ...</span></span>
+<span><span class="co">#&gt;  $ metastasis_date: chr  NA NA NA "2012-04-04" ...</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="subset-rows-filters">Subset rows (filters)<a class="anchor" aria-label="anchor" href="#subset-rows-filters"></a>
+</h3>
+<p>If we want to keep only certain rows we use filter(). Here we limit
+the dataset to patients without necrosis (necrosis = 0)</p>
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">redcap_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">necrosis</span> <span class="op">==</span> <span class="fl">0</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="va">head</span></span>
+<span><span class="co">#&gt;       id   sex   age      birth   followup date_of_surgery      size  type</span></span>
+<span><span class="co">#&gt;    &lt;int&gt; &lt;num&gt; &lt;num&gt;     &lt;char&gt;     &lt;char&gt;          &lt;char&gt;     &lt;num&gt; &lt;int&gt;</span></span>
+<span><span class="co">#&gt; 1:     1     1  40.9 26-04-1958 23-04-2021      1999-03-29  3.991349     0</span></span>
+<span><span class="co">#&gt; 2:     3     2  32.2 30-07-1963 20-02-2022      1995-10-26 11.245841     0</span></span>
+<span><span class="co">#&gt; 3:     5     2  29.3 12-01-1961 14-05-2023      1990-04-22  6.980464     0</span></span>
+<span><span class="co">#&gt; 4:     9     1  42.6 01-04-1962 25-01-2021      2004-11-09  8.699874     2</span></span>
+<span><span class="co">#&gt; 5:    10     2  55.8 04-01-1954 02-04-2024      2009-10-22 35.560789     1</span></span>
+<span><span class="co">#&gt; 6:    20     1  30.3 01-09-1978 08-03-2023      2008-12-01 25.246919     1</span></span>
+<span><span class="co">#&gt;    localisation necrosis  cd10 sox10    ck death_date recurrence_date</span></span>
+<span><span class="co">#&gt;           &lt;int&gt;    &lt;num&gt; &lt;num&gt; &lt;num&gt; &lt;num&gt;     &lt;char&gt;          &lt;char&gt;</span></span>
+<span><span class="co">#&gt; 1:            2        0    NA     1     0       &lt;NA&gt;            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 2:            4        0     0     1    NA       &lt;NA&gt;            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 3:            3        0     0     0     0 2018-04-19            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 4:            4        0     1     0     0       &lt;NA&gt;            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 5:            1        0    NA     1     1       &lt;NA&gt;      2014-12-15</span></span>
+<span><span class="co">#&gt; 6:            4        0    NA     1     0 2020-02-17            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt;    metastasis_date</span></span>
+<span><span class="co">#&gt;             &lt;char&gt;</span></span>
+<span><span class="co">#&gt; 1:            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 2:            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 3:      2011-01-16</span></span>
+<span><span class="co">#&gt; 4:      2010-08-17</span></span>
+<span><span class="co">#&gt; 5:            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 6:            &lt;NA&gt;</span></span></code></pre></div>
+<p>In case of multiple conditions we use the <code>%in%</code> operator,
+as this specified that the variables has one of the following values</p>
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">redcap_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">localisation</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">2</span>,<span class="fl">3</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="va">head</span></span>
+<span><span class="co">#&gt;       id   sex   age      birth   followup date_of_surgery      size  type</span></span>
+<span><span class="co">#&gt;    &lt;int&gt; &lt;num&gt; &lt;num&gt;     &lt;char&gt;     &lt;char&gt;          &lt;char&gt;     &lt;num&gt; &lt;int&gt;</span></span>
+<span><span class="co">#&gt; 1:     1     1  40.9 26-04-1958 23-04-2021      1999-03-29  3.991349     0</span></span>
+<span><span class="co">#&gt; 2:     2     2  57.8 18-01-1941 12-08-2024      1998-10-20 48.688670     0</span></span>
+<span><span class="co">#&gt; 3:     4     2  58.7 31-12-1936 29-06-2024      1995-09-14 11.609164     2</span></span>
+<span><span class="co">#&gt; 4:     5     2  29.3 12-01-1961 14-05-2023      1990-04-22  6.980464     0</span></span>
+<span><span class="co">#&gt; 5:     7     2  52.7 14-04-1945 19-03-2024      1997-12-19 48.978832     0</span></span>
+<span><span class="co">#&gt; 6:    10     2  55.8 04-01-1954 02-04-2024      2009-10-22 35.560789     1</span></span>
+<span><span class="co">#&gt;    localisation necrosis  cd10 sox10    ck death_date recurrence_date</span></span>
+<span><span class="co">#&gt;           &lt;int&gt;    &lt;num&gt; &lt;num&gt; &lt;num&gt; &lt;num&gt;     &lt;char&gt;          &lt;char&gt;</span></span>
+<span><span class="co">#&gt; 1:            2        0    NA     1     0       &lt;NA&gt;            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 2:            1        1     0     0     0       &lt;NA&gt;      2014-12-09</span></span>
+<span><span class="co">#&gt; 3:            1        1     1    NA     0 2019-07-27            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 4:            3        0     0     0     0 2018-04-19            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 5:            3        1     1     0    NA       &lt;NA&gt;      2011-10-10</span></span>
+<span><span class="co">#&gt; 6:            1        0    NA     1     1       &lt;NA&gt;      2014-12-15</span></span>
+<span><span class="co">#&gt;    metastasis_date</span></span>
+<span><span class="co">#&gt;             &lt;char&gt;</span></span>
+<span><span class="co">#&gt; 1:            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 2:            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 3:      2012-04-04</span></span>
+<span><span class="co">#&gt; 4:      2011-01-16</span></span>
+<span><span class="co">#&gt; 5:            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 6:            &lt;NA&gt;</span></span></code></pre></div>
+<p>For numerical variables we use &lt;, &gt;, ==, &gt;= and &lt;=</p>
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">redcap_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">size</span> <span class="op">&gt;</span> <span class="fl">20</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="va">head</span></span>
+<span><span class="co">#&gt;       id   sex   age      birth   followup date_of_surgery     size  type</span></span>
+<span><span class="co">#&gt;    &lt;int&gt; &lt;num&gt; &lt;num&gt;     &lt;char&gt;     &lt;char&gt;          &lt;char&gt;    &lt;num&gt; &lt;int&gt;</span></span>
+<span><span class="co">#&gt; 1:     2     2  57.8 18-01-1941 12-08-2024      1998-10-20 48.68867     0</span></span>
+<span><span class="co">#&gt; 2:     6     2  18.3 10-12-1975 06-04-2025      1994-03-21 49.02917     2</span></span>
+<span><span class="co">#&gt; 3:     7     2  52.7 14-04-1945 19-03-2024      1997-12-19 48.97883     0</span></span>
+<span><span class="co">#&gt; 4:     8     1  36.2 01-09-1969 14-10-2024      2005-10-30 43.57744     2</span></span>
+<span><span class="co">#&gt; 5:    10     2  55.8 04-01-1954 02-04-2024      2009-10-22 35.56079     1</span></span>
+<span><span class="co">#&gt; 6:    11     1  67.4 26-09-1930 21-06-2023      1998-02-24 27.23407     0</span></span>
+<span><span class="co">#&gt;    localisation necrosis  cd10 sox10    ck death_date recurrence_date</span></span>
+<span><span class="co">#&gt;           &lt;int&gt;    &lt;num&gt; &lt;num&gt; &lt;num&gt; &lt;num&gt;     &lt;char&gt;          &lt;char&gt;</span></span>
+<span><span class="co">#&gt; 1:            1        1     0     0     0       &lt;NA&gt;      2014-12-09</span></span>
+<span><span class="co">#&gt; 2:            0       NA    NA    NA     0       &lt;NA&gt;            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 3:            3        1     1     0    NA       &lt;NA&gt;      2011-10-10</span></span>
+<span><span class="co">#&gt; 4:            5       NA     1     0     0       &lt;NA&gt;            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 5:            1        0    NA     1     1       &lt;NA&gt;      2014-12-15</span></span>
+<span><span class="co">#&gt; 6:            2       NA    NA     1     0 2019-03-12            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt;    metastasis_date</span></span>
+<span><span class="co">#&gt;             &lt;char&gt;</span></span>
+<span><span class="co">#&gt; 1:            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 2:            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 3:            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 4:            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 5:            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 6:            &lt;NA&gt;</span></span></code></pre></div>
+<p>We can also use between() to specify an interval</p>
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">redcap_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/between.html" class="external-link">between</a></span><span class="op">(</span><span class="va">size</span>, <span class="fl">10</span>,<span class="fl">20</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="va">head</span></span>
+<span><span class="co">#&gt;       id   sex   age      birth   followup date_of_surgery     size  type</span></span>
+<span><span class="co">#&gt;    &lt;int&gt; &lt;num&gt; &lt;num&gt;     &lt;char&gt;     &lt;char&gt;          &lt;char&gt;    &lt;num&gt; &lt;int&gt;</span></span>
+<span><span class="co">#&gt; 1:     3     2  32.2 30-07-1963 20-02-2022      1995-10-26 11.24584     0</span></span>
+<span><span class="co">#&gt; 2:     4     2  58.7 31-12-1936 29-06-2024      1995-09-14 11.60916     2</span></span>
+<span><span class="co">#&gt; 3:    12     2  46.0 08-05-1962 17-02-2025      2008-04-23 11.06068     1</span></span>
+<span><span class="co">#&gt; 4:    15     1  70.7 26-03-1939 05-07-2023      2009-11-18 15.91012     0</span></span>
+<span><span class="co">#&gt; 5:    18     2  32.0 24-05-1972 12-08-2022      2004-05-31 15.68306     0</span></span>
+<span><span class="co">#&gt; 6:    19     1  23.4 27-11-1975 17-11-2024      1999-05-08 14.00870     2</span></span>
+<span><span class="co">#&gt;    localisation necrosis  cd10 sox10    ck death_date recurrence_date</span></span>
+<span><span class="co">#&gt;           &lt;int&gt;    &lt;num&gt; &lt;num&gt; &lt;num&gt; &lt;num&gt;     &lt;char&gt;          &lt;char&gt;</span></span>
+<span><span class="co">#&gt; 1:            4        0     0     1    NA       &lt;NA&gt;            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 2:            1        1     1    NA     0 2019-07-27            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 3:            3        1    NA     1    NA 2019-02-16            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 4:            2       NA     1     0    NA       &lt;NA&gt;            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 5:            2        1     0     1     0       &lt;NA&gt;            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 6:            3       NA     0     0    NA       &lt;NA&gt;      2010-06-11</span></span>
+<span><span class="co">#&gt;    metastasis_date</span></span>
+<span><span class="co">#&gt;             &lt;char&gt;</span></span>
+<span><span class="co">#&gt; 1:            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 2:      2012-04-04</span></span>
+<span><span class="co">#&gt; 3:            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 4:      2015-09-01</span></span>
+<span><span class="co">#&gt; 5:      2014-09-13</span></span>
+<span><span class="co">#&gt; 6:      2015-10-01</span></span></code></pre></div>
+<p>Multiple conditions can be combined using so-called “boolean”
+operators whic are and/or/not etc. Here we keep rows where necrosis = 1
+AND localisation is 1, 2 or 3 OR size is larger than 10. Here necrosis
+needs to be 1, but either of the conditions for localisation or size can
+be satisified.</p>
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">redcap_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">necrosis</span> <span class="op">==</span> <span class="fl">1</span> <span class="op">&amp;</span> <span class="op">(</span><span class="va">localisation</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">2</span>,<span class="fl">3</span><span class="op">)</span> <span class="op">|</span> <span class="va">size</span> <span class="op">&gt;</span> <span class="fl">10</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="va">head</span></span>
+<span><span class="co">#&gt;       id   sex   age      birth   followup date_of_surgery     size  type</span></span>
+<span><span class="co">#&gt;    &lt;int&gt; &lt;num&gt; &lt;num&gt;     &lt;char&gt;     &lt;char&gt;          &lt;char&gt;    &lt;num&gt; &lt;int&gt;</span></span>
+<span><span class="co">#&gt; 1:     2     2  57.8 18-01-1941 12-08-2024      1998-10-20 48.68867     0</span></span>
+<span><span class="co">#&gt; 2:     4     2  58.7 31-12-1936 29-06-2024      1995-09-14 11.60916     2</span></span>
+<span><span class="co">#&gt; 3:     7     2  52.7 14-04-1945 19-03-2024      1997-12-19 48.97883     0</span></span>
+<span><span class="co">#&gt; 4:    12     2  46.0 08-05-1962 17-02-2025      2008-04-23 11.06068     1</span></span>
+<span><span class="co">#&gt; 5:    14     1  39.6 16-08-1950 24-10-2022      1990-03-12 32.02648     1</span></span>
+<span><span class="co">#&gt; 6:    16     1  58.8 01-07-1945 19-06-2024      2004-04-01 26.70794     1</span></span>
+<span><span class="co">#&gt;    localisation necrosis  cd10 sox10    ck death_date recurrence_date</span></span>
+<span><span class="co">#&gt;           &lt;int&gt;    &lt;num&gt; &lt;num&gt; &lt;num&gt; &lt;num&gt;     &lt;char&gt;          &lt;char&gt;</span></span>
+<span><span class="co">#&gt; 1:            1        1     0     0     0       &lt;NA&gt;      2014-12-09</span></span>
+<span><span class="co">#&gt; 2:            1        1     1    NA     0 2019-07-27            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 3:            3        1     1     0    NA       &lt;NA&gt;      2011-10-10</span></span>
+<span><span class="co">#&gt; 4:            3        1    NA     1    NA 2019-02-16            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 5:            3        1     0     0     0 2017-07-18            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 6:            4        1     1    NA    NA       &lt;NA&gt;      2014-05-27</span></span>
+<span><span class="co">#&gt;    metastasis_date</span></span>
+<span><span class="co">#&gt;             &lt;char&gt;</span></span>
+<span><span class="co">#&gt; 1:            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 2:      2012-04-04</span></span>
+<span><span class="co">#&gt; 3:            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 4:            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 5:            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 6:            &lt;NA&gt;</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="arrangingsorting-data">Arranging/sorting data<a class="anchor" aria-label="anchor" href="#arrangingsorting-data"></a>
+</h3>
+<p>Sorting is done with the arrange(). If the variable needs to be in
+descending order it is prefixed by a desc()</p>
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">redcap_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">size</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;   id sex      birth   followup      index     size type localisation necrosis</span></span>
-<span><span class="co">#&gt; 1  1   1 13-10-1966 02-03-2023 2002-07-07 24.10520    1            3        0</span></span>
-<span><span class="co">#&gt; 2  2   1 31-10-1934 17-08-2023 1997-03-10 42.34623    1            4       NA</span></span>
-<span><span class="co">#&gt; 3  3   2 04-04-1942 24-01-2021 2000-01-29 40.90360    0            2       NA</span></span>
-<span><span class="co">#&gt; 4  4   1 27-10-1933 06-10-2022 1992-10-28 42.93259    2            4        0</span></span>
-<span><span class="co">#&gt; 5  5   1 12-12-1927 31-03-2023 2001-03-31 18.67687    0            2        1</span></span>
-<span><span class="co">#&gt; 6  6   2 14-11-1932 30-07-2025 2004-01-11 20.99129    2            2        0</span></span>
-<span><span class="co">#&gt;   cd10 sox10 cytokeratin death_date recurrence_date metastasis_date</span></span>
-<span><span class="co">#&gt; 1   NA    NA          NA       &lt;NA&gt;      2011-08-28            &lt;NA&gt;</span></span>
-<span><span class="co">#&gt; 2   NA    NA          NA 2017-04-11            &lt;NA&gt;      2014-08-19</span></span>
-<span><span class="co">#&gt; 3   NA     0          NA       &lt;NA&gt;      2012-12-23      2014-09-15</span></span>
-<span><span class="co">#&gt; 4   NA     0           1       &lt;NA&gt;            &lt;NA&gt;      2012-12-25</span></span>
-<span><span class="co">#&gt; 5    1     0           0 2018-09-24      2010-03-25            &lt;NA&gt;</span></span>
-<span><span class="co">#&gt; 6    1     0           1 2019-04-02      2015-04-17            &lt;NA&gt;</span></span></code></pre></div>
+<span><span class="co">#&gt;       id   sex   age      birth   followup date_of_surgery     size  type</span></span>
+<span><span class="co">#&gt;    &lt;int&gt; &lt;num&gt; &lt;num&gt;     &lt;char&gt;     &lt;char&gt;          &lt;char&gt;    &lt;num&gt; &lt;int&gt;</span></span>
+<span><span class="co">#&gt; 1:    28     2  51.5 17-06-1940 07-02-2021      1992-01-02 2.088167     0</span></span>
+<span><span class="co">#&gt; 2:   350     2  22.5 25-11-1971 14-07-2021      1994-06-03 2.167653     1</span></span>
+<span><span class="co">#&gt; 3:   189     2  55.5 28-10-1949 08-03-2024      2005-05-15 2.507209     2</span></span>
+<span><span class="co">#&gt; 4:   194     2  27.4 12-03-1979 02-11-2025      2006-08-21 2.561534     0</span></span>
+<span><span class="co">#&gt; 5:   241     1  64.6 23-08-1926 18-02-2025      1991-04-06 2.572398     0</span></span>
+<span><span class="co">#&gt; 6:   334     1  65.5 16-03-1941 08-08-2022      2006-09-26 2.582333     1</span></span>
+<span><span class="co">#&gt;    localisation necrosis  cd10 sox10    ck death_date recurrence_date</span></span>
+<span><span class="co">#&gt;           &lt;int&gt;    &lt;num&gt; &lt;num&gt; &lt;num&gt; &lt;num&gt;     &lt;char&gt;          &lt;char&gt;</span></span>
+<span><span class="co">#&gt; 1:            2        0    NA     1     1       &lt;NA&gt;      2012-01-18</span></span>
+<span><span class="co">#&gt; 2:            1        1     1     1     1       &lt;NA&gt;      2010-11-09</span></span>
+<span><span class="co">#&gt; 3:            2       NA     0     1     0 2017-09-21            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 4:            3       NA    NA     1     0       &lt;NA&gt;            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 5:            3       NA     0     1    NA       &lt;NA&gt;      2010-10-18</span></span>
+<span><span class="co">#&gt; 6:            3        1    NA     1     0 2019-04-01            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt;    metastasis_date</span></span>
+<span><span class="co">#&gt;             &lt;char&gt;</span></span>
+<span><span class="co">#&gt; 1:      2015-11-02</span></span>
+<span><span class="co">#&gt; 2:            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 3:            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 4:            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 5:            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 6:            &lt;NA&gt;</span></span></code></pre></div>
+<p>Descending size</p>
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">redcap_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html" class="external-link">desc</a></span><span class="op">(</span><span class="va">size</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="va">head</span></span>
+<span><span class="co">#&gt;       id   sex   age      birth   followup date_of_surgery     size  type</span></span>
+<span><span class="co">#&gt;    &lt;int&gt; &lt;num&gt; &lt;num&gt;     &lt;char&gt;     &lt;char&gt;          &lt;char&gt;    &lt;num&gt; &lt;int&gt;</span></span>
+<span><span class="co">#&gt; 1:    93     2  79.7 30-05-1924 03-10-2021      2004-02-09 49.88995     0</span></span>
+<span><span class="co">#&gt; 2:   441     2  42.1 31-05-1967 05-10-2022      2009-06-26 49.51837     0</span></span>
+<span><span class="co">#&gt; 3:   230     1  31.3 05-04-1961 04-05-2021      1992-08-01 49.44014     1</span></span>
+<span><span class="co">#&gt; 4:   366     2  19.2 10-05-1979 09-12-2022      1998-07-16 49.43806     1</span></span>
+<span><span class="co">#&gt; 5:   133     1  65.1 02-02-1930 01-09-2022      1995-02-23 49.31010     1</span></span>
+<span><span class="co">#&gt; 6:   494     2  72.4 20-05-1928 05-08-2025      2000-10-15 49.28248     1</span></span>
+<span><span class="co">#&gt;    localisation necrosis  cd10 sox10    ck death_date recurrence_date</span></span>
+<span><span class="co">#&gt;           &lt;int&gt;    &lt;num&gt; &lt;num&gt; &lt;num&gt; &lt;num&gt;     &lt;char&gt;          &lt;char&gt;</span></span>
+<span><span class="co">#&gt; 1:            1       NA     1     0     0       &lt;NA&gt;            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 2:            2       NA     1    NA     0       &lt;NA&gt;      2011-07-17</span></span>
+<span><span class="co">#&gt; 3:            3       NA     0     1    NA       &lt;NA&gt;      2011-01-25</span></span>
+<span><span class="co">#&gt; 4:            3        1     0    NA    NA 2020-09-26            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 5:            3       NA     0     1     1       &lt;NA&gt;            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 6:            2        0    NA     1    NA       &lt;NA&gt;      2010-12-03</span></span>
+<span><span class="co">#&gt;    metastasis_date</span></span>
+<span><span class="co">#&gt;             &lt;char&gt;</span></span>
+<span><span class="co">#&gt; 1:            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 2:            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 3:      2013-09-04</span></span>
+<span><span class="co">#&gt; 4:            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 5:      2014-07-23</span></span>
+<span><span class="co">#&gt; 6:            &lt;NA&gt;</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="missing-data">Missing data<a class="anchor" aria-label="anchor" href="#missing-data"></a>
+</h3>
+<p>To get a quick overview of missing data in the dataset we use
+missR()</p>
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">redcap_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="../reference/missR.html">missR</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; No NAs detected</span></span></code></pre></div>
+<p>Missing values can be dropped with drop_na()</p>
+<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">redcap_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/drop_na.html" class="external-link">drop_na</a></span><span class="op">(</span><span class="va">metastasis_date</span>, <span class="va">necrosis</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="va">head</span></span>
+<span><span class="co">#&gt;       id   sex   age      birth   followup date_of_surgery      size  type</span></span>
+<span><span class="co">#&gt;    &lt;int&gt; &lt;num&gt; &lt;num&gt;     &lt;char&gt;     &lt;char&gt;          &lt;char&gt;     &lt;num&gt; &lt;int&gt;</span></span>
+<span><span class="co">#&gt; 1:     4     2  58.7 31-12-1936 29-06-2024      1995-09-14 11.609164     2</span></span>
+<span><span class="co">#&gt; 2:     5     2  29.3 12-01-1961 14-05-2023      1990-04-22  6.980464     0</span></span>
+<span><span class="co">#&gt; 3:     9     1  42.6 01-04-1962 25-01-2021      2004-11-09  8.699874     2</span></span>
+<span><span class="co">#&gt; 4:    17     1  56.8 27-09-1946 05-09-2022      2003-07-16 47.472564     1</span></span>
+<span><span class="co">#&gt; 5:    18     2  32.0 24-05-1972 12-08-2022      2004-05-31 15.683065     0</span></span>
+<span><span class="co">#&gt; 6:    23     1  64.5 30-03-1929 21-09-2022      1993-10-10 28.811464     1</span></span>
+<span><span class="co">#&gt;    localisation necrosis  cd10 sox10    ck death_date recurrence_date</span></span>
+<span><span class="co">#&gt;           &lt;int&gt;    &lt;num&gt; &lt;num&gt; &lt;num&gt; &lt;num&gt;     &lt;char&gt;          &lt;char&gt;</span></span>
+<span><span class="co">#&gt; 1:            1        1     1    NA     0 2019-07-27            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 2:            3        0     0     0     0 2018-04-19            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 3:            4        0     1     0     0       &lt;NA&gt;            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 4:            2        1     0     0     0 2017-09-28            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 5:            2        1     0     1     0       &lt;NA&gt;            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 6:            5        1    NA     1     0 2018-03-01      2011-01-03</span></span>
+<span><span class="co">#&gt;    metastasis_date</span></span>
+<span><span class="co">#&gt;             &lt;char&gt;</span></span>
+<span><span class="co">#&gt; 1:      2012-04-04</span></span>
+<span><span class="co">#&gt; 2:      2011-01-16</span></span>
+<span><span class="co">#&gt; 3:      2010-08-17</span></span>
+<span><span class="co">#&gt; 4:      2012-08-18</span></span>
+<span><span class="co">#&gt; 5:      2014-09-13</span></span>
+<span><span class="co">#&gt; 6:      2010-04-11</span></span></code></pre></div>
+<p>Sometimes we want to remove rows where at least one of the values are
+NA. This is done with rowR() which is useful for rowwise operations</p>
+<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">redcap_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="../reference/rowR.html">rowR</a></span><span class="op">(</span>vars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">cd10</span>, <span class="va">sox10</span>, <span class="va">ck</span><span class="op">)</span>,</span>
+<span>       type <span class="op">=</span> <span class="st">"any.na"</span>,</span>
+<span>       filter <span class="op">=</span> <span class="st">"remove"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="va">head</span></span>
+<span><span class="co">#&gt;       id   sex   age      birth   followup date_of_surgery      size  type</span></span>
+<span><span class="co">#&gt;    &lt;int&gt; &lt;num&gt; &lt;num&gt;     &lt;char&gt;     &lt;char&gt;          &lt;char&gt;     &lt;num&gt; &lt;int&gt;</span></span>
+<span><span class="co">#&gt; 1:     2     2  57.8 18-01-1941 12-08-2024      1998-10-20 48.688670     0</span></span>
+<span><span class="co">#&gt; 2:     5     2  29.3 12-01-1961 14-05-2023      1990-04-22  6.980464     0</span></span>
+<span><span class="co">#&gt; 3:     8     1  36.2 01-09-1969 14-10-2024      2005-10-30 43.577441     2</span></span>
+<span><span class="co">#&gt; 4:     9     1  42.6 01-04-1962 25-01-2021      2004-11-09  8.699874     2</span></span>
+<span><span class="co">#&gt; 5:    14     1  39.6 16-08-1950 24-10-2022      1990-03-12 32.026478     1</span></span>
+<span><span class="co">#&gt; 6:    17     1  56.8 27-09-1946 05-09-2022      2003-07-16 47.472564     1</span></span>
+<span><span class="co">#&gt;    localisation necrosis  cd10 sox10    ck death_date recurrence_date</span></span>
+<span><span class="co">#&gt;           &lt;int&gt;    &lt;num&gt; &lt;num&gt; &lt;num&gt; &lt;num&gt;     &lt;char&gt;          &lt;char&gt;</span></span>
+<span><span class="co">#&gt; 1:            1        1     0     0     0       &lt;NA&gt;      2014-12-09</span></span>
+<span><span class="co">#&gt; 2:            3        0     0     0     0 2018-04-19            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 3:            5       NA     1     0     0       &lt;NA&gt;            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 4:            4        0     1     0     0       &lt;NA&gt;            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 5:            3        1     0     0     0 2017-07-18            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 6:            2        1     0     0     0 2017-09-28            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt;    metastasis_date</span></span>
+<span><span class="co">#&gt;             &lt;char&gt;</span></span>
+<span><span class="co">#&gt; 1:            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 2:      2011-01-16</span></span>
+<span><span class="co">#&gt; 3:            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 4:      2010-08-17</span></span>
+<span><span class="co">#&gt; 5:            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 6:      2012-08-18</span></span></code></pre></div>
+<p>We can also flag the rows into a new variable</p>
+<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">redcap_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="../reference/rowR.html">rowR</a></span><span class="op">(</span>vars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">cd10</span>, <span class="va">sox10</span>, <span class="va">ck</span><span class="op">)</span>,</span>
+<span>       type <span class="op">=</span> <span class="st">"any.na"</span>,</span>
+<span>       new <span class="op">=</span> <span class="st">"flag"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="va">head</span></span>
+<span><span class="co">#&gt;       id   sex   age      birth   followup date_of_surgery      size  type</span></span>
+<span><span class="co">#&gt;    &lt;int&gt; &lt;num&gt; &lt;num&gt;     &lt;char&gt;     &lt;char&gt;          &lt;char&gt;     &lt;num&gt; &lt;int&gt;</span></span>
+<span><span class="co">#&gt; 1:     1     1  40.9 26-04-1958 23-04-2021      1999-03-29  3.991349     0</span></span>
+<span><span class="co">#&gt; 2:     2     2  57.8 18-01-1941 12-08-2024      1998-10-20 48.688670     0</span></span>
+<span><span class="co">#&gt; 3:     3     2  32.2 30-07-1963 20-02-2022      1995-10-26 11.245841     0</span></span>
+<span><span class="co">#&gt; 4:     4     2  58.7 31-12-1936 29-06-2024      1995-09-14 11.609164     2</span></span>
+<span><span class="co">#&gt; 5:     5     2  29.3 12-01-1961 14-05-2023      1990-04-22  6.980464     0</span></span>
+<span><span class="co">#&gt; 6:     6     2  18.3 10-12-1975 06-04-2025      1994-03-21 49.029171     2</span></span>
+<span><span class="co">#&gt;    localisation necrosis  cd10 sox10    ck death_date recurrence_date</span></span>
+<span><span class="co">#&gt;           &lt;int&gt;    &lt;num&gt; &lt;num&gt; &lt;num&gt; &lt;num&gt;     &lt;char&gt;          &lt;char&gt;</span></span>
+<span><span class="co">#&gt; 1:            2        0    NA     1     0       &lt;NA&gt;            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 2:            1        1     0     0     0       &lt;NA&gt;      2014-12-09</span></span>
+<span><span class="co">#&gt; 3:            4        0     0     1    NA       &lt;NA&gt;            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 4:            1        1     1    NA     0 2019-07-27            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 5:            3        0     0     0     0 2018-04-19            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 6:            0       NA    NA    NA     0       &lt;NA&gt;            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt;    metastasis_date  flag</span></span>
+<span><span class="co">#&gt;             &lt;char&gt; &lt;num&gt;</span></span>
+<span><span class="co">#&gt; 1:            &lt;NA&gt;     1</span></span>
+<span><span class="co">#&gt; 2:            &lt;NA&gt;     0</span></span>
+<span><span class="co">#&gt; 3:            &lt;NA&gt;     1</span></span>
+<span><span class="co">#&gt; 4:      2012-04-04     1</span></span>
+<span><span class="co">#&gt; 5:      2011-01-16     0</span></span>
+<span><span class="co">#&gt; 6:            &lt;NA&gt;     1</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="join-multiple-data-frames">Join multiple data frames<a class="anchor" aria-label="anchor" href="#join-multiple-data-frames"></a>
+</h3>
+<p>The terminology is that we have a dataset X and a dataset Y.There are
+different types of joins, as joins can be side-by-side (such as merging
+to datasets based on a key variable) and end-to-end where one dataside
+is a continuation of another. In the side-by-side joins we need to
+specify a “by/key” variable which specifies how we link the two
+datasets. In the end-to-end join there is never a “key” as these are
+extensions and should roughly have the same variables.</p>
+<div class="section level4">
+<h4 id="left-join">Left join<a class="anchor" aria-label="anchor" href="#left-join"></a>
+</h4>
+<p>In a left_join, dataset X is complete and only observations from
+dataset Y that are present in X are joined. For all</p>
+<p>If we want to join two data frames, we use left_join().</p>
+<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="va">redcap_df</span>, <span class="va">analysis_df</span>, by <span class="op">=</span> <span class="st">"id"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="va">tail</span></span>
+<span><span class="co">#&gt;       id   sex   age      birth   followup date_of_surgery     size  type</span></span>
+<span><span class="co">#&gt;    &lt;int&gt; &lt;num&gt; &lt;num&gt;     &lt;char&gt;     &lt;char&gt;          &lt;char&gt;    &lt;num&gt; &lt;int&gt;</span></span>
+<span><span class="co">#&gt; 1:   497     1  42.9 17-03-1956 16-06-2025      1999-02-18 41.46047     2</span></span>
+<span><span class="co">#&gt; 2:   498     1  29.2 29-07-1961 25-03-2024      1990-10-28 24.04804     0</span></span>
+<span><span class="co">#&gt; 3:   499     2  25.0 13-09-1980 25-09-2025      2005-08-26 49.16685     1</span></span>
+<span><span class="co">#&gt; 4:   499     2  25.0 13-09-1980 25-09-2025      2005-08-26 49.16685     1</span></span>
+<span><span class="co">#&gt; 5:   499     2  25.0 13-09-1980 25-09-2025      2005-08-26 49.16685     1</span></span>
+<span><span class="co">#&gt; 6:   500     2  51.4 29-05-1947 24-04-2022      1998-10-24 33.28409     1</span></span>
+<span><span class="co">#&gt;    localisation necrosis  cd10 sox10    ck death_date recurrence_date</span></span>
+<span><span class="co">#&gt;           &lt;int&gt;    &lt;num&gt; &lt;num&gt; &lt;num&gt; &lt;num&gt;     &lt;char&gt;          &lt;char&gt;</span></span>
+<span><span class="co">#&gt; 1:            2        1     0    NA     1       &lt;NA&gt;            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 2:            2        0     1     1     0       &lt;NA&gt;      2013-11-04</span></span>
+<span><span class="co">#&gt; 3:            3       NA     1    NA    NA 2016-03-26      2011-07-29</span></span>
+<span><span class="co">#&gt; 4:            3       NA     1    NA    NA 2016-03-26      2011-07-29</span></span>
+<span><span class="co">#&gt; 5:            3       NA     1    NA    NA 2016-03-26      2011-07-29</span></span>
+<span><span class="co">#&gt; 6:            1        1     1     1    NA 2020-04-18      2015-02-01</span></span>
+<span><span class="co">#&gt;    metastasis_date       X6       X7         X8          X9         X10     X1</span></span>
+<span><span class="co">#&gt;             &lt;char&gt;    &lt;num&gt;    &lt;num&gt;      &lt;num&gt;       &lt;num&gt;       &lt;num&gt; &lt;fctr&gt;</span></span>
+<span><span class="co">#&gt; 1:            &lt;NA&gt; 50.93656 58.45569  1.2273203 -1.90077533  0.02481369     T1</span></span>
+<span><span class="co">#&gt; 2:            &lt;NA&gt; 36.85346 60.18677 -1.2309572 -1.54352019 -1.33970795     T2</span></span>
+<span><span class="co">#&gt; 3:      2010-10-20 56.66101 53.24792 -0.1929807  0.04449373  2.64840656     T0</span></span>
+<span><span class="co">#&gt; 4:      2010-10-20 60.19224 58.47038 -0.6886738  0.59431900 -0.46868751     T0</span></span>
+<span><span class="co">#&gt; 5:      2010-10-20 77.20068 56.85965  0.8468578  0.86535618  0.22306156     T0</span></span>
+<span><span class="co">#&gt; 6:            &lt;NA&gt;       NA       NA         NA          NA          NA   &lt;NA&gt;</span></span>
+<span><span class="co">#&gt;        X2     X3     X4     X5   ttt  event     time2 event2      X6_bin</span></span>
+<span><span class="co">#&gt;    &lt;fctr&gt; &lt;fctr&gt; &lt;fctr&gt; &lt;fctr&gt; &lt;num&gt; &lt;fctr&gt;     &lt;num&gt;  &lt;int&gt;      &lt;fctr&gt;</span></span>
+<span><span class="co">#&gt; 1:      2     T1      0      0  39.6      1  39.42389      1 49.26-59.21</span></span>
+<span><span class="co">#&gt; 2:      1     T0      1      0 166.8      0 167.58967      0 13.04-49.26</span></span>
+<span><span class="co">#&gt; 3:      1     T1      0      0 109.2      0 109.78503      1 49.26-59.21</span></span>
+<span><span class="co">#&gt; 4:      1     T1      1      1 133.2      0 132.84982      0 59.21-69.28</span></span>
+<span><span class="co">#&gt; 5:      1     T2      1      0  39.6      1  39.79539      1 69.28-111.5</span></span>
+<span><span class="co">#&gt; 6:   &lt;NA&gt;   &lt;NA&gt;   &lt;NA&gt;   &lt;NA&gt;    NA   &lt;NA&gt;        NA     NA        &lt;NA&gt;</span></span>
+<span><span class="co">#&gt;         X7_bin          X8_bin         X9_bin         X10_bin</span></span>
+<span><span class="co">#&gt;         &lt;fctr&gt;          &lt;fctr&gt;         &lt;fctr&gt;          &lt;fctr&gt;</span></span>
+<span><span class="co">#&gt; 1: 56.53-59.87    0.6773-3.248   -3.45--0.648  -0.0023-0.6628</span></span>
+<span><span class="co">#&gt; 2: 59.87-63.27  -4.303--0.6914   -3.45--0.648  -3.147--0.7032</span></span>
+<span><span class="co">#&gt; 3: 42.59-56.53 -0.6914--0.0393 -0.0061-0.6478    0.6628-3.624</span></span>
+<span><span class="co">#&gt; 4: 56.53-59.87 -0.6914--0.0393 -0.0061-0.6478 -0.7032--0.0023</span></span>
+<span><span class="co">#&gt; 5: 56.53-59.87    0.6773-3.248   0.6478-3.377  -0.0023-0.6628</span></span>
+<span><span class="co">#&gt; 6:        &lt;NA&gt;            &lt;NA&gt;           &lt;NA&gt;            &lt;NA&gt;</span></span></code></pre></div>
+<p>We see that some of the patients do not have any rows, as the
+redcap_df only has ids up to 350.</p>
+<p>We can left_join in a pipe. Here the current dataset we are working
+with is symbolised by a dot. We can also use other functions with the
+pipe operator inside the left_join.</p>
+<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">analysis_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">id</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="va">.</span>,</span>
+<span>            <span class="va">redcap_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">id</span>, <span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html" class="external-link">contains</a></span><span class="op">(</span><span class="st">"date"</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>            by <span class="op">=</span> <span class="st">"id"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="va">tail</span></span>
+<span><span class="co">#&gt;            X6       X7          X8          X9        X10 X1 X2 X3 X4 X5   ttt</span></span>
+<span><span class="co">#&gt; 1995 78.25916 63.35530  0.77542485 -0.48718868 -1.2763455 T2  1 T2  0  0  58.8</span></span>
+<span><span class="co">#&gt; 1996 81.18746 55.89216 -1.74053211 -0.65728896  0.6947777 T0  1 T1  1  0  39.6</span></span>
+<span><span class="co">#&gt; 1997 48.19932 58.22052  0.18632255  2.23907922 -1.5863555 T0  1 T0  0  0 124.8</span></span>
+<span><span class="co">#&gt; 1998 35.83313 54.87737 -0.88540538 -0.20223392  0.6609114 T2  1 T1  1  1  68.4</span></span>
+<span><span class="co">#&gt; 1999 47.57334 62.82759 -0.71264813  0.36300159  2.5341682 T0  1 T1  1  0  93.6</span></span>
+<span><span class="co">#&gt; 2000 61.98850 60.82175  0.01480971 -0.02593649 -0.9846291 T0  1 T2  1  0  18.0</span></span>
+<span><span class="co">#&gt;      event     time2 event2  id      X6_bin      X7_bin         X8_bin</span></span>
+<span><span class="co">#&gt; 1995     1  58.69883      1 698 69.28-111.5 63.27-78.64   0.6773-3.248</span></span>
+<span><span class="co">#&gt; 1996     1  41.75025      0 699 69.28-111.5 42.59-56.53 -4.303--0.6914</span></span>
+<span><span class="co">#&gt; 1997     0 124.45097      1 699 13.04-49.26 56.53-59.87 -0.0393-0.6773</span></span>
+<span><span class="co">#&gt; 1998     0  69.19420      0 700 13.04-49.26 42.59-56.53 -4.303--0.6914</span></span>
+<span><span class="co">#&gt; 1999     0  93.76463      0 700 13.04-49.26 59.87-63.27 -4.303--0.6914</span></span>
+<span><span class="co">#&gt; 2000     1  18.75125      1 700 59.21-69.28 59.87-63.27 -0.0393-0.6773</span></span>
+<span><span class="co">#&gt;              X9_bin        X10_bin date_of_surgery death_date recurrence_date</span></span>
+<span><span class="co">#&gt; 1995 -0.648--0.0061 -3.147--0.7032            &lt;NA&gt;       &lt;NA&gt;            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 1996   -3.45--0.648   0.6628-3.624            &lt;NA&gt;       &lt;NA&gt;            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 1997   0.6478-3.377 -3.147--0.7032            &lt;NA&gt;       &lt;NA&gt;            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 1998 -0.648--0.0061 -0.0023-0.6628            &lt;NA&gt;       &lt;NA&gt;            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 1999 -0.0061-0.6478   0.6628-3.624            &lt;NA&gt;       &lt;NA&gt;            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 2000 -0.648--0.0061 -3.147--0.7032            &lt;NA&gt;       &lt;NA&gt;            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt;      metastasis_date</span></span>
+<span><span class="co">#&gt; 1995            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 1996            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 1997            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 1998            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 1999            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 2000            &lt;NA&gt;</span></span></code></pre></div>
+</div>
+<div class="section level4">
+<h4 id="full-join">Full join<a class="anchor" aria-label="anchor" href="#full-join"></a>
+</h4>
+<p>In a full join, all rows are combined</p>
+<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">analysis_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">full_join</a></span><span class="op">(</span><span class="va">.</span>,</span>
+<span>            <span class="va">redcap_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">id</span>, <span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html" class="external-link">contains</a></span><span class="op">(</span><span class="st">"date"</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>            by <span class="op">=</span> <span class="st">"id"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="va">tail</span></span>
+<span><span class="co">#&gt;      X6 X7 X8 X9 X10   X1   X2   X3   X4   X5 ttt event time2 event2  id X6_bin</span></span>
+<span><span class="co">#&gt; 2024 NA NA NA NA  NA &lt;NA&gt; &lt;NA&gt; &lt;NA&gt; &lt;NA&gt; &lt;NA&gt;  NA  &lt;NA&gt;    NA     NA 448   &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 2025 NA NA NA NA  NA &lt;NA&gt; &lt;NA&gt; &lt;NA&gt; &lt;NA&gt; &lt;NA&gt;  NA  &lt;NA&gt;    NA     NA 463   &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 2026 NA NA NA NA  NA &lt;NA&gt; &lt;NA&gt; &lt;NA&gt; &lt;NA&gt; &lt;NA&gt;  NA  &lt;NA&gt;    NA     NA 468   &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 2027 NA NA NA NA  NA &lt;NA&gt; &lt;NA&gt; &lt;NA&gt; &lt;NA&gt; &lt;NA&gt;  NA  &lt;NA&gt;    NA     NA 469   &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 2028 NA NA NA NA  NA &lt;NA&gt; &lt;NA&gt; &lt;NA&gt; &lt;NA&gt; &lt;NA&gt;  NA  &lt;NA&gt;    NA     NA 491   &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 2029 NA NA NA NA  NA &lt;NA&gt; &lt;NA&gt; &lt;NA&gt; &lt;NA&gt; &lt;NA&gt;  NA  &lt;NA&gt;    NA     NA 500   &lt;NA&gt;</span></span>
+<span><span class="co">#&gt;      X7_bin X8_bin X9_bin X10_bin date_of_surgery death_date recurrence_date</span></span>
+<span><span class="co">#&gt; 2024   &lt;NA&gt;   &lt;NA&gt;   &lt;NA&gt;    &lt;NA&gt;      1997-11-25 2017-10-30      2012-02-26</span></span>
+<span><span class="co">#&gt; 2025   &lt;NA&gt;   &lt;NA&gt;   &lt;NA&gt;    &lt;NA&gt;      2003-09-17       &lt;NA&gt;            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 2026   &lt;NA&gt;   &lt;NA&gt;   &lt;NA&gt;    &lt;NA&gt;      2004-01-25       &lt;NA&gt;            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 2027   &lt;NA&gt;   &lt;NA&gt;   &lt;NA&gt;    &lt;NA&gt;      2009-11-16       &lt;NA&gt;      2013-11-22</span></span>
+<span><span class="co">#&gt; 2028   &lt;NA&gt;   &lt;NA&gt;   &lt;NA&gt;    &lt;NA&gt;      2002-12-21       &lt;NA&gt;            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 2029   &lt;NA&gt;   &lt;NA&gt;   &lt;NA&gt;    &lt;NA&gt;      1998-10-24 2020-04-18      2015-02-01</span></span>
+<span><span class="co">#&gt;      metastasis_date</span></span>
+<span><span class="co">#&gt; 2024      2014-02-08</span></span>
+<span><span class="co">#&gt; 2025      2010-08-15</span></span>
+<span><span class="co">#&gt; 2026            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 2027            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 2028            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 2029            &lt;NA&gt;</span></span></code></pre></div>
+<p>Here we se missing data for dataset X and complete data for dataset Y
+as all rows are kept.</p>
+</div>
+<div class="section level4">
+<h4 id="appending-rows-bind-rows">Appending rows (bind rows)<a class="anchor" aria-label="anchor" href="#appending-rows-bind-rows"></a>
+</h4>
+<p>To obtain a relevant case we split our dataset into two</p>
+<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">r1</span> <span class="op">&lt;-</span> <span class="va">redcap_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">id</span> <span class="op">&lt;</span> <span class="fl">100</span><span class="op">)</span></span>
+<span><span class="va">r2</span> <span class="op">&lt;-</span> <span class="va">redcap_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">id</span> <span class="op">&gt;=</span> <span class="fl">100</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">#Binding it back together</span></span>
+<span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">r1</span>, <span class="va">r2</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="va">head</span></span>
+<span><span class="co">#&gt;       id   sex   age      birth   followup date_of_surgery      size  type</span></span>
+<span><span class="co">#&gt;    &lt;int&gt; &lt;num&gt; &lt;num&gt;     &lt;char&gt;     &lt;char&gt;          &lt;char&gt;     &lt;num&gt; &lt;int&gt;</span></span>
+<span><span class="co">#&gt; 1:     1     1  40.9 26-04-1958 23-04-2021      1999-03-29  3.991349     0</span></span>
+<span><span class="co">#&gt; 2:     2     2  57.8 18-01-1941 12-08-2024      1998-10-20 48.688670     0</span></span>
+<span><span class="co">#&gt; 3:     3     2  32.2 30-07-1963 20-02-2022      1995-10-26 11.245841     0</span></span>
+<span><span class="co">#&gt; 4:     4     2  58.7 31-12-1936 29-06-2024      1995-09-14 11.609164     2</span></span>
+<span><span class="co">#&gt; 5:     5     2  29.3 12-01-1961 14-05-2023      1990-04-22  6.980464     0</span></span>
+<span><span class="co">#&gt; 6:     6     2  18.3 10-12-1975 06-04-2025      1994-03-21 49.029171     2</span></span>
+<span><span class="co">#&gt;    localisation necrosis  cd10 sox10    ck death_date recurrence_date</span></span>
+<span><span class="co">#&gt;           &lt;int&gt;    &lt;num&gt; &lt;num&gt; &lt;num&gt; &lt;num&gt;     &lt;char&gt;          &lt;char&gt;</span></span>
+<span><span class="co">#&gt; 1:            2        0    NA     1     0       &lt;NA&gt;            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 2:            1        1     0     0     0       &lt;NA&gt;      2014-12-09</span></span>
+<span><span class="co">#&gt; 3:            4        0     0     1    NA       &lt;NA&gt;            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 4:            1        1     1    NA     0 2019-07-27            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 5:            3        0     0     0     0 2018-04-19            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 6:            0       NA    NA    NA     0       &lt;NA&gt;            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt;    metastasis_date</span></span>
+<span><span class="co">#&gt;             &lt;char&gt;</span></span>
+<span><span class="co">#&gt; 1:            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 2:            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 3:            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 4:      2012-04-04</span></span>
+<span><span class="co">#&gt; 5:      2011-01-16</span></span>
+<span><span class="co">#&gt; 6:            &lt;NA&gt;</span></span></code></pre></div>
+</div>
 </div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

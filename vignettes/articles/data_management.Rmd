@@ -92,7 +92,7 @@ Variables/columns can be selected and removed with the select() function.
 ```{r}
 redcap_df %>% 
   select(id, sex, birth) %>% 
-  head()
+  head
 ```
 
 Variables are removed with a minus sign.
@@ -100,7 +100,7 @@ Variables are removed with a minus sign.
 ```{r}
 redcap_df %>% 
   select(-id, -birth) %>% 
-  head()
+  head
 ```
 
 It is also possible to choose variable based on text patterns, which is useful for variables with a common prefix/suffix such as _date
@@ -108,10 +108,19 @@ It is also possible to choose variable based on text patterns, which is useful f
 ```{r}
 redcap_df %>% 
   select(contains("_date")) %>% 
-  head()
+  head
 ```
 
 The text pattern can also be starts_with, ends_with and matches for an exact match.
+
+If we need to select a large range of variables we call the first and last separated by a colon:
+
+```{r}
+redcap_df %>% 
+  select(sex:sox10) %>% 
+  head
+```
+
 
 ## Renaming variables
 
@@ -121,7 +130,349 @@ Renaming of variable names can be done using rename(). The syntax is "new name" 
 redcap_df %>% 
   rename(index = date_of_surgery,
          cytokeratin = ck) %>% 
+  head
+```
+
+## Create/modify variables
+
+Variables can be created or modified with the mutate() function with the syntax: mutate(variable = condition). If the variable already exists in the dataset, it is modified automatically.
+
+We now recode necrosis, so that 1 = yes and everything else is "no".
+
+```{r}
+redcap_df %>% 
+  mutate(necrosis = ifelse(necrosis == 1, "yes", "no")) %>% 
+  head
+```
+
+Notice that now there were missing values in necrosis which have been replaced by "no". This is the main side effect of ifelse - if the condition is not satisfied (here necrosis = 1), then everything else must be no including missing values.
+
+If we want more explicit control with the recoding or we have more than one condition, we use case_when
+
+```{r}
+redcap_df %>% 
+  mutate(necrosis = case_when(necrosis == 1 ~ "yes",
+                              necrosis == 0 ~ "no")) %>% 
+  head
+```
+
+Now we have preserved the missing values. We can also control what to do with values that does not satisfy any of the criteria
+
+```{r}
+redcap_df %>% 
+  mutate(necrosis = case_when(necrosis %in% 1 ~ "yes",
+                              necrosis %in% 0 ~ "no",
+                              T ~ "missing")) %>% 
+  head
+```
+
+Multiple mutate functions can be collected in one call
+
+```{r}
+redcap_df %>% 
+  mutate(new_variable = "new",
+         sex = ifelse(sex == 1, "f", "m"),
+         size = case_when(size > 40 ~ "large",
+                          size < 10 ~ "small",
+                          T ~ "intermediate")) %>% 
+  head
+```
+
+
+## Recoding of variables
+
+Recoding of variables can be done with the recodR() function in the cancR package. The syntax here is a list of lists, so that list(variable = list(new name = old name))
+
+```{r}
+redcap_df %>% 
+  recodR(list("sex" = 
+                list("female" = 1,
+                           "male" = 2),
+              "type" = 
+                list("benign" = 0,
+                            "in_situ" = 1,
+                            "malignant" = 2),
+              "localisation" = 
+                list("head" = 1,
+                     "neck" = 2,
+                     "trunk" = 3,
+                     "upper_extremity" = 4,
+                     "lower_extremity" = 5))) %>% 
+  head
+```
+
+If the recoding should be more advanced and should be based on one or more conditions, we can use ifelse() or case_when() (see examples under "Create/modify variables").
+
+## Date formatting
+
+Dates are often formatted as character strings and need to be converted to correct date format. This can easily be done with the datR() function:
+
+```{r}
+redcap_df %>% 
+  datR(c(contains("date"), birth, followup)) %>% 
+  head
+```
+
+## Categorization of continuous variables
+
+The optimal method for splitting continuous variables depends on the number of splits:
+- One splits: ifelse()
+- More than one split: case_when()
+- Splits based on a sequence or quantiles: cutR()
+
+One split with ifelse()
+
+```{r}
+redcap_df %>% 
+  mutate(size_bin = ifelse(size > 20, "large", "small")) %>% 
+  head
+```
+
+More splits with case_when()
+
+```{r}
+redcap_df %>% 
+  mutate(size_bin = case_when(size > 40 ~ "large",
+                          size < 10 ~ "small",
+                          T ~ "intermediate")) %>% 
+  head
+```
+
+Splits based on a sequence can be done with the cutR() function:
+
+```{r}
+redcap_df %>% 
+  cutR(size, 
+       seq(0,50,10)) %>% 
+  head
+```
+
+Multiple splits can also be performed with cutR() with name assigning
+
+```{r}
+redcap_df %>%
+  cutR(vars = c(age, size),
+       seqlist = list("age" = seq(0,100,10),
+                      "size" = list("quantile", c(0,0.25,0.5,0.75,1))),
+       name.list = list("age" = "age_group",
+                        "size" = "size_bin")) %>% 
+  head
+
+```
+
+The new variables can also be given the same name pattern if the input variables are similar such as dates
+
+```{r}
+redcap_df %>% 
+  #Conversion into date format
+  datR(contains("date")) %>% 
+  cutR(vars = c(recurrence_date, metastasis_date),
+       seqlist = seq(1900,2030,10),
+       name.pattern = "_bin")
+```
+
+## Conversion to factor
+
+In many cases it is of interest to specify a categorical variable with certain levels or reference groups. This is done with factR(). If nothing else is specified, factR() converts a character string into a factor, with the level with most observations as reference. The function str() is used to show the formatting of the type variable has changed to factor.
+
+```{r}
+redcap_df %>% 
+  factR(type) %>% 
+  str
+```
+
+The reference group is specified using the reference argument
+
+```{r}
+redcap_df %>% 
+  factR(type,
+        reference = "0") %>% 
+  str
+```
+
+Levels can be manually assigned
+
+```{r}
+redcap_df %>% 
+  factR(type,
+        levels = c("2","1","0")) %>% 
+  str
+```
+
+New labels can also be assigned and automatically specify levels simultaneously
+
+```{r}
+redcap_df %>% 
+  factR(type,
+        labels = c("benign" = "0",
+                      "intermediate" = "1",
+                      "malignant" = "2"),
+        lab_to_lev = T) %>% 
+  str
+```
+
+Lastly, all the arguments can be specified for multiple variables at once
+
+```{r}
+redcap_df %>% 
+  factR(vars = c(type, sex),
+        reference = list("sex" = "2"),
+        levels = list("type" = c("0", "1", "2")),
+        labels = list("sex" = c("f" = "1",
+                                "m" = "2"),
+                      "type" = c("benign" = "0",
+                      "intermediate" = "1",
+                      "malignant" = "2"))) %>% 
+  str
+```
+
+## Subset rows (filters)
+
+If we want to keep only certain rows we use filter(). Here we limit the dataset to patients without necrosis (necrosis = 0)
+
+```{r}
+redcap_df %>% 
+  filter(necrosis == 0) %>% 
+  head
+```
+
+In case of multiple conditions we use the `%in%` operator, as this specified that the variables has one of the following values
+
+```{r}
+redcap_df %>% 
+  filter(localisation %in% c(1,2,3)) %>% 
+  head
+```
+
+
+For numerical variables we use <, >, ==, >= and <=
+
+```{r}
+redcap_df %>% 
+  filter(size > 20) %>% 
+  head
+```
+
+We can also use between() to specify an interval
+
+```{r}
+redcap_df %>% 
+  filter(between(size, 10,20)) %>% 
+  head
+```
+
+Multiple conditions can be combined using so-called "boolean" operators whic are and/or/not etc. Here we keep rows where necrosis = 1 AND localisation is 1, 2 or 3 OR size is larger than 10. Here necrosis needs to be 1, but either of the conditions for localisation or size can be satisified.
+
+```{r}
+redcap_df %>% 
+  filter(necrosis == 1 & (localisation %in% c(1,2,3) | size > 10)) %>% 
+  head
+```
+
+## Arranging/sorting data
+
+Sorting is done with the arrange(). If the variable needs to be in descending order it is prefixed by a desc()
+
+```{r}
+redcap_df %>% 
+  arrange(size) %>% 
   head()
 ```
 
+Descending size
+
+```{r}
+redcap_df %>% 
+  arrange(desc(size)) %>% 
+  head
+```
+
+
+## Missing data
+
+To get a quick overview of missing data in the dataset we use missR()
+
+```{r}
+redcap_df %>% 
+  missR()
+```
+
+Missing values can be dropped with drop_na()
+
+```{r}
+redcap_df %>% 
+  drop_na(metastasis_date, necrosis) %>% 
+  head
+```
+
+Sometimes we want to remove rows where at least one of the values are NA. This is done with rowR() which is useful for rowwise operations
+
+```{r}
+redcap_df %>% 
+  rowR(vars = c(cd10, sox10, ck),
+       type = "any.na",
+       filter = "remove") %>% 
+  head
+```
+
+We can also flag the rows into a new variable
+
+```{r}
+redcap_df %>% 
+  rowR(vars = c(cd10, sox10, ck),
+       type = "any.na",
+       new = "flag") %>% 
+  head
+```
+
+## Join multiple data frames
+
+The terminology is that we have a dataset X and a dataset Y.There are different types of joins, as joins can be side-by-side (such as merging to datasets based on a key variable) and end-to-end where one dataside is a continuation of another. In the side-by-side joins we need to specify a "by/key" variable which specifies how we link the two datasets. In the end-to-end join there is never a "key" as these are extensions and should roughly have the same variables.
+
+### Left join
+In a left_join, dataset X is complete and only observations from dataset Y that are present in X are joined. For all
+
+If we want to join two data frames, we use left_join().
+```{r}
+left_join(redcap_df, analysis_df, by = "id") %>% 
+  tail
+```
+
+We see that some of the patients do not have any rows, as the redcap_df only has ids up to 350.
+
+We can left_join in a pipe. Here the current dataset we are working with is symbolised by a dot. We can also use other functions with the pipe operator inside the left_join.
+
+```{r}
+analysis_df %>% 
+  arrange(id) %>% 
+  left_join(.,
+            redcap_df %>% select(id, contains("date")),
+            by = "id") %>% 
+  tail
+```
+
+### Full join
+In a full join, all rows are combined
+
+```{r}
+analysis_df %>% 
+  full_join(.,
+            redcap_df %>% select(id, contains("date")),
+            by = "id") %>% 
+  tail
+```
+
+Here we se missing data for dataset X and complete data for dataset Y as all rows are kept.
+
+### Appending rows (bind rows)
+
+To obtain a relevant case we split our dataset into two
+
+```{r}
+r1 <- redcap_df %>% filter(id < 100)
+r2 <- redcap_df %>% filter(id >= 100)
+
+#Binding it back together
+bind_rows(r1, r2) %>% head
+```
 

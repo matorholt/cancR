@@ -10,6 +10,7 @@ A data frame with 500 rows and 15 columns:
 \item{id}{unique patient pnr}
 \item{sex}{patient sex, 1 = female, 2 = male}
 \item{birth}{date of birth}
+\item{age}{age at surgery in years}
 \item{followup}{date of last follow-up which can be death, emigration or end of database}
 \item{date_of_surgery}{date of surgery}
 \item{size}{size of primary tumor in mm}

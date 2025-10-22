@@ -40,7 +40,9 @@ redcap_df <-
          metastasis_date = ifelse(event2 == 1, as.character(sample(seq(as.Date("2010-01-01"),
                                                                        as.Date("2015-12-31"),
                                                                        by = "days"))), NA)) %>%
-  mutate(across(c(birth, followup), ~ str_replace(., "(\\d{4})-(\\d{2})-(\\d{2})", "\\3-\\2-\\1"))) %>%
-  select(-dead, -event1, -event2)
+  mutate(age = round(as.numeric(as.Date(date_of_surgery) - as.Date(birth)) / 365.25, 1),
+         across(c(birth, followup), ~ str_replace(., "(\\d{4})-(\\d{2})-(\\d{2})", "\\3-\\2-\\1"))) %>%
+  select(-dead, -event1, -event2) %>%
+  select(id, sex, age, birth, everything())
 
 usethis::use_data(redcap_df, overwrite = TRUE)
