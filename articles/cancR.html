@@ -34,13 +34,18 @@
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
-<li class="active nav-item"><a class="nav-link" href="../articles/cancR.html">Get started</a></li>
 <li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
-<li class="nav-item dropdown">
+<li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="../articles/install.html">Install and Update R</a></li>
-    <li><a class="dropdown-item" href="../articles/setup.html">Setup and New Projects</a></li>
+<li><h6 class="dropdown-header" data-toc-skip>Get started</h6></li>
+    <li><a class="dropdown-item" href="../articles/install.html">Install and Update R</a></li>
+    <li><a class="dropdown-item" href="../articles/cancR.html">Install cancR</a></li>
+    <li><a class="dropdown-item" href="../articles/setup.html">R setup</a></li>
+    <li><a class="dropdown-item" href="../articles/redcap.html">Export from Redcap</a></li>
+    <li><h6 class="dropdown-header" data-toc-skip>R guides</h6></li>
+    <li><a class="dropdown-item" href="../articles/data_management.html">Data Management</a></li>
+    <li><h6 class="dropdown-header" data-toc-skip>cancR examples</h6></li>
   </ul>
 </li>
       </ul>
@@ -77,7 +82,7 @@
 <p>If the cancR package has previously been installed on the computer
 and needs to be updated, use the pak-package with the command
 pak::pak(matorholt/cancR)</p>
-<p><img src="c_1.png" width="100%"></p>
+<p><img src="figures/c_1.png" width="100%"></p>
 </div>
 <div class="section level2">
 <h2 id="install-cancr">Install cancR<a class="anchor" aria-label="anchor" href="#install-cancr"></a>
@@ -89,7 +94,7 @@ steps.</p>
 </h3>
 <p>Install the packages “devtools” and “pak” using the command
 install.packages(c(“devtools”, “pak”))</p>
-<p><img src="c_2.png" width="80%"></p>
+<p><img src="figures/c_2.png" width="80%"></p>
 </div>
 <div class="section level3">
 <h3 id="step-2">Step 2<a class="anchor" aria-label="anchor" href="#step-2"></a>
@@ -102,16 +107,16 @@ and follow the instructions</p>
 </h3>
 <p>Install the heaven package using devtools by writing the command
 devtools::install_github(“tagteam/heaven”)</p>
-<p><img src="c_3.png" width="50%"></p>
+<p><img src="figures/c_3.png" width="50%"></p>
 </div>
 <div class="section level3">
 <h3 id="step-4">Step 4<a class="anchor" aria-label="anchor" href="#step-4"></a>
 </h3>
 <p>Now install the cancR package with the pak command (same as the
 “quick start”)</p>
-<p><img src="c_4.png" width="100%"></p>
+<p><img src="figures/c_4.png" width="100%"></p>
 <p>If everything is correct it should look like the following</p>
-<p><img src="c_5.png" width="100%"></p>
+<p><img src="figures/c_5.png" width="100%"></p>
 </div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
