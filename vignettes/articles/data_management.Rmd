@@ -1,0 +1,127 @@
+---
+title: "Data Management"
+output:
+  html_document:
+    toc: true
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+# Introduction
+
+This article is a thorough guide to data management in our. It mainly uses the dplyr package with additional cancR functions. The article is structured as chapters, where each chapter describes a specific task and should work as a library.
+
+## Loading the cancR package
+
+First we load the cancR package. The package automatically loads many packages useful for data management
+
+```{r, message = FALSE, warning = FALSE}
+library(cancR)
+```
+
+## Data
+
+The cancR package comes with ready-to-use datasets. In this article we use the redcap_df dataset which imitates a dataset exported directly from redcap.
+
+## Combining functions with the piping operator
+
+It is advised to combine the functions described in this article into one code chunk that runs all functions at once. The functions are combined with the symbol `%>%` called a pipe. The shortcut for a pipe is ctrl+shift+m.
+
+Piping starts by specifying the dataset of which the analyses should be performed. After this all subsequent functions are separated by a pipe. In the following example we start in the dataset "redcap_df", where we subsequently select the variables id, sex and birth, add a new variable called "new_variable" and lastly filter so that we subset the dataset to rows where type = 1. All these functions are combined into a piping structure and assigned to a new object named "new_data"
+
+```{r}
+new_data <- redcap_df %>% 
+  select(id, sex, birth, type) %>% 
+  mutate(new_variable = "new") %>% 
+  filter(type == 1)
+```
+
+
+
+# Data inspection
+
+Before starting on data management, it is important to get an overview of the dataset.
+
+Inspect the dataset by either View(redcap_df) or the first six rows:
+
+```{r}
+head(redcap_df)
+```
+
+It is also important to assess the structure of the data to check for correct formatting. E.g. are date-variables coded as dates, continouous variables as numeric etc.
+
+```{r}
+str(redcap_df)
+```
+
+Here we see that all date variables are coded as characters and not date. The conversion to date are described in the chapter: "Date formatting"
+
+To get a graphical glimpse of the data we can use the summarisR() function:
+
+```{r, message = FALSE, warning = FALSE}
+summarisR(redcap_df, 
+          vars = c(sex, size, type, localisation, necrosis, cd10, sox10, ck))
+```
+
+And to exploit the number of missing values we use the missR() function
+
+```{r}
+missR(redcap_df)
+```
+
+We can also check if numerical variables are normally distributed with the distributR() function
+
+```{r}
+distributR(redcap_df,
+           vars = size)
+```
+
+# Data management
+
+The next section goes through the most basic data management functions from the dplyr package.
+
+## Selection of variables
+
+Variables/columns can be selected and removed with the select() function. 
+
+```{r}
+redcap_df %>% 
+  select(id, sex, birth) %>% 
+  head()
+```
+
+Variables are removed with a minus sign.
+
+```{r}
+redcap_df %>% 
+  select(-id, -birth) %>% 
+  head()
+```
+
+It is also possible to choose variable based on text patterns, which is useful for variables with a common prefix/suffix such as _date
+
+```{r}
+redcap_df %>% 
+  select(contains("_date")) %>% 
+  head()
+```
+
+The text pattern can also be starts_with, ends_with and matches for an exact match.
+
+## Renaming variables
+
+Renaming of variable names can be done using rename(). The syntax is "new name" = "old name"
+
+```{r}
+redcap_df %>% 
+  rename(index = date_of_surgery,
+         cytokeratin = ck) %>% 
+  head()
+```
+
+
