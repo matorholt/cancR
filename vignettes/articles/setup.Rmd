@@ -38,7 +38,7 @@ knitr::include_graphics("p_4.png")
 
 ## Setup new projects
 
-All projects should always be set up using the R project structure. This ensures that R will always be able to identify the correct project folder. It makes loading and saving data more easy as this will always be placed in the correct folder.
+It is important that all projects are set up using the R project structure. This ensures that R will always be able to identify the correct project folder (working directory). It makes loading and saving data more easy as R will automatically use the path to the main folder and not place files in other folders. It also makes R robust to changes in the path or folder structures, as the folder where the project file is located will always be assigned as the working directory. When the project file has been created, you should always open R via the project file of the specific project to enable the features described above!
 
 First, find the folder of your project and create a new statistics folder
 

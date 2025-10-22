@@ -82,3 +82,24 @@ reference:
   - tockR
   - viewR
 
+navbar:
+  structure:
+    left:  [reference, articles]
+    right: [search, github]
+  components:
+    articles:
+      text: Articles
+      menu:
+      - text: Get started
+      - text: Install and Update R
+        href: articles/install.html
+      - text: Install cancR
+        href: articles/cancR.html
+      - text: R setup
+        href: articles/setup.html
+      - text: Export from Redcap
+        href: articles/redcap.html
+      - text: R guides
+      - text: cancR examples
+
+

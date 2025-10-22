@@ -34,13 +34,17 @@
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
-<li class="nav-item"><a class="nav-link" href="../articles/cancR.html">Get started</a></li>
 <li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="../articles/install.html">Install and Update R</a></li>
-    <li><a class="dropdown-item" href="../articles/setup.html">Setup and New Projects</a></li>
+<li><h6 class="dropdown-header" data-toc-skip>Get started</h6></li>
+    <li><a class="dropdown-item" href="../articles/install.html">Install and Update R</a></li>
+    <li><a class="dropdown-item" href="../articles/cancR.html">Install cancR</a></li>
+    <li><a class="dropdown-item" href="../articles/setup.html">R setup</a></li>
+    <li><a class="dropdown-item" href="../articles/redcap.html">Export from Redcap</a></li>
+    <li><h6 class="dropdown-header" data-toc-skip>R guides</h6></li>
+    <li><h6 class="dropdown-header" data-toc-skip>cancR examples</h6></li>
   </ul>
 </li>
       </ul>
@@ -86,10 +90,15 @@ choices.</p>
 <div class="section level2">
 <h2 id="setup-new-projects">Setup new projects<a class="anchor" aria-label="anchor" href="#setup-new-projects"></a>
 </h2>
-<p>All projects should always be set up using the R project structure.
-This ensures that R will always be able to identify the correct project
-folder. It makes loading and saving data more easy as this will always
-be placed in the correct folder.</p>
+<p>It is important that all projects are set up using the R project
+structure. This ensures that R will always be able to identify the
+correct project folder (working directory). It makes loading and saving
+data more easy as R will automatically use the path to the main folder
+and not place files in other folders. It also makes R robust to changes
+in the path or folder structures, as the folder where the project file
+is located will always be assigned as the working directory. When the
+project file has been created, you should always open R via the project
+file of the specific project to enable the features described above!</p>
 <p>First, find the folder of your project and create a new statistics
 folder</p>
 <p><img src="p_5.png" width="100%"></p>
