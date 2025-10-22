@@ -17,23 +17,23 @@ knitr::opts_chunk$set(
 The first time you use R, it should be properly set up for optimal use. The main page looks like this:
 
 ```{r, echo=F, out.width="100%"}
-knitr::include_graphics("p_1.png")
+knitr::include_graphics("figures/p_1.png")
 ```
 
 In the tools pane, choose global settings and pane layout. Here we switch the placment of the console and environment and save the choices.
 
 ```{r, echo=F, out.width="50%", fig.align = "center"}
-knitr::include_graphics("p_2.png")
+knitr::include_graphics("figures/p_2.png")
 ```
 
 ```{r, echo=F, out.width="80%", fig.align = "center"}
-knitr::include_graphics("p_3.png")
+knitr::include_graphics("figures/p_3.png")
 ```
 
 Now R should look like this and is ready for use.
 
 ```{r, echo=F, out.width="100%"}
-knitr::include_graphics("p_4.png")
+knitr::include_graphics("figures/p_4.png")
 ```
 
 ## Setup new projects
@@ -43,38 +43,38 @@ It is important that all projects are set up using the R project structure. This
 First, find the folder of your project and create a new statistics folder
 
 ```{r, echo=F, out.width="100%"}
-knitr::include_graphics("p_5.png")
+knitr::include_graphics("figures/p_5.png")
 ```
 
 
 Next open R and create a new R project file in the upper left corner, under file:
 
 ```{r, echo=F, out.width="50%", fig.align = "center"}
-knitr::include_graphics("p_6.png")
+knitr::include_graphics("figures/p_6.png")
 ```
 
 Choose existing directory and choose the statistics folder you just created
 
 ```{r, echo=F, out.width="80%", fig.align = "center"}
-knitr::include_graphics(c("p_7.png", "p_8.png"))
+knitr::include_graphics(c("figures/p_7.png", "figures/p_8.png"))
 ```
 
 Now, create a folder named data for datasheets in the statistics folder
 
 ```{r, echo=F, out.width="100%"}
-knitr::include_graphics("p_9.png")
+knitr::include_graphics("figures/p_9.png")
 ```
 
 Lastly, create a new R script in the upper left corner, under file and save it at the blue disc in the left corner.
 
 ```{r, echo=F, out.width="50%", fig.align = "center"}
-knitr::include_graphics("p_10.png")
+knitr::include_graphics("figures/p_10.png")
 ```
 
 If everything is correctly set up, you should see an R script, an R project file and a data folder in the lower right corner:
 
 ```{r, echo=F, out.width="100%"}
-knitr::include_graphics("p_11.png")
+knitr::include_graphics("figures/p_11.png")
 ```
 
 

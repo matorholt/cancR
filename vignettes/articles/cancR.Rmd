@@ -18,7 +18,7 @@ knitr::opts_chunk$set(
 If the cancR package has previously been installed on the computer and needs to be updated, use the pak-package with the command pak::pak(matorholt/cancR)
 
 ```{r, echo=F, out.width="100%"}
-knitr::include_graphics("c_1.png")
+knitr::include_graphics("figures/c_1.png")
 ```
 
 ## Install cancR
@@ -30,7 +30,7 @@ If the cancR package has not been installed before, there are four steps.
 Install the packages "devtools" and "pak" using the command install.packages(c("devtools", "pak"))
 
 ```{r, echo=F, out.width="80%"}
-knitr::include_graphics("c_2.png")
+knitr::include_graphics("figures/c_2.png")
 ```
 
 ### Step 2
@@ -43,7 +43,7 @@ https://cran.r-project.org/bin/windows/Rtools/rtools45/files/rtools45-6608-6492.
 Install the heaven package using devtools by writing the command devtools::install_github("tagteam/heaven")
 
 ```{r, echo=F, out.width="50%"}
-knitr::include_graphics("c_3.png")
+knitr::include_graphics("figures/c_3.png")
 ```
 
 
@@ -52,13 +52,13 @@ knitr::include_graphics("c_3.png")
 Now install the cancR package with the pak command (same as the "quick start")
 
 ```{r, echo=F, out.width="100%"}
-knitr::include_graphics("c_4.png")
+knitr::include_graphics("figures/c_4.png")
 ```
 
 
 If everything is correct it should look like the following
 
 ```{r, echo=F, out.width="100%"}
-knitr::include_graphics("c_5.png")
+knitr::include_graphics("figures/c_5.png")
 ```
 

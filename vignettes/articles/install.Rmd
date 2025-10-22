@@ -21,7 +21,7 @@ This article is for installing R if it has not been installed before and for upd
 R is installed from softwareshoppen which is found at the desktop. Click "installer" and "bestil" and wait for 10 to 15 minutes.
 
 ```{r, echo=F, out.width="100%"}
-knitr::include_graphics("ss_1.png")
+knitr::include_graphics("figures/ss_1.png")
 ```
 
 
@@ -29,7 +29,7 @@ knitr::include_graphics("ss_1.png")
 After the instillation of R, we also need to install R-studio and wait again.
 
 ```{r, echo=F, out.width="100%"}
-knitr::include_graphics("ss_2.png")
+knitr::include_graphics("figures/ss_2.png")
 ```
 
 ## Update R
@@ -41,7 +41,7 @@ R can be updated directly in R, as softwareshoppen is not always up-to-date. Thi
 Open R (not R studio)
 
 ```{r, echo=F, out.width="30%"}
-knitr::include_graphics("u_1.png")
+knitr::include_graphics("figures/u_1.png")
 ```
 
 ### Step 2
@@ -49,7 +49,7 @@ knitr::include_graphics("u_1.png")
 Install the package "installr" by typing install.packages("installr") in R.
 
 ```{r, echo=F, out.width="100%"}
-knitr::include_graphics("u_2.png")
+knitr::include_graphics("figures/u_2.png")
 ```
 
 ### Step 3
@@ -57,7 +57,7 @@ knitr::include_graphics("u_2.png")
 Once the package has been installed, use the function "updateR()" by typing installr::updateR()
 
 ```{r, echo=F, out.width="100%"}
-knitr::include_graphics("u_3.png")
+knitr::include_graphics("figures/u_3.png")
 ```
 
 ### Step 4
@@ -65,7 +65,7 @@ knitr::include_graphics("u_3.png")
 Follow the installation process
 
 ```{r, echo=F, out.width="50%", fig.align = "center"}
-knitr::include_graphics(paste0("u_", seq(4,9), ".png"))
+knitr::include_graphics(paste0("figures/u_", seq(4,9), ".png"))
 ```
 
 ### Step 5
@@ -73,7 +73,7 @@ knitr::include_graphics(paste0("u_", seq(4,9), ".png"))
 To confirm that R has correctly been updated, open R-studio and notice the version in the upper right corner
 
 ```{r, echo=F, out.width="80%"}
-knitr::include_graphics("u_10.png")
+knitr::include_graphics("figures/u_10.png")
 ```
 
 You have now successfully updated R
