@@ -45,6 +45,11 @@ summarisR <- function(data,
                       label.size = 3,
                       alpha = 0.8) {
 
+  if(any(class(data) %in% "data.table")) {
+
+    data <- as.data.frame(data)
+  }
+
 
   if(!is.null(exclude)) {
     data <- data %>% select(-matches(exclude))
@@ -88,7 +93,7 @@ summarisR <- function(data,
  plist <-
  lapply(headings, function(v) {
 
-      if(length(unique(data[,v]))>10 & class(data[,v]) != "character") {
+      if(all(length(unique(data[,v]))>10 & class(data[,v]) %nin% c("character", "factor"))) {
 
         c <- sample(cols, 1)
 
@@ -163,7 +168,7 @@ summarisR <- function(data,
                     legend.position = "none") +
               labs(title = v) +
           coord_flip()
-        #
+
         p2 <- p2 +
           scale_fill_manual(values=c) +
           scale_color_manual(values=c) +
@@ -186,7 +191,7 @@ summarisR <- function(data,
           data[, v] <- as.factor(data[,v])
         }
 
-        c <- sample(cols,1)
+         c <- sample(cols,1)
 
         if(layout == "vertical") {
 
@@ -223,9 +228,9 @@ summarisR <- function(data,
 
           c <- cols
 
-          p <- p +
+          invisible(p <- p +
             scale_fill_manual(values=c) +
-            labs(x=v, title=v, fill = "")
+            labs(x=v, title=v, fill = ""))
 
         } else {
 
@@ -248,16 +253,14 @@ summarisR <- function(data,
 
         }
 
-        p <- p +
+        suppressWarnings(p <- p +
           scale_fill_manual(values=c) +
-          labs(x=v, title=v, fill = "")
+          labs(x=v, title=v, fill = ""))
 
       }
     })
 
   ggarrange(plotlist=plist, common.legend = ifelse(layout == "horizontal", T,F))
-
-
 
 }
 
