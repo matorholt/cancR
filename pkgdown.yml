@@ -8,7 +8,7 @@ articles:
   articles/install: install.html
   articles/redcap: redcap.html
   articles/setup: setup.html
-last_built: 2025-10-23T21:14Z
+last_built: 2025-10-28T21:06Z
 urls:
   reference: https://matorholt.github.io/cancR/reference
   article: https://matorholt.github.io/cancR/articles

@@ -57,7 +57,9 @@
 <span>  keep.list <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  vars.list <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  lmdb.start <span class="op">=</span> <span class="fl">1995</span>,</span>
-<span>  lmdb.stop <span class="op">=</span> <span class="fl">2023</span></span>
+<span>  lmdb.stop <span class="op">=</span> <span class="fl">2023</span>,</span>
+<span>  simulation <span class="op">=</span> <span class="cn">F</span>,</span>
+<span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -70,7 +72,7 @@
 
 
 <dt id="arg-pattern-list">pattern.list<a class="anchor" aria-label="anchor" href="#arg-pattern-list"></a></dt>
-<dd><p>regex patterns provided as a list("lpr" = c("DC92", "DC21"))</p></dd>
+<dd><p>list of vectors of diagnoses codes for each register in the format ("lpr" = c("DC92", "DC21"))</p></dd>
 
 
 <dt id="arg-pattern-list-">pattern.list2<a class="anchor" aria-label="anchor" href="#arg-pattern-list-"></a></dt>
@@ -99,6 +101,14 @@
 
 <dt id="arg-lmdb-stop">lmdb.stop<a class="anchor" aria-label="anchor" href="#arg-lmdb-stop"></a></dt>
 <dd><p>last year of LMDB</p></dd>
+
+
+<dt id="arg-simulation">simulation<a class="anchor" aria-label="anchor" href="#arg-simulation"></a></dt>
+<dd><p>whether the registers should be simulated</p></dd>
+
+
+<dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
+<dd><p>arguments passed to simulatR()</p></dd>
 
 </dl></div>
     <div class="section level2">
