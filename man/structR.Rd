@@ -10,9 +10,12 @@ structR(
   fu,
   outcomes,
   competing,
+  composite = list(),
   pattern = "_date",
   unit = "months",
-  keep_dates = F
+  keep.dates = F,
+  digits = 2,
+  death = T
 )
 }
 \arguments{

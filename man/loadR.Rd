@@ -13,13 +13,15 @@ loadR(
   keep.list = NULL,
   vars.list = NULL,
   lmdb.start = 1995,
-  lmdb.stop = 2023
+  lmdb.stop = 2023,
+  simulation = F,
+  ...
 )
 }
 \arguments{
 \item{regs}{which registers should be loaded. Default is all (lpr, pop, pato, cancer, lmdb and opr)}
 
-\item{pattern.list}{regex patterns provided as a list("lpr" = c("DC92", "DC21"))}
+\item{pattern.list}{list of vectors of diagnoses codes for each register in the format ("lpr" = c("DC92", "DC21"))}
 
 \item{pattern.list2}{supplemental pattern if multiple columns should be filtered. Works the same way as pattern}
 
@@ -34,6 +36,10 @@ loadR(
 \item{lmdb.start}{first year of LMDB}
 
 \item{lmdb.stop}{last year of LMDB}
+
+\item{simulation}{whether the registers should be simulated}
+
+\item{...}{arguments passed to simulatR()}
 }
 \value{
 Returns the selected registers to the global environment

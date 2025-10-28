@@ -45,15 +45,16 @@ reference:
   desc: >
     Functions customized for the danish registers
   contents:
-  - decodR
-  - loadR
-  - searchR
-  - includR
-  - matchR
   - cci_timR
-  - updatR
-  - reportR
+  - decodR
   - formatR
+  - includR
+  - loadR
+  - matchR
+  - reportR
+  - searchR
+  - simulatR
+  - updatR
 
 - title: Built-in datasets
   desc: >

@@ -4,7 +4,7 @@
 #' Simple loading function of the most used registers including variable selection, regex filtering and id_list filtering.
 #'
 #' @param regs which registers should be loaded. Default is all (lpr, pop, pato, cancer, lmdb and opr)
-#' @param pattern.list regex patterns provided as a list("lpr" = c("DC92", "DC21"))
+#' @param pattern.list list of vectors of diagnoses codes for each register in the format ("lpr" = c("DC92", "DC21"))
 #' @param pattern.list2 supplemental pattern if multiple columns should be filtered. Works the same way as pattern
 #' @param n number of observations that should be loaded
 #' @param id.filter optional possibility to limit the registers to a defined patient population of PNRs
@@ -12,12 +12,20 @@
 #' @param vars.list which columns should the pattern filter be applied to. Defaults to diag, atc, opr and c_morfo3,
 #' @param lmdb.start first year of LMDB
 #' @param lmdb.stop last year of LMDB
+#' @param simulation whether the registers should be simulated
+#' @param ... arguments passed to simulatR()
 #'
 #'
 #' @return Returns the selected registers to the global environment
 #' @export
 #'
 #'
+
+
+# reglist <- loadR(c("lpr", "lmdb", "pato"),
+#                  n=20,
+#                  pattern.list = list("lpr" = c("DX1", "DZ2"),
+#                                      "lmdb" = c("R0", "C10")))
 
 loadR <- function(regs,
                   pattern.list = NULL,
@@ -27,7 +35,10 @@ loadR <- function(regs,
                   keep.list = NULL,
                   vars.list = NULL,
                   lmdb.start = 1995,
-                  lmdb.stop = 2023) {
+                  lmdb.stop = 2023,
+                  simulation = F,
+                  ...) {
+
 
   tickR()
 
@@ -51,9 +62,47 @@ loadR <- function(regs,
 
   }
 
+  if(missing(simulation) & str_detect(getwd(), "V:|X:", negate=T)) {
+    simulation <- T
+  }
 
+  if(simulation) {
 
+    if(is.null(n)) n <- 10
+    start.date <- "2000-01-01"
 
+    reglist <- list()
+
+    for(i in regs) {
+
+      tickR()
+
+      cat(paste0(i,": "))
+
+      reglist[[i]] <- simulatR(i,
+                               n = n,
+                               start.date = start.date,
+                               pattern.list,
+                               ...)
+
+      cat(paste0("Completed - ", tockR("time"), ", runtime: ", tockR("diff"), "\n"))
+
+    }
+
+    cat(paste0("\nTotal runtime: \n"))
+    cat(paste0(tockR("diff", start), "\n\n"))
+
+    if(length(reglist) == 1) {
+
+      return(reglist[[1]])
+    } else {
+
+      return(reglist)
+    }
+
+  }
+
+  else {
 
   pathlist <-
     list("rds" = list("lpr" = "V:/Data/Workdata/709545/Mathias Oerholt/DATASETS/LPR.rds",
@@ -163,5 +212,6 @@ loadR <- function(regs,
     return(reglist)
   }
 
+  }
 
 }

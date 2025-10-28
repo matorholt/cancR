@@ -21,52 +21,57 @@
 #' For patients without an event the function returns the time to last follow-up if status = 0 and time to death if status = 2
 #' @export
 #'
-# df <- data.frame(index = c(as.Date("1995-01-01"), as.Date("1995-05-02"), as.Date("1995-05-02"))) %>%
-#   mutate(fu = c(as.Date("2010-05-02"), as.Date("2010-05-02"), as.Date("2010-05-02")),
-#          death = c(0,1,1),
-#          explant = c(0,1,1),
-#          exp_date = c(as.Date("2005-05-02"), as.Date("2006-05-02"), as.Date("2006-05-02")),
-#          hudc_date = index+500,
-#          mm_date = c(as.Date("1996-01-01"), as.Date(NA), as.Date("2023-05-02")),
-#          other_date = c(1,2,3))
+
+# n=8
+# df <-
+#   data.frame(opdate = rep("2000-01-01", n),
+#            follow = rep("2025-01-01", n),
+#            recurrence_date = c(NA, "2005-01-01", NA, NA, NA, "2005-01-01", "2005-01-01", NA),
+#            metastasis_date = c(NA, NA, "2007-01-01", NA, NA, "2006-01-01", "2005-01-01", NA),
+#            dsd_date = c(NA,NA, "2008-01-01", "2009-01-01", NA, NA, NA, NA),
+#            death_date = c(NA, NA, "2008-01-01", "2009-01-01", NA, "2010-01-01", "2010-01-01", "2024-01-01"),
+#            second_date = c(NA, NA, NA, NA, "2008-01-01", NA, "2001-01-01", NA)) %>%
+#   datR(c(opdate:second_date))
 #
 # structR(df,
-#         index,
-#         fu,
-#         outcomes=c(hudc_date, mm_date),
-#         keep_dates = T)
-# structR(df,
-#         index,
-#         fu,
-#         outcomes=c(hudc_date, mm_date),
-#         competing = exp_date,
-#         unit = "days",
-#         keep_dates = T)
-#
-# structR(df,
-#         index,
-#         fu,
-#         outcomes=c(hudc_date, mm_date),
-#         competing = explant,
-#         unit = "days", keep_dates = T)
+#         index = opdate,
+#         fu = follow,
+#         outcomes=c(recurrence_date, metastasis_date),
+#         competing = c(death_date, second_date),
+#         composite = list("pfs" = list("outcomes" = c("recurrence_date", "metastasis_date", "death_date")),
+#                          "relapse" = list("outcomes" = c("recurrence_date", "metastasis_date", "dsd_date"),
+#                                           "competing" = c("death_date")),
+#                          "test" = list("outcomes" = c("metastasis_date"),
+#                                        "competing" = c("recurrence_date", "death_date"))),
+#         keep.dates = T)
 
 structR <- function(data,
-                         index,
-                         fu,
-                         outcomes,
-                         competing,
-                         pattern = "_date",
-                         unit = "months",
-                         keep_dates=F){
+                    index,
+                    fu,
+                    outcomes,
+                    competing,
+                    composite = list(),
+                    pattern = "_date",
+                    unit = "months",
+                    keep.dates=F,
+                    digits = 2,
+                    death = T){
 
-  unit <- match.arg(unit, c("months", "years", "days"))
+  if(unit %nin% c("months", "years", "days")) {
+    cat("Error: Invalid choice of unit. Choose between days, months or years")
+  }
 
-  if(any(str_detect(data %>% select({{outcomes}}) %>% colnames(), pattern, negate=T))) {
+  out_c <- data %>% select({{outcomes}}) %>% names()
+  com_c <- data %>% select({{competing}}) %>% names()
+  fu_c <- data %>% select({{fu}}) %>% names()
+  index_c <- data %>% select({{index}}) %>% names()
+
+  if(any(str_detect(c(out_c, com_c), pattern, negate=T))) {
     return(cat("Wrong naming pattern for outcome columns (e.g. index_ or _date)"))
   }
 
-  if(any(str_detect(data %>% select({{competing}}, {{outcomes}}) %>% colnames(), "index_")) &
-     any(str_detect(data %>% select({{competing}}, {{outcomes}}) %>% colnames(), "_date"))) {
+  if(any(str_detect(c(out_c, com_c), "index_")) &
+     any(str_detect(c(out_c, com_c), "_date"))) {
     return(cat("Outcome variables are both named index_ and _date - they should be uniform"))
   }
 
@@ -78,52 +83,75 @@ structR <- function(data,
     t <- 1
   }
 
+  out_names <-
+    str_remove(out_c, pattern)
+  out_time <-
+    paste0("t_", out_names)
 
+  #event + t_event
 
+  for(v in seq_along(out_c)) {
 
-  if(missing(competing)) {
+    event_cols <- c(out_c[[v]], com_c, fu_c)
 
-    d <- data %>%
-      mutate(t_fu = as.numeric({{fu}} - {{index}})/t,
-             across(c({{outcomes}}), ~ ifelse(!is.na(.) & . < {{fu}}, as.numeric(. - {{index}})/t, t_fu), .names=paste0(c("{str_remove({.col},'", pattern, "') %>% paste0('t_', .)}"), collapse="")),
-             across(c({{outcomes}}), ~ ifelse(!is.na(.) & . < {{fu}}, 1, 0), .names=paste0("{str_remove_all({.col},'", pattern, "')}", collapse="")))
-
-  } else{
-
-    comp_name <- str_remove(data %>% select({{competing}}) %>% names(), pattern)
-
-  if(data %>% pull({{competing}}) %>% class() %in% c("numeric", "character", "integer")) {
-
-    d <- data %>%
-      mutate(t_fu = as.numeric({{fu}} - {{index}})/t,
-             !!(sym(paste0("t_", comp_name))) := t_fu,
-             across(c({{outcomes}}), ~ifelse(!is.na(.) & . < {{fu}}, as.numeric(. - {{index}})/t, t_fu), .names=paste0(c("{str_remove({.col},'", pattern, "') %>% paste0('t_', .)}"), collapse="")),
-             across(c({{outcomes}}), ~ifelse(!is.na(.) & . < {{fu}}, 1, ifelse(!!(sym(comp_name)) == 1, 2, 0)), .names=paste0("{str_remove_all({.col},'", pattern, "')}", collapse="")))
-
-  } else {
-
-    d <- data %>%
-    mutate(t_fu = as.numeric({{fu}} - {{index}})/t,
-           !!(sym(paste0("t_", comp_name))) := ifelse(!is.na({{competing}}), as.numeric({{competing}} - {{index}})/t, t_fu),
-           across(c({{outcomes}}), ~ifelse(!is.na(.) & . < {{fu}}, as.numeric(. - {{index}})/t, t_fu), .names=paste0(c("{str_remove({.col},'", pattern, "') %>% paste0('t_', .)}"), collapse="")),
-           !!(sym(comp_name)) := ifelse(!is.na({{competing}}), 1, 0),
-           across(c({{outcomes}}), ~ifelse(!is.na(.) & . < {{fu}}, 1, ifelse(!!(sym(comp_name)) == 1, 2, 0)), .names=paste0("{str_remove_all({.col},'", pattern, "')}", collapse="")))
+    data[[out_names[[v]]]] <- ifelse((vec <- apply(df[, event_cols], 1, function(x) which(x == min(x, na.rm=T))[1])) == length(event_cols), 0, vec)
+    data[[out_time[[v]]]] <-round(as.numeric(as.Date(apply(df[, event_cols], 1, function(x) min(x, na.rm=T))) - df[, index_c])/t, digits)
 
   }
+
+  #Death + t_death
+
+  if(any(str_detect(event_cols, "death"))) {
+
+    data[["death"]] <- ifelse(!is.na(data[["death_date"]]), 1, 0)
+    data[["t_death"]] <- round(as.numeric(as.Date(apply(df[, c("death_date", fu_c)], 1, function(x) min(x, na.rm=T))) - df[, index_c])/t, digits)
+
   }
 
-  if(!keep_dates & !missing(competing)){
-    d <- d %>% select(-{{outcomes}}, -{{competing}})
-  } else if(!keep_dates) {
-    d <- d %>% select(-{{outcomes}})
+  #Custom composite outcomes
+
+  for(c in seq_along(composite)) {
+
+    outs <- data %>% select(composite[[c]][["outcomes"]]) %>% names()
+
+    #Collapse competing risks to first date
+    if("competing" %in% names(composite[[c]])) {
+
+      comps <- data %>% select(composite[[c]][["competing"]]) %>% names()
+
+      if(length(comps) == 1) {
+        c_collapse <- data[,comps]
+
+      } else {
+        c_collapse <- suppressWarnings(apply(data[, comps], 1, function(x) min(x, na.rm=T)[1]))
+      }
+    } else {
+      c_collapse <- NULL
+    }
+
+    #Collapse outcomes to first date
+    if(length(outs) == 1) {
+      o_collapse <- data[,outs]
+    } else{
+    o_collapse <- suppressWarnings(apply(df[, outs], 1, function(x) min(x, na.rm=T)[1]))
+
+    }
+
+    #New frame with collapsed outcomes, competing risks and follow_up
+    frame <- bind_cols("outs" = o_collapse, "comps" = c_collapse, "follow" = df[, fu_c])
+
+    data[[names(composite)[c]]] <- ifelse((vec <- apply(frame, 1, function(x) which(x == min(x, na.rm=T))[1])) == length(names(frame)), 0, vec)
+    data[[paste0("t_", names(composite)[c])]] <- round(as.numeric(as.Date(apply(frame, 1, function(x) min(x, na.rm=T))) - df[, index_c])/t, digits)
+
   }
 
+  if(!keep.dates) {
 
+    data <- data[, colnames(data) %nin% c(out_c, com_c, unlist(composite))]
+  }
 
-  return(d)
+  return(data)
 }
-
-
 
 
 
