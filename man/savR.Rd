@@ -16,7 +16,8 @@ savR(
   compression = "lzw",
   formats = c("pdf", "tiff"),
   size = 9,
-  table.width = 1
+  table.width = 1,
+  sep = ";"
 )
 }
 \arguments{

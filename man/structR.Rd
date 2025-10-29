@@ -14,8 +14,7 @@ structR(
   pattern = "_date",
   unit = "months",
   keep.dates = F,
-  digits = 2,
-  death = T
+  digits = 2
 )
 }
 \arguments{
@@ -25,13 +24,17 @@ structR(
 
 \item{fu}{End of follow-up or time of death in date format}
 
-\item{outcomes}{Vector of single or multiple column names with the event of interest in date format}
+\item{outcomes}{vector of single or multiple column names with the event of interest in date format}
 
-\item{competing}{Single column indicating either status or dates of the competing event. If passed as a status (0/1) the dates are assumed to stem from follow-up (e.g. death)}
+\item{competing}{vector of single or multiple column names that should be considered competing risks in the specified order.}
+
+\item{composite}{named list of composite outcomes with one list per outcome specifying "outcomes" and "competing" (optional).}
 
 \item{pattern}{Indicates the name pattern of the outcomes such as index_event or event_date}
 
 \item{unit}{Whether time-to-event should be reported in months or years.}
+
+\item{digits}{number of digits on event times}
 
 \item{keep_dates}{Whether the original event dates should be kept.}
 }

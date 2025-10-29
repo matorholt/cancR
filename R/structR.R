@@ -10,11 +10,13 @@
 #' @param data Dataframe
 #' @param index Index time point 'T=0' provided in date format
 #' @param fu End of follow-up or time of death in date format
-#' @param outcomes Vector of single or multiple column names with the event of interest in date format
-#' @param competing Single column indicating either status or dates of the competing event. If passed as a status (0/1) the dates are assumed to stem from follow-up (e.g. death)
+#' @param outcomes vector of single or multiple column names with the event of interest in date format
+#' @param competing vector of single or multiple column names that should be considered competing risks in the specified order.
+#' @param composite named list of composite outcomes with one list per outcome specifying "outcomes" and "competing" (optional).
 #' @param pattern Indicates the name pattern of the outcomes such as index_event or event_date
 #' @param unit Whether time-to-event should be reported in months or years.
 #' @param keep_dates Whether the original event dates should be kept.
+#' @param digits number of digits on event times
 #'
 #' @return For each outcome, a status indicator of 0/1/2 and a time-to-event column are returned. If competing is missing, the levels are 0/1
 #' For the competing event, a status indicator of 0/1 and a time-to-event is returned.
@@ -54,8 +56,7 @@ structR <- function(data,
                     pattern = "_date",
                     unit = "months",
                     keep.dates=F,
-                    digits = 2,
-                    death = T){
+                    digits = 2){
 
   if(unit %nin% c("months", "years", "days")) {
     cat("Error: Invalid choice of unit. Choose between days, months or years")

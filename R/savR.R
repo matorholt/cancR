@@ -19,7 +19,7 @@
 #' @export
 #'
 
-# Save plotR
+# #Save plotR
 # n <- 500
 # set.seed(1)
 # df <- riskRegression::sampleData(n, outcome="survival")
@@ -43,13 +43,14 @@
 # p3 <- plotR(t3)
 # p4 <- plotR(t4)
 #
+# savR(p4)
 #
-# Save extractR
-# e <- extractR(t2) %>% flextable()
+# #Save extractR
+# e <- extractR(t2) #%>% flextable()
 #
 # savR(e)
 #
-# Save tablR
+# #Save tablR
 # n <- 300
 # set.seed(1)
 # df <- riskRegression::sampleData(n, outcome="survival")
@@ -69,7 +70,7 @@
 #       total = T,
 #       numeric = c("median", "q1q3", "range"),
 #       test = T,
-#       show_na=T) %>%
+#       show.na=T) %>%
 # savR(name="table1")
 
 savR <- function(object,
@@ -83,7 +84,8 @@ savR <- function(object,
                  compression="lzw",
                  formats = c("pdf", "tiff"),
                  size = 9,
-                 table.width = 1) {
+                 table.width = 1,
+                 sep = ";") {
 
   formats <- match.arg(formats, c("pdf", "svg", "tiff", "jpg", "png"), several.ok=TRUE)
 
@@ -100,6 +102,12 @@ savR <- function(object,
       rename("char" = 1) %>%
       flextable() %>%
       set_header_labels(values = list("char" = ""))
+
+  }
+
+  if("extractR" %in% class(object)) {
+
+    object <- object %>% flextable()
 
   }
 
@@ -158,6 +166,18 @@ savR <- function(object,
 
     }
   }
+
+  if(all("data.frame" %in% class(object) & "extractR" %nin% class(object))) {
+
+    print(paste0(name, ".csv", collapse=""))
+
+        fwrite(object,
+               paste0("Tables and Figures/", name, ".csv", collapse=""),
+               sep = sep,
+               bom=T)
+
+  }
+
 
 }
 

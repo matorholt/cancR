@@ -299,6 +299,7 @@ for(i in names(tab)[str_detect(names(tab), "(risks|diff|ratio)(?!(_))")]) {
       }
 
 
+class(tab) <- c("extractR", "data.frame")
 tab
 
 }
