@@ -16,6 +16,7 @@ reference:
   - missR
   - pvertR
   - structR
+  - readR
   - recodR
   - rowR
   - summarisR
