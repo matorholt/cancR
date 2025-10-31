@@ -36,11 +36,11 @@ knitr::include_graphics("figures/c_2.png")
 ### Step 2
 
 Install the latest version of Rtools from their website: 
-https://cran.r-project.org/bin/windows/Rtools/rtools45/files/rtools45-6608-6492.exe and follow the instructions
+https://cran.r-project.org/bin/windows/Rtools/rtools45/rtools.html (click on the link "Rtools45 installer") and follow the instructions
 
 ### Step 3
 
-Install the heaven package using devtools by writing the command devtools::install_github("tagteam/heaven")
+Install the heaven package using devtools by writing the command `devtools::install_github("tagteam/heaven")`
 
 ```{r, echo=F, out.width="50%"}
 knitr::include_graphics("figures/c_3.png")

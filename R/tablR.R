@@ -12,7 +12,7 @@
 #' @param direction Direction for percentages (colwise or rowwise)
 #' @param labels List specifying labels of the specific labels for each variable
 #' @param reference List specifying reference group for each variable
-#' @param headings List specifying labels for variable names
+#' @param labs.headings List specifying labels for variable names
 #' @param reverse whether the order of groups should start with the highest level (default = T)
 #' @param test.stats Vector of length 2 containing statistical tests that should be performed
 #' @param show.na Whether NAs should be presented
@@ -24,30 +24,18 @@
 #'
 #'
 
-# n <- 300
-# set.seed(1)
-# df <- riskRegression::sampleData(n, outcome="survival")
-# df$time <- round(df$time,1)*12
-# df$X1 <- factor(rbinom(n, prob = c(0.3,0.4) , size = 2), labels = paste0("T",0:2))
-# df$set <- as.factor(rep(seq(1,10),each=30))
-# df$age_group <- sample(c("80-90", "10-20", "110-120", "0-40", ">120"), n, replace=TRUE)
-#
-# df <- as.data.frame(df)
-#
-
-# (t1 <- tablR(df,
-#              group=X2,
-#              vars=c(X1,X3,X4,X6,X7, age_group),
-#              labels = list("age_group" = c("0-40" = "<=40"),
-#                            "X1" = c("T2" = "T2-T3")),
-#              headings = list("age_group" = "Age2",
-#                              "X6" = "New_var"),
-#              total = T,
-#              numeric = c("median", "q1q3", "range"),
-#              test = T,
-#              show.na=F,
-#              censur = F,
-#              simplify = T))
+# redcap_df %>%
+#   factR(c(type, sex)) %>%
+#   tablR(
+#     group = type,
+#     vars=c(age, sex),
+#     labs.groups = list("type" = list("benign" = "0",
+#                                      "in situ" = "1",
+#                                      "malignant" = "2")),
+#     labs.headings = list("Age at Debut" = "age"),
+#     labs.subheadings = list("sex" = list("Female" = "2",
+#                                          "Male" = "1")),
+#     reference = list("sex" = c("Female")))
 
 tablR <- function(data,
                   group,
@@ -56,9 +44,10 @@ tablR <- function(data,
                   total=FALSE,
                   numeric = c("median", "q1q3", "range"),
                   direction="colwise",
-                  labels= list(),
                   reference = list(),
-                  headings = list(),
+                  labs.groups = list(),
+                  labs.headings = list(),
+                  labs.subheadings= list(),
                   reverse = T,
                   test.stats = c("kwt", "chisq"),
                   show.na = FALSE,
@@ -69,6 +58,8 @@ tablR <- function(data,
   numeric <- match.arg(numeric, c("median", "q1q3", "iqr", "range", "mean", "sd", "min", "max"), several.ok = T)
   direction <- match.arg(direction, c("colwise", "rowwise"))
   test.stats <- match.arg(test.stats, c("kwt", "chisq", "anova"), several.ok = T)
+
+  data <- as.data.frame(data)
 
   if(direction == "rowwise") {
     categorical <- "countrowpct"
@@ -83,8 +74,17 @@ tablR <- function(data,
 
 
    vars_c <- data %>% select({{vars}}) %>% names()
-  if(!missing(group)) {
+
+   if(!missing(group)) {
+
     group_c <- data %>% select({{group}}) %>% names()
+
+    if(all(class(data[, group_c]) %nin% c("factor", "character"))) {
+      cat("Error: Group is not a factor or character")
+    }
+
+    data <- data %>%
+      recodR(labs.groups)
 
     if(reverse) {
       data <- data %>% mutate(!!sym(group_c) := fct_rev(!!sym(group_c)))
@@ -92,11 +92,17 @@ tablR <- function(data,
 
   }
 
-  for(v in names(labels)) {
+   data <- recodR(data,
+                  labs.subheadings)
 
-    data <- data %>% mutate(!!sym(v) := recode(!!sym(v), !!!labels[[v]]))
+   if(length(reference) > 0) {
+     data <- data %>%
+       factR(names(reference),
+             reference = reference)
 
-  }
+   }
+
+
 
    if(simplify) {
 
@@ -125,11 +131,13 @@ tablR <- function(data,
 
   #Autoformatting (to_title and spacing)
   headings_default <- as.list(str_to_title(str_replace_all(vars_c, "_", " "))) %>% set_names(vars_c)
-  headings <- modifyList(headings_default, headings)
+  headings_rev <- list(names(labs.headings)) %>% set_names(labs.headings)
+
+  labs.headings <- modifyList(headings_default, headings_rev)
 
 s <- summary(table,
         text=T,
-        labelTranslations = headings,
+        labelTranslations = labs.headings,
         digits = digits)
 
 if(censur) {
@@ -156,7 +164,11 @@ if(censur) {
 }
 
 s
+
+
 }
+
+
 
 
 
