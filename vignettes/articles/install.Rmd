@@ -62,11 +62,9 @@ knitr::include_graphics("figures/u_3.png")
 
 ### Step 4
 
-Follow the installation process
+Follow the installation process by clicking next and ok to all boxes.
 
-```{r, echo=F, out.width="50%", fig.align = "center"}
-knitr::include_graphics(paste0("figures/u_", seq(4,9), ".png"))
-```
+When the installation is complete, close R and open Rstudio.
 
 ### Step 5
 
@@ -77,4 +75,8 @@ knitr::include_graphics("figures/u_10.png")
 ```
 
 You have now successfully updated R
+
+### Step 6
+
+If the latest version of R is not showing correctly in Rstudio, close Rstudio. Now open Rstudio by holding down ctrl while clicking on the Rstudio logo. Now you can choose the correct version of R.
 

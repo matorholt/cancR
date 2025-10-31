@@ -50,16 +50,6 @@ redcap_df %>%
         vars = c(age, sex))
 ```
 
-If we want to specify the order of the columns so that type == 0 is reference, we can change this in the `factR()` part of the pipe
-
-```{r, results = "asis"}
-redcap_df %>% 
-  factR(c(sex, type),
-        levels = list("type" = c("0", "1", "2"))) %>% 
-  tablR(group = type,
-        vars = c(age, sex))
-```
-
 We can also add a `total`column and also test the differences in distributions
 
 ```{r, results = "asis"}
@@ -70,5 +60,85 @@ redcap_df %>%
         vars = c(age, sex),
         test = TRUE,
         total = TRUE)
+```
+
+## Customizing tables
+
+Most of the content of the table can be customized in `tablR()`
+
+### Changing labels
+
+It is possible to rename three types of labels:\
+- Group names: `labs.groups`
+- Variable names: `labs.headings`
+- Variable labels/levels: `labs.subheadings`
+
+
+```{r}
+redcap_df %>%
+  factR(c(type, sex)) %>%
+  tablR(
+    group = type,
+    vars=c(age, sex),
+    labs.groups = list("type" = list("benign" = "0",
+                                     "in situ" = "1",
+                                     "malignant" = "2")),
+    labs.headings = list("Age at Debut" = "age"),
+    labs.subheadings = list("sex" = list("Female" = "2",
+                                         "Male" = "1")))
+```
+
+### Changing orders
+
+The order of the groups and variable levels can be specified with the `reference()` and `levels()` arguments
+
+```{r}
+redcap_df %>%
+  factR(c(type, sex, localisation)) %>%
+  tablR(
+    group = type,
+    vars=c(age, sex, localisation),
+    labs.groups = list("type" = list("benign" = "0",
+                                     "in situ" = "1",
+                                     "malignant" = "2")),
+    labs.headings = list("Age at Debut" = "age"),
+    labs.subheadings = list("sex" = list("Female" = "2",
+                                         "Male" = "1"),
+                            "localisation" = list("Neck" = "0",
+                                                  "Head" = "1",
+                                                  "Trunk" = "2",
+                                                  "Upper Extremity" = "3",
+                                                  "Lower Extremity" = "4",
+                                                  "Unspecified" = "5")),
+    reference = list("sex" = c("Female")),
+    levels = list("localisation" = c("Trunk", "Head")))
+```
+
+### Changing summary measures
+
+The default summary measures for continuous variables are median, interquartile range and range. This can be specified in the `numeric()` argument
+
+```{r}
+redcap_df %>%
+  factR(c(type, sex, localisation)) %>%
+  tablR(
+    group = type,
+    vars=c(age, sex, localisation),
+    labs.groups = list("type" = list("Benign" = "0",
+                                     "In situ" = "1",
+                                     "Malignant" = "2")),
+    labs.headings = list("Age at Debut" = "age"),
+    labs.subheadings = list("sex" = list("Female" = "2",
+                                         "Male" = "1"),
+                            "localisation" = list("Neck" = "0",
+                                                  "Head" = "1",
+                                                  "Trunk" = "2",
+                                                  "Upper Extremity" = "3",
+                                                  "Lower Extremity" = "4",
+                                                  "Unspecified" = "5")),
+    reference = list("sex" = c("Female")),
+    levels = list("localisation" = c("Trunk", "Head"),
+                  "type" = c("Benign", "In situ", "Malignant")),
+    numeric = c("mean", "sd"))
 ```
 

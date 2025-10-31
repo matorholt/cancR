@@ -47,11 +47,24 @@ new_data <- redcap_df %>%
 
 Before starting on data management, it is important to get an overview of the dataset.
 
-Inspect the dataset by either View(redcap_df) or the first six rows:
+The entire dataset can be expected by either clicking on the dataset in the environment below or with the command `View()`
+
+```{r, results="hide"}
+View(redcap_df)
+```
+
+For a simpler inspection, `head()` shows only the first six rows in the console
 
 ```{r}
 head(redcap_df)
 ```
+
+All column names can be shown with `names()`
+
+```{r}
+names(redcap_df)
+```
+
 
 It is also important to assess the structure of the data to check for correct formatting. E.g. are date-variables coded as dates, continouous variables as numeric etc.
 
@@ -145,7 +158,14 @@ redcap_df %>%
   head
 ```
 
-Notice that now there were missing values in necrosis which have been replaced by "no". This is the main side effect of ifelse - if the condition is not satisfied (here necrosis = 1), then everything else must be no including missing values.
+Notice that missing values in necrosis remain missing. If we want to also assign these as "no" we change the `==` in the mutate function to `%in%`. This will also imply that missing values are converted to the "else" statement, here "no".
+
+```{r}
+redcap_df %>% 
+  mutate(necrosis = ifelse(necrosis %in% 1, "yes", "no")) %>% 
+  head
+```
+
 
 If we want more explicit control with the recoding or we have more than one condition, we use case_when
 
@@ -166,6 +186,8 @@ redcap_df %>%
   head
 ```
 
+### Collecting multiple mutate functions
+
 Multiple mutate functions can be collected in one call
 
 ```{r}
@@ -178,6 +200,22 @@ redcap_df %>%
   head
 ```
 
+### Mutating multiple variables simultaneously
+
+Multiple variables can be modified with `across()` within mutate. The syntax is:\
+
+`mutate(across(c(variable1, variable2), ~ function))
+
+Here we convert the variables cd10, sox10 and ck to characters
+
+```{r}
+redcap_df %>% 
+  select(cd10, sox10, ck) %>% 
+  mutate(across(c(cd10, sox10, ck), ~ as.character(.))) %>% 
+  head
+```
+
+The `.` inside the `as.character(.)` refers to all the variables inside `across()`. 
 
 ## Recoding of variables
 

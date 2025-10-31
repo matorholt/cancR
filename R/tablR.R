@@ -25,17 +25,26 @@
 #'
 
 # redcap_df %>%
-#   factR(c(type, sex)) %>%
+#   factR(c(type, sex, localisation)) %>%
 #   tablR(
 #     group = type,
-#     vars=c(age, sex),
+#     vars=c(age, sex, localisation),
 #     labs.groups = list("type" = list("benign" = "0",
 #                                      "in situ" = "1",
 #                                      "malignant" = "2")),
 #     labs.headings = list("Age at Debut" = "age"),
 #     labs.subheadings = list("sex" = list("Female" = "2",
-#                                          "Male" = "1")),
-#     reference = list("sex" = c("Female")))
+#                                          "Male" = "1"),
+#                             "localisation" = list("Neck" = "0",
+#                                                   "Head" = "1",
+#                                                   "Trunk" = "2",
+#                                                   "Upper Extremity" = "3",
+#                                                   "Lower Extremity" = "4",
+#                                                   "Unspecified" = "5")),
+#     reference = list("sex" = c("Female")),
+#     levels = list("localisation" = c("Trunk", "Head")),
+#     numeric = c("mean", "sd"))
+
 
 tablR <- function(data,
                   group,
@@ -45,6 +54,7 @@ tablR <- function(data,
                   numeric = c("median", "q1q3", "range"),
                   direction="colwise",
                   reference = list(),
+                  levels = list(),
                   labs.groups = list(),
                   labs.headings = list(),
                   labs.subheadings= list(),
@@ -55,7 +65,14 @@ tablR <- function(data,
                   digits = 1,
                   simplify = F) {
 
-  numeric <- match.arg(numeric, c("median", "q1q3", "iqr", "range", "mean", "sd", "min", "max"), several.ok = T)
+  numeric_choices <- c("median", "q1q3", "iqr", "range", "mean", "sd", "min", "max")
+
+  if(any(numeric %nin% numeric_choices)) {
+
+    cat(paste0("Error: ", numeric[numeric %nin% numeric_choices], " is not a valid option. Valid choices are: \n"), paste0(c(numeric_choices), sep = "\n"))
+
+  }
+
   direction <- match.arg(direction, c("colwise", "rowwise"))
   test.stats <- match.arg(test.stats, c("kwt", "chisq", "anova"), several.ok = T)
 
@@ -91,14 +108,15 @@ tablR <- function(data,
     }
 
   }
-
    data <- recodR(data,
                   labs.subheadings)
 
-   if(length(reference) > 0) {
+   if(all(length(reference) > 0 | length(levels) > 0)) {
+
      data <- data %>%
-       factR(names(reference),
-             reference = reference)
+       factR(c(names(reference), names(levels)),
+             reference = reference,
+             levels = levels)
 
    }
 
@@ -131,9 +149,11 @@ tablR <- function(data,
 
   #Autoformatting (to_title and spacing)
   headings_default <- as.list(str_to_title(str_replace_all(vars_c, "_", " "))) %>% set_names(vars_c)
+  if(length(labs.headings) > 0) {
   headings_rev <- list(names(labs.headings)) %>% set_names(labs.headings)
 
   labs.headings <- modifyList(headings_default, headings_rev)
+}
 
 s <- summary(table,
         text=T,
@@ -167,6 +187,7 @@ s
 
 
 }
+
 
 
 
