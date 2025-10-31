@@ -38,7 +38,7 @@
 #          match = "boundary")
 
 
-recodR <- function(data, namelist, match = "contains") {
+recodR <- function(data, namelist, match = "exact") {
 
   match <- match.arg(match, c("start", "end", "exact", "contains", "boundary"))
 

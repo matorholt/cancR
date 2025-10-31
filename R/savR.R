@@ -82,15 +82,44 @@ savR <- function(object,
                  dpi=900,
                  device= NULL,
                  compression="lzw",
-                 formats = c("pdf", "tiff"),
+                 formats = c("pdf"),
                  size = 9,
                  table.width = 1,
                  sep = ";") {
 
-  formats <- match.arg(formats, c("pdf", "svg", "tiff", "jpg", "png"), several.ok=TRUE)
+  if(any(formats %nin% c("pdf", "svg", "tiff", "jpg", "png", "rds", "csv"))) {
+    return(cat("Error: Unvalid format. Supported formats are pdf, svg, tiff, jpg, png, rds and csv"))
+  }
+
 
   if(missing(name)) {
     name <- paste0(substitute(object))
+  }
+
+  if(all("data.frame" %in% class(object) & "extractR" %nin% class(object))) {
+
+    if("csv" %in% formats) {
+      fwrite(object,
+             paste0(name, ".csv", collapse=""),
+             sep = sep,
+             bom=T)
+
+      opt <- options(show.error.messages = FALSE)
+      on.exit(options(opt))
+      stop()
+
+    }
+
+    if("rds" %in% formats) {
+
+      saveRDS(object,
+              paste0(name, ".rds", collapse=""))
+
+      opt <- options(show.error.messages = FALSE)
+      on.exit(options(opt))
+      stop()
+
+    }
   }
 
   if(!dir.exists(paste0(getwd(), "/Tables and Figures"))) {
@@ -132,6 +161,8 @@ savR <- function(object,
     height <- sum(abs(object$coordinates$limits$y))/object$y*100*47
     }
 
+    formats <- formats[formats %nin% c("csv", "rds")]
+
     cat("Exports")
     for(p in formats) {
 
@@ -165,17 +196,6 @@ savR <- function(object,
       cat("Done")
 
     }
-  }
-
-  if(all("data.frame" %in% class(object) & "extractR" %nin% class(object))) {
-
-    print(paste0(name, ".csv", collapse=""))
-
-        fwrite(object,
-               paste0("Tables and Figures/", name, ".csv", collapse=""),
-               sep = sep,
-               bom=T)
-
   }
 
 

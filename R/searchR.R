@@ -127,7 +127,7 @@ searchR <- function(reglist,
 
     tickR()
 
-    if(any(str_detect(i, "lpr|lmdb|opr|pato"))) {
+    if(any(str_detect(i, "\\blpr|\\blmdb|\\bopr|\\bpato"))) {
     reg <- str_extract(i, "lpr|lmdb|opr|pato")
 
 

@@ -1,0 +1,74 @@
+---
+title: "Tables"
+output:
+  html_document:
+    toc: true
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+# Introduction
+
+Tables are essential for presenting the study population and the distribution of important covariates. The tablR function in the cancR package is useful for this task.\
+\
+First we load the cancR package
+
+```{r, message = FALSE, warning = FALSE}
+library(cancR)
+```
+
+## Tables with only on group
+
+We use our `redcap_df` as an example. Let us create a simple table of the whole population and present the covariates age, sex and tumor type
+
+```{r, results = "asis"}
+tablR(redcap_df,
+      vars = c(age, sex, type))
+```
+
+We instantly conclude that sex and type is incorrectly formatted, as we wish to see percentages and not a median as if the 0/1 structure was numeric. We convert the variables using `factR()` and pipe into the `tablR()`. Notice that when we pipe we do not need to specify the data frame in `tablR()`
+
+```{r, results = "asis"}
+redcap_df %>% 
+  factR(c(sex, type)) %>% 
+  tablR(vars = c(age, sex, type))
+```
+
+## Tables with multiple groups
+
+If we want to compare multiple groups, we use the `group` argument. Let us compare tumor types
+
+```{r, results = "asis"}
+redcap_df %>% 
+  factR(c(sex, type)) %>% 
+  tablR(group = type,
+        vars = c(age, sex))
+```
+
+If we want to specify the order of the columns so that type == 0 is reference, we can change this in the `factR()` part of the pipe
+
+```{r, results = "asis"}
+redcap_df %>% 
+  factR(c(sex, type),
+        levels = list("type" = c("0", "1", "2"))) %>% 
+  tablR(group = type,
+        vars = c(age, sex))
+```
+
+We can also add a `total`column and also test the differences in distributions
+
+```{r, results = "asis"}
+redcap_df %>% 
+  factR(c(sex, type),
+        levels = list("type" = c("0", "1", "2"))) %>% 
+  tablR(group = type,
+        vars = c(age, sex),
+        test = TRUE,
+        total = TRUE)
+```
+
