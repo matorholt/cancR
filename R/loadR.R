@@ -178,22 +178,23 @@ loadR <- function(regs,
 
     } else if(i == "lmdb") {
 
-      reglist[[i]] <- rbindlist(lapply(seq(lmdb.start,lmdb.stop), function(year) {
+      reglist[[i]] <- as.data.frame(rbindlist(lapply(seq(lmdb.start,lmdb.stop), function(year) {
         importSAS(paste0("X:/Data/Rawdata_Hurtig/709545/Grunddata/medication/lmdb", year, "12.sas7bdat", sep=""),
                   obs = n,
                   keep = keep.vars[[i]],
                   filter = id.filter,
                   where = pattern)
-      }))
+      })))
 
     } else {
 
       reglist[[i]] <-
+        as.data.frame(
         importSAS(pathlist[["sas"]][[i]],
                   obs = n,
                   keep = keep.vars[[i]],
                   filter = id.filter,
-                  where = pattern)
+                  where = pattern))
 
     }
 
@@ -206,7 +207,7 @@ loadR <- function(regs,
 
   if(length(reglist) == 1) {
 
-    return(reglist[[1]])
+    return(as.data.frame(reglist[[1]]))
   } else {
 
     return(reglist)

@@ -101,7 +101,7 @@ searchR <- function(reglist,
   format <- match.arg(format, c("categorical", "date", "code"))
   slice <- match.arg(slice, c("first", "last", "all"))
 
-  if(class(reglist) == "data.frame") {
+  if(any(class(reglist) %in% "data.frame")) {
     reglist <- lst("dframe" = reglist)
   }
 
