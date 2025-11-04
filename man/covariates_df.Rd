@@ -5,18 +5,17 @@
 \alias{covariates_df}
 \title{covariates_df}
 \format{
-A data frame with 1595683 rows and 7 columns:
+A data frame with 112257 rows and 21 columns:
 \describe{
-\item{id}{unique patient pnr}
-\item{case}{whether case = 1 or control = 0}
-\item{index}{index date for cases. NA for controls}
-\item{follow}{date of last follow-up which can be death, emigration or end of database}
-\item{birth}{date of birth}
-\item{byear}{year of birth}
-\item{sex}{patient sex, f = female, m = male}
-\item{skinc}{date of first skin cancer occurence}
-\item{imm_sup}{index of first diagnosis of immunosuppression}
-\item{random1, random2}{random variables}
+\item{pnr}{unique patient pnr}
+\item{date}{date for the covariate values}
+\item{cci}{Charlson Comorbidity Index binned into the groups: 0, 1, 2-3, 4-5 and 6+}
+\item{education}{Educational level according to ISCED groups: low, medium and high}
+\item{income}{Quantile of the equivalated disposable income: q1, q2, q3 and q4}
+\item{marital}{Marital status: Unmarried, married and divorced}
+\item{region}{Region of habitance: Capital, central, north, south and zealand}
+\item{degurba}{Degree of urbanization in the municipality: city, suburb and rural}
+\item{infection, cancer, hema, endo, psych, neuro, cvd, lungs, gi, skin, connective, urinary, congenital}{ICD main groups of covariates: 0 and 1}
 ...
 }
 }

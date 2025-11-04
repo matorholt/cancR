@@ -1,9 +1,9 @@
-no = 40000
+no = 4000
 cno= 0.0025*no
 
 
 set.seed(2)
-(c <- data.frame(id = paste("pnr", rnorm(cno, 40000,1000)),
+(c <- data.frame(pnr = seq(1,cno),
                  case = 1,
                  index = sample(c(sample(seq(as.Date('1990/01/01'), as.Date('2010/01/01'), by="day"))), size = cno, replace=TRUE),
                  follow = c(sample(seq(as.Date('2015/01/01'), as.Date('2020/01/01'), by="day"), cno, replace=T)),
@@ -16,7 +16,7 @@ set.seed(2)
                  random2 = 2) %>%
     mutate(across(c(skinc, imm_sup), ~ if_else(. > follow | .< index, follow-100, .))))
 
-(cnt <- data.frame(id = paste("pnr", rnorm(no, 40000,1000)),
+(cnt <- data.frame(pnr = seq(1,no),
                    case = 0,
                    follow = c(sample(seq(as.Date('1980/01/01'), as.Date('2020/01/01'), by="day"), no, replace=T)),
                    birth = sample(c(sample(seq(as.Date('1958/01/01'), as.Date('1961/01/01'), by="day"))), size = cno, replace=TRUE),

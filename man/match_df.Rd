@@ -7,7 +7,7 @@
 \format{
 A data frame with 40,100 rows and 11 columns:
 \describe{
-\item{id}{unique patient pnr}
+\item{pnr}{unique patient pnr}
 \item{case}{whether case = 1 or control = 0}
 \item{index}{index date for cases. NA for controls}
 \item{follow}{date of last follow-up which can be death, emigration or end of database}

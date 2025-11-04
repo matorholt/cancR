@@ -14,7 +14,7 @@
 
 readR <- function(path) {
 
-  if(str_detect(path, ".csv")) {
+  if(str_detect(path, ".csv|.txt")) {
 
     return(as.data.frame(fread(path)))
 

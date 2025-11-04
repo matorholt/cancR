@@ -14,7 +14,7 @@ savR(
   dpi = 900,
   device = NULL,
   compression = "lzw",
-  formats = c("pdf", "tiff"),
+  formats = c("pdf"),
   size = 9,
   table.width = 1,
   sep = ";"

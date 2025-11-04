@@ -4,7 +4,7 @@
 \alias{recodR}
 \title{Recode multiple variables}
 \usage{
-recodR(data, namelist, match = "contains")
+recodR(data, namelist, match = "exact")
 }
 \arguments{
 \item{data}{dataframe}
