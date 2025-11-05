@@ -5,7 +5,7 @@
 \alias{covariates_df}
 \title{covariates_df}
 \format{
-A data frame with 112257 rows and 21 columns:
+A data frame with 355883 rows and 21 columns:
 \describe{
 \item{pnr}{unique patient pnr}
 \item{date}{date for the covariate values}

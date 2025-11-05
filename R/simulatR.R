@@ -4,7 +4,7 @@
 #' A wrapper for the simulation functions in the heaven package.
 #'
 #'
-#' @param register vector of the registers to simulate. Choose between "lpr", "lmdb", "opr", "pop" and "pato".
+#' @param register vector of the registers to simulate. Choose between "lpr", "lmdb", "opr", "pop", "pato", "match" and "covariates".
 #' @param n number of unique pnrs to simulate
 #' @param start.date starting date of the register
 #' @param pattern.list list of vectors of diagnoses codes for each register in the format ("lpr" = c("DC92", "DC21"))
@@ -16,6 +16,7 @@
 #' @param pop.max.age maximum age in the population
 #' @param pop.sex distribution of sex in the population, default = 0.5
 #' @param pop.mortality mortality rate in the population, default = 0.1
+#' @param match.cases number of cases for the "match" dataset
 #' @param seed for reproducibility
 #'
 #' @returns a single data frame or named list of data frames with simulated registers
@@ -46,12 +47,15 @@ simulatR <- function(register,
                      pop.max.age = 100,
                      pop.sex = 0.5,
                      pop.mortality = 0.1,
+                     match.cases,
                      seed = 1) {
 
 
   set.seed(seed)
 
   reglist <- list()
+
+
 
   if("lpr" %in% register) {
 
@@ -69,6 +73,8 @@ simulatR <- function(register,
       as.data.frame()
 
   }
+
+
 
   if("lmdb" %in% register) {
 
@@ -112,6 +118,8 @@ simulatR <- function(register,
 
   }
 
+
+
   if("opr" %in% register) {
 
     if("opr" %in% names(pattern.list)) {
@@ -132,6 +140,8 @@ simulatR <- function(register,
 
   }
 
+
+
   if("pop" %in% register) {
 
     reglist[["pop"]] <- simPop(n,
@@ -143,6 +153,8 @@ simulatR <- function(register,
 
 
   }
+
+
 
   if("pato" %in% register) {
 
@@ -210,6 +222,133 @@ simulatR <- function(register,
 
 
   }
+
+  if(register == "match") {
+
+    (c <- data.frame(pnr = seq(1,match.cases),
+                     case = 1,
+                     index = sample(c(sample(seq(as.Date('1990/01/01'), as.Date('2010/01/01'), by="day"))), size = match.cases, replace=TRUE),
+                     follow = c(sample(seq(as.Date('2015/01/01'), as.Date('2020/01/01'), by="day"), match.cases, replace=T)),
+                     birth = sample(c(sample(seq(as.Date('1958/01/01'), as.Date('1961/01/01'), by="day"))), size = match.cases, replace=TRUE),
+                     byear = sample(c(seq(1958,1961)), match.cases, replace=T),
+                     sex = sample(c("f","m"), match.cases, replace=T),
+                     skinc = sample(c(sample(seq(as.Date('2011/01/01'), as.Date('2020/01/01'), by="day")),rep(as.Date(NA),8000)), size = match.cases, replace=TRUE),
+                     imm_sup = sample(c(sample(seq(as.Date('2011/01/01'), as.Date('2020/01/01'), by="day")),rep(as.Date(NA),8000)), size = match.cases, replace=TRUE),
+                     random1 = 1,
+                     random2 = 2) %>%
+       mutate(across(c(skinc, imm_sup), ~ if_else(. > follow | .< index, follow-100, .))))
+
+    (cnt <- data.frame(pnr = seq(1,n),
+                       case = 0,
+                       follow = c(sample(seq(as.Date('1980/01/01'), as.Date('2020/01/01'), by="day"), n, replace=T)),
+                       birth = sample(c(sample(seq(as.Date('1958/01/01'), as.Date('1961/01/01'), by="day"))), size = match.cases, replace=TRUE),
+                       byear = sample(c(seq(1958,1961)), n, replace=T),
+                       sex = sample(c("f","m"), n, replace=T),
+                       skinc = sample(c(sample(seq(as.Date('1985/01/01'), as.Date('2000/01/01'), by="day")),rep(as.Date(NA),8000)), size = n, replace=TRUE),
+                       imm_sup = sample(c(sample(seq(as.Date('1985/01/01'), as.Date('2000/01/01'), by="day")),rep(as.Date(NA),8000)), size = n, replace=TRUE),
+                       random1 = 1,
+                       random2 = 2) %>%
+        mutate(across(c(skinc, imm_sup), ~ if_else(. > follow, follow-2000, .))))
+
+    reglist[["match"]] <- bind_rows(c, cnt)
+
+
+
+  }
+
+  if(register == "covariates") {
+
+    intervals <- seq(as.Date(start.date), as.Date('2024/01/01'), by=365.25/2)
+
+    reglist[["covariates"]] <-
+      bind_rows(lapply(seq(1,n), function(i) {
+
+        bind_rows(
+          #CCI
+          data.frame(pnr = i,
+                     date = intervals,
+                     var = "cci",
+                     value = sample(c("cci_0",
+                                      "cci_1",
+                                      "cci_2-3",
+                                      "cci_4-5",
+                                      "cci_6+"), size = length(intervals), replace=TRUE)),
+          #Education
+          data.frame(pnr = i,
+                     date = intervals,
+                     var = "education",
+                     value = sample(c("low", "medium", "high"), size = length(intervals), replace=TRUE)),
+
+          #Income
+          data.frame(pnr = i,
+                     date = intervals,
+                     var = "income",
+                     value = sample(c("q1", "q2", "q3", "q4"), size = length(intervals), replace=TRUE)),
+
+          #marital
+          data.frame(pnr = i,
+                     date = intervals,
+                     var = "marital",
+                     value = sample(c("married",
+                                      "unmarried",
+                                      "divorced"), size = length(intervals), replace=TRUE)),
+
+          #region
+          data.frame(pnr = i,
+                     date = intervals,
+                     var = "region",
+                     value = sample(c("capital",
+                                      "north",
+                                      "south",
+                                      "zealand",
+                                      "central"), size = length(intervals), replace=TRUE)),
+
+          #degurba
+          data.frame(pnr = i,
+                     date = intervals,
+                     var = "degurba",
+                     value = sample(c("city",
+                                      "suburb",
+                                      "rural"), size = length(intervals), replace=TRUE)),
+
+          #Comorbidities
+          bind_rows(lapply(c("infection",
+                             "cancer",
+                             "hema",
+                             "endo",
+                             "psych",
+                             "neuro",
+                             "cvd",
+                             "lungs",
+                             "gi",
+                             "skin",
+                             "connective",
+                             "urinary",
+                             "congenital"), function(v) {
+
+                               data.frame(pnr = i,
+                                          date = intervals,
+                                          var = v,
+                                          value = as.character(cummax(rbinom(length(intervals), 1, 0.1))))
+
+
+
+                             }))
+
+
+        )
+
+
+
+      })) %>%
+      group_by(pnr, var) %>%
+      filter(value != lag(value) | row_number() == 1) %>%
+      pivot_wider(names_from=var, values_from=value) %>%
+      fill(everything(), .direction = "down")
+
+  }
+
+
 
   if(length(reglist) == 1) {
 

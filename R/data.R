@@ -71,7 +71,7 @@
 #' @description Simulation of a time-dependent data frame of covariates for the matchR function
 #'
 #'
-#' @format A data frame with 112257 rows and 21 columns:
+#' @format A data frame with 355883 rows and 21 columns:
 #' \describe{
 #'   \item{pnr}{unique patient pnr}
 #'   \item{date}{date for the covariate values}

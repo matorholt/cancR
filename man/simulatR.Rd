@@ -17,11 +17,12 @@ simulatR(
   pop.max.age = 100,
   pop.sex = 0.5,
   pop.mortality = 0.1,
+  match.cases,
   seed = 1
 )
 }
 \arguments{
-\item{register}{vector of the registers to simulate. Choose between "lpr", "lmdb", "opr", "pop" and "pato".}
+\item{register}{vector of the registers to simulate. Choose between "lpr", "lmdb", "opr", "pop", "pato", "match" and "covariates".}
 
 \item{n}{number of unique pnrs to simulate}
 
@@ -44,6 +45,8 @@ simulatR(
 \item{pop.sex}{distribution of sex in the population, default = 0.5}
 
 \item{pop.mortality}{mortality rate in the population, default = 0.1}
+
+\item{match.cases}{number of cases for the "match" dataset}
 
 \item{seed}{for reproducibility}
 }
