@@ -54,35 +54,32 @@
 
     <div class="section level2">
     <h2 id="format">Format<a class="anchor" aria-label="anchor" href="#format"></a></h2>
-    <p>A data frame with 1595683 rows and 7 columns:</p><dl><dt>id</dt>
+    <p>A data frame with 355883 rows and 21 columns:</p><dl><dt>pnr</dt>
 <dd><p>unique patient pnr</p></dd>
 
-<dt>case</dt>
-<dd><p>whether case = 1 or control = 0</p></dd>
+<dt>date</dt>
+<dd><p>date for the covariate values</p></dd>
 
-<dt>index</dt>
-<dd><p>index date for cases. NA for controls</p></dd>
+<dt>cci</dt>
+<dd><p>Charlson Comorbidity Index binned into the groups: 0, 1, 2-3, 4-5 and 6+</p></dd>
 
-<dt>follow</dt>
-<dd><p>date of last follow-up which can be death, emigration or end of database</p></dd>
+<dt>education</dt>
+<dd><p>Educational level according to ISCED groups: low, medium and high</p></dd>
 
-<dt>birth</dt>
-<dd><p>date of birth</p></dd>
+<dt>income</dt>
+<dd><p>Quantile of the equivalated disposable income: q1, q2, q3 and q4</p></dd>
 
-<dt>byear</dt>
-<dd><p>year of birth</p></dd>
+<dt>marital</dt>
+<dd><p>Marital status: Unmarried, married and divorced</p></dd>
 
-<dt>sex</dt>
-<dd><p>patient sex, f = female, m = male</p></dd>
+<dt>region</dt>
+<dd><p>Region of habitance: Capital, central, north, south and zealand</p></dd>
 
-<dt>skinc</dt>
-<dd><p>date of first skin cancer occurence</p></dd>
+<dt>degurba</dt>
+<dd><p>Degree of urbanization in the municipality: city, suburb and rural</p></dd>
 
-<dt>imm_sup</dt>
-<dd><p>index of first diagnosis of immunosuppression</p></dd>
-
-<dt>random1, random2</dt>
-<dd><p>random variables</p></dd>
+<dt>infection, cancer, hema, endo, psych, neuro, cvd, lungs, gi, skin, connective, urinary, congenital</dt>
+<dd><p>ICD main groups of covariates: 0 and 1</p></dd>
 
 ...
 
@@ -97,7 +94,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer></div>

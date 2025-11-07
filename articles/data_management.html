@@ -124,8 +124,10 @@ piping structure and assigned to a new object named “new_data”</p>
 </h2>
 <p>Before starting on data management, it is important to get an
 overview of the dataset.</p>
-<p>Inspect the dataset by either View(redcap_df) or the first six
-rows:</p>
+<p>The entire dataset can be expected by either clicking on the dataset
+in the environment below or with the command <code><a href="https://rdrr.io/r/utils/View.html" class="external-link">View()</a></code></p>
+<p>For a simpler inspection, <code><a href="https://rdrr.io/r/utils/head.html" class="external-link">head()</a></code> shows only the first
+six rows in the console</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">redcap_df</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   id sex  age      birth   followup date_of_surgery      size type localisation</span></span>
@@ -142,10 +144,17 @@ rows:</p>
 <span><span class="co">#&gt; 4        1    1    NA  0 2019-07-27            &lt;NA&gt;      2012-04-04</span></span>
 <span><span class="co">#&gt; 5        0    0     0  0 2018-04-19            &lt;NA&gt;      2011-01-16</span></span>
 <span><span class="co">#&gt; 6       NA   NA    NA  0       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span></span></code></pre></div>
+<p>All column names can be shown with <code><a href="https://rdrr.io/r/base/names.html" class="external-link">names()</a></code></p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">redcap_df</span><span class="op">)</span></span>
+<span><span class="co">#&gt;  [1] "id"              "sex"             "age"             "birth"          </span></span>
+<span><span class="co">#&gt;  [5] "followup"        "date_of_surgery" "size"            "type"           </span></span>
+<span><span class="co">#&gt;  [9] "localisation"    "necrosis"        "cd10"            "sox10"          </span></span>
+<span><span class="co">#&gt; [13] "ck"              "death_date"      "recurrence_date" "metastasis_date"</span></span></code></pre></div>
 <p>It is also important to assess the structure of the data to check for
 correct formatting. E.g. are date-variables coded as dates, continouous
 variables as numeric etc.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">redcap_df</span><span class="op">)</span></span>
 <span><span class="co">#&gt; 'data.frame':    500 obs. of  16 variables:</span></span>
 <span><span class="co">#&gt;  $ id             : int  1 2 3 4 5 6 7 8 9 10 ...</span></span>
@@ -169,13 +178,13 @@ date. The conversion to date are described in the chapter: “Date
 formatting”</p>
 <p>To get a graphical glimpse of the data we can use the summarisR()
 function:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/summarisR.html">summarisR</a></span><span class="op">(</span><span class="va">redcap_df</span>, </span>
 <span>          vars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">sex</span>, <span class="va">size</span>, <span class="va">type</span>, <span class="va">localisation</span>, <span class="va">necrosis</span>, <span class="va">cd10</span>, <span class="va">sox10</span>, <span class="va">ck</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="data_management_files/figure-html/unnamed-chunk-6-1.png" width="700"></p>
+<p><img src="data_management_files/figure-html/unnamed-chunk-7-1.png" class="r-plt" width="700"></p>
 <p>And to exploit the number of missing values we use the missR()
 function</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/missR.html">missR</a></span><span class="op">(</span><span class="va">redcap_df</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Nas detected in the following variables:</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -189,10 +198,10 @@ function</p>
 <span><span class="co">#&gt; 7           sox10 164</span></span></code></pre></div>
 <p>We can also check if numerical variables are normally distributed
 with the distributR() function</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/distributR.html">distributR</a></span><span class="op">(</span><span class="va">redcap_df</span>,</span>
 <span>           vars <span class="op">=</span> <span class="va">size</span><span class="op">)</span></span></code></pre></div>
-<p><img src="data_management_files/figure-html/unnamed-chunk-8-1.png" width="700"></p>
+<p><img src="data_management_files/figure-html/unnamed-chunk-9-1.png" class="r-plt" width="700"></p>
 </div>
 <div class="section level2">
 <h2 id="data-management">Data management<a class="anchor" aria-label="anchor" href="#data-management"></a>
@@ -204,7 +213,7 @@ functions from the dplyr package.</p>
 </h3>
 <p>Variables/columns can be selected and removed with the select()
 function.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">redcap_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">sex</span>, <span class="va">birth</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="va">head</span></span>
@@ -216,7 +225,7 @@ function.</p>
 <span><span class="co">#&gt; 5  5   2 12-01-1961</span></span>
 <span><span class="co">#&gt; 6  6   2 10-12-1975</span></span></code></pre></div>
 <p>Variables are removed with a minus sign.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">redcap_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">id</span>, <span class="op">-</span><span class="va">birth</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="va">head</span></span>
@@ -236,7 +245,7 @@ function.</p>
 <span><span class="co">#&gt; 6    NA  0       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span></span></code></pre></div>
 <p>It is also possible to choose variable based on text patterns, which
 is useful for variables with a common prefix/suffix such as _date</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">redcap_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html" class="external-link">contains</a></span><span class="op">(</span><span class="st">"_date"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="va">head</span></span>
@@ -251,7 +260,7 @@ is useful for variables with a common prefix/suffix such as _date</p>
 an exact match.</p>
 <p>If we need to select a large range of variables we call the first and
 last separated by a colon:</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">redcap_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">sex</span><span class="op">:</span><span class="va">sox10</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="va">head</span></span>
@@ -275,7 +284,7 @@ last separated by a colon:</p>
 </h3>
 <p>Renaming of variable names can be done using rename(). The syntax is
 “new name” = “old name”</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">redcap_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span>index <span class="op">=</span> <span class="va">date_of_surgery</span>,</span>
 <span>         cytokeratin <span class="op">=</span> <span class="va">ck</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
@@ -303,7 +312,7 @@ the syntax: mutate(variable = condition). If the variable already exists
 in the dataset, it is modified automatically.</p>
 <p>We now recode necrosis, so that 1 = yes and everything else is
 “no”.</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">redcap_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>necrosis <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">necrosis</span> <span class="op">==</span> <span class="fl">1</span>, <span class="st">"yes"</span>, <span class="st">"no"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="va">head</span></span>
@@ -321,13 +330,31 @@ in the dataset, it is modified automatically.</p>
 <span><span class="co">#&gt; 4      yes    1    NA  0 2019-07-27            &lt;NA&gt;      2012-04-04</span></span>
 <span><span class="co">#&gt; 5       no    0     0  0 2018-04-19            &lt;NA&gt;      2011-01-16</span></span>
 <span><span class="co">#&gt; 6     &lt;NA&gt;   NA    NA  0       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span></span></code></pre></div>
-<p>Notice that now there were missing values in necrosis which have been
-replaced by “no”. This is the main side effect of ifelse - if the
-condition is not satisfied (here necrosis = 1), then everything else
-must be no including missing values.</p>
+<p>Notice that missing values in necrosis remain missing. If we want to
+also assign these as “no” we change the <code>==</code> in the mutate
+function to <code>%in%</code>. This will also imply that missing values
+are converted to the “else” statement, here “no”.</p>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">redcap_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>necrosis <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">necrosis</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fl">1</span>, <span class="st">"yes"</span>, <span class="st">"no"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="va">head</span></span>
+<span><span class="co">#&gt;   id sex  age      birth   followup date_of_surgery      size type localisation</span></span>
+<span><span class="co">#&gt; 1  1   1 40.9 26-04-1958 23-04-2021      1999-03-29  3.991349    0            2</span></span>
+<span><span class="co">#&gt; 2  2   2 57.8 18-01-1941 12-08-2024      1998-10-20 48.688670    0            1</span></span>
+<span><span class="co">#&gt; 3  3   2 32.2 30-07-1963 20-02-2022      1995-10-26 11.245841    0            4</span></span>
+<span><span class="co">#&gt; 4  4   2 58.7 31-12-1936 29-06-2024      1995-09-14 11.609164    2            1</span></span>
+<span><span class="co">#&gt; 5  5   2 29.3 12-01-1961 14-05-2023      1990-04-22  6.980464    0            3</span></span>
+<span><span class="co">#&gt; 6  6   2 18.3 10-12-1975 06-04-2025      1994-03-21 49.029171    2            0</span></span>
+<span><span class="co">#&gt;   necrosis cd10 sox10 ck death_date recurrence_date metastasis_date</span></span>
+<span><span class="co">#&gt; 1       no   NA     1  0       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 2      yes    0     0  0       &lt;NA&gt;      2014-12-09            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 3       no    0     1 NA       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 4      yes    1    NA  0 2019-07-27            &lt;NA&gt;      2012-04-04</span></span>
+<span><span class="co">#&gt; 5       no    0     0  0 2018-04-19            &lt;NA&gt;      2011-01-16</span></span>
+<span><span class="co">#&gt; 6       no   NA    NA  0       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span></span></code></pre></div>
 <p>If we want more explicit control with the recoding or we have more
 than one condition, we use case_when</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">redcap_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>necrosis <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/case_when.html" class="external-link">case_when</a></span><span class="op">(</span><span class="va">necrosis</span> <span class="op">==</span> <span class="fl">1</span> <span class="op">~</span> <span class="st">"yes"</span>,</span>
 <span>                              <span class="va">necrosis</span> <span class="op">==</span> <span class="fl">0</span> <span class="op">~</span> <span class="st">"no"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
@@ -348,7 +375,7 @@ than one condition, we use case_when</p>
 <span><span class="co">#&gt; 6     &lt;NA&gt;   NA    NA  0       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span></span></code></pre></div>
 <p>Now we have preserved the missing values. We can also control what to
 do with values that does not satisfy any of the criteria</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">redcap_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>necrosis <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/case_when.html" class="external-link">case_when</a></span><span class="op">(</span><span class="va">necrosis</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fl">1</span> <span class="op">~</span> <span class="st">"yes"</span>,</span>
 <span>                              <span class="va">necrosis</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fl">0</span> <span class="op">~</span> <span class="st">"no"</span>,</span>
@@ -368,8 +395,11 @@ do with values that does not satisfy any of the criteria</p>
 <span><span class="co">#&gt; 4      yes    1    NA  0 2019-07-27            &lt;NA&gt;      2012-04-04</span></span>
 <span><span class="co">#&gt; 5       no    0     0  0 2018-04-19            &lt;NA&gt;      2011-01-16</span></span>
 <span><span class="co">#&gt; 6  missing   NA    NA  0       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span></span></code></pre></div>
+<div class="section level4">
+<h4 id="collecting-multiple-mutate-functions">Collecting multiple mutate functions<a class="anchor" aria-label="anchor" href="#collecting-multiple-mutate-functions"></a>
+</h4>
 <p>Multiple mutate functions can be collected in one call</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">redcap_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>new_variable <span class="op">=</span> <span class="st">"new"</span>,</span>
 <span>         sex <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">sex</span> <span class="op">==</span> <span class="fl">1</span>, <span class="st">"f"</span>, <span class="st">"m"</span><span class="op">)</span>,</span>
@@ -399,13 +429,36 @@ do with values that does not satisfy any of the criteria</p>
 <span><span class="co">#&gt; 5      2011-01-16          new</span></span>
 <span><span class="co">#&gt; 6            &lt;NA&gt;          new</span></span></code></pre></div>
 </div>
+<div class="section level4">
+<h4 id="mutating-multiple-variables-simultaneously">Mutating multiple variables simultaneously<a class="anchor" aria-label="anchor" href="#mutating-multiple-variables-simultaneously"></a>
+</h4>
+<p>Multiple variables can be modified with <code><a href="https://dplyr.tidyverse.org/reference/across.html" class="external-link">across()</a></code> within
+mutate. The syntax is:<br></p>
+<p>`mutate(across(c(variable1, variable2), ~ function))</p>
+<p>Here we convert the variables cd10, sox10 and ck to characters</p>
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">redcap_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">cd10</span>, <span class="va">sox10</span>, <span class="va">ck</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/across.html" class="external-link">across</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">cd10</span>, <span class="va">sox10</span>, <span class="va">ck</span><span class="op">)</span>, <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="va">.</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="va">head</span></span>
+<span><span class="co">#&gt;   cd10 sox10   ck</span></span>
+<span><span class="co">#&gt; 1 &lt;NA&gt;     1    0</span></span>
+<span><span class="co">#&gt; 2    0     0    0</span></span>
+<span><span class="co">#&gt; 3    0     1 &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 4    1  &lt;NA&gt;    0</span></span>
+<span><span class="co">#&gt; 5    0     0    0</span></span>
+<span><span class="co">#&gt; 6 &lt;NA&gt;  &lt;NA&gt;    0</span></span></code></pre></div>
+<p>The <code>.</code> inside the <code>as.character(.)</code> refers to
+all the variables inside <code><a href="https://dplyr.tidyverse.org/reference/across.html" class="external-link">across()</a></code>.</p>
+</div>
+</div>
 <div class="section level3">
 <h3 id="recoding-of-variables">Recoding of variables<a class="anchor" aria-label="anchor" href="#recoding-of-variables"></a>
 </h3>
 <p>Recoding of variables can be done with the recodR() function in the
 cancR package. The syntax here is a list of lists, so that list(variable
 = list(new name = old name))</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">redcap_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="../reference/recodR.html">recodR</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"sex"</span> <span class="op">=</span> </span>
 <span>                <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"female"</span> <span class="op">=</span> <span class="fl">1</span>,</span>
@@ -452,7 +505,7 @@ more conditions, we can use ifelse() or case_when() (see examples under
 <p>Dates are often formatted as character strings and need to be
 converted to correct date format. This can easily be done with the
 datR() function:</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">redcap_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="../reference/datR.html">datR</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html" class="external-link">contains</a></span><span class="op">(</span><span class="st">"date"</span><span class="op">)</span>, <span class="va">birth</span>, <span class="va">followup</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="va">head</span></span>
@@ -488,7 +541,7 @@ datR() function:</p>
 number of splits: - One splits: ifelse() - More than one split:
 case_when() - Splits based on a sequence or quantiles: cutR()</p>
 <p>One split with ifelse()</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">redcap_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>size_bin <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">size</span> <span class="op">&gt;</span> <span class="fl">20</span>, <span class="st">"large"</span>, <span class="st">"small"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="va">head</span></span>
@@ -517,7 +570,7 @@ case_when() - Splits based on a sequence or quantiles: cutR()</p>
 <span><span class="co">#&gt; 5:      2011-01-16    small</span></span>
 <span><span class="co">#&gt; 6:            &lt;NA&gt;    large</span></span></code></pre></div>
 <p>More splits with case_when()</p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">redcap_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>size_bin <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/case_when.html" class="external-link">case_when</a></span><span class="op">(</span><span class="va">size</span> <span class="op">&gt;</span> <span class="fl">40</span> <span class="op">~</span> <span class="st">"large"</span>,</span>
 <span>                          <span class="va">size</span> <span class="op">&lt;</span> <span class="fl">10</span> <span class="op">~</span> <span class="st">"small"</span>,</span>
@@ -548,7 +601,7 @@ case_when() - Splits based on a sequence or quantiles: cutR()</p>
 <span><span class="co">#&gt; 5:      2011-01-16        small</span></span>
 <span><span class="co">#&gt; 6:            &lt;NA&gt;        large</span></span></code></pre></div>
 <p>Splits based on a sequence can be done with the cutR() function:</p>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">redcap_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="../reference/cutR.html">cutR</a></span><span class="op">(</span><span class="va">size</span>, </span>
 <span>       <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">50</span>,<span class="fl">10</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
@@ -579,7 +632,7 @@ case_when() - Splits based on a sequence or quantiles: cutR()</p>
 <span><span class="co">#&gt; 6:            &lt;NA&gt;</span></span></code></pre></div>
 <p>Multiple splits can also be performed with cutR() with name
 assigning</p>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">redcap_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/cutR.html">cutR</a></span><span class="op">(</span>vars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">age</span>, <span class="va">size</span><span class="op">)</span>,</span>
 <span>       seqlist <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"age"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">100</span>,<span class="fl">10</span><span class="op">)</span>,</span>
@@ -613,7 +666,7 @@ assigning</p>
 <span><span class="co">#&gt; 6:            &lt;NA&gt;     10-20    39-50</span></span></code></pre></div>
 <p>The new variables can also be given the same name pattern if the
 input variables are similar such as dates</p>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">redcap_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="co">#Conversion into date format</span></span>
 <span>  <span class="fu"><a href="../reference/datR.html">datR</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html" class="external-link">contains</a></span><span class="op">(</span><span class="st">"date"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
@@ -669,7 +722,7 @@ nothing else is specified, factR() converts a character string into a
 factor, with the level with most observations as reference. The function
 str() is used to show the formatting of the type variable has changed to
 factor.</p>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">redcap_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="../reference/factR.html">factR</a></span><span class="op">(</span><span class="va">type</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="va">str</span></span>
@@ -691,7 +744,7 @@ factor.</p>
 <span><span class="co">#&gt;  $ recurrence_date: chr  NA "2014-12-09" NA NA ...</span></span>
 <span><span class="co">#&gt;  $ metastasis_date: chr  NA NA NA "2012-04-04" ...</span></span></code></pre></div>
 <p>The reference group is specified using the reference argument</p>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">redcap_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="../reference/factR.html">factR</a></span><span class="op">(</span><span class="va">type</span>,</span>
 <span>        reference <span class="op">=</span> <span class="st">"0"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
@@ -714,7 +767,7 @@ factor.</p>
 <span><span class="co">#&gt;  $ recurrence_date: chr  NA "2014-12-09" NA NA ...</span></span>
 <span><span class="co">#&gt;  $ metastasis_date: chr  NA NA NA "2012-04-04" ...</span></span></code></pre></div>
 <p>Levels can be manually assigned</p>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">redcap_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="../reference/factR.html">factR</a></span><span class="op">(</span><span class="va">type</span>,</span>
 <span>        levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"2"</span>,<span class="st">"1"</span>,<span class="st">"0"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
@@ -738,7 +791,7 @@ factor.</p>
 <span><span class="co">#&gt;  $ metastasis_date: chr  NA NA NA "2012-04-04" ...</span></span></code></pre></div>
 <p>New labels can also be assigned and automatically specify levels
 simultaneously</p>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">redcap_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="../reference/factR.html">factR</a></span><span class="op">(</span><span class="va">type</span>,</span>
 <span>        labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"benign"</span> <span class="op">=</span> <span class="st">"0"</span>,</span>
@@ -765,7 +818,7 @@ simultaneously</p>
 <span><span class="co">#&gt;  $ metastasis_date: chr  NA NA NA "2012-04-04" ...</span></span></code></pre></div>
 <p>Lastly, all the arguments can be specified for multiple variables at
 once</p>
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">redcap_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="../reference/factR.html">factR</a></span><span class="op">(</span>vars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">type</span>, <span class="va">sex</span><span class="op">)</span>,</span>
 <span>        reference <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"sex"</span> <span class="op">=</span> <span class="st">"2"</span><span class="op">)</span>,</span>
@@ -799,7 +852,7 @@ once</p>
 </h3>
 <p>If we want to keep only certain rows we use filter(). Here we limit
 the dataset to patients without necrosis (necrosis = 0)</p>
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">redcap_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">necrosis</span> <span class="op">==</span> <span class="fl">0</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="va">head</span></span>
@@ -829,7 +882,7 @@ the dataset to patients without necrosis (necrosis = 0)</p>
 <span><span class="co">#&gt; 6:            &lt;NA&gt;</span></span></code></pre></div>
 <p>In case of multiple conditions we use the <code>%in%</code> operator,
 as this specified that the variables has one of the following values</p>
-<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">redcap_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">localisation</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">2</span>,<span class="fl">3</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="va">head</span></span>
@@ -858,7 +911,7 @@ as this specified that the variables has one of the following values</p>
 <span><span class="co">#&gt; 5:            &lt;NA&gt;</span></span>
 <span><span class="co">#&gt; 6:            &lt;NA&gt;</span></span></code></pre></div>
 <p>For numerical variables we use &lt;, &gt;, ==, &gt;= and &lt;=</p>
-<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">redcap_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">size</span> <span class="op">&gt;</span> <span class="fl">20</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="va">head</span></span>
@@ -887,7 +940,7 @@ as this specified that the variables has one of the following values</p>
 <span><span class="co">#&gt; 5:            &lt;NA&gt;</span></span>
 <span><span class="co">#&gt; 6:            &lt;NA&gt;</span></span></code></pre></div>
 <p>We can also use between() to specify an interval</p>
-<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">redcap_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/between.html" class="external-link">between</a></span><span class="op">(</span><span class="va">size</span>, <span class="fl">10</span>,<span class="fl">20</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="va">head</span></span>
@@ -920,7 +973,7 @@ operators whic are and/or/not etc. Here we keep rows where necrosis = 1
 AND localisation is 1, 2 or 3 OR size is larger than 10. Here necrosis
 needs to be 1, but either of the conditions for localisation or size can
 be satisified.</p>
-<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">redcap_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">necrosis</span> <span class="op">==</span> <span class="fl">1</span> <span class="op">&amp;</span> <span class="op">(</span><span class="va">localisation</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">2</span>,<span class="fl">3</span><span class="op">)</span> <span class="op">|</span> <span class="va">size</span> <span class="op">&gt;</span> <span class="fl">10</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="va">head</span></span>
@@ -954,7 +1007,7 @@ be satisified.</p>
 </h3>
 <p>Sorting is done with the arrange(). If the variable needs to be in
 descending order it is prefixed by a desc()</p>
-<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">redcap_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">size</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span>
@@ -983,7 +1036,7 @@ descending order it is prefixed by a desc()</p>
 <span><span class="co">#&gt; 5:            &lt;NA&gt;</span></span>
 <span><span class="co">#&gt; 6:            &lt;NA&gt;</span></span></code></pre></div>
 <p>Descending size</p>
-<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">redcap_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html" class="external-link">desc</a></span><span class="op">(</span><span class="va">size</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="va">head</span></span>
@@ -1017,12 +1070,12 @@ descending order it is prefixed by a desc()</p>
 </h3>
 <p>To get a quick overview of missing data in the dataset we use
 missR()</p>
-<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">redcap_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="../reference/missR.html">missR</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; No NAs detected</span></span></code></pre></div>
 <p>Missing values can be dropped with drop_na()</p>
-<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">redcap_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/drop_na.html" class="external-link">drop_na</a></span><span class="op">(</span><span class="va">metastasis_date</span>, <span class="va">necrosis</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="va">head</span></span>
@@ -1052,7 +1105,7 @@ missR()</p>
 <span><span class="co">#&gt; 6:      2010-04-11</span></span></code></pre></div>
 <p>Sometimes we want to remove rows where at least one of the values are
 NA. This is done with rowR() which is useful for rowwise operations</p>
-<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">redcap_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="../reference/rowR.html">rowR</a></span><span class="op">(</span>vars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">cd10</span>, <span class="va">sox10</span>, <span class="va">ck</span><span class="op">)</span>,</span>
 <span>       type <span class="op">=</span> <span class="st">"any.na"</span>,</span>
@@ -1083,7 +1136,7 @@ NA. This is done with rowR() which is useful for rowwise operations</p>
 <span><span class="co">#&gt; 5:            &lt;NA&gt;</span></span>
 <span><span class="co">#&gt; 6:      2012-08-18</span></span></code></pre></div>
 <p>We can also flag the rows into a new variable</p>
-<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">redcap_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="../reference/rowR.html">rowR</a></span><span class="op">(</span>vars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">cd10</span>, <span class="va">sox10</span>, <span class="va">ck</span><span class="op">)</span>,</span>
 <span>       type <span class="op">=</span> <span class="st">"any.na"</span>,</span>
@@ -1130,7 +1183,7 @@ extensions and should roughly have the same variables.</p>
 <p>In a left_join, dataset X is complete and only observations from
 dataset Y that are present in X are joined. For all</p>
 <p>If we want to join two data frames, we use left_join().</p>
-<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="va">redcap_df</span>, <span class="va">analysis_df</span>, by <span class="op">=</span> <span class="st">"id"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="va">tail</span></span>
 <span><span class="co">#&gt;       id   sex   age      birth   followup date_of_surgery     size  type</span></span>
@@ -1178,7 +1231,7 @@ redcap_df only has ids up to 350.</p>
 <p>We can left_join in a pipe. Here the current dataset we are working
 with is symbolised by a dot. We can also use other functions with the
 pipe operator inside the left_join.</p>
-<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">analysis_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">id</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="va">.</span>,</span>
@@ -1218,7 +1271,7 @@ pipe operator inside the left_join.</p>
 <h4 id="full-join">Full join<a class="anchor" aria-label="anchor" href="#full-join"></a>
 </h4>
 <p>In a full join, all rows are combined</p>
-<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">analysis_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">full_join</a></span><span class="op">(</span><span class="va">.</span>,</span>
 <span>            <span class="va">redcap_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">id</span>, <span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html" class="external-link">contains</a></span><span class="op">(</span><span class="st">"date"</span><span class="op">)</span><span class="op">)</span>,</span>
@@ -1252,7 +1305,7 @@ as all rows are kept.</p>
 <h4 id="appending-rows-bind-rows">Appending rows (bind rows)<a class="anchor" aria-label="anchor" href="#appending-rows-bind-rows"></a>
 </h4>
 <p>To obtain a relevant case we split our dataset into two</p>
-<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">r1</span> <span class="op">&lt;-</span> <span class="va">redcap_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">id</span> <span class="op">&lt;</span> <span class="fl">100</span><span class="op">)</span></span>
 <span><span class="va">r2</span> <span class="op">&lt;-</span> <span class="va">redcap_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">id</span> <span class="op">&gt;=</span> <span class="fl">100</span><span class="op">)</span></span>
 <span></span>
@@ -1296,7 +1349,7 @@ as all rows are kept.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer>
