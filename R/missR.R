@@ -13,7 +13,7 @@
 
 # n=200
 # set.seed(1)
-# df <- data.frame(id=seq(1:n),
+# df <- data.frame(ID=seq(1:n),
 #                  group=sample(c("pre", "sub"), n, replace=T),
 #                  sex=factor(sample(c("M","F"), n, replace=T)),
 #                  age_group=sample(c("<50",">50"),n,replace=T),
@@ -45,10 +45,10 @@ missR <- function(data, vars, id=id, print=T) {
   }
 
   if(!missing(vars)) {
-    vars_c <- data %>% select({{vars}}, -{{id}}) %>% names()
+    vars_c <- data %>% select({{vars}}, -!!sym(id_c)) %>% names()
 
   } else {
-    vars_c <- data %>% select(-{{id}}) %>% names()
+    vars_c <- data %>% select(-!!sym(id_c)) %>% names()
   }
 
   #Counts
@@ -63,12 +63,12 @@ missR <- function(data, vars, id=id, print=T) {
 
 
   #Invididual data frame
-  ind <- data %>% select({{id}}) %>% drop_na({{id}})
+  ind <- data %>% select(!!sym(id_c)) %>% drop_na(!!sym(id_c))
 
   for(v in vars_c) {
     ind <- left_join(ind,
                      data %>%
-                       select({{id}}, !!sym(v)) %>%
+                       select(!!sym(id_c), !!sym(v)) %>%
                        filter(is.na(!!sym(v))) %>%
                        mutate(!!sym(v) := v),
                      by= id_c)
@@ -86,9 +86,10 @@ missR <- function(data, vars, id=id, print=T) {
       cat("Nas detected in the following variables:\n\n")
       print(d)
     }
-    invisible(list(counts=d, idframe=ind, ids = ind %>% select({{id_c}}) %>% pull({{id_c}})))
+    invisible(list(counts=d, idframe=ind, ids = ind %>% select(!!sym(id_c)) %>% pull(!!sym(id_c))))
   }
 
 
 
 }
+

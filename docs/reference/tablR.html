@@ -57,9 +57,11 @@
 <span>  total <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  numeric <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"median"</span>, <span class="st">"q1q3"</span>, <span class="st">"range"</span><span class="op">)</span>,</span>
 <span>  direction <span class="op">=</span> <span class="st">"colwise"</span>,</span>
-<span>  labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  reference <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
-<span>  headings <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  labs.groups <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  labs.headings <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  labs.subheadings <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  reverse <span class="op">=</span> <span class="cn">T</span>,</span>
 <span>  test.stats <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"kwt"</span>, <span class="st">"chisq"</span><span class="op">)</span>,</span>
 <span>  show.na <span class="op">=</span> <span class="cn">FALSE</span>,</span>
@@ -101,15 +103,11 @@
 <dd><p>Direction for percentages (colwise or rowwise)</p></dd>
 
 
-<dt id="arg-labels">labels<a class="anchor" aria-label="anchor" href="#arg-labels"></a></dt>
-<dd><p>List specifying labels of the specific labels for each variable</p></dd>
-
-
 <dt id="arg-reference">reference<a class="anchor" aria-label="anchor" href="#arg-reference"></a></dt>
 <dd><p>List specifying reference group for each variable</p></dd>
 
 
-<dt id="arg-headings">headings<a class="anchor" aria-label="anchor" href="#arg-headings"></a></dt>
+<dt id="arg-labs-headings">labs.headings<a class="anchor" aria-label="anchor" href="#arg-labs-headings"></a></dt>
 <dd><p>List specifying labels for variable names</p></dd>
 
 
@@ -131,6 +129,10 @@
 
 <dt id="arg-digits">digits<a class="anchor" aria-label="anchor" href="#arg-digits"></a></dt>
 <dd><p>number of digits</p></dd>
+
+
+<dt id="arg-labels">labels<a class="anchor" aria-label="anchor" href="#arg-labels"></a></dt>
+<dd><p>List specifying labels of the specific labels for each variable</p></dd>
 
 </dl></div>
     <div class="section level2">

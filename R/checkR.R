@@ -49,7 +49,7 @@ checkR <- function(data, treatment, outcome, vars, levels=1, quantiles=0.1, id=i
     return(cat(paste0("ERROR: Levels exceeding number of variables. Levels can maximally be: ", length(c(vars_c)))))
   }
 
-  na <- missR(data, vars = c(vars_c, treat_c, out_c), id = id, print=F)
+  na <- missR(data, vars = c(vars_c, treat_c, out_c), id =id, print=F)
 
   if(!is.null(na)) {
     cat("\nThe checkR algorithm only works on complete data. Remove NAs in the following variables:\n\n")

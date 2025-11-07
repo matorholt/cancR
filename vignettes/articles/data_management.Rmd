@@ -49,10 +49,6 @@ Before starting on data management, it is important to get an overview of the da
 
 The entire dataset can be expected by either clicking on the dataset in the environment below or with the command `View()`
 
-```{r, results="hide"}
-View(redcap_df)
-```
-
 For a simpler inspection, `head()` shows only the first six rows in the console
 
 ```{r}

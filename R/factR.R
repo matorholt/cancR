@@ -90,10 +90,6 @@
 #     factR(num_vars=vnum,
 #           labels = list("vnum" = c("test" = "cci_0"))) %>%
 #   str
-#
-
-
-
 
 factR <- function(data, vars, num_vars, reference = list(), levels = list(), labels = list(), lab_to_lev = FALSE, reverse = F) {
 
