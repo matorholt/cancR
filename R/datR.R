@@ -28,7 +28,7 @@ datR <- function(data, vars) {
     formats[[v]] <- case_when(str_detect(first(data %>% pull(!!sym(v)), na_rm=T), "\\b\\d{2}-\\d{2}-\\d{4}\\b") ~ "%d-%m-%Y",
                               T ~ "%Y-%m-%d")
 
-    if(class(data[[v]]) != "Date") {
+    if(any(class(data[[v]]) %nin% "Date")) {
       data[[v]] <- as.Date(data[[v]], format = formats[[v]])
 
     }
