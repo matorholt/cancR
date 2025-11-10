@@ -5,7 +5,7 @@ Recode multiple variables
 ## Usage
 
 ``` r
-recodR(data, namelist, match = "exact")
+recodR(data, namelist, match = "exact", replace = F)
 ```
 
 ## Arguments
@@ -23,6 +23,11 @@ recodR(data, namelist, match = "exact")
 
   Whether the provided diagnosis codes should be matched exactly, start
   with/end with, be bounded by or contain (default)
+
+- replace:
+
+  whether multiple matches should be replaced directly (such as 1,4 to
+  head, arm)
 
 ## Value
 

@@ -81,6 +81,8 @@ Functions for typical data management tasks
   Load csv, excel and rds files
 - [`recodR()`](https://matorholt.github.io/cancR/reference/recodR.md) :
   Recode multiple variables
+- [`redcapR()`](https://matorholt.github.io/cancR/reference/redcapR.md)
+  : Autoformatting of redcap exports
 - [`rowR()`](https://matorholt.github.io/cancR/reference/rowR.md) :
   Perform rowwise operations
 - [`summarisR()`](https://matorholt.github.io/cancR/reference/summarisR.md)

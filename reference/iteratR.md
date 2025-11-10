@@ -5,7 +5,7 @@ Perform multiple estimatR analyses
 ## Usage
 
 ``` r
-iteratR(data, names, method, ...)
+iteratR(data, names, method, multivariable = F, ...)
 ```
 
 ## Arguments
