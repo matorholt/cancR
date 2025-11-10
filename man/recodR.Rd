@@ -4,7 +4,7 @@
 \alias{recodR}
 \title{Recode multiple variables}
 \usage{
-recodR(data, namelist, match = "exact")
+recodR(data, namelist, match = "exact", replace = F)
 }
 \arguments{
 \item{data}{dataframe}
@@ -12,6 +12,8 @@ recodR(data, namelist, match = "exact")
 \item{namelist}{list og variables with named vector(s) containing diagnosis codes (e.g. list(var1 = list(name = diagnosis codes)))}
 
 \item{match}{Whether the provided diagnosis codes should be matched exactly, start with/end with, be bounded by or contain (default)}
+
+\item{replace}{whether multiple matches should be replaced directly (such as 1,4 to head, arm)}
 }
 \value{
 the input data frame with recoded variables

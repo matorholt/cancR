@@ -48,8 +48,10 @@
 #        seqlist = seq(1800,2050,10)) %>%
 #   str
 #
-# # Multiple variables with same sequence 2
+# Multiple variables with same sequence 2
 # redcap_df %>%
+#   #Induce NA
+#   mutate(size = ifelse(row_number() %in% ceiling(runif(20, 1, 500)), NA, size)) %>%
 #   datR(c(birth, followup, date_of_surgery)) %>%
 #   cutR(vars = c(size, type, localisation),
 #        seqlist = list("quantile", c(0,0.5,1)),
@@ -129,7 +131,7 @@ cutR <- function(data, vars, seqlist, name.list = list(), name.pattern = NULL, d
 
     if(seqlist[[v]][[1]] %in% "quantile") {
 
-      seqlist[[v]] <- unique(quantile(data[[v]], seqlist[[v]][[2]]))
+      seqlist[[v]] <- unique(quantile(data[[v]], seqlist[[v]][[2]], na.rm=T))
 
     } else if(seqlist[[v]][[1]] %in% "seq") {
 
@@ -156,3 +158,4 @@ cutR <- function(data, vars, seqlist, name.list = list(), name.pattern = NULL, d
 
 
 }
+

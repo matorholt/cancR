@@ -4,7 +4,7 @@
 \alias{iteratR}
 \title{Perform multiple estimatR analyses}
 \usage{
-iteratR(data, names, method, ...)
+iteratR(data, names, method, multivariable = F, ...)
 }
 \arguments{
 \item{data}{data frame, list of data frames or object of class "iteratR"}

@@ -4,6 +4,7 @@
 #' @param data dataframe
 #' @param namelist list og variables with named vector(s) containing diagnosis codes (e.g. list(var1 = list(name = diagnosis codes)))
 #' @param match Whether the provided diagnosis codes should be matched exactly, start with/end with, be bounded by or contain (default)
+#' @param replace whether multiple matches should be replaced directly (such as 1,4 to head, arm)
 #'
 #' @return the input data frame with recoded variables
 #' @export
@@ -36,9 +37,18 @@
 #                              "ten" = "10",
 #                              "fifteen" = "15")),
 #          match = "boundary")
+#
+# df %>%
+#   recodR(list("split" = list("one" = "1",
+#                              "eleven" = "11",
+#                              "four" = "4",
+#                              "ten" = "10",
+#                              "fifteen" = "15")),
+#          match = "boundary",
+#          replace=F)
 
 
-recodR <- function(data, namelist, match = "exact") {
+recodR <- function(data, namelist, match = "exact", replace=F) {
 
   match <- match.arg(match, c("start", "end", "exact", "contains", "boundary"))
 
@@ -81,7 +91,13 @@ recodR <- function(data, namelist, match = "exact") {
 
       } else {
 
+        if(replace) {
+        data[, substitute(i) := str_replace_all(get(i), names(reglist[[i]])[j] %>% set_names(reglist[[i]][[j]]))]
+        } else {
+
         data[, substitute(i) := ifelse(str_detect(get(i), reglist[[i]][[j]]), names(reglist[[i]])[j], get(i))]
+
+        }
 
       }
     }
@@ -90,5 +106,9 @@ recodR <- function(data, namelist, match = "exact") {
 
  as.data.frame(data)
 
-
 }
+
+
+
+
+

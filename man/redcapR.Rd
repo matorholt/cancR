@@ -4,7 +4,15 @@
 \alias{redcapR}
 \title{Autoformatting of redcap exports}
 \usage{
-redcapR(data, dictionary, namelist = list(), autoformat = T, formatlist = NULL)
+redcapR(
+  data,
+  dictionary,
+  namelist = list(),
+  autoformat = T,
+  formatlist = NULL,
+  cprlist = NULL,
+  index
+)
 }
 \arguments{
 \item{data}{raw redcap dataset}
@@ -16,6 +24,10 @@ redcapR(data, dictionary, namelist = list(), autoformat = T, formatlist = NULL)
 \item{autoformat}{whether all labels should be in lowercase and underscores as spaces}
 
 \item{formatlist}{optional list for recoding common values such as positiv -> 1/pos/yes e.g. list("pos" = "positive", "no" = "Not Present")}
+
+\item{cprlist}{optional dataframe containing cpr numbers for extraction of birth and sex}
+
+\item{index}{optional index date for calculation of age at index}
 }
 \value{
 relabelled redcap dataset with correctly formatted dates

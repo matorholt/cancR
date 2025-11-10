@@ -58,6 +58,8 @@ structR <- function(data,
                     keep.dates=F,
                     digits = 2){
 
+  data <- as.data.frame(data)
+
   if(unit %nin% c("months", "years", "days")) {
     cat("Error: Invalid choice of unit. Choose between days, months or years")
   }
@@ -95,8 +97,8 @@ structR <- function(data,
 
     event_cols <- c(out_c[[v]], com_c, fu_c)
 
-    data[[out_names[[v]]]] <- ifelse((vec <- apply(df[, event_cols], 1, function(x) which(x == min(x, na.rm=T))[1])) == length(event_cols), 0, vec)
-    data[[out_time[[v]]]] <-round(as.numeric(as.Date(apply(df[, event_cols], 1, function(x) min(x, na.rm=T))) - df[, index_c])/t, digits)
+    data[[out_names[[v]]]] <- ifelse((vec <- apply(data[, event_cols], 1, function(x) which(x == min(x, na.rm=T))[1])) == length(event_cols), 0, vec)
+    data[[out_time[[v]]]] <-round(as.numeric(as.Date(apply(data[, event_cols], 1, function(x) min(x, na.rm=T))) - data[, index_c])/t, digits)
 
   }
 
@@ -105,7 +107,7 @@ structR <- function(data,
   if(any(str_detect(event_cols, "death"))) {
 
     data[["death"]] <- ifelse(!is.na(data[["death_date"]]), 1, 0)
-    data[["t_death"]] <- round(as.numeric(as.Date(apply(df[, c("death_date", fu_c)], 1, function(x) min(x, na.rm=T))) - df[, index_c])/t, digits)
+    data[["t_death"]] <- round(as.numeric(as.Date(apply(data[, c("death_date", fu_c)], 1, function(x) min(x, na.rm=T))) - data[, index_c])/t, digits)
 
   }
 
@@ -134,15 +136,15 @@ structR <- function(data,
     if(length(outs) == 1) {
       o_collapse <- data[,outs]
     } else{
-    o_collapse <- suppressWarnings(apply(df[, outs], 1, function(x) min(x, na.rm=T)[1]))
+    o_collapse <- suppressWarnings(apply(data[, outs], 1, function(x) min(x, na.rm=T)[1]))
 
     }
 
     #New frame with collapsed outcomes, competing risks and follow_up
-    frame <- bind_cols("outs" = o_collapse, "comps" = c_collapse, "follow" = df[, fu_c])
+    frame <- bind_cols("outs" = o_collapse, "comps" = c_collapse, "follow" = data[, fu_c])
 
     data[[names(composite)[c]]] <- ifelse((vec <- apply(frame, 1, function(x) which(x == min(x, na.rm=T))[1])) == length(names(frame)), 0, vec)
-    data[[paste0("t_", names(composite)[c])]] <- round(as.numeric(as.Date(apply(frame, 1, function(x) min(x, na.rm=T))) - df[, index_c])/t, digits)
+    data[[paste0("t_", names(composite)[c])]] <- round(as.numeric(as.Date(apply(frame, 1, function(x) min(x, na.rm=T))) - data[, index_c])/t, digits)
 
   }
 

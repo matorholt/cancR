@@ -54,6 +54,15 @@
 #           type = "select",
 #           vars = c("X6", "X7"),
 #           method = "estimatR")
+
+#Est as multivariable
+# est <-
+#   iteratR(analysis_df,
+#           timevar = "ttt",
+#           event = "event",
+#           group = c("X1", "X2", "X3", "X4", "X5"),
+#           method = "estimatR",
+#           multivariable = T)
 # #plotR
 # iteratR(est, method = "plotR",
 #         title = names(est),
@@ -67,6 +76,7 @@
 iteratR <- function(data,
                     names,
                     method,
+                    multivariable = F,
                     ...) {
 
   cat("\niteratR initialized: ", tickR(), "\n")
@@ -104,14 +114,24 @@ iteratR <- function(data,
 
   } else {
 
+  arg.list <- list(...)
+
   if(missing(names)) {
-    names <- paste(event, group)
+
+    names <- "hej"
+
+    if("group" %nin% names(arg.list)) {
+
+      names <- arg.list[["event"]]
+
+
+    } else {
+      names <- paste0(arg.list[["event"]], "_", arg.list[["group"]])
+    }
   }
 
-  arg.list <- list(...)
-    #append(as.list(environment()), list(...))
 
-  if(class(data) != "list") {
+  if(any(class(data) %nin% "list")) {
   arg.list[["data"]] <- list(data)
   }
 
@@ -122,6 +142,22 @@ if("vars" %in% names(arg.list)) {
   arg.list$vars <- list(arg.list$vars)
     }
 }
+
+  if(multivariable) {
+
+    arg.list$type <- "select"
+
+    multi_list <- list()
+
+    for(i in seq_along(arg.list$group)) {
+
+      multi_list[[i]] <- arg.list$group[arg.list$group != arg.list$group[i]]
+
+    }
+
+    arg.list$vars <- multi_list
+
+  }
 
   if("timevar" %nin% names(arg.list)) {
 
@@ -153,5 +189,4 @@ if("vars" %in% names(arg.list)) {
   cat(tockR("diff", start))
 
   return(out)
-
 }
