@@ -14,6 +14,7 @@
 #' @param form Only applicable when "custom" is chosen as type. Free specification of the model as the right-hand side of the formula.
 #' @param time Time horizon of interest. Defaults to 60 (e.g. 5-years)
 #' @param breaks Interim time points of interest. Defaults to 12 months (1-year gaps)
+#' @param cause cause of interest, default = 1
 #' @param survtime Whether median time to event should be calculated (default = F)
 #' @param proportions Whether risk of event in different windows should be estimated (default = F)
 #' @param conditional Whether conditional risk at the time horizon should be calculated (default = F)
@@ -45,6 +46,14 @@
 #'
 #t2 <- estimatR(analysis_df, ttt, event, X1, type = "select", vars = c(X6,X7))
 
+#Multiple causes
+# analysis_df$event3 <- rbinom(nrow(analysis_df), 3, 0.5)
+# t2 <- estimatR(analysis_df, ttt, event3, X1, type = "select", vars = c(X6,X7), cause = 3, plot=T)
+#
+# extractR(t2)
+#
+# plotR(t2)
+
 # extractR(t2)
 
 estimatR <- function(data,
@@ -57,12 +66,15 @@ estimatR <- function(data,
                      form,
                      time=120,
                      breaks = 12,
+                     cause = 1,
                      survtime = T,
                      proportions = F,
                      conditional = F,
                      pl = T,
                      digits = 4,
-                     event.digits = 2) {
+                     event.digits = 2,
+                     diagnostics = F,
+                     plot=T) {
 
   cat("\nestimatR initialized: ", tickR(), "\n")
 
@@ -70,6 +82,8 @@ estimatR <- function(data,
   suppressWarnings( event_c <- data %>% select({{event}}) %>% names())
   suppressWarnings(group_c <- data %>% select({{group}}) %>% names())
   horizon <- time
+
+  out.list <- list()
 
   type <- match.arg(type, c("uni", "age-sex", "select", "custom"))
 
@@ -123,13 +137,15 @@ estimatR <- function(data,
 
   #Life-table
   prod <- prodlim(as.formula(paste0("Hist(", timevar_c, ", ", event_c, ") ~", group_c, collapse = "")), data=dat)
-  tab <- summary(prod, times = seq(0,horizon,1), intervals = TRUE, cause=1) %>%
+  tab <- summary(prod, times = seq(0,horizon,1), intervals = TRUE, cause=cause) %>%
     group_by(!!sym(group_c)) %>%
     mutate(cumsum = cumsum(n.event)) %>%
     ungroup() %>%
     rename(time = time1) %>%
     select(-time0, -n.lost, -contains("se.")) %>%
     as.data.frame()
+
+  out.list[["table"]] <- tab
 
   #Model specification and diagnostics
   if(surv){
@@ -146,10 +162,14 @@ estimatR <- function(data,
                        lower = summary(hr)$conf.int[,3],
                        upper = summary(hr)$conf.int[,4],
                        pval_ex = summary(hr)$coefficients[,5])
+    if(diagnostics) {
     c <- cox.zph(hr)
     pc <- survminer::ggcoxzph(c)
     diaglist <- list(c,pc)
     names(diaglist)<- c("Cox_tests", "Cox_plots")
+
+    out.list[["diagnostics"]] <- diaglist
+    }
 
   } else {
 
@@ -162,6 +182,7 @@ estimatR <- function(data,
                        lower = summary(hr$models$`Cause 1`)$conf.int[,3],
                        upper = summary(hr$models$`Cause 1`)$conf.int[,4],
                        pval_ex =   summary(hr$models$`Cause 1`)$coefficients[,5])
+    if(diagnostics) {
     c1 <- hr$models$`Cause 1`
     c2 <- hr$models$`Cause 2`
     ct1 <- cox.zph(c1)
@@ -171,19 +192,38 @@ estimatR <- function(data,
     diaglist <- list(ct1,pct1,ct2,pct2)
     names(diaglist)<- c("Cause1_tests", "Cause1_plots", "Cause2_tests", "Cause2_plots")
 
+    out.list[["diagnostics"]] <- diaglist
+    }
+
   }
 
-  CRest <-
-    invisible(ate(cr, treatment = group_c, data=dat, times = seq(0,horizon,breaks), product.limit = pl))
+  out.list[["models"]] <- cr
 
-  CRplot <-
-    invisible(ate(cr, treatment = group_c, data=dat, times = unique(round(sort(c(0,dat[dat[, event_c] == 1 & dat[,timevar_c] < horizon, timevar_c],horizon)),event.digits)), product.limit = pl))
+  CRest <-
+    invisible(ate(cr,
+                  treatment = group_c,
+                  data=dat,
+                  times = seq(0,horizon,breaks),
+                  product.limit = pl,
+                  cause = cause))
 
   est <-
     as.data.frame(summary(CRest, short=T, type = "meanRisk")$meanRisk)
 
-  plot <-
-    as.data.frame(summary(CRplot, short=TRUE, type = "meanRisk")$meanRisk)
+  if(plot) {
+
+    CRplot <-
+      invisible(ate(cr,
+                    treatment = group_c,
+                    data=dat,
+                    times = unique(round(sort(c(0,dat[dat[, event_c] == 1 & dat[,timevar_c] < horizon, timevar_c],horizon)),event.digits)),
+                    product.limit = pl,
+                    cause = cause))
+
+    plot_data <-
+      as.data.frame(summary(CRplot, short=TRUE, type = "meanRisk")$meanRisk)
+
+  }
 
 
   if(surv & survscale == "OS") {
@@ -192,33 +232,45 @@ estimatR <- function(data,
              lwr = upper) %>%
       rename(!!sym(group_c) := treatment, est=estimate, upper = upr, lower = lwr)
 
-    plot <- plot %>% mutate(across(c(estimate, lower, upper), ~1 - .))%>%
+    if(plot) {
+    plot_data <- plot_data %>% mutate(across(c(estimate, lower, upper), ~1 - .))%>%
       rename(upr = lower,
              lwr = upper) %>%
       rename(!!sym(group_c) := treatment, est=estimate, upper = upr, lower = lwr)
+    }
 
   } else {
     est <- est %>%
       rename(!!sym(group_c) := treatment, est=estimate)
 
-    plot <- plot %>%
+    if(plot) {
+    plot_data <- plot_data %>%
       rename(!!sym(group_c) := treatment, est=estimate)
+    }
   }
   est <- est %>%
     select(time:se, lower, upper) %>%
     mutate(across(c(est:upper), ~round(.,digits)))
 
-  plot <- plot %>%
+  out.list[["risks"]] <- est
+
+  if(plot) {
+  plot_data <- plot_data %>%
     select(time:se, lower, upper) %>%
     group_by(!!sym(group_c)) %>%
     slice(1:n(),n()) %>%
     mutate(time = ifelse(row_number() == n(), time+0.6, time)) %>%
     as.data.frame()
 
+  out.list[["plot_data"]] <- plot_data
+
+  }
 
   if(survtime) {
 
     msurv <- list2DF(quantile(prodlim(as.formula(paste0("Hist(", timevar_c, ", ", event_c, ") ~", group_c, collapse = "")), data = dat[dat[[event_c]] == 1,]), 0.5)) %>% select(-q)
+
+    out.list[["time_to_event"]] <- msurv
 
 
   }
@@ -228,6 +280,8 @@ estimatR <- function(data,
                                                                  across(c(hr:upper), ~ as.numeric(format(round(.,2), nsmall=1)))) %>%
     rename(!!sym(group_c) := level) %>%
     tibble::remove_rownames()
+
+  out.list[["hr"]] <- hres
 
 
   rd <-
@@ -240,6 +294,8 @@ estimatR <- function(data,
            p.exact = p.value,
            p.value = sapply(p.value, pvertR))
 
+  out.list[["difference"]] <- rd
+
   rr <- as.data.frame(summary(CRest, short=T, type = "ratioRisk")$ratioRisk) %>%
     filter(time == horizon) %>%
     rename(ratio = estimate) %>%
@@ -247,6 +303,8 @@ estimatR <- function(data,
     mutate(across(c(ratio:upper), ~round(.,digits-2)),
            p.exact = p.value,
            p.value = sapply(p.value, pvertR))
+
+  out.list[["ratio"]] <- rr
 
   counts <-
     bind_cols(
@@ -256,6 +314,8 @@ estimatR <- function(data,
       dat %>% group_by(!!sym(group_c)) %>%
         summarise(total = n()) %>%
         select(-!!sym(group_c)))
+
+  out.list[["counts"]] <- counts
 
   if(proportions) {
   prop <- est %>%group_by(!!sym(group_c))%>%
@@ -271,6 +331,9 @@ estimatR <- function(data,
            across(c(residual, rescil, resciu), ~. * 100))%>%
     select(time, !!sym(group_c), before, after, window, residual, rescil, resciu)%>%
     filter(time < horizon)
+
+  out.list[["event_proportions"]] <- prop
+
   }
 
   if(conditional) {
@@ -317,18 +380,13 @@ estimatR <- function(data,
 
     return(condi)
   }))
+
+
+  out.list[["conditional"]] <- conditional
+
   }
 
-  list <- list("table" = tab,
-               "plot_data" = plot,
-               "hr" =  hres,
-               "models" =  cr,
-               "diag" = diaglist,
-               "risks" = est,
-               "difference" = rd,
-               "ratio" = rr,
-               "counts" = counts,
-               "info" = list("timevar" = timevar_c,
+  out.list[["info"]] <- list("timevar" = timevar_c,
                              "event" = event_c,
                              "group" = group_c,
                              "group_levels" = group_levels,
@@ -337,22 +395,13 @@ estimatR <- function(data,
                              "time" = horizon,
                              "breaks" = breaks,
                              "event.digits" = event.digits,
-                             "multi" = multi))
-
-  if(proportions) {
-    list <- append(list, list("event_proportions" = prop))
-  }
-  if(conditional) {
-    list <- append(list, list("conditional" = conditional))
-  }
-  if(survtime) {
-    list <- append(list, list("time_to_event" = msurv))
-  }
+                             "multi" = multi,
+                             "cause" = cause)
 
   cat(paste0("\nTotal runtime: \n"))
   cat(tockR("diff"))
 
-  class(list)<- "estimatR"
-  return(list)
+  class(out.list)<- "estimatR"
+  return(out.list)
 
 }
