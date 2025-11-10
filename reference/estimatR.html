@@ -63,12 +63,15 @@ Wrapper for the prodlim and ate-functions in riskRegression.</p>
 <span>  <span class="va">form</span>,</span>
 <span>  time <span class="op">=</span> <span class="fl">120</span>,</span>
 <span>  breaks <span class="op">=</span> <span class="fl">12</span>,</span>
+<span>  cause <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  survtime <span class="op">=</span> <span class="cn">T</span>,</span>
 <span>  proportions <span class="op">=</span> <span class="cn">F</span>,</span>
 <span>  conditional <span class="op">=</span> <span class="cn">F</span>,</span>
 <span>  pl <span class="op">=</span> <span class="cn">T</span>,</span>
 <span>  digits <span class="op">=</span> <span class="fl">4</span>,</span>
-<span>  event.digits <span class="op">=</span> <span class="fl">2</span></span>
+<span>  event.digits <span class="op">=</span> <span class="fl">2</span>,</span>
+<span>  diagnostics <span class="op">=</span> <span class="cn">F</span>,</span>
+<span>  plot <span class="op">=</span> <span class="cn">T</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -114,6 +117,10 @@ Wrapper for the prodlim and ate-functions in riskRegression.</p>
 
 <dt id="arg-breaks">breaks<a class="anchor" aria-label="anchor" href="#arg-breaks"></a></dt>
 <dd><p>Interim time points of interest. Defaults to 12 months (1-year gaps)</p></dd>
+
+
+<dt id="arg-cause">cause<a class="anchor" aria-label="anchor" href="#arg-cause"></a></dt>
+<dd><p>cause of interest, default = 1</p></dd>
 
 
 <dt id="arg-survtime">survtime<a class="anchor" aria-label="anchor" href="#arg-survtime"></a></dt>

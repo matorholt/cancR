@@ -18,12 +18,15 @@ estimatR(
   form,
   time = 120,
   breaks = 12,
+  cause = 1,
   survtime = T,
   proportions = F,
   conditional = F,
   pl = T,
   digits = 4,
-  event.digits = 2
+  event.digits = 2,
+  diagnostics = F,
+  plot = T
 )
 ```
 
@@ -75,6 +78,10 @@ estimatR(
 - breaks:
 
   Interim time points of interest. Defaults to 12 months (1-year gaps)
+
+- cause:
+
+  cause of interest, default = 1
 
 - survtime:
 
