@@ -4,7 +4,7 @@
 \alias{checkR}
 \title{Detection of positivity violations (empty levels)}
 \usage{
-checkR(data, treatment, outcome, vars, levels = 1, quantiles = 0.1, id = id)
+checkR(data, treatment, outcome, vars, levels = 1, quantiles = 0.1)
 }
 \arguments{
 \item{data}{data frame to detect positivity violations}

@@ -4,7 +4,7 @@
 \alias{missR}
 \title{Overview of NAs in a dataframe}
 \usage{
-missR(data, vars, id = id, print = T)
+missR(data, vars, id, print = T)
 }
 \arguments{
 \item{data}{data frame}

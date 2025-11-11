@@ -38,9 +38,20 @@
 # t2 <- checkR(df, group, vars=c(sex, hospital), levels=2)
 # t3 <- checkR(df, treatment=group, outcome = sex, vars=c(age_group, chemo, hospital), levels = 3)
 
-checkR <- function(data, treatment, outcome, vars, levels=1, quantiles=0.1, id=id) {
+checkR <- function(data, treatment, outcome, vars, levels=1, quantiles=0.1) {
 
-  id_c <- data %>% select({{id}}) %>% names()
+  if(missing(id)) {
+
+    id_syn <- c("id","ID","pnr","pt_id","study_id", "record_id")
+
+    if(sum(id_syn %in% colnames(data)) > 1) {
+      return(cat("Multiple ID columns detected - pick only one"))
+    }
+    id_c <- data %>% select(matches(id_syn)) %>% names()
+  } else {
+    id_c <- data %>% select({{id}}) %>% names()
+  }
+
   vars_c <- data %>% select({{vars}}) %>% names()
   treat_c <- data %>% select({{treatment}}) %>% names()
   out_c <- data %>% select({{outcome}}) %>% names()

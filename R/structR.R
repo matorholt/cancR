@@ -17,6 +17,7 @@
 #' @param unit Whether time-to-event should be reported in months or years.
 #' @param keep_dates Whether the original event dates should be kept.
 #' @param digits number of digits on event times
+#' @param id name of the id column. If missing, autodetection is attempted
 #'
 #' @return For each outcome, a status indicator of 0/1/2 and a time-to-event column are returned. If competing is missing, the levels are 0/1
 #' For the competing event, a status indicator of 0/1 and a time-to-event is returned.
@@ -24,17 +25,23 @@
 #' @export
 #'
 
-# n=8
+# n=10
 # df <-
-#   data.frame(opdate = rep("2000-01-01", n),
+#   data.frame(
+#     id = seq(1,n),
+#     opdate = c(rep("2000-01-01", n-1), "2030-01-01"),
 #            follow = rep("2025-01-01", n),
-#            recurrence_date = c(NA, "2005-01-01", NA, NA, NA, "2005-01-01", "2005-01-01", NA),
-#            metastasis_date = c(NA, NA, "2007-01-01", NA, NA, "2006-01-01", "2005-01-01", NA),
-#            dsd_date = c(NA,NA, "2008-01-01", "2009-01-01", NA, NA, NA, NA),
-#            death_date = c(NA, NA, "2008-01-01", "2009-01-01", NA, "2010-01-01", "2010-01-01", "2024-01-01"),
-#            second_date = c(NA, NA, NA, NA, "2008-01-01", NA, "2001-01-01", NA)) %>%
+#            recurrence_date = c(NA, "2005-01-01", NA, NA, NA, "2005-01-01", "2005-01-01", NA, "1995-01-01", "2005-01-01"),
+#            metastasis_date = c(NA, NA, "2007-01-01", NA, NA, "2006-01-01", "2005-01-01", NA, NA, NA),
+#            dsd_date = c(NA,NA, "2008-01-01", "2009-01-01", NA, NA, NA, NA, NA, NA),
+#            death_date = c(NA, NA, "2008-01-01", "2009-01-01", NA, "2010-01-01", "2010-01-01", "2024-01-01", "2019-01-01", "1999-01-01"),
+#            second_date = c(NA, NA, NA, NA, "2008-01-01", NA, "2001-01-01", NA, NA, NA)) %>%
 #   datR(c(opdate:second_date))
-#
+
+#df <- df[c(1:(n-1)), ]
+
+#df <- df[c(1:(n-2)), ]
+
 # structR(df,
 #         index = opdate,
 #         fu = follow,
@@ -47,6 +54,8 @@
 #                                        "competing" = c("recurrence_date", "death_date"))),
 #         keep.dates = T)
 
+
+
 structR <- function(data,
                     index,
                     fu,
@@ -56,18 +65,36 @@ structR <- function(data,
                     pattern = "_date",
                     unit = "months",
                     keep.dates=F,
-                    digits = 2){
+                    digits = 2,
+                    id){
 
-  data <- as.data.frame(data)
+  if("data.table" %in% class(data)) {
+
+    return(cat("Error: dataframe is in the format data.table - convert to data frame using as.data.frame(data)"))
+
+  }
 
   if(unit %nin% c("months", "years", "days")) {
     cat("Error: Invalid choice of unit. Choose between days, months or years")
+  }
+
+  if(missing(id)) {
+
+    id_syn <- c("id","ID","pnr","pt_id","study_id", "record_id")
+
+    if(sum(id_syn %in% colnames(data)) > 1) {
+      return(cat("Multiple ID columns detected - pick only one"))
+    }
+    id_c <- data %>% select(matches(id_syn)) %>% names()
+  } else {
+    id_c <- data %>% select({{id}}) %>% names()
   }
 
   out_c <- data %>% select({{outcomes}}) %>% names()
   com_c <- data %>% select({{competing}}) %>% names()
   fu_c <- data %>% select({{fu}}) %>% names()
   index_c <- data %>% select({{index}}) %>% names()
+
 
   if(any(str_detect(c(out_c, com_c), pattern, negate=T))) {
     return(cat("Wrong naming pattern for outcome columns (e.g. index_ or _date)"))
@@ -77,6 +104,27 @@ structR <- function(data,
      any(str_detect(c(out_c, com_c), "_date"))) {
     return(cat("Outcome variables are both named index_ and _date - they should be uniform"))
   }
+
+  errors <- c()
+
+  #Date check
+  for(i in c(out_c, com_c, fu_c, index_c)) {
+
+    if(sum(data[[i]] > Sys.Date(), na.rm=T) > 0) {
+
+      errors <- c(errors, data[which(replace_na(data[["opdate"]], as.Date(0)) > Sys.Date()), id_c])
+    }
+
+  }
+
+  if(length(errors) > 0) {
+
+    cat(paste0("Error: Dates in the future found for ", length(errors), " individual(s). Vector of IDs returned"))
+
+  return(errors)
+
+  }
+
 
   if(unit == "months"){
     t = 30.4375
@@ -92,13 +140,17 @@ structR <- function(data,
     paste0("t_", out_names)
 
   #event + t_event
-
   for(v in seq_along(out_c)) {
 
     event_cols <- c(out_c[[v]], com_c, fu_c)
 
+    #Event
     data[[out_names[[v]]]] <- ifelse((vec <- apply(data[, event_cols], 1, function(x) which(x == min(x, na.rm=T))[1])) == length(event_cols), 0, vec)
+
+    #Time
     data[[out_time[[v]]]] <-round(as.numeric(as.Date(apply(data[, event_cols], 1, function(x) min(x, na.rm=T))) - data[, index_c])/t, digits)
+
+
 
   }
 
@@ -106,7 +158,9 @@ structR <- function(data,
 
   if(any(str_detect(event_cols, "death"))) {
 
+    #Death
     data[["death"]] <- ifelse(!is.na(data[["death_date"]]), 1, 0)
+    #Time
     data[["t_death"]] <- round(as.numeric(as.Date(apply(data[, c("death_date", fu_c)], 1, function(x) min(x, na.rm=T))) - data[, index_c])/t, digits)
 
   }
@@ -143,10 +197,37 @@ structR <- function(data,
     #New frame with collapsed outcomes, competing risks and follow_up
     frame <- bind_cols("outs" = o_collapse, "comps" = c_collapse, "follow" = data[, fu_c])
 
+    #Event
     data[[names(composite)[c]]] <- ifelse((vec <- apply(frame, 1, function(x) which(x == min(x, na.rm=T))[1])) == length(names(frame)), 0, vec)
+    #Time
     data[[paste0("t_", names(composite)[c])]] <- round(as.numeric(as.Date(apply(frame, 1, function(x) min(x, na.rm=T))) - data[, index_c])/t, digits)
 
   }
+
+  check_names <- data %>% select(contains("t_")) %>%
+    names()
+
+  if(min(data %>% select(matches(check_names)) %>% unlist) <= 0) {
+
+    checklist <- list()
+
+    for(i in check_names) {
+
+      checklist[[i]] <- data[which(data[[i]] <= 0), c(i, "id")]
+
+    }
+
+    checklist
+
+    frame <- plyr::join_all(checklist, by = "id", type = "full")
+
+    cat(paste0("Error: ", nrow(frame), " ID(s) with negative or zero times to event. Dataframe with errors returned"))
+
+    return(frame)
+
+  }
+
+
 
   if(!keep.dates) {
 
@@ -155,6 +236,4 @@ structR <- function(data,
 
   return(data)
 }
-
-
 

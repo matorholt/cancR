@@ -4,10 +4,12 @@
 \alias{readR}
 \title{Load csv, excel and rds files}
 \usage{
-readR(path)
+readR(path, leading.zeros = T, na = "", ...)
 }
 \arguments{
 \item{path}{path for the file to load}
+
+\item{...}{arguments passes to subfunctions}
 }
 \value{
 the given path imported as a data frame

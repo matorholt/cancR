@@ -31,11 +31,12 @@
 #
 # missR(df)
 
-missR <- function(data, vars, id=id, print=T) {
-
-  id_syn <- c("id","ID","pnr","pt_id","study_id")
+missR <- function(data, vars, id, print=T) {
 
   if(missing(id)) {
+
+    id_syn <- c("id","ID","pnr","pt_id","study_id", "record_id")
+
     if(sum(id_syn %in% colnames(data)) > 1) {
       return(cat("Multiple ID columns detected - pick only one"))
     }

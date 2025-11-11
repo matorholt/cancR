@@ -17,24 +17,22 @@
 #' @export
 #'
 #'
-
+#
 # raw <- readR("../../Atypical fibroxanthoma/Surgical risk factors of AFX recurrence/Statistics/data/afx_data_16.09.2025.csv")
 # dict <- readR("../../Atypical fibroxanthoma/Surgical risk factors of AFX recurrence/Statistics/data/data_dict.csv")
 # cpr <- readR("../../Atypical fibroxanthoma/Surgical risk factors of AFX recurrence/Statistics/CPRLIST.csv") %>% select(id, cpr)
 #
 #
-#
 # redcapR(raw,
 #         dict,
 #         namelist = list("name" = list("n1" = "1",
-#                                               "n2" = "2",
-#                                               "n3" = "3",
-#                                               "n4" = "4")),
+#                                       "n2" = "2",
+#                                       "n3" = "3",
+#                                       "n4" = "4")),
 #         formatlist = list("pos" = "Positive",
-#                                   "neg" = "Negativ"),
+#                           "neg" = "Negativ"),
 #         cprlist = cpr,
 #         index = datesurg)
-
 
 redcapR <- function(data,
                     dictionary,
@@ -101,8 +99,8 @@ redcapR <- function(data,
   if(!is.null(cpr)) {
 
     raw <- left_join(raw, cprlist, by = "id") %>%
-      drop_na(cpr) %>%
-      cpR(extract = T)
+       drop_na(cpr) %>%
+       cpR(extract = T)
 
     if(!missing(index)) {
 
@@ -122,4 +120,3 @@ redcapR <- function(data,
 
 
 }
-

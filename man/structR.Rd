@@ -14,7 +14,8 @@ structR(
   pattern = "_date",
   unit = "months",
   keep.dates = F,
-  digits = 2
+  digits = 2,
+  id
 )
 }
 \arguments{
@@ -35,6 +36,8 @@ structR(
 \item{unit}{Whether time-to-event should be reported in months or years.}
 
 \item{digits}{number of digits on event times}
+
+\item{id}{name of the id column. If missing, autodetection is attempted}
 
 \item{keep_dates}{Whether the original event dates should be kept.}
 }
