@@ -18,7 +18,8 @@ structR(
   pattern = "_date",
   unit = "months",
   keep.dates = F,
-  digits = 2
+  digits = 2,
+  id
 )
 ```
 
@@ -63,6 +64,10 @@ structR(
 - digits:
 
   number of digits on event times
+
+- id:
+
+  name of the id column. If missing, autodetection is attempted
 
 - keep_dates:
 

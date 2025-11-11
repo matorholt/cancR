@@ -5,7 +5,7 @@ Overview of NAs in a dataframe
 ## Usage
 
 ``` r
-missR(data, vars, id = id, print = T)
+missR(data, vars, id, print = T)
 ```
 
 ## Arguments

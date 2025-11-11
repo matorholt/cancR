@@ -6,7 +6,7 @@ detection of file extension
 ## Usage
 
 ``` r
-readR(path)
+readR(path, leading.zeros = T, na = "", ...)
 ```
 
 ## Arguments
@@ -14,6 +14,10 @@ readR(path)
 - path:
 
   path for the file to load
+
+- ...:
+
+  arguments passes to subfunctions
 
 ## Value
 

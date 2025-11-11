@@ -5,7 +5,7 @@ Detection of positivity violations (empty levels)
 ## Usage
 
 ``` r
-checkR(data, treatment, outcome, vars, levels = 1, quantiles = 0.1, id = id)
+checkR(data, treatment, outcome, vars, levels = 1, quantiles = 0.1)
 ```
 
 ## Arguments
