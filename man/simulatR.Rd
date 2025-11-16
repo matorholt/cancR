@@ -18,6 +18,9 @@ simulatR(
   pop.sex = 0.5,
   pop.mortality = 0.1,
   match.cases,
+  match.birth = "1960-01-01",
+  match.index = c("1990-01-01", "2010-01-01"),
+  covariates.period = c("1980-01-01", "2025-01-01"),
   seed = 1
 )
 }
@@ -47,6 +50,12 @@ simulatR(
 \item{pop.mortality}{mortality rate in the population, default = 0.1}
 
 \item{match.cases}{number of cases for the "match" dataset}
+
+\item{match.birth}{maximum birth date. Cohorts are established backwards based on n assuming 100.000 per cohort}
+
+\item{match.index}{vector of length 2 with range of dates for indices}
+
+\item{covariates.period}{vector of length 2 withrange of dates for covariate status}
 
 \item{seed}{for reproducibility}
 }

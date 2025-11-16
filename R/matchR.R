@@ -26,105 +26,48 @@
 # library(foreach)
 # library(doParallel)
 # library(doSNOW)
-#
-# no = 120000
-# cno= 0.02*no
-#
-#
-# set.seed(2)
-# (c <- data.frame(id = paste("pnr", rnorm(cno, 40000,1000)),
-#                  case = 1,
-#                  index = sample(c(sample(seq(as.Date('1990/01/01'), as.Date('2010/01/01'), by="day"))), size = cno, replace=TRUE),
-#                  follow = c(sample(seq(as.Date('2015/01/01'), as.Date('2020/01/01'), by="day"), cno, replace=T)),
-#                  birth = sample(c(sample(seq(as.Date('1930/01/01'), as.Date('1961/01/01'), by="day"))), size = cno, replace=TRUE),
-#                  byear = sample(c(seq(1930,1961)), cno, replace=T),
-#                  sex = sample(c("f","m"), cno, replace=T),
-#                  skinc = sample(c(sample(seq(as.Date('2011/01/01'), as.Date('2020/01/01'), by="day")),rep(as.Date(NA),8000)), size = cno, replace=TRUE),
-#                  imm_sup = sample(c(sample(seq(as.Date('2011/01/01'), as.Date('2020/01/01'), by="day")),rep(as.Date(NA),8000)), size = cno, replace=TRUE),
-#                  random1 = 1,
-#                  random2 = 2) %>%
-#     mutate(across(c(skinc, imm_sup), ~ if_else(. > follow | .< index, follow-100, .))))
-#
-# (cnt <- data.frame(id = paste("pnr", rnorm(no, 40000,1000)),
-#                    case = 0,
-#                    follow = c(sample(seq(as.Date('1980/01/01'), as.Date('2020/01/01'), by="day"), no, replace=T)),
-#                    birth = sample(c(sample(seq(as.Date('1930/01/01'), as.Date('1961/01/01'), by="day"))), size = cno, replace=TRUE),
-#                    byear = sample(c(seq(1930,1961)), no, replace=T),
-#                    sex = sample(c("f","m"), no, replace=T),
-#                    skinc = sample(c(sample(seq(as.Date('1985/01/01'), as.Date('2000/01/01'), by="day")),rep(as.Date(NA),8000)), size = no, replace=TRUE),
-#                    imm_sup = sample(c(sample(seq(as.Date('1985/01/01'), as.Date('2000/01/01'), by="day")),rep(as.Date(NA),8000)), size = no, replace=TRUE),
-#                    random1 = 1,
-#                    random2 = 2) %>%
-#     mutate(across(c(skinc, imm_sup), ~ if_else(. > follow, follow-2000, .))))
-#
-# pop <- bind_rows(c, cnt)
-#
-# set.seed(1)
-# mp <- 40
-# (ses <- data.frame(var = sample(c("marital",
-#                                   "education",
-#                                   "income",
-#                                   "cci",
-#                                   "region"),
-#                                 size = no*mp,
-#                                 replace=TRUE),
-#                    date = sample(c(sample(seq(as.Date('1980/01/01'), as.Date('2000/01/01'), by="day"))), size = no*mp, replace=TRUE),
-#                    id = sample(pop$id, size = no*mp, replace=TRUE)) %>%
-#     arrange(id) %>%
-#     mutate(val = case_when(var %in% "income" ~ sample(paste("q", seq(1,4), sep=""), no*mp, prob = rep(0.25,4), replace=TRUE),
-#                            var %in% "education" ~ sample(c("low", "medium", "high"), no*mp, prob = rep(1/3,3), replace=TRUE),
-#                            var %in% "cci" ~ sample(c("cci_0",
-#                                                      "cci_1",
-#                                                      "cci_2-3",
-#                                                      "cci_4-5",
-#                                                      "cci_6+"), no*mp, prob = rep(0.20,5), replace=TRUE),
-#                            var %in% "region" ~ sample(c("the_capital_region_of_denmark",
-#                                                         "region_zealand",
-#                                                         "the_north_denmark_region",
-#                                                         "central_denmark_region",
-#                                                         "the_region_of_southern_denmark"), no*mp, prob = rep(0.20,5), replace=TRUE),
-#                            var %in% "marital" ~ sample(c("married",
-#                                                          "unmarried",
-#                                                          "divorced"), no*mp, prob = rep(0.20,3), replace=TRUE))) %>%
-#     select(id, date, var, val))
-#
-# ses_wide <- ses %>% arrange(id, date) %>%
-#   distinct(id, date, .keep_all = T) %>%
-#   pivot_wider(names_from=var, values_from = val) %>%
-#   fill(income, marital, region, education, cci, .direction = "down")
 
-# t1 <- matchR(data=pop,
-#               case=case,
-#               pnr = id,
-#               fu=follow,
-#               index=index,
-#               td.date=date,
-#               fixed.vars=c(byear, sex),
-#               td.vars = c(education, income, cci, region, marital),
-#               exclude = c(skinc, imm_sup),
-#               td.frame = ses_wide,
-#               n.controls=4,
-#               seed=1,
-#               cores = 4)
-
-# reportR(t1)
-
+# n=100000
+# c=100
+#
+#
+# pop <- simulatR("match",
+#                 n=n,
+#                 match.cases = c)
+#
+# covariates <- simulatR("covariates",
+#                 n=n)
+#
+# post_match <-
+#   matchR3(data=pop,
+#         case=case,
+#         pnr = pnr,
+#         fu=follow,
+#         index=index,
+#         td.date=date,
+#         fixed.vars=c(byear, sex),
+#         td.vars = c(education, cci, cancer, hema),
+#         exclude = c(skinc, imm_sup),
+#         td.frame = covariates,
+#         n.controls=4,
+#         seed=1,
+#         cores = 4)
 
 matchR <- function(data,
-                    td.frame,
-                    index,
-                    case,
-                    fu,
-                    td.date,
-                    fixed.vars,
-                    td.vars,
-                    exclude,
-                    n.controls=4,
-                    replace = T,
-                    seed=1,
-                    cores=NULL,
-                    pnr=pnr,
-                    interval = NULL) {
+                   td.frame,
+                   index,
+                   case,
+                   fu,
+                   td.date,
+                   fixed.vars,
+                   td.vars,
+                   exclude,
+                   n.controls=4,
+                   replace = T,
+                   seed=1,
+                   cores=NULL,
+                   pnr=pnr,
+                   interval = NULL) {
 
   if("date" %in% names(data)) {
     return(cat("Error: The pre_match dataframe cannot contain a variable named date"))
@@ -155,7 +98,6 @@ matchR <- function(data,
 
   vars_cc <- str_replace_all(vars_c, "byear", "tvar")
 
-
   case_s <- substitute(case)
   pnr_s <- substitute(pnr)
   fu_s <- substitute(fu)
@@ -176,6 +118,8 @@ matchR <- function(data,
 
   cat(paste0("Merging time-dependent data frame: "))
 
+
+
   full_df <-
     merge(data, td.frame[pnr %in% data[, pnr],
                          env=list(pnr = substitute(pnr))], by = pnr_c)[order(-case, pnr, td.date),
@@ -194,59 +138,65 @@ matchR <- function(data,
 
 
 
-
   cat(paste0("\nMerging time-dependent data frame: completed - ",  tockR("time"), "\n\n"))
 
-  #Partition into birth cohorts
-  cohorts <- sort(unique(full_df[full_df[["case"]]==1,][["tvar"]]))
-  cohorts_length <- length(cohorts)
+  cat(paste0("Partitioning of age-sex cohorts: "))
+
+  total_cases <- data[case == 1,]
+
+  #unique age-sex cohorts found in cases
+  int <- sort(unique(interaction(total_cases$byear, total_cases$sex)))
+
+  #Partition into age-sex cohorts filtered on presence of cases
+  split_df <- split(full_df, by = c("tvar", "sex"))[as.character(int)]
+
+
+
+  cat(paste0("\nPartitioning of age-sex cohorts: completed - ",  tockR("time"), "\n\n"))
+
+
+  #Progress bar
+  pb_out <- c()
+  t_start <- 0
   ncase <- 0
   tcase <- nrow(full_df[full_df$case == 1,])
 
-  #Progress overview
-  pb_out <- c()
-  t_start <- 0
+  for(i in seq_along(split_df)) {
 
-  for(i in seq_along(cohorts)) {
+    coh <- names(split_df)[i]
 
-    coh <- cohorts[i]
-
-    dat <- full_df[tvar == coh]
-
-    cases <- dat[case == 1]
+    cases <- split_df[[i]][case == 1]
 
     ncase <- ncase + nrow(cases)
 
-    pb_out <- c(pb_out, paste0(" - Cohort: ", coh," - Current: ", nrow(cases), " Cases / ", nrow(dat), " - Total Status: ", ncase, " / ", tcase, " Cases       "))
+    pb_out <- c(pb_out, paste0(" - Cohort: ", coh," - Current: ", nrow(cases), " Cases / ", nrow(split_df[[i]]), " - Total Status: ", ncase, " / ", tcase, " Cases       "))
 
 
   }
 
 
-  if(str_detect(cohorts[1], "-")) {
-    cat(paste0("Partitioning ", cohorts_length, " cohorts: \n"))
-    cat(paste0(cohorts, collapse="\n"))
+  if(str_detect(names(split_df)[1], "-")) {
+    cat(paste0("Partitioning ", length(split_df), " cohorts: \n"))
+    cat(paste0(names(split_df), collapse="\n"))
     cat("\n\n")
   } else {
-    cat(paste0("Partitioning ", cohorts_length, " cohorts (", cohorts[1], " to ", cohorts[cohorts_length], "): \n\n"))
+    cat(paste0("Partitioning ", length(split_df), " cohorts (", names(split_df)[1], " to ", names(split_df)[length(split_df)], "): \n\n"))
   }
 
   cohort_list <- list()
 
-  pb <- txtProgressBar(max = cohorts_length, style = 3)
+  pb <- txtProgressBar(max = length(split_df), style = 3)
   progress <- function(n) {
     setTxtProgressBar(pb, n)
     cat(paste0("     Time: ", tockR("time"), ", runtime: ", tockR("diff"), pb_out[n]))
   }
   opts <- list(progress = progress)
 
-  cohort_list <- foreach(j = 1:cohorts_length,
+  cohort_list <- foreach(j = seq_along(split_df),
                          .packages = c("tidyverse", "data.table", "foreach"),
                          .options.snow = opts) %dopar% {
 
-                           b <- cohorts[[j]]
-
-                           df <- full_df[tvar == b]
+                           df <- split_df[[j]]
 
                            cases <- df[case_s == 1, env=list(case_s = case_s)]
 
@@ -260,19 +210,28 @@ matchR <- function(data,
 
                              itime <- df[set == i, index_s, env = list(index_s = index_s)]
 
-                             covars <- unlist(type.convert(df[set == i, .SD, .SDcols = vars_cc], as.is=TRUE))
-
-                             control_list[[c]] <-
-                               #Cases cannot be selected as controls if already cases
-                               df[set == i | ((index_s > itime | is.na(index_s)) & fu_s > itime & td.date_s < itime),
-                                  env=list(case_s = case_s,
-                                           fu_s = fu_s,
-                                           index_s = index_s,
-                                           td.date_s = td.date_s)] %>%
+                             #Cases cannot be selected as controls if already cases
+                             df_c <- df[set == i | ((index_s > itime | is.na(index_s)) & fu_s > itime & td.date_s < itime),
+                                        env=list(case_s = case_s,
+                                                 fu_s = fu_s,
+                                                 index_s = index_s,
+                                                 td.date_s = td.date_s)] %>%
                                .[.[, Reduce(`&`, lapply(.SD, function(x) is.na(x) | x > itime)) | set == i,.SDcols = c(exclude_c)], .SDcols= c(exclude_c)] %>%
-                               .[, .SD[.N], by = pnr_c] %>%
-                               .[.[, Reduce(`&`, lapply(.SD, function(x) x %in% covars)) | set == i,.SDcols = c(vars_cc)], .SDcols= c(vars_cc)] %>%
-                               #Not-yet cases converted to controls
+                               #Slice last row for each patient
+                               .[unlist(.[, .I[.N], by = pnr_c][,2]),]
+
+                             filters <- as.list(df_c[set==i, .SD, .SDcols=vars_cc])
+
+                             setkeyv(df_c, vars_cc)
+
+                             control_list[[c]] <- df_c[filters] %>%
+
+                               #Not-yet cases converted to controls. Censoring at time of switch to case
+                               .[, fu_s := if_else(case_s == 1 & set != i, index_s, fu_s),
+                                 env = list(
+                                   fu_s = fu_s,
+                                   index_s = index_s,
+                                   case_s = case_s)] %>%
                                .[, index_s := if_else(case_s == 1 & set != i, as.Date(NA), index_s),
                                  env = list(index_s = index_s,
                                             case_s = case_s)] %>%
@@ -280,6 +239,9 @@ matchR <- function(data,
                                  env = list(case_s = case_s)]
 
 
+
+                             #Reroute output
+                             #control_list[[c]] <- filters
 
                            }
 
@@ -321,6 +283,10 @@ matchR <- function(data,
 
                            as.data.frame(bind_rows(cases, rbindlist(matches)))
 
+                           #Reroute output
+                           #control_list
+                           #matches
+
 
                          }
 
@@ -334,13 +300,17 @@ matchR <- function(data,
     parallel::stopCluster(cluster)
   }
 
-
   rbindlist(cohort_list)[order(set)][
     , "index" := nafill(index, "locf"),
     env=list(index=substitute(index))][
       , c(exclude_c[exclude_c != "sc_date"], td.date_c, "tvar") := NULL] %>%
     select({{pnr}}, case, set, index, everything()) %>%
     as.data.frame()
+
+  #Reroute output
+  #cohort_list
+  #split_df
+
 
 
 }
