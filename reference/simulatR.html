@@ -63,6 +63,9 @@
 <span>  pop.sex <span class="op">=</span> <span class="fl">0.5</span>,</span>
 <span>  pop.mortality <span class="op">=</span> <span class="fl">0.1</span>,</span>
 <span>  <span class="va">match.cases</span>,</span>
+<span>  match.birth <span class="op">=</span> <span class="st">"1960-01-01"</span>,</span>
+<span>  match.index <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"1990-01-01"</span>, <span class="st">"2010-01-01"</span><span class="op">)</span>,</span>
+<span>  covariates.period <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"1980-01-01"</span>, <span class="st">"2025-01-01"</span><span class="op">)</span>,</span>
 <span>  seed <span class="op">=</span> <span class="fl">1</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -121,6 +124,18 @@
 
 <dt id="arg-match-cases">match.cases<a class="anchor" aria-label="anchor" href="#arg-match-cases"></a></dt>
 <dd><p>number of cases for the "match" dataset</p></dd>
+
+
+<dt id="arg-match-birth">match.birth<a class="anchor" aria-label="anchor" href="#arg-match-birth"></a></dt>
+<dd><p>maximum birth date. Cohorts are established backwards based on n assuming 100.000 per cohort</p></dd>
+
+
+<dt id="arg-match-index">match.index<a class="anchor" aria-label="anchor" href="#arg-match-index"></a></dt>
+<dd><p>vector of length 2 with range of dates for indices</p></dd>
+
+
+<dt id="arg-covariates-period">covariates.period<a class="anchor" aria-label="anchor" href="#arg-covariates-period"></a></dt>
+<dd><p>vector of length 2 withrange of dates for covariate status</p></dd>
 
 
 <dt id="arg-seed">seed<a class="anchor" aria-label="anchor" href="#arg-seed"></a></dt>
