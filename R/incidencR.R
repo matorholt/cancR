@@ -26,6 +26,14 @@
 #           group = X3,
 #           time = 60)
 #
+# df <- df_out %>%
+#   factR(subgroup)
+#
+# t <- incidencR(df,
+#                t_rec,
+#                rec,
+#                subgroup)
+# #
 # plotR(i)
 
 incidencR <- function(data,
@@ -133,9 +141,10 @@ incidencR <- function(data,
 
     counts <-
       bind_cols(
-        dat %>% group_by(!!sym(group_c)) %>%
+        dat %>% group_by(!!sym(group_c), .drop=FALSE) %>%
           filter(!!sym(event_c) == 1) %>%
-          summarise(n.events = n()),
+          summarise(n.events = n()) %>%
+          drop_na(!!sym(group_c)),
         dat %>% group_by(!!sym(group_c)) %>%
           summarise(total = n()) %>%
           select(-!!sym(group_c)))
@@ -219,5 +228,4 @@ incidencR <- function(data,
 
 
 }
-
 
