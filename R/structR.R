@@ -37,11 +37,11 @@
 #            death_date = c(NA, NA, "2008-01-01", "2009-01-01", NA, "2010-01-01", "2010-01-01", "2024-01-01", "2019-01-01", "1999-01-01"),
 #            second_date = c(NA, NA, NA, NA, "2008-01-01", NA, "2001-01-01", NA, NA, NA)) %>%
 #   datR(c(opdate:second_date))
-
-#df <- df[c(1:(n-1)), ]
-
-#df <- df[c(1:(n-2)), ]
-
+#
+# df <- df[c(1:(n-1)), ]
+#
+# df <- df[c(1:(n-2)), ]
+#
 # structR(df,
 #         index = opdate,
 #         fu = follow,
@@ -204,7 +204,7 @@ structR <- function(data,
 
   }
 
-  check_names <- data %>% select(contains("t_")) %>%
+  check_names <- data %>% select(matches("\\bt_")) %>%
     names()
 
   if(min(data %>% select(matches(check_names)) %>% unlist) <= 0) {
@@ -221,9 +221,9 @@ structR <- function(data,
 
     frame <- plyr::join_all(checklist, by = "id", type = "full")
 
-    cat(paste0("Error: ", nrow(frame), " ID(s) with negative or zero times to event. Dataframe with errors returned"))
+    cat(paste0("Error: ", nrow(frame), " ID(s) with negative or zero times to event. Dataframe with errors returned:\n\n"))
 
-    return(frame)
+    return(frame %>% select(!!sym(id_c), everything()))
 
   }
 

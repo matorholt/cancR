@@ -83,6 +83,15 @@
 #
 # plotR(t2)
 
+# i <- incidencR(analysis_df,
+#                timevar = ttt,
+#                event = event2,
+#                group=X3)
+#
+# plotR(i)
+
+
+
 
 
 plotR <- function(list,
@@ -145,7 +154,13 @@ plotR <- function(list,
   res <- est %>% filter(time %in% horizon)
   event.digits <- list$info$event.digits
 
-  if(class(list) == "incidencR") contrast <- "none"
+  if(class(list) == "incidencR") {
+
+    list[["ratio"]] <- list[["difference"]]
+
+  }
+
+  if(class(list) == "incidencR" & list$info$group == "grp") contrast <- "none"
 
   if(contrast != "none") {
   #Contrast labels
@@ -155,7 +170,6 @@ plotR <- function(list,
          "rd" = c_var <- "difference",
          "rr" = c_var <- "ratio")
 
-  #Prints
   c_labels <- str_c(str_to_upper(contrast),
                     " = ",
                     numbR(list[[c_var]][,which(names(list[[c_var]]) %in% c("hr", "ratio", "diff"))], contrast.digits),
@@ -192,11 +206,6 @@ plotR <- function(list,
   }
 
   }
-
-
-
-
-
 
 
   if(censur) {
@@ -362,10 +371,6 @@ plotR <- function(list,
     p <- p + theme(legend.position = "none")
   }
 
-  if(class(list) == "incidencR") {
-    contrast <- "none"
-  }
-
   xstart <- horizon*0.07
   rows <- (y*(seq(0.92, 0.92-((0.07*res.spacing)*(length(levels)+1)), -0.07*res.spacing)))+res.shift[2]
 
@@ -436,9 +441,15 @@ plotR <- function(list,
                          size = res.size*tscale)
      }
 
+     if(class(list) == "incidencR" & list$info$group == "grp") {
+       #buttom <- buttom - 1
+       rows <- rows[1:length(rows)-1]
+     }
+
      #Border settings
      buttom <- rows[length(rows)] - (rows[length(rows)-1]-rows[length(rows)])
      right <- (xstart*0.3+horizon*0.39)+res.shift[1]+border.shift
+
 
 
    }
@@ -463,8 +474,9 @@ plotR <- function(list,
 
 
 
- return(p)
+return(p)
 
 
 }
+
 

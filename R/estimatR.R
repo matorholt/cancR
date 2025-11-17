@@ -47,12 +47,18 @@
 #t2 <- estimatR(analysis_df, ttt, event, X1, type = "select", vars = c(X6,X7))
 
 #Multiple causes
-# analysis_df$event3 <- rbinom(nrow(analysis_df), 3, 0.5)
-# t2 <- estimatR(analysis_df, ttt, event3, X1, type = "select", vars = c(X6,X7), cause = 3, plot=T)
-#
-# extractR(t2)
-#
-# plotR(t2)
+# t2 <- estimatR(analysis_df,
+#                timevar=ttt,
+#                event=event3,
+#                group=X1,
+#                type = "select",
+#                vars = c(X6,X7),
+#                cause = 3,
+#                plot=T)
+
+#extractR(t2)
+
+#plotR(t2)
 
 # extractR(t2)
 
@@ -87,9 +93,14 @@ estimatR <- function(data,
 
   type <- match.arg(type, c("uni", "age-sex", "select", "custom"))
 
+  if(!is.factor(data[[group_c]])) {
+
+    return(cat("Error:", group_c, "is not a factor. Convert using the factR() function"))
+
+  }
+
   dat <-
     data %>% drop_na(!!sym(group_c))%>%
-    mutate(!!sym(group_c) := as.factor(!!sym(group_c))) %>%
     as.data.frame()
 
   group_levels <- levels(dat[,group_c])
@@ -406,3 +417,4 @@ estimatR <- function(data,
   return(out.list)
 
 }
+

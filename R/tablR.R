@@ -24,14 +24,15 @@
 #'
 #'
 
+
 # redcap_df %>%
 #   factR(c(type, sex, localisation)) %>%
 #   tablR(
 #     group = type,
 #     vars=c(age, sex, localisation),
-#     labs.groups = list("type" = list("benign" = "0",
-#                                      "in situ" = "1",
-#                                      "malignant" = "2")),
+#     labs.groups = list("Benign" = "0",
+#                        "In situ" = "1",
+#                        "Malignant" = "2"),
 #     labs.headings = list("Age at Debut" = "age"),
 #     labs.subheadings = list("sex" = list("Female" = "2",
 #                                          "Male" = "1"),
@@ -46,6 +47,7 @@
 #     numeric = c("mean", "sd"))
 
 
+
 tablR <- function(data,
                   group,
                   vars,
@@ -58,7 +60,7 @@ tablR <- function(data,
                   labs.groups = list(),
                   labs.headings = list(),
                   labs.subheadings= list(),
-                  reverse = T,
+                  reverse = F,
                   test.stats = c("kwt", "chisq"),
                   show.na = FALSE,
                   censur=F,
@@ -100,16 +102,45 @@ tablR <- function(data,
       cat("Error: Group is not a factor or character")
     }
 
-    data <- data %>%
-      recodR(labs.groups)
+    #Autoformat groups
+    if(length(labs.groups) == 0) {
+      if(is.factor(data[[group_c]])) {
 
-    if(reverse) {
+        labs.groups <- as.list(levels(data[[group_c]])) %>% set_names(str_to_title(str_replace_all(levels(data[[group_c]]), "_", " ")))
+
+      } else {
+
+        labs.groups <- as.list(unique(data[[group_c]])) %>% set_names(str_to_title(str_replace_all(unique(data[[group_c]]), "_", " ")))
+
+      }
+    }
+
+    data <- data %>%
+    factR(group_c,
+          labels = list(labs.groups) %>% set_names(group_c),
+          lab_to_lev = T,
+          reverse=T)
+
+    if(!reverse) {
       data <- data %>% mutate(!!sym(group_c) := fct_rev(!!sym(group_c)))
     }
 
-  }
+   }
+
+   #Autoformat levels
+   r_list <- list()
+
+   for(v in vars_c[vars_c %nin% names(labs.subheadings)]) {
+
+     levels <- unique(dat[[v]])
+
+     r_list[[v]] <- as.list(levels) %>% set_names(str_to_title(str_replace_all(levels, "_", " ")))
+
+
+   }
+
    data <- recodR(data,
-                  labs.subheadings)
+                  append(r_list, labs.subheadings))
 
    if(all(length(reference) > 0 | length(levels) > 0)) {
 
@@ -153,6 +184,8 @@ tablR <- function(data,
   headings_rev <- list(names(labs.headings)) %>% set_names(labs.headings)
 
   labs.headings <- modifyList(headings_default, headings_rev)
+  } else {
+  labs.headings <- headings_default
 }
 
 s <- summary(table,
@@ -187,9 +220,3 @@ s
 
 
 }
-
-
-
-
-
-

@@ -10,6 +10,7 @@ RoxygenNote: 7.3.3
 Depends: 
     arsenal,
     data.table,
+    plyr,
     dplyr,
     dtplyr,
     flextable,
