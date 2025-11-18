@@ -96,6 +96,11 @@ savR <- function(object,
     name <- paste0(substitute(object))
   }
 
+  if("tablR" %in% class(object)) {
+    object <- object %>%
+      flextable()
+  }
+
   if(all("data.frame" %in% class(object) & "extractR" %nin% class(object))) {
 
     if("csv" %in% formats) {
@@ -127,10 +132,8 @@ savR <- function(object,
   }
 
   if("summary.tableby" %in% class(object)) {
-    object <- as.data.frame(object) %>%
-      rename("char" = 1) %>%
-      flextable() %>%
-      set_header_labels(values = list("char" = ""))
+
+
 
   }
 
@@ -156,9 +159,18 @@ savR <- function(object,
 
   if("ggplot" %in% class(object)) {
   #Autoscale
-    if(missing(height)) {
+    if (missing(height)) {
 
-    height <- sum(abs(object$coordinates$limits$y))/object$y*100*47
+      if("ggarrange" %in% class(object)) {
+
+        height <- 154
+
+      } else {
+
+        height <- sum(abs(object$coordinates$limits$y))/object$y * 100 * 47
+
+      }
+
     }
 
     formats <- formats[formats %nin% c("csv", "rds")]

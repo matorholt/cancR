@@ -24,6 +24,32 @@
 #'
 #'
 
+# tab <- redcap_df %>%
+#   mutate(margins = sample(c("0","1"), nrow(redcap_df), replace=TRUE)) %>%
+#   factR(c(type, sex, localisation, cd10, sox10, ck, necrosis, margins)) %>%
+#   tablR(
+#     group = type,
+#     vars=c(age, sex, localisation, cd10, sox10, ck, necrosis, margins),
+#     labs.groups = list("Benign" = "0",
+#                        "In situ" = "1",
+#                        "Malignant" = "2"),
+#     labs.headings = list("Age at Debut" = "age"),
+#     labs.subheadings = list("sex" = list("Female" = "2",
+#                                          "Male" = "1"),
+#                             "localisation" = list("Neck" = "0",
+#                                                   "Head" = "1",
+#                                                   "Trunk" = "2",
+#                                                   "Upper Extremity" = "3",
+#                                                   "Lower Extremity" = "4",
+#                                                   "Unspecified" = "5")),
+#     reference = list("sex" = c("Male")),
+#     levels = list("localisation" = c("Trunk", "Head")),
+#     numeric = c("mean", "sd"),
+#     censur = T,
+#     simplify=list("Immunohistochemistry" = c("Cd10", "Sox10", "Ck"),
+#                   "Tumor" = c("Necrosis", "Margins")),
+#     flextable=F)
+
 tablR <- function(data,
                   group,
                   vars,
@@ -41,7 +67,9 @@ tablR <- function(data,
                   show.na = FALSE,
                   censur=F,
                   digits = 1,
-                  simplify = F) {
+                  simplify = list(),
+                  print = F,
+                  flextable = T) {
 
   numeric_choices <- c("median", "q1q3", "iqr", "range", "mean", "sd", "min", "max")
 
@@ -142,16 +170,6 @@ if(all(length(reference) > 0 | length(levels) > 0)) {
 
 }
 
-
-
-   if(simplify) {
-
-     data <- data %>%
-       mutate(across(c({{vars}}), ~ if_else(. %in% c("0", 0, "No", "no"), NA, .)),
-              across(c(where(is.factor)), ~ fct_drop(.)))
-
-   }
-
   c <- tableby.control(test=test, total=total,
                        numeric.test=test.stats[1], cat.test=test.stats[2],
                        numeric.stats=numeric,
@@ -179,88 +197,70 @@ if(all(length(reference) > 0 | length(levels) > 0)) {
   labs.headings <- headings_default
 }
 
-s <- summary(table,
+tab <- summary(table,
         text=T,
         labelTranslations = labs.headings,
-        digits = digits)
+        digits = digits) %>%
+  as.data.frame() %>%
+  rename("var" = 1)
 
-tab <- as.data.frame(s)
-colnames(tab)[1] <- " "
+if(censur) {
 
-# if(censur) {
-#
-#   if(missing(group)) {
-#     loop_string <- "Total"
-#
-#   } else {
-#   loop_string <- c(as.character(unique(data[, group_c])), "Total")
-#   }
-#
-#   for(v in loop_string) {
-#
-#     for(i in 1:length(s$object[[1]][v][[1]])) {
-#
-#       if("tbstat_countpct" %in% class(s$object[[1]][v][[1]][[i]]) & s$object[[1]][v][[1]][[i]][1] != "" & s$object[[1]][v][[1]][[i]][1] <= 3) {
-#
-#         s$object[[1]][v][[1]][[i]]<- "<=3"
-#
-#       }
-#
-#     }
-#   }
-# }
-#
-# s
-
-tab
+  tab <- tab %>% mutate(across(everything(), ~ ifelse(str_detect(., "^(1|2|3)\\s\\("), "<=3", .)))
 
 }
 
-# s <-
-#   redcap_df %>%
-#   factR(c(type, sex, localisation, cd10, sox10, ck, necrosis)) %>%
-#   tablR(
-#     group = type,
-#     vars=c(age, sex, localisation, cd10, sox10, ck, necrosis),
-#     labs.groups = list("Benign" = "0",
-#                        "In situ" = "1",
-#                        "Malignant" = "2"),
-#     labs.headings = list("Age at Debut" = "age"),
-#     labs.subheadings = list("sex" = list("Female" = "2",
-#                                          "Male" = "1"),
-#                             "localisation" = list("Neck" = "0",
-#                                                   "Head" = "1",
-#                                                   "Trunk" = "2",
-#                                                   "Upper Extremity" = "3",
-#                                                   "Lower Extremity" = "4",
-#                                                   "Unspecified" = "5")),
-#     reference = list("sex" = c("Male")),
-#     levels = list("localisation" = c("Trunk", "Head")),
-#     numeric = c("mean", "sd"),
-#     simplify=T,
-#     censur = T)
-#
-# s %>% flextable
-#
-# s %>% mutate(across(everything(), ~ ifelse(str_detect(., "^(1|2|3)\\s(")), "hej", .))
-#
-#
-#
-#
-#
-#
-#
-# tab_df <- as.data.frame(tab)
-#
-# simplify.vars <- c("Cd10", "Sox10", "Ck")
-#
-# indices <- which(str_detect(unlist(tab_df[1]), paste0(simplify.vars, collapse="|")))
-#
-# tab_df[indices[1],1] #<- simplify.
-#
-# tab_df <- tab_df[-indices[-1],]
-#
-# tab_df[c(seq(indices[1]+1, indices[1]+length(indices))), 1] <- simplify.vars
-#
-# tab_df
+if(length(simplify) > 0) {
 
+  for(i in seq_along(simplify)) {
+
+    labels <- paste0("-  ", simplify[[i]])
+
+    #Find variable names
+    indices <- which(str_detect(tab[,"var"], paste0(simplify[[i]], collapse="|")))
+    #Total range including levels
+    range <- c(min(indices):(max(indices)+2))
+    #Remove levels 0, No etc.
+    tab <- tab %>% filter(!(str_detect(var, "\\b0|No|no\\b") & row_number() %in% range))
+    #Update indices
+    indices <- which(str_detect(tab[,"var"], paste0(simplify[[i]], collapse="|")))
+    #Rename
+    tab[min(indices),"var"] <- names(simplify[i])
+    #Remove variable names
+    tab <- tab[-indices[-1],]
+    #Add labels
+    tab[c((min(indices)+1):(min(indices)+length(simplify[[i]]))),"var"] <- paste0("-  ", simplify[[i]])
+  }
+
+
+}
+
+tab[,1] <- str_pad(str_trim(tab[,1]), width = max(str_count(str_trim(tab[,1]))), side = "right")
+tab[,1] <- str_replace(tab[,1], "-", " ")
+colnames(tab)[1] <- " "
+
+if(print) {
+  print(tab)
+}
+
+if(flextable) {
+
+  #Shift values to the left with padding
+  padding <- paste0(c(labs.headings[labs.headings %nin% unlist(simplify)], names(simplify)), collapse = "|")
+  padding
+
+  rows <- which(str_detect(tab[,1], padding, negate=T))
+
+  #Pad levels right for flextable
+  return(tab %>% flextable %>%
+    padding(i = c(rows), j=1, padding.left = 15))
+
+} else {
+
+  class(tab) <- c("data.frame", "tablR")
+
+  return(tab)
+
+}
+
+}
