@@ -24,11 +24,6 @@
 #'
 #'
 
-
-
-
-
-
 tablR <- function(data,
                   group,
                   vars,
@@ -131,7 +126,7 @@ tablR <- function(data,
      }
 
    data <- data %>%
-     recodR(r_list)
+     recodR(append(r_list, labs.subheadings))
 
 
 
@@ -217,3 +212,43 @@ s
 
 
 }
+
+#tab <-
+  # redcap_df %>%
+  # factR(c(type, sex, localisation, cd10, sox10, ck, necrosis)) %>%
+  # tablR(
+  #   group = type,
+  #   vars=c(age, sex, localisation, cd10, sox10, ck, necrosis),
+  #   labs.groups = list("Benign" = "0",
+  #                      "In situ" = "1",
+  #                      "Malignant" = "2"),
+  #   labs.headings = list("Age at Debut" = "age"),
+  #   labs.subheadings = list("sex" = list("Female" = "2",
+  #                                        "Male" = "1"),
+  #                           "localisation" = list("Neck" = "0",
+  #                                                 "Head" = "1",
+  #                                                 "Trunk" = "2",
+  #                                                 "Upper Extremity" = "3",
+  #                                                 "Lower Extremity" = "4",
+  #                                                 "Unspecified" = "5")),
+  #   reference = list("sex" = c("Male")),
+  #   levels = list("localisation" = c("Trunk", "Head")),
+  #   numeric = c("mean", "sd"),
+  #   simplify=T)
+#
+# tab
+#
+# tab_df <- as.data.frame(tab)
+#
+# simplify.vars <- c("Cd10", "Sox10", "Ck")
+#
+# indices <- which(str_detect(unlist(tab_df[1]), paste0(simplify.vars, collapse="|")))
+#
+# tab_df[indices[1],1] <- simplify.
+#
+# tab_df <- tab_df[-indices[-1],]
+#
+# tab_df[c(seq(indices[1]+1, indices[1]+length(indices))), 1] <- simplify.vars
+#
+# tab_df
+
