@@ -65,6 +65,7 @@ recodR <- function(data, namelist, match = "exact", replace=F) {
          "boundary" = {regex <- c("\\b", "\\b")}
   )
 
+  data <- copy(data)
 
   #Paste diagnosis codes
   reglist <- modify_depth(namelist, 2, function(x) paste0(regex[1], paste0(x, collapse="|"), regex[2]))

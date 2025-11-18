@@ -184,59 +184,71 @@ s <- summary(table,
         labelTranslations = labs.headings,
         digits = digits)
 
-if(censur) {
+tab <- as.data.frame(s)
+colnames(tab)[1] <- " "
 
-  if(missing(group)) {
-    loop_string <- "Total"
-
-  } else {
-  loop_string <- c(as.character(unique(data[, group_c])), "Total")
-  }
-
-  for(v in loop_string) {
-
-    for(i in 1:length(s$object[[1]][v][[1]])) {
-
-      if("tbstat_countpct" %in% class(s$object[[1]][v][[1]][[i]]) & s$object[[1]][v][[1]][[i]][1] != "" & s$object[[1]][v][[1]][[i]][1] <= 3) {
-
-        s$object[[1]][v][[1]][[i]]<- "<=3"
-
-      }
-
-    }
-  }
-}
-
-s
-
-
-
-}
-
-#tab <-
-  # redcap_df %>%
-  # factR(c(type, sex, localisation, cd10, sox10, ck, necrosis)) %>%
-  # tablR(
-  #   group = type,
-  #   vars=c(age, sex, localisation, cd10, sox10, ck, necrosis),
-  #   labs.groups = list("Benign" = "0",
-  #                      "In situ" = "1",
-  #                      "Malignant" = "2"),
-  #   labs.headings = list("Age at Debut" = "age"),
-  #   labs.subheadings = list("sex" = list("Female" = "2",
-  #                                        "Male" = "1"),
-  #                           "localisation" = list("Neck" = "0",
-  #                                                 "Head" = "1",
-  #                                                 "Trunk" = "2",
-  #                                                 "Upper Extremity" = "3",
-  #                                                 "Lower Extremity" = "4",
-  #                                                 "Unspecified" = "5")),
-  #   reference = list("sex" = c("Male")),
-  #   levels = list("localisation" = c("Trunk", "Head")),
-  #   numeric = c("mean", "sd"),
-  #   simplify=T)
+# if(censur) {
 #
-# tab
+#   if(missing(group)) {
+#     loop_string <- "Total"
+#
+#   } else {
+#   loop_string <- c(as.character(unique(data[, group_c])), "Total")
+#   }
+#
+#   for(v in loop_string) {
+#
+#     for(i in 1:length(s$object[[1]][v][[1]])) {
+#
+#       if("tbstat_countpct" %in% class(s$object[[1]][v][[1]][[i]]) & s$object[[1]][v][[1]][[i]][1] != "" & s$object[[1]][v][[1]][[i]][1] <= 3) {
+#
+#         s$object[[1]][v][[1]][[i]]<- "<=3"
+#
+#       }
+#
+#     }
+#   }
+# }
+#
+# s
+
+tab
+
+}
+
+# s <-
+#   redcap_df %>%
+#   factR(c(type, sex, localisation, cd10, sox10, ck, necrosis)) %>%
+#   tablR(
+#     group = type,
+#     vars=c(age, sex, localisation, cd10, sox10, ck, necrosis),
+#     labs.groups = list("Benign" = "0",
+#                        "In situ" = "1",
+#                        "Malignant" = "2"),
+#     labs.headings = list("Age at Debut" = "age"),
+#     labs.subheadings = list("sex" = list("Female" = "2",
+#                                          "Male" = "1"),
+#                             "localisation" = list("Neck" = "0",
+#                                                   "Head" = "1",
+#                                                   "Trunk" = "2",
+#                                                   "Upper Extremity" = "3",
+#                                                   "Lower Extremity" = "4",
+#                                                   "Unspecified" = "5")),
+#     reference = list("sex" = c("Male")),
+#     levels = list("localisation" = c("Trunk", "Head")),
+#     numeric = c("mean", "sd"),
+#     simplify=T,
+#     censur = T)
+#
+# s %>% flextable
+#
+# s %>% mutate(across(everything(), ~ ifelse(str_detect(., "^(1|2|3)\\s(")), "hej", .))
+#
+#
+#
+#
+#
+#
 #
 # tab_df <- as.data.frame(tab)
 #
@@ -244,7 +256,7 @@ s
 #
 # indices <- which(str_detect(unlist(tab_df[1]), paste0(simplify.vars, collapse="|")))
 #
-# tab_df[indices[1],1] <- simplify.
+# tab_df[indices[1],1] #<- simplify.
 #
 # tab_df <- tab_df[-indices[-1],]
 #
