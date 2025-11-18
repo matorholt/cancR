@@ -40,12 +40,13 @@
 #
 # df %>%
 #   recodR(list("split" = list("one" = "1",
+#                              "two" = "2",
 #                              "eleven" = "11",
 #                              "four" = "4",
 #                              "ten" = "10",
 #                              "fifteen" = "15")),
 #          match = "boundary",
-#          replace=F)
+#          replace=T)
 
 
 recodR <- function(data, namelist, match = "exact", replace=F) {
@@ -64,8 +65,6 @@ recodR <- function(data, namelist, match = "exact", replace=F) {
          "boundary" = {regex <- c("\\b", "\\b")}
   )
 
-  setDT(data)
-
 
   #Paste diagnosis codes
   reglist <- modify_depth(namelist, 2, function(x) paste0(regex[1], paste0(x, collapse="|"), regex[2]))
@@ -83,6 +82,8 @@ recodR <- function(data, namelist, match = "exact", replace=F) {
         #Looping through all indiviual diag codes
         for(k in seq_along(namelist[[i]][[j]])) {
 
+
+
        data <- data %>%
        factR(i, labels = unlist(c(namelist[[i]][[j]][k])) %>% set_names(names(namelist[[i]])[[j]]))
 
@@ -91,11 +92,13 @@ recodR <- function(data, namelist, match = "exact", replace=F) {
 
       } else {
 
-        if(replace) {
-        data[, substitute(i) := str_replace_all(get(i), names(reglist[[i]])[j] %>% set_names(reglist[[i]][[j]]))]
+      setDT(data)
+
+       if(replace) {
+       data[, substitute(i) := str_replace_all(get(i), names(reglist[[i]])[j] %>% set_names(reglist[[i]][[j]]))]
         } else {
 
-        data[, substitute(i) := ifelse(str_detect(get(i), reglist[[i]][[j]]), names(reglist[[i]])[j], get(i))]
+       data[, substitute(i) := ifelse(str_detect(get(i), reglist[[i]][[j]]), names(reglist[[i]])[j], get(i))]
 
         }
 
@@ -104,11 +107,7 @@ recodR <- function(data, namelist, match = "exact", replace=F) {
 
   }
 
- as.data.frame(data)
+as.data.frame(data)
 
 }
-
-
-
-
 

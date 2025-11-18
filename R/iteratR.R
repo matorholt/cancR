@@ -12,6 +12,7 @@
 #'
 #'
 
+# #inferencR
 # inf <- iteratR(analysis_df,
 #                timevar = "ttt",
 #                event = c("event", "event", "event2"),
@@ -21,6 +22,7 @@
 #                names = c("m1", "m2", "m3"),
 #                method = "inferencR")
 #
+# #clustR
 # clu <-
 #   iteratR(analysis_df,
 #           timevar = "ttt",
@@ -34,6 +36,7 @@
 #           event.digits=0,
 #           method = "clustR")
 #
+# #incidencR
 # inc <-
 #   iteratR(analysis_df,
 #           timevar = "ttt",
@@ -43,6 +46,7 @@
 #           names = c("m1", "m2", "m3"),
 #           method = "incidencR")
 #
+# #estimatR
 # est <-
 #   iteratR(analysis_df,
 #           timevar = "ttt",
@@ -54,8 +58,8 @@
 #           type = "select",
 #           vars = c("X6", "X7"),
 #           method = "estimatR")
-
-#Est as multivariable
+#
+# Est as multivariable
 # est <-
 #   iteratR(analysis_df,
 #           timevar = "ttt",
@@ -71,6 +75,11 @@
 # iteratR(est, method = "extractR", format = "wide")
 #
 # iteratR(inc, method = "extractR")
+#
+# savR
+# iteratR(plots,
+#         format = c("png", "pdf"),
+#         method = "savR")
 
 
 iteratR <- function(data,
@@ -81,7 +90,7 @@ iteratR <- function(data,
 
   cat("\niteratR initialized: ", tickR(), "\n")
 
-  method_choices <- c("extractR", "plotR", "estimatR", "incidencR", "inferencR", "clustR")
+  method_choices <- c("extractR", "plotR", "estimatR", "incidencR", "inferencR", "clustR", "savR")
 
   if(method %nin% method_choices) {
     return(cat(paste0("Error: Invalid choice of method. Choose between:\n", paste0(method_choices, collapse="\n"))))
@@ -112,13 +121,25 @@ iteratR <- function(data,
                 })
 
 
+  } else if(method == "savR") {
+
+    names <- NULL
+
+    cat(paste0("Exporting: ", length(data), " objects"))
+
+    for(p in seq_along(data)) {
+
+      savR(data[[p]], names(data)[p], ...)
+
+    }
+
+    return(cat(""))
+
   } else {
 
   arg.list <- list(...)
 
   if(missing(names)) {
-
-    names <- "hej"
 
     if("group" %nin% names(arg.list)) {
 
@@ -190,3 +211,4 @@ if("vars" %in% names(arg.list)) {
 
   return(out)
 }
+

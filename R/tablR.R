@@ -114,20 +114,27 @@ tablR <- function(data,
 
    for(v in vars_c[vars_c %nin% names(labs.subheadings)]) {
 
-     if(any(class(data[[v]]) %in% c("factor", "character"))) {
+     if(is.factor(data[[v]])) {
 
-     labs.levels <- unique(data[[v]])
+       r_list[[v]] <-
+       as.list(levels(data[[v]])) %>% set_names(str_to_title(str_replace_all(levels(data[[v]]), "_", " ")))
 
-     r_list[[v]] <- as.list(labs.levels) %>% set_names(str_to_title(str_replace_all(labs.levels, "_", " ")))
      }
 
+     if(is.character(data[[v]])) {
 
-   }
+       r_list[[v]] <-
+         as.list(unique(data[[v]])) %>% set_names(str_to_title(str_replace_all(unique(data[[v]]), "_", " ")))
 
-   data <- recodR(data,
-                  append(r_list, labs.subheadings))
+     }
 
-   append(r_list, labs.subheadings)
+     }
+
+   data <- data %>%
+     recodR(r_list)
+
+
+
 
 if(all(length(reference) > 0 | length(levels) > 0)) {
 
@@ -208,44 +215,5 @@ if(censur) {
 s
 
 
-}
 
-# tab <- redcap_df %>%
-#   factR(c(type, sex, localisation, cd10, sox10, ck)) %>%
-#   tablR(
-#     group = type,
-#     vars=c(age, sex, localisation, cd10, sox10, ck),
-#     labs.groups = list("Benign" = "0",
-#                        "In situ" = "1",
-#                        "Malignant" = "2"),
-#     labs.headings = list("Age at Debut" = "age"),
-#     labs.subheadings = list("sex" = list("Female" = "2",
-#                                          "Male" = "1"),
-#                             "localisation" = list("Neck" = "0",
-#                                                   "Head" = "1",
-#                                                   "Trunk" = "2",
-#                                                   "Upper Extremity" = "3",
-#                                                   "Lower Extremity" = "4",
-#                                                   "Unspecified" = "5")),
-#     reference = list("sex" = c("Female")),
-#     levels = list("localisation" = c("Trunk", "Head")),
-#     numeric = c("mean", "sd"),
-#     simplify=T)
-#
-# tab
-#
-# tab_df <- as.data.frame(tab)
-#
-# simplify.vars <- c("Cd10", "Sox10", "Ck")
-#
-# indices <- which(str_detect(unlist(tab_df[1]), paste0(simplify.vars, collapse="|")))
-#
-# tab_df[indices[1],1] <- simplify.
-#
-# tab_df <- tab_df[-indices[-1],]
-#
-# tab_df[c(seq(indices[1]+1, indices[1]+length(indices))), 1] <- simplify.vars
-#
-# tab_df
-#
-#
+}

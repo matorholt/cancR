@@ -142,7 +142,7 @@ savR <- function(object,
 
   if("flextable" %in% class(object)) {
 
-    cat("Exports")
+    cat("\n\nExports")
     cat(paste0("\nFlextable: "))
 
     object %>%
@@ -163,7 +163,7 @@ savR <- function(object,
 
     formats <- formats[formats %nin% c("csv", "rds")]
 
-    cat("Exports")
+    cat(paste0("\n\nExporting: ", name))
     for(p in formats) {
 
       cat(paste0("\n", p, ": "))
