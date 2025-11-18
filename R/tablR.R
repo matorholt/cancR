@@ -25,26 +25,7 @@
 #'
 
 
-# redcap_df %>%
-#   factR(c(type, sex, localisation)) %>%
-#   tablR(
-#     group = type,
-#     vars=c(age, sex, localisation),
-#     labs.groups = list("Benign" = "0",
-#                        "In situ" = "1",
-#                        "Malignant" = "2"),
-#     labs.headings = list("Age at Debut" = "age"),
-#     labs.subheadings = list("sex" = list("Female" = "2",
-#                                          "Male" = "1"),
-#                             "localisation" = list("Neck" = "0",
-#                                                   "Head" = "1",
-#                                                   "Trunk" = "2",
-#                                                   "Upper Extremity" = "3",
-#                                                   "Lower Extremity" = "4",
-#                                                   "Unspecified" = "5")),
-#     reference = list("sex" = c("Female")),
-#     levels = list("localisation" = c("Trunk", "Head")),
-#     numeric = c("mean", "sd"))
+
 
 
 
@@ -94,6 +75,8 @@ tablR <- function(data,
 
    vars_c <- data %>% select({{vars}}) %>% names()
 
+   #Group formatting
+
    if(!missing(group)) {
 
     group_c <- data %>% select({{group}}) %>% names()
@@ -102,7 +85,6 @@ tablR <- function(data,
       cat("Error: Group is not a factor or character")
     }
 
-    #Autoformat groups
     if(length(labs.groups) == 0) {
       if(is.factor(data[[group_c]])) {
 
@@ -132,9 +114,12 @@ tablR <- function(data,
 
    for(v in vars_c[vars_c %nin% names(labs.subheadings)]) {
 
-     levels <- unique(dat[[v]])
+     if(any(class(data[[v]]) %in% c("factor", "character"))) {
 
-     r_list[[v]] <- as.list(levels) %>% set_names(str_to_title(str_replace_all(levels, "_", " ")))
+     labs.levels <- unique(data[[v]])
+
+     r_list[[v]] <- as.list(labs.levels) %>% set_names(str_to_title(str_replace_all(labs.levels, "_", " ")))
+     }
 
 
    }
@@ -142,14 +127,18 @@ tablR <- function(data,
    data <- recodR(data,
                   append(r_list, labs.subheadings))
 
-   if(all(length(reference) > 0 | length(levels) > 0)) {
+   append(r_list, labs.subheadings)
 
-     data <- data %>%
-       factR(c(names(reference), names(levels)),
-             reference = reference,
-             levels = levels)
+if(all(length(reference) > 0 | length(levels) > 0)) {
 
-   }
+  data <- data %>%
+    factR(c(names(reference), names(levels)),
+          reference = reference,
+          levels = levels)
+
+
+
+}
 
 
 
@@ -220,3 +209,25 @@ s
 
 
 }
+
+redcap_df %>%
+  factR(c(type, sex, localisation)) %>%
+  tablR(
+    group = type,
+    vars=c(age, sex, localisation),
+    labs.groups = list("Benign" = "0",
+                       "In situ" = "1",
+                       "Malignant" = "2"),
+    labs.headings = list("Age at Debut" = "age"),
+    labs.subheadings = list("sex" = list("Female" = "2",
+                                         "Male" = "1"),
+                            "localisation" = list("Neck" = "0",
+                                                  "Head" = "1",
+                                                  "Trunk" = "2",
+                                                  "Upper Extremity" = "3",
+                                                  "Lower Extremity" = "4",
+                                                  "Unspecified" = "5")),
+    reference = list("sex" = c("Female")),
+    levels = list("localisation" = c("Trunk", "Head")),
+    numeric = c("mean", "sd"))
+
