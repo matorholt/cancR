@@ -22,20 +22,15 @@ tablR(redcap_df,
       vars = c(age, sex, type))
 ```
 
-|           | Overall (N=500) |
-|:----------|:---------------:|
-| age       |                 |
-| \- Median |      51.5       |
-| \- Q1, Q3 |   35.2, 65.7    |
-| \- Range  |   9.6 - 88.5    |
-| sex       |                 |
-| \- Median |       2.0       |
-| \- Q1, Q3 |    1.0, 2.0     |
-| \- Range  |    1.0 - 2.0    |
-| type      |                 |
-| \- Median |       1.0       |
-| \- Q1, Q3 |    0.0, 2.0     |
-| \- Range  |    0.0 - 2.0    |
+             Overall (N=500)
+
+1 age  
+2 Median 51.5  
+3 Q1, Q3 35.2, 65.7 4 Range 9.6 - 88.5 5 sex  
+6 Median 2.0  
+7 Q1, Q3 1.0, 2.0 8 Range 1.0 - 2.0 9 type  
+10 Median 1.0  
+11 Q1, Q3 0.0, 2.0 12 Range 0.0 - 2.0
 
 We instantly conclude that sex and type is incorrectly formatted, as we
 wish to see percentages and not a median as if the 0/1 structure was
@@ -52,19 +47,13 @@ redcap_df %>%
   tablR(vars = c(age, sex, type))
 ```
 
-|           | Overall (N=500) |
-|:----------|:---------------:|
-| age       |                 |
-| \- Median |      51.5       |
-| \- Q1, Q3 |   35.2, 65.7    |
-| \- Range  |   9.6 - 88.5    |
-| sex       |                 |
-| \- 2      |   269 (53.8%)   |
-| \- 1      |   231 (46.2%)   |
-| type      |                 |
-| \- 1      |   228 (45.6%)   |
-| \- 0      |   137 (27.4%)   |
-| \- 2      |   135 (27.0%)   |
+             Overall (N=500)
+
+1 age  
+2 Median 51.5  
+3 Q1, Q3 35.2, 65.7 4 Range 9.6 - 88.5 5 sex  
+6 2 269 (53.8%) 7 1 231 (46.2%) 8 type  
+9 1 228 (45.6%) 10 0 137 (27.4%) 11 2 135 (27.0%)
 
 ### Tables with multiple groups
 
@@ -78,15 +67,14 @@ redcap_df %>%
         vars = c(age, sex))
 ```
 
-|           |  2 (N=135)  | 0 (N=137)  |  1 (N=228)  |
-|:----------|:-----------:|:----------:|:-----------:|
-| age       |             |            |             |
-| \- Median |    53.5     |    50.6    |    51.0     |
-| \- Q1, Q3 | 36.8, 66.6  | 32.7, 65.5 | 35.5, 65.5  |
-| \- Range  | 11.0 - 84.2 | 9.6 - 88.5 | 11.0 - 88.0 |
-| sex       |             |            |             |
-| \- 2      | 74 (54.8%)  | 78 (56.9%) | 117 (51.3%) |
-| \- 1      | 61 (45.2%)  | 59 (43.1%) | 111 (48.7%) |
+              1 (N=228)  0 (N=137)   2 (N=135)
+
+1 age  
+2 Median 51.0 50.6 53.5  
+3 Q1, Q3 35.5, 65.5 32.7, 65.5 36.8, 66.6 4 Range 11.0 - 88.0 9.6 - 88.5
+11.0 - 84.2 5 sex  
+6 2 117 (51.3%) 78 (56.9%) 74 (54.8%) 7 1 111 (48.7%) 59 (43.1%) 61
+(45.2%)
 
 We can also add a `total`column and also test the differences in
 distributions
@@ -101,15 +89,13 @@ redcap_df %>%
         total = TRUE)
 ```
 
-|           |  2 (N=135)  |  1 (N=228)  | 0 (N=137)  | Total (N=500) | p value |
-|:----------|:-----------:|:-----------:|:----------:|:-------------:|--------:|
-| age       |             |             |            |               |   0.883 |
-| \- Median |    53.5     |    51.0     |    50.6    |     51.5      |         |
-| \- Q1, Q3 | 36.8, 66.6  | 35.5, 65.5  | 32.7, 65.5 |  35.2, 65.7   |         |
-| \- Range  | 11.0 - 84.2 | 11.0 - 88.0 | 9.6 - 88.5 |  9.6 - 88.5   |         |
-| sex       |             |             |            |               |   0.559 |
-| \- 2      | 74 (54.8%)  | 117 (51.3%) | 78 (56.9%) |  269 (53.8%)  |         |
-| \- 1      | 61 (45.2%)  | 111 (48.7%) | 59 (43.1%) |  231 (46.2%)  |         |
+              1 (N=228)  0 (N=137)   2 (N=135) Total (N=500)  p-value
+
+1 age p = 0.88 2 Median 51.0 50.6 53.5 51.5  
+3 Q1, Q3 35.5, 65.5 32.7, 65.5 36.8, 66.6 35.2, 65.7  
+4 Range 11.0 - 88.0 9.6 - 88.5 11.0 - 84.2 9.6 - 88.5  
+5 sex p = 0.56 6 2 117 (51.3%) 78 (56.9%) 74 (54.8%) 269 (53.8%)  
+7 1 111 (48.7%) 59 (43.1%) 61 (45.2%) 231 (46.2%)
 
 ### Customizing tables
 
@@ -128,23 +114,20 @@ redcap_df %>%
   tablR(
     group = type,
     vars=c(age, sex),
-    labs.groups = list("type" = list("benign" = "0",
+    labs.groups = list("benign" = "0",
                                      "in situ" = "1",
-                                     "malignant" = "2")),
+                                     "malignant" = "2"),
     labs.headings = list("Age at Debut" = "age"),
     labs.subheadings = list("sex" = list("Female" = "2",
                                          "Male" = "1")))
-#> 
-#> 
-#> |             | malignant (N=135) | benign (N=137) | in situ (N=228) |
-#> |:------------|:-----------------:|:--------------:|:---------------:|
-#> |Age at Debut |                   |                |                 |
-#> |-  Median    |       53.5        |      50.6      |      51.0       |
-#> |-  Q1, Q3    |    36.8, 66.6     |   32.7, 65.5   |   35.5, 65.5    |
-#> |-  Range     |    11.0 - 84.2    |   9.6 - 88.5   |   11.0 - 88.0   |
-#> |Sex          |                   |                |                 |
-#> |-  Female    |    74 (54.8%)     |   78 (56.9%)   |   117 (51.3%)   |
-#> |-  Male      |    61 (45.2%)     |   59 (43.1%)   |   111 (48.7%)   |
+#>                benign (N=137) in situ (N=228) malignant (N=135)
+#> 1 Age at Debut                                                 
+#> 2    Median           50.6           51.0              53.5    
+#> 3    Q1, Q3        32.7, 65.5     35.5, 65.5        36.8, 66.6 
+#> 4    Range         9.6 - 88.5     11.0 - 88.0       11.0 - 84.2
+#> 5 Sex                                                          
+#> 6    Female        78 (56.9%)     117 (51.3%)       74 (54.8%) 
+#> 7    Male          59 (43.1%)     111 (48.7%)       61 (45.2%)
 ```
 
 #### Changing orders
@@ -159,9 +142,9 @@ redcap_df %>%
   tablR(
     group = type,
     vars=c(age, sex, localisation),
-    labs.groups = list("type" = list("benign" = "0",
+    labs.groups = list("benign" = "0",
                                      "in situ" = "1",
-                                     "malignant" = "2")),
+                                     "malignant" = "2"),
     labs.headings = list("Age at Debut" = "age"),
     labs.subheadings = list("sex" = list("Female" = "2",
                                          "Male" = "1"),
@@ -171,26 +154,22 @@ redcap_df %>%
                                                   "Upper Extremity" = "3",
                                                   "Lower Extremity" = "4",
                                                   "Unspecified" = "5")),
-    reference = list("sex" = c("Female")),
-    levels = list("localisation" = c("Trunk", "Head")))
-#> 
-#> 
-#> |                   | malignant (N=135) | benign (N=137) | in situ (N=228) |
-#> |:------------------|:-----------------:|:--------------:|:---------------:|
-#> |Age at Debut       |                   |                |                 |
-#> |-  Median          |       53.5        |      50.6      |      51.0       |
-#> |-  Q1, Q3          |    36.8, 66.6     |   32.7, 65.5   |   35.5, 65.5    |
-#> |-  Range           |    11.0 - 84.2    |   9.6 - 88.5   |   11.0 - 88.0   |
-#> |Sex                |                   |                |                 |
-#> |-  Female          |    74 (54.8%)     |   78 (56.9%)   |   117 (51.3%)   |
-#> |-  Male            |    61 (45.2%)     |   59 (43.1%)   |   111 (48.7%)   |
-#> |Localisation       |                   |                |                 |
-#> |-  Trunk           |    37 (27.4%)     |   45 (32.8%)   |   75 (32.9%)    |
-#> |-  Head            |    26 (19.3%)     |   24 (17.5%)   |   30 (13.2%)    |
-#> |-  Upper Extremity |    48 (35.6%)     |   45 (32.8%)   |   73 (32.0%)    |
-#> |-  Lower Extremity |    14 (10.4%)     |   17 (12.4%)   |   33 (14.5%)    |
-#> |-  Unspecified     |     4 (3.0%)      |    4 (2.9%)    |    11 (4.8%)    |
-#> |-  Neck            |     6 (4.4%)      |    2 (1.5%)    |    6 (2.6%)     |
+    reference = list("sex" = c("Female")))
+#>                       benign (N=137) in situ (N=228) malignant (N=135)
+#> 1  Age at Debut                                                       
+#> 2     Median                 50.6           51.0              53.5    
+#> 3     Q1, Q3              32.7, 65.5     35.5, 65.5        36.8, 66.6 
+#> 4     Range               9.6 - 88.5     11.0 - 88.0       11.0 - 84.2
+#> 5  Sex                                                                
+#> 6     Female              78 (56.9%)     117 (51.3%)       74 (54.8%) 
+#> 7     Male                59 (43.1%)     111 (48.7%)       61 (45.2%) 
+#> 8  Localisation                                                       
+#> 9     Neck                 2 (1.5%)       6 (2.6%)          6 (4.4%)  
+#> 10    Head                24 (17.5%)     30 (13.2%)        26 (19.3%) 
+#> 11    Trunk               45 (32.8%)     75 (32.9%)        37 (27.4%) 
+#> 12    Upper Extremity     45 (32.8%)     73 (32.0%)        48 (35.6%) 
+#> 13    Lower Extremity     17 (12.4%)     33 (14.5%)        14 (10.4%) 
+#> 14    Unspecified          4 (2.9%)       11 (4.8%)         4 (3.0%)
 ```
 
 #### Changing summary measures
@@ -205,9 +184,9 @@ redcap_df %>%
   tablR(
     group = type,
     vars=c(age, sex, localisation),
-    labs.groups = list("type" = list("Benign" = "0",
-                                     "In situ" = "1",
-                                     "Malignant" = "2")),
+    labs.groups = list("benign" = "0",
+                                     "in situ" = "1",
+                                     "malignant" = "2"),
     labs.headings = list("Age at Debut" = "age"),
     labs.subheadings = list("sex" = list("Female" = "2",
                                          "Male" = "1"),
@@ -218,24 +197,57 @@ redcap_df %>%
                                                   "Lower Extremity" = "4",
                                                   "Unspecified" = "5")),
     reference = list("sex" = c("Female")),
-    levels = list("localisation" = c("Trunk", "Head"),
-                  "type" = c("Benign", "In situ", "Malignant")),
     numeric = c("mean", "sd"))
-#> 
-#> 
-#> |                   | Benign (N=137) | In situ (N=228) | Malignant (N=135) |
-#> |:------------------|:--------------:|:---------------:|:-----------------:|
-#> |Age at Debut       |                |                 |                   |
-#> |-  Mean            |      50.2      |      50.4       |       51.2        |
-#> |-  SD              |      18.7      |      18.4       |       18.0        |
-#> |Sex                |                |                 |                   |
-#> |-  Female          |   78 (56.9%)   |   117 (51.3%)   |    74 (54.8%)     |
-#> |-  Male            |   59 (43.1%)   |   111 (48.7%)   |    61 (45.2%)     |
-#> |Localisation       |                |                 |                   |
-#> |-  Trunk           |   45 (32.8%)   |   75 (32.9%)    |    37 (27.4%)     |
-#> |-  Head            |   24 (17.5%)   |   30 (13.2%)    |    26 (19.3%)     |
-#> |-  Upper Extremity |   45 (32.8%)   |   73 (32.0%)    |    48 (35.6%)     |
-#> |-  Lower Extremity |   17 (12.4%)   |   33 (14.5%)    |    14 (10.4%)     |
-#> |-  Unspecified     |    4 (2.9%)    |    11 (4.8%)    |     4 (3.0%)      |
-#> |-  Neck            |    2 (1.5%)    |    6 (2.6%)     |     6 (4.4%)      |
+#>                       benign (N=137) in situ (N=228) malignant (N=135)
+#> 1  Age at Debut                                                       
+#> 2     Mean                   50.2           50.4               51.2   
+#> 3     SD                     18.7           18.4               18.0   
+#> 4  Sex                                                                
+#> 5     Female              78 (56.9%)     117 (51.3%)        74 (54.8%)
+#> 6     Male                59 (43.1%)     111 (48.7%)        61 (45.2%)
+#> 7  Localisation                                                       
+#> 8     Neck                 2 (1.5%)       6 (2.6%)           6 (4.4%) 
+#> 9     Head                24 (17.5%)     30 (13.2%)         26 (19.3%)
+#> 10    Trunk               45 (32.8%)     75 (32.9%)         37 (27.4%)
+#> 11    Upper Extremity     45 (32.8%)     73 (32.0%)         48 (35.6%)
+#> 12    Lower Extremity     17 (12.4%)     33 (14.5%)         14 (10.4%)
+#> 13    Unspecified          4 (2.9%)       11 (4.8%)          4 (3.0%)
+```
+
+\### Customizing tables
+
+All levels and labels can be set manually. Furthermore, the table can be
+exported as a flextable object for nicer layout. For this example we
+also collapse variables of similar kind for simplicity with the
+`simplify` argument. This is preferred in a lot of variables with
+yes/no, 1/0, positive/negative syntax.
+
+``` r
+# redcap_df %>%
+#   mutate(margins = sample(c("0","1"), nrow(redcap_df), replace=TRUE)) %>%
+#   factR(c(type, sex, localisation, cd10, sox10, ck, margins, necrosis)) %>%
+#   tablR(group=type,
+#          vars = c(age, sex, localisation, cd10, sox10, ck, necrosis, margins),
+#     labs.groups = list("benign" = "0",
+#                                      "in situ" = "1",
+#                                      "malignant" = "2"),
+#          reverse = T,
+#          labs.headings = list("Age at Debut" = "age",
+#                               "Gender" = "sex",
+#                               "CD10" = "cd10"),
+#          labs.subheadings = list("sex" = list("Female" = "2",
+#                                               "Male" = "1"),
+#                                  "localisation" = list("Neck" = "0",
+#                                                        "Head" = "1",
+#                                                        "Trunk" = "2",
+#                                                        "Upper Extremity" = "3",
+#                                                        "Lower Extremity" = "4",
+#                                                        "Unspecified" = "5")),
+#          reference = list("sex" = c("Male")),
+#          simplify=list("Immunohistochemistry" = c("cd10", "sox10", "ck"),
+#                        "Tumor" = c("necrosis", "margins")),
+#          censur=T,
+#          numeric = c("mean", "sd", "q1q3", "iqr"),
+#          test=T,
+#          total=T)
 ```

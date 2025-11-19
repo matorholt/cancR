@@ -94,189 +94,50 @@ and tumor type</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/tablR.html">tablR</a></span><span class="op">(</span><span class="va">redcap_df</span>,</span>
 <span>      vars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">age</span>, <span class="va">sex</span>, <span class="va">type</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<table class="table">
-<thead><tr class="header">
-<th align="left"></th>
-<th align="center">Overall (N=500)</th>
-</tr></thead>
-<tbody>
-<tr class="odd">
-<td align="left">age</td>
-<td align="center"></td>
-</tr>
-<tr class="even">
-<td align="left">- Median</td>
-<td align="center">51.5</td>
-</tr>
-<tr class="odd">
-<td align="left">- Q1, Q3</td>
-<td align="center">35.2, 65.7</td>
-</tr>
-<tr class="even">
-<td align="left">- Range</td>
-<td align="center">9.6 - 88.5</td>
-</tr>
-<tr class="odd">
-<td align="left">sex</td>
-<td align="center"></td>
-</tr>
-<tr class="even">
-<td align="left">- Median</td>
-<td align="center">2.0</td>
-</tr>
-<tr class="odd">
-<td align="left">- Q1, Q3</td>
-<td align="center">1.0, 2.0</td>
-</tr>
-<tr class="even">
-<td align="left">- Range</td>
-<td align="center">1.0 - 2.0</td>
-</tr>
-<tr class="odd">
-<td align="left">type</td>
-<td align="center"></td>
-</tr>
-<tr class="even">
-<td align="left">- Median</td>
-<td align="center">1.0</td>
-</tr>
-<tr class="odd">
-<td align="left">- Q1, Q3</td>
-<td align="center">0.0, 2.0</td>
-</tr>
-<tr class="even">
-<td align="left">- Range</td>
-<td align="center">0.0 - 2.0</td>
-</tr>
-</tbody>
-</table>
+<pre><code><span>         <span class="fu">Overall</span> <span class="op">(</span>N<span class="op">=</span><span class="fl">500</span><span class="op">)</span></span></code></pre>
+<p>1 age<br>
+2 Median 51.5<br>
+3 Q1, Q3 35.2, 65.7 4 Range 9.6 - 88.5 5 sex<br>
+6 Median 2.0<br>
+7 Q1, Q3 1.0, 2.0 8 Range 1.0 - 2.0 9 type<br>
+10 Median 1.0<br>
+11 Q1, Q3 0.0, 2.0 12 Range 0.0 - 2.0</p>
 <p>We instantly conclude that sex and type is incorrectly formatted, as
 we wish to see percentages and not a median as if the 0/1 structure was
 numeric. We convert the variables using <code><a href="../reference/factR.html">factR()</a></code> and pipe
 into the <code><a href="../reference/tablR.html">tablR()</a></code>. Notice that when we pipe we do not need
 to specify the data frame in <code><a href="../reference/tablR.html">tablR()</a></code></p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">redcap_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="../reference/factR.html">factR</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">sex</span>, <span class="va">type</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="../reference/tablR.html">tablR</a></span><span class="op">(</span>vars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">age</span>, <span class="va">sex</span>, <span class="va">type</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<table class="table">
-<thead><tr class="header">
-<th align="left"></th>
-<th align="center">Overall (N=500)</th>
-</tr></thead>
-<tbody>
-<tr class="odd">
-<td align="left">age</td>
-<td align="center"></td>
-</tr>
-<tr class="even">
-<td align="left">- Median</td>
-<td align="center">51.5</td>
-</tr>
-<tr class="odd">
-<td align="left">- Q1, Q3</td>
-<td align="center">35.2, 65.7</td>
-</tr>
-<tr class="even">
-<td align="left">- Range</td>
-<td align="center">9.6 - 88.5</td>
-</tr>
-<tr class="odd">
-<td align="left">sex</td>
-<td align="center"></td>
-</tr>
-<tr class="even">
-<td align="left">- 2</td>
-<td align="center">269 (53.8%)</td>
-</tr>
-<tr class="odd">
-<td align="left">- 1</td>
-<td align="center">231 (46.2%)</td>
-</tr>
-<tr class="even">
-<td align="left">type</td>
-<td align="center"></td>
-</tr>
-<tr class="odd">
-<td align="left">- 1</td>
-<td align="center">228 (45.6%)</td>
-</tr>
-<tr class="even">
-<td align="left">- 0</td>
-<td align="center">137 (27.4%)</td>
-</tr>
-<tr class="odd">
-<td align="left">- 2</td>
-<td align="center">135 (27.0%)</td>
-</tr>
-</tbody>
-</table>
+<pre><code><span>         <span class="fu">Overall</span> <span class="op">(</span>N<span class="op">=</span><span class="fl">500</span><span class="op">)</span></span></code></pre>
+<p>1 age<br>
+2 Median 51.5<br>
+3 Q1, Q3 35.2, 65.7 4 Range 9.6 - 88.5 5 sex<br>
+6 2 269 (53.8%) 7 1 231 (46.2%) 8 type<br>
+9 1 228 (45.6%) 10 0 137 (27.4%) 11 2 135 (27.0%)</p>
 </div>
 <div class="section level3">
 <h3 id="tables-with-multiple-groups">Tables with multiple groups<a class="anchor" aria-label="anchor" href="#tables-with-multiple-groups"></a>
 </h3>
 <p>If we want to compare multiple groups, we use the <code>group</code>
 argument. Let us compare tumor types</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">redcap_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="../reference/factR.html">factR</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">sex</span>, <span class="va">type</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="../reference/tablR.html">tablR</a></span><span class="op">(</span>group <span class="op">=</span> <span class="va">type</span>,</span>
 <span>        vars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">age</span>, <span class="va">sex</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<table class="table">
-<thead><tr class="header">
-<th align="left"></th>
-<th align="center">2 (N=135)</th>
-<th align="center">0 (N=137)</th>
-<th align="center">1 (N=228)</th>
-</tr></thead>
-<tbody>
-<tr class="odd">
-<td align="left">age</td>
-<td align="center"></td>
-<td align="center"></td>
-<td align="center"></td>
-</tr>
-<tr class="even">
-<td align="left">- Median</td>
-<td align="center">53.5</td>
-<td align="center">50.6</td>
-<td align="center">51.0</td>
-</tr>
-<tr class="odd">
-<td align="left">- Q1, Q3</td>
-<td align="center">36.8, 66.6</td>
-<td align="center">32.7, 65.5</td>
-<td align="center">35.5, 65.5</td>
-</tr>
-<tr class="even">
-<td align="left">- Range</td>
-<td align="center">11.0 - 84.2</td>
-<td align="center">9.6 - 88.5</td>
-<td align="center">11.0 - 88.0</td>
-</tr>
-<tr class="odd">
-<td align="left">sex</td>
-<td align="center"></td>
-<td align="center"></td>
-<td align="center"></td>
-</tr>
-<tr class="even">
-<td align="left">- 2</td>
-<td align="center">74 (54.8%)</td>
-<td align="center">78 (56.9%)</td>
-<td align="center">117 (51.3%)</td>
-</tr>
-<tr class="odd">
-<td align="left">- 1</td>
-<td align="center">61 (45.2%)</td>
-<td align="center">59 (43.1%)</td>
-<td align="center">111 (48.7%)</td>
-</tr>
-</tbody>
-</table>
+<pre><code>          1 (N=228)  0 (N=137)   2 (N=135)</code></pre>
+<p>1 age<br>
+2 Median 51.0 50.6 53.5<br>
+3 Q1, Q3 35.5, 65.5 32.7, 65.5 36.8, 66.6 4 Range 11.0 - 88.0 9.6 - 88.5
+11.0 - 84.2 5 sex<br>
+6 2 117 (51.3%) 78 (56.9%) 74 (54.8%) 7 1 111 (48.7%) 59 (43.1%) 61
+(45.2%)</p>
 <p>We can also add a <code>total</code>column and also test the
 differences in distributions</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">redcap_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="../reference/factR.html">factR</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">sex</span>, <span class="va">type</span><span class="op">)</span>,</span>
 <span>        levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"type"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"0"</span>, <span class="st">"1"</span>, <span class="st">"2"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
@@ -284,82 +145,12 @@ differences in distributions</p>
 <span>        vars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">age</span>, <span class="va">sex</span><span class="op">)</span>,</span>
 <span>        test <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>        total <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<table style="width:100%;" class="table">
-<colgroup>
-<col width="14%">
-<col width="18%">
-<col width="18%">
-<col width="16%">
-<col width="21%">
-<col width="11%">
-</colgroup>
-<thead><tr class="header">
-<th align="left"></th>
-<th align="center">2 (N=135)</th>
-<th align="center">1 (N=228)</th>
-<th align="center">0 (N=137)</th>
-<th align="center">Total (N=500)</th>
-<th align="right">p value</th>
-</tr></thead>
-<tbody>
-<tr class="odd">
-<td align="left">age</td>
-<td align="center"></td>
-<td align="center"></td>
-<td align="center"></td>
-<td align="center"></td>
-<td align="right">0.883</td>
-</tr>
-<tr class="even">
-<td align="left">- Median</td>
-<td align="center">53.5</td>
-<td align="center">51.0</td>
-<td align="center">50.6</td>
-<td align="center">51.5</td>
-<td align="right"></td>
-</tr>
-<tr class="odd">
-<td align="left">- Q1, Q3</td>
-<td align="center">36.8, 66.6</td>
-<td align="center">35.5, 65.5</td>
-<td align="center">32.7, 65.5</td>
-<td align="center">35.2, 65.7</td>
-<td align="right"></td>
-</tr>
-<tr class="even">
-<td align="left">- Range</td>
-<td align="center">11.0 - 84.2</td>
-<td align="center">11.0 - 88.0</td>
-<td align="center">9.6 - 88.5</td>
-<td align="center">9.6 - 88.5</td>
-<td align="right"></td>
-</tr>
-<tr class="odd">
-<td align="left">sex</td>
-<td align="center"></td>
-<td align="center"></td>
-<td align="center"></td>
-<td align="center"></td>
-<td align="right">0.559</td>
-</tr>
-<tr class="even">
-<td align="left">- 2</td>
-<td align="center">74 (54.8%)</td>
-<td align="center">117 (51.3%)</td>
-<td align="center">78 (56.9%)</td>
-<td align="center">269 (53.8%)</td>
-<td align="right"></td>
-</tr>
-<tr class="odd">
-<td align="left">- 1</td>
-<td align="center">61 (45.2%)</td>
-<td align="center">111 (48.7%)</td>
-<td align="center">59 (43.1%)</td>
-<td align="center">231 (46.2%)</td>
-<td align="right"></td>
-</tr>
-</tbody>
-</table>
+<pre><code>          1 (N=228)  0 (N=137)   2 (N=135) Total (N=500)  p-value</code></pre>
+<p>1 age p = 0.88 2 Median 51.0 50.6 53.5 51.5<br>
+3 Q1, Q3 35.5, 65.5 32.7, 65.5 36.8, 66.6 35.2, 65.7<br>
+4 Range 11.0 - 88.0 9.6 - 88.5 11.0 - 84.2 9.6 - 88.5<br>
+5 sex p = 0.56 6 2 117 (51.3%) 78 (56.9%) 74 (54.8%) 269 (53.8%)<br>
+7 1 111 (48.7%) 59 (43.1%) 61 (45.2%) 231 (46.2%)</p>
 </div>
 <div class="section level3">
 <h3 id="customizing-tables">Customizing tables<a class="anchor" aria-label="anchor" href="#customizing-tables"></a>
@@ -373,44 +164,41 @@ differences in distributions</p>
 - Group names: <code>labs.groups</code> - Variable names:
 <code>labs.headings</code> - Variable labels/levels:
 <code>labs.subheadings</code></p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">redcap_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/factR.html">factR</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">type</span>, <span class="va">sex</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/tablR.html">tablR</a></span><span class="op">(</span></span>
 <span>    group <span class="op">=</span> <span class="va">type</span>,</span>
 <span>    vars<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">age</span>, <span class="va">sex</span><span class="op">)</span>,</span>
-<span>    labs.groups <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"type"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"benign"</span> <span class="op">=</span> <span class="st">"0"</span>,</span>
+<span>    labs.groups <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"benign"</span> <span class="op">=</span> <span class="st">"0"</span>,</span>
 <span>                                     <span class="st">"in situ"</span> <span class="op">=</span> <span class="st">"1"</span>,</span>
-<span>                                     <span class="st">"malignant"</span> <span class="op">=</span> <span class="st">"2"</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>                                     <span class="st">"malignant"</span> <span class="op">=</span> <span class="st">"2"</span><span class="op">)</span>,</span>
 <span>    labs.headings <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"Age at Debut"</span> <span class="op">=</span> <span class="st">"age"</span><span class="op">)</span>,</span>
 <span>    labs.subheadings <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"sex"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"Female"</span> <span class="op">=</span> <span class="st">"2"</span>,</span>
 <span>                                         <span class="st">"Male"</span> <span class="op">=</span> <span class="st">"1"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; |             | malignant (N=135) | benign (N=137) | in situ (N=228) |</span></span>
-<span><span class="co">#&gt; |:------------|:-----------------:|:--------------:|:---------------:|</span></span>
-<span><span class="co">#&gt; |Age at Debut |                   |                |                 |</span></span>
-<span><span class="co">#&gt; |-  Median    |       53.5        |      50.6      |      51.0       |</span></span>
-<span><span class="co">#&gt; |-  Q1, Q3    |    36.8, 66.6     |   32.7, 65.5   |   35.5, 65.5    |</span></span>
-<span><span class="co">#&gt; |-  Range     |    11.0 - 84.2    |   9.6 - 88.5   |   11.0 - 88.0   |</span></span>
-<span><span class="co">#&gt; |Sex          |                   |                |                 |</span></span>
-<span><span class="co">#&gt; |-  Female    |    74 (54.8%)     |   78 (56.9%)   |   117 (51.3%)   |</span></span>
-<span><span class="co">#&gt; |-  Male      |    61 (45.2%)     |   59 (43.1%)   |   111 (48.7%)   |</span></span></code></pre></div>
+<span><span class="co">#&gt;                benign (N=137) in situ (N=228) malignant (N=135)</span></span>
+<span><span class="co">#&gt; 1 Age at Debut                                                 </span></span>
+<span><span class="co">#&gt; 2    Median           50.6           51.0              53.5    </span></span>
+<span><span class="co">#&gt; 3    Q1, Q3        32.7, 65.5     35.5, 65.5        36.8, 66.6 </span></span>
+<span><span class="co">#&gt; 4    Range         9.6 - 88.5     11.0 - 88.0       11.0 - 84.2</span></span>
+<span><span class="co">#&gt; 5 Sex                                                          </span></span>
+<span><span class="co">#&gt; 6    Female        78 (56.9%)     117 (51.3%)       74 (54.8%) </span></span>
+<span><span class="co">#&gt; 7    Male          59 (43.1%)     111 (48.7%)       61 (45.2%)</span></span></code></pre></div>
 </div>
 <div class="section level4">
 <h4 id="changing-orders">Changing orders<a class="anchor" aria-label="anchor" href="#changing-orders"></a>
 </h4>
 <p>The order of the groups and variable levels can be specified with the
 <code>reference()</code> and <code><a href="https://rdrr.io/r/base/levels.html" class="external-link">levels()</a></code> arguments</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">redcap_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/factR.html">factR</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">type</span>, <span class="va">sex</span>, <span class="va">localisation</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/tablR.html">tablR</a></span><span class="op">(</span></span>
 <span>    group <span class="op">=</span> <span class="va">type</span>,</span>
 <span>    vars<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">age</span>, <span class="va">sex</span>, <span class="va">localisation</span><span class="op">)</span>,</span>
-<span>    labs.groups <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"type"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"benign"</span> <span class="op">=</span> <span class="st">"0"</span>,</span>
+<span>    labs.groups <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"benign"</span> <span class="op">=</span> <span class="st">"0"</span>,</span>
 <span>                                     <span class="st">"in situ"</span> <span class="op">=</span> <span class="st">"1"</span>,</span>
-<span>                                     <span class="st">"malignant"</span> <span class="op">=</span> <span class="st">"2"</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>                                     <span class="st">"malignant"</span> <span class="op">=</span> <span class="st">"2"</span><span class="op">)</span>,</span>
 <span>    labs.headings <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"Age at Debut"</span> <span class="op">=</span> <span class="st">"age"</span><span class="op">)</span>,</span>
 <span>    labs.subheadings <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"sex"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"Female"</span> <span class="op">=</span> <span class="st">"2"</span>,</span>
 <span>                                         <span class="st">"Male"</span> <span class="op">=</span> <span class="st">"1"</span><span class="op">)</span>,</span>
@@ -420,26 +208,22 @@ differences in distributions</p>
 <span>                                                  <span class="st">"Upper Extremity"</span> <span class="op">=</span> <span class="st">"3"</span>,</span>
 <span>                                                  <span class="st">"Lower Extremity"</span> <span class="op">=</span> <span class="st">"4"</span>,</span>
 <span>                                                  <span class="st">"Unspecified"</span> <span class="op">=</span> <span class="st">"5"</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>    reference <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"sex"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Female"</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>    levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"localisation"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Trunk"</span>, <span class="st">"Head"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; |                   | malignant (N=135) | benign (N=137) | in situ (N=228) |</span></span>
-<span><span class="co">#&gt; |:------------------|:-----------------:|:--------------:|:---------------:|</span></span>
-<span><span class="co">#&gt; |Age at Debut       |                   |                |                 |</span></span>
-<span><span class="co">#&gt; |-  Median          |       53.5        |      50.6      |      51.0       |</span></span>
-<span><span class="co">#&gt; |-  Q1, Q3          |    36.8, 66.6     |   32.7, 65.5   |   35.5, 65.5    |</span></span>
-<span><span class="co">#&gt; |-  Range           |    11.0 - 84.2    |   9.6 - 88.5   |   11.0 - 88.0   |</span></span>
-<span><span class="co">#&gt; |Sex                |                   |                |                 |</span></span>
-<span><span class="co">#&gt; |-  Female          |    74 (54.8%)     |   78 (56.9%)   |   117 (51.3%)   |</span></span>
-<span><span class="co">#&gt; |-  Male            |    61 (45.2%)     |   59 (43.1%)   |   111 (48.7%)   |</span></span>
-<span><span class="co">#&gt; |Localisation       |                   |                |                 |</span></span>
-<span><span class="co">#&gt; |-  Trunk           |    37 (27.4%)     |   45 (32.8%)   |   75 (32.9%)    |</span></span>
-<span><span class="co">#&gt; |-  Head            |    26 (19.3%)     |   24 (17.5%)   |   30 (13.2%)    |</span></span>
-<span><span class="co">#&gt; |-  Upper Extremity |    48 (35.6%)     |   45 (32.8%)   |   73 (32.0%)    |</span></span>
-<span><span class="co">#&gt; |-  Lower Extremity |    14 (10.4%)     |   17 (12.4%)   |   33 (14.5%)    |</span></span>
-<span><span class="co">#&gt; |-  Unspecified     |     4 (3.0%)      |    4 (2.9%)    |    11 (4.8%)    |</span></span>
-<span><span class="co">#&gt; |-  Neck            |     6 (4.4%)      |    2 (1.5%)    |    6 (2.6%)     |</span></span></code></pre></div>
+<span>    reference <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"sex"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Female"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt;                       benign (N=137) in situ (N=228) malignant (N=135)</span></span>
+<span><span class="co">#&gt; 1  Age at Debut                                                       </span></span>
+<span><span class="co">#&gt; 2     Median                 50.6           51.0              53.5    </span></span>
+<span><span class="co">#&gt; 3     Q1, Q3              32.7, 65.5     35.5, 65.5        36.8, 66.6 </span></span>
+<span><span class="co">#&gt; 4     Range               9.6 - 88.5     11.0 - 88.0       11.0 - 84.2</span></span>
+<span><span class="co">#&gt; 5  Sex                                                                </span></span>
+<span><span class="co">#&gt; 6     Female              78 (56.9%)     117 (51.3%)       74 (54.8%) </span></span>
+<span><span class="co">#&gt; 7     Male                59 (43.1%)     111 (48.7%)       61 (45.2%) </span></span>
+<span><span class="co">#&gt; 8  Localisation                                                       </span></span>
+<span><span class="co">#&gt; 9     Neck                 2 (1.5%)       6 (2.6%)          6 (4.4%)  </span></span>
+<span><span class="co">#&gt; 10    Head                24 (17.5%)     30 (13.2%)        26 (19.3%) </span></span>
+<span><span class="co">#&gt; 11    Trunk               45 (32.8%)     75 (32.9%)        37 (27.4%) </span></span>
+<span><span class="co">#&gt; 12    Upper Extremity     45 (32.8%)     73 (32.0%)        48 (35.6%) </span></span>
+<span><span class="co">#&gt; 13    Lower Extremity     17 (12.4%)     33 (14.5%)        14 (10.4%) </span></span>
+<span><span class="co">#&gt; 14    Unspecified          4 (2.9%)       11 (4.8%)         4 (3.0%)</span></span></code></pre></div>
 </div>
 <div class="section level4">
 <h4 id="changing-summary-measures">Changing summary measures<a class="anchor" aria-label="anchor" href="#changing-summary-measures"></a>
@@ -447,15 +231,15 @@ differences in distributions</p>
 <p>The default summary measures for continuous variables are median,
 interquartile range and range. This can be specified in the
 <code><a href="https://rdrr.io/r/base/numeric.html" class="external-link">numeric()</a></code> argument</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">redcap_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/factR.html">factR</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">type</span>, <span class="va">sex</span>, <span class="va">localisation</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/tablR.html">tablR</a></span><span class="op">(</span></span>
 <span>    group <span class="op">=</span> <span class="va">type</span>,</span>
 <span>    vars<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">age</span>, <span class="va">sex</span>, <span class="va">localisation</span><span class="op">)</span>,</span>
-<span>    labs.groups <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"type"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"Benign"</span> <span class="op">=</span> <span class="st">"0"</span>,</span>
-<span>                                     <span class="st">"In situ"</span> <span class="op">=</span> <span class="st">"1"</span>,</span>
-<span>                                     <span class="st">"Malignant"</span> <span class="op">=</span> <span class="st">"2"</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>    labs.groups <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"benign"</span> <span class="op">=</span> <span class="st">"0"</span>,</span>
+<span>                                     <span class="st">"in situ"</span> <span class="op">=</span> <span class="st">"1"</span>,</span>
+<span>                                     <span class="st">"malignant"</span> <span class="op">=</span> <span class="st">"2"</span><span class="op">)</span>,</span>
 <span>    labs.headings <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"Age at Debut"</span> <span class="op">=</span> <span class="st">"age"</span><span class="op">)</span>,</span>
 <span>    labs.subheadings <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"sex"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"Female"</span> <span class="op">=</span> <span class="st">"2"</span>,</span>
 <span>                                         <span class="st">"Male"</span> <span class="op">=</span> <span class="st">"1"</span><span class="op">)</span>,</span>
@@ -466,26 +250,55 @@ interquartile range and range. This can be specified in the
 <span>                                                  <span class="st">"Lower Extremity"</span> <span class="op">=</span> <span class="st">"4"</span>,</span>
 <span>                                                  <span class="st">"Unspecified"</span> <span class="op">=</span> <span class="st">"5"</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>    reference <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"sex"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Female"</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>    levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"localisation"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Trunk"</span>, <span class="st">"Head"</span><span class="op">)</span>,</span>
-<span>                  <span class="st">"type"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Benign"</span>, <span class="st">"In situ"</span>, <span class="st">"Malignant"</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>    numeric <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"mean"</span>, <span class="st">"sd"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; |                   | Benign (N=137) | In situ (N=228) | Malignant (N=135) |</span></span>
-<span><span class="co">#&gt; |:------------------|:--------------:|:---------------:|:-----------------:|</span></span>
-<span><span class="co">#&gt; |Age at Debut       |                |                 |                   |</span></span>
-<span><span class="co">#&gt; |-  Mean            |      50.2      |      50.4       |       51.2        |</span></span>
-<span><span class="co">#&gt; |-  SD              |      18.7      |      18.4       |       18.0        |</span></span>
-<span><span class="co">#&gt; |Sex                |                |                 |                   |</span></span>
-<span><span class="co">#&gt; |-  Female          |   78 (56.9%)   |   117 (51.3%)   |    74 (54.8%)     |</span></span>
-<span><span class="co">#&gt; |-  Male            |   59 (43.1%)   |   111 (48.7%)   |    61 (45.2%)     |</span></span>
-<span><span class="co">#&gt; |Localisation       |                |                 |                   |</span></span>
-<span><span class="co">#&gt; |-  Trunk           |   45 (32.8%)   |   75 (32.9%)    |    37 (27.4%)     |</span></span>
-<span><span class="co">#&gt; |-  Head            |   24 (17.5%)   |   30 (13.2%)    |    26 (19.3%)     |</span></span>
-<span><span class="co">#&gt; |-  Upper Extremity |   45 (32.8%)   |   73 (32.0%)    |    48 (35.6%)     |</span></span>
-<span><span class="co">#&gt; |-  Lower Extremity |   17 (12.4%)   |   33 (14.5%)    |    14 (10.4%)     |</span></span>
-<span><span class="co">#&gt; |-  Unspecified     |    4 (2.9%)    |    11 (4.8%)    |     4 (3.0%)      |</span></span>
-<span><span class="co">#&gt; |-  Neck            |    2 (1.5%)    |    6 (2.6%)     |     6 (4.4%)      |</span></span></code></pre></div>
+<span><span class="co">#&gt;                       benign (N=137) in situ (N=228) malignant (N=135)</span></span>
+<span><span class="co">#&gt; 1  Age at Debut                                                       </span></span>
+<span><span class="co">#&gt; 2     Mean                   50.2           50.4               51.2   </span></span>
+<span><span class="co">#&gt; 3     SD                     18.7           18.4               18.0   </span></span>
+<span><span class="co">#&gt; 4  Sex                                                                </span></span>
+<span><span class="co">#&gt; 5     Female              78 (56.9%)     117 (51.3%)        74 (54.8%)</span></span>
+<span><span class="co">#&gt; 6     Male                59 (43.1%)     111 (48.7%)        61 (45.2%)</span></span>
+<span><span class="co">#&gt; 7  Localisation                                                       </span></span>
+<span><span class="co">#&gt; 8     Neck                 2 (1.5%)       6 (2.6%)           6 (4.4%) </span></span>
+<span><span class="co">#&gt; 9     Head                24 (17.5%)     30 (13.2%)         26 (19.3%)</span></span>
+<span><span class="co">#&gt; 10    Trunk               45 (32.8%)     75 (32.9%)         37 (27.4%)</span></span>
+<span><span class="co">#&gt; 11    Upper Extremity     45 (32.8%)     73 (32.0%)         48 (35.6%)</span></span>
+<span><span class="co">#&gt; 12    Lower Extremity     17 (12.4%)     33 (14.5%)         14 (10.4%)</span></span>
+<span><span class="co">#&gt; 13    Unspecified          4 (2.9%)       11 (4.8%)          4 (3.0%)</span></span></code></pre></div>
+<p>### Customizing tables</p>
+<p>All levels and labels can be set manually. Furthermore, the table can
+be exported as a flextable object for nicer layout. For this example we
+also collapse variables of similar kind for simplicity with the
+<code>simplify</code> argument. This is preferred in a lot of variables
+with yes/no, 1/0, positive/negative syntax.</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># redcap_df %&gt;%</span></span>
+<span><span class="co">#   mutate(margins = sample(c("0","1"), nrow(redcap_df), replace=TRUE)) %&gt;%</span></span>
+<span><span class="co">#   factR(c(type, sex, localisation, cd10, sox10, ck, margins, necrosis)) %&gt;%</span></span>
+<span><span class="co">#   tablR(group=type,</span></span>
+<span><span class="co">#          vars = c(age, sex, localisation, cd10, sox10, ck, necrosis, margins),</span></span>
+<span><span class="co">#     labs.groups = list("benign" = "0",</span></span>
+<span><span class="co">#                                      "in situ" = "1",</span></span>
+<span><span class="co">#                                      "malignant" = "2"),</span></span>
+<span><span class="co">#          reverse = T,</span></span>
+<span><span class="co">#          labs.headings = list("Age at Debut" = "age",</span></span>
+<span><span class="co">#                               "Gender" = "sex",</span></span>
+<span><span class="co">#                               "CD10" = "cd10"),</span></span>
+<span><span class="co">#          labs.subheadings = list("sex" = list("Female" = "2",</span></span>
+<span><span class="co">#                                               "Male" = "1"),</span></span>
+<span><span class="co">#                                  "localisation" = list("Neck" = "0",</span></span>
+<span><span class="co">#                                                        "Head" = "1",</span></span>
+<span><span class="co">#                                                        "Trunk" = "2",</span></span>
+<span><span class="co">#                                                        "Upper Extremity" = "3",</span></span>
+<span><span class="co">#                                                        "Lower Extremity" = "4",</span></span>
+<span><span class="co">#                                                        "Unspecified" = "5")),</span></span>
+<span><span class="co">#          reference = list("sex" = c("Male")),</span></span>
+<span><span class="co">#          simplify=list("Immunohistochemistry" = c("cd10", "sox10", "ck"),</span></span>
+<span><span class="co">#                        "Tumor" = c("necrosis", "margins")),</span></span>
+<span><span class="co">#          censur=T,</span></span>
+<span><span class="co">#          numeric = c("mean", "sd", "q1q3", "iqr"),</span></span>
+<span><span class="co">#          test=T,</span></span>
+<span><span class="co">#          total=T)</span></span></code></pre></div>
 </div>
 </div>
 </div>
