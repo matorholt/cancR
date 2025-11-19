@@ -27,14 +27,18 @@
 #
 # set.seed(1)
 #
-# n=20
+# n=50
 #
 # (df <-
-#     data.frame(v1 = sample(letters[1:5], size = 20, replace=TRUE),
-#                v2 = sample(letters[1:5], size = 20, replace=TRUE),
-#                v3 = sample(letters[1:5], size = 20, replace=TRUE),
-#                vnum = sample(c("<40", "50-60", "10-20", "100-110", ">110", "cci_0"), size = n, replace=TRUE)))
+#     data.frame(v1 = sample(letters[1:5], size = n, replace=TRUE),
+#                v2 = sample(letters[1:5], size = n, replace=TRUE),
+#                v3 = sample(letters[1:5], size = n, replace=TRUE),
+#                vnum = sample(c("<40", "50-60", "10-20", "100-110", ">110", "cci_0"), size = n, replace=TRUE),
+#                comorb = rbinom(n, 1, 0.5)))
 #
+# df %>%
+#   factR(comorb) %>%
+#   factR(num_vars = comorb)
 #
 #
 # # #Lazy_coding
@@ -114,59 +118,65 @@ factR <- function(data, vars, num_vars, reference = list(), levels = list(), lab
     names(reference) <- vars_c
   }
 
-   for(v in vars_c) {
+  data <- copy(data)
+  setDT(data)
+
+  for(v in vars_c) {
 
     if(lab_to_lev) {
 
       levels[[v]] <- labels[[v]]
     }
 
-      data <- data %>%
-        mutate(!!sym(v) := forcats::fct_infreq(as.character(!!sym(v))),
-               !!sym(v) := forcats::fct_relevel(!!sym(v), reference[[v]]),
-               !!sym(v) := forcats::fct_relevel(!!sym(v), levels[[v]]))
+    suppressWarnings(data[, substitute(v) := fct_infreq(as.character(get(v)))][
+      , substitute(v) := fct_relevel(get(v), reference[[v]])][
+        , substitute(v) := fct_relevel(get(v), levels[[v]])])
 
-      if(v %in% names(labels)) {
-        data <- data %>%
-          mutate(!!sym(v) := forcats::fct_recode(!!sym(v), !!!setNames(labels[[v]], as.character(names(labels[[v]])))))
+    if(v %in% names(labels)) {
 
-      }
+      data[, substitute(v) := fct_recode(get(v), !!!setNames(labels[[v]], as.character(names(labels[[v]]))))]
+
+    }
 
 
 
     if(reverse) {
-        data <- data %>% mutate(!!sym(v) := fct_rev(!!sym(v)))
+      data[, substitute(v) := fct_rev(get(v))]
+
     }
 
 
   }
 
-    for(v in num_c) {
+  for(v in num_c) {
 
-      n <- as.character(data[,v])
+    n <- as.character(data[,get(v)])
 
-      names(n) <-
-        lapply(n, function(x) {
-          x2 <- as.numeric(paste0(unlist(str_extract_all(x, "\\d")), collapse=""))
+    names(n) <-
+      lapply(n, function(x) {
+        x2 <- as.numeric(paste0(unlist(str_extract_all(x, "\\d")), collapse=""))
 
-          if(str_detect(x, "<")) {
-            x2 <- -x2
-          } else if(str_detect(x, ">|\\+")) {x2 <- x2+100000000}
-          else {x2}
+        if(str_detect(x, "<")) {
+          x2 <- -x2
+        } else if(str_detect(x, ">|\\+")) {x2 <- x2+100000000}
+        else {x2}
 
-        })
+      })
 
-      n <- unique(n[as.character(sort(as.numeric(names(n))))])
+    if(v %nin% names(levels)) {
 
-      data <- data %>%
-      mutate(!!sym(v) := forcats::fct_relevel(!!sym(v), n),
-             !!sym(v) := forcats::fct_recode(!!sym(v), !!!setNames(labels[[v]], as.character(names(labels[[v]])))))
-
+      levels[[v]] <- unique(n[as.character(sort(as.numeric(names(n))))])
 
     }
 
 
 
-data
+    data[, substitute(v) := fct_relevel(get(v), levels[[v]])][
+      , substitute(v) := fct_recode(get(v), !!!setNames(labels[[v]], as.character(names(labels[[v]]))))]
+
+
+  }
+
+  as.data.frame(data)
 
 }

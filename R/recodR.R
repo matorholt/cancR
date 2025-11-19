@@ -17,13 +17,13 @@
 #              type = sample(c("DY", "DY234", "DY123"), 20, replace=TRUE),
 #              type2 = sample(c("DC123", "DC234", "DG123"), 20, replace=TRUE),
 #              split = c("1,11", "2,10", "2,4", "2,15"))
-#
+
+
 # df %>%
 #   recodR(list("diag" = list("KOL" = "DX123",
 #                             "Astma" = c("DC123", "DC2"),
-#                             "AMI" = list("DG123", "DG234"))),
+#                             "AMI" = c("DG123", "DG234"))),
 #          match = "exact")
-#
 # df %>%
 #   factR(c(diag, type, type2)) %>%
 #   recodR(list("diag" = list("KOL" = "DX123",
@@ -111,4 +111,5 @@ recodR <- function(data, namelist, match = "exact", replace=F) {
 as.data.frame(data)
 
 }
+
 

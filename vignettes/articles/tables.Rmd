@@ -80,9 +80,9 @@ redcap_df %>%
   tablR(
     group = type,
     vars=c(age, sex),
-    labs.groups = list("type" = list("benign" = "0",
+    labs.groups = list("benign" = "0",
                                      "in situ" = "1",
-                                     "malignant" = "2")),
+                                     "malignant" = "2"),
     labs.headings = list("Age at Debut" = "age"),
     labs.subheadings = list("sex" = list("Female" = "2",
                                          "Male" = "1")))
@@ -98,9 +98,9 @@ redcap_df %>%
   tablR(
     group = type,
     vars=c(age, sex, localisation),
-    labs.groups = list("type" = list("benign" = "0",
+    labs.groups = list("benign" = "0",
                                      "in situ" = "1",
-                                     "malignant" = "2")),
+                                     "malignant" = "2"),
     labs.headings = list("Age at Debut" = "age"),
     labs.subheadings = list("sex" = list("Female" = "2",
                                          "Male" = "1"),
@@ -110,8 +110,7 @@ redcap_df %>%
                                                   "Upper Extremity" = "3",
                                                   "Lower Extremity" = "4",
                                                   "Unspecified" = "5")),
-    reference = list("sex" = c("Female")),
-    levels = list("localisation" = c("Trunk", "Head")))
+    reference = list("sex" = c("Female")))
 ```
 
 ### Changing summary measures
@@ -124,9 +123,9 @@ redcap_df %>%
   tablR(
     group = type,
     vars=c(age, sex, localisation),
-    labs.groups = list("type" = list("Benign" = "0",
-                                     "In situ" = "1",
-                                     "Malignant" = "2")),
+    labs.groups = list("benign" = "0",
+                                     "in situ" = "1",
+                                     "malignant" = "2"),
     labs.headings = list("Age at Debut" = "age"),
     labs.subheadings = list("sex" = list("Female" = "2",
                                          "Male" = "1"),
@@ -137,8 +136,40 @@ redcap_df %>%
                                                   "Lower Extremity" = "4",
                                                   "Unspecified" = "5")),
     reference = list("sex" = c("Female")),
-    levels = list("localisation" = c("Trunk", "Head"),
-                  "type" = c("Benign", "In situ", "Malignant")),
     numeric = c("mean", "sd"))
 ```
-
+ 
+ ### Customizing tables
+ 
+ All levels and labels can be set manually. Furthermore, the table can be exported as a flextable object for nicer layout. For this example we also collapse variables of similar kind for simplicity with the `simplify` argument. This is preferred in a lot of variables with yes/no, 1/0, positive/negative syntax.
+ 
+```{r}
+# redcap_df %>%
+#   mutate(margins = sample(c("0","1"), nrow(redcap_df), replace=TRUE)) %>%
+#   factR(c(type, sex, localisation, cd10, sox10, ck, margins, necrosis)) %>%
+#   tablR(group=type,
+#          vars = c(age, sex, localisation, cd10, sox10, ck, necrosis, margins),
+#     labs.groups = list("benign" = "0",
+#                                      "in situ" = "1",
+#                                      "malignant" = "2"),
+#          reverse = T,
+#          labs.headings = list("Age at Debut" = "age",
+#                               "Gender" = "sex",
+#                               "CD10" = "cd10"),
+#          labs.subheadings = list("sex" = list("Female" = "2",
+#                                               "Male" = "1"),
+#                                  "localisation" = list("Neck" = "0",
+#                                                        "Head" = "1",
+#                                                        "Trunk" = "2",
+#                                                        "Upper Extremity" = "3",
+#                                                        "Lower Extremity" = "4",
+#                                                        "Unspecified" = "5")),
+#          reference = list("sex" = c("Male")),
+#          simplify=list("Immunohistochemistry" = c("cd10", "sox10", "ck"),
+#                        "Tumor" = c("necrosis", "margins")),
+#          censur=T,
+#          numeric = c("mean", "sd", "q1q3", "iqr"),
+#          test=T,
+#          total=T)
+```
+ 
