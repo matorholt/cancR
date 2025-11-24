@@ -42,7 +42,7 @@ checkR <- function(data, treatment, outcome, vars, levels=1, quantiles=0.1) {
 
   if(missing(id)) {
 
-    id_syn <- c("id","ID","pnr","pt_id","study_id", "record_id")
+    id_syn <- paste0("\\b", c("id", "ID", "pnr", "pt_id", "study_id", "record_id"), "\\b")
 
     if(sum(id_syn %in% colnames(data)) > 1) {
       return(cat("Multiple ID columns detected - pick only one"))

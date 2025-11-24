@@ -22,7 +22,8 @@
 
 # cpr <- readR("../../Atypical fibroxanthoma/Surgical risk factors of AFX recurrence/Statistics/CPRLIST.csv") %>%
 #   select(id, cpr)
-# raw <- readR("../../Atypical fibroxanthoma/Surgical risk factors of AFX recurrence/Statistics/data/afx_data_16.09.2025.csv") %>%
+# raw <- readR("../../Atypical fibroxanthoma/Surgical risk factors of AFX recurrence/Statistics/data/afx_data_16.09.2025.csv")
+# raw <- raw %>%
 #   filter(study_id %nin% raw$study_id[raw$study_id %nin% cpr$id])
 # dict <- readR("../../Atypical fibroxanthoma/Surgical risk factors of AFX recurrence/Statistics/data/data_dict.csv")
 #
@@ -37,99 +38,64 @@
 #               cprlist = cpr,
 #               index = datesurg)
 
-redcapR <- function(data,
-                    dictionary,
-                    namelist = list(),
-                    date.vars = NULL,
-                    autoformat = T,
-                    formatlist = NULL,
-                    cprlist = NULL,
-                    index) {
-
-
-
-  dict <-
-    dictionary %>%
-    rename(var = "Variable / Field Name",
-           type = "Field Type",
-           labels = "Choices, Calculations, OR Slider Labels",
-           format = "Text Validation Type OR Show Slider Number") %>%
+redcapR <- function (data, dictionary, namelist = list(), date.vars = NULL,
+                     autoformat = T, formatlist = NULL, cprlist = NULL, index)
+{
+  dict <- dictionary %>% rename(var = "Variable / Field Name",
+                                type = "Field Type", labels = "Choices, Calculations, OR Slider Labels",
+                                format = "Text Validation Type OR Show Slider Number") %>%
     select(var, type, labels, format)
-
-  d <-
-    dict %>%
-    filter(type %in% c("radio", "checkbox"))
-
+  d <- dict %>% filter(type %in% c("radio", "checkbox"))
   varlist <- list()
-
-  for(v in seq_along(d[["var"]])) {
-
-    if(d[["var"]][v] %in% names(namelist)) {
-
+  for (v in seq_along(d[["var"]])) {
+    if (d[["var"]][v] %in% names(namelist)) {
       varlist[[d[["var"]][v]]] <- namelist[[d[["var"]][v]]]
-
-    } else {
-
+    }
+    else {
       values <- str_extract_all(d[v, "labels"], "\\d+(?=(,))")[[1]]
-      labels <- str_remove_all(str_split(d[v, "labels"], "\\s\\|\\s")[[1]], "\\d+,\\s")
-
-      if(!is.null(formatlist)) {
-
-       labels <- str_replace_all(labels,
-                                 names(formatlist) %>% set_names(formatlist))
-
+      labels <- str_remove_all(str_split(d[v, "labels"],
+                                         "\\s\\|\\s")[[1]], "\\d+,\\s")
+      if (!is.null(formatlist)) {
+        labels <- str_replace_all(labels, names(formatlist) %>%
+                                    set_names(formatlist))
       }
-
-      if(autoformat) {
-
-        labels <- str_replace_all(str_to_lower(labels), "\\s", "_")
-
+      if (autoformat) {
+        labels <- str_replace_all(str_to_lower(labels),
+                                  "\\s", "_")
       }
+      varlist[[d[["var"]][v]]] <- as.list(values) %>% set_names(labels)
+    }
+  }
+  raw <- raw %>% recodR(varlist, match = "boundary", replace = T) %>%
+    rename(id = 1) %>% mutate(across(everything(), ~if_else(. %in%
+                                                              c("", "NA", " "), NA, .)))
+  date_c <- unique(c(dict$var[which(str_detect(dict$format,
+                                               "date"))], date.vars, dict$var[which(str_detect(dict$var,
+                                                                                               "date"))]))
+  if (length(date_c) > 0) {
+    raw <- raw %>% datR(date_c)
+  }
 
-    varlist[[d[["var"]][v]]] <-
-      as.list(values) %>% set_names(labels)
+  if(any(!is.null(cprlist) | str_detect(colnames(raw), "\\bcpr\\b"))) {
+
+    if (!is.null(cprlist)) {
+      raw <- left_join(raw, cprlist, by = "id")
 
     }
 
+    raw <- raw %>% cpR(extract = T)
 
   }
 
-  raw <- raw %>%
-    recodR(varlist, match = "boundary", replace=T) %>%
-    rename("id" = 1) %>%
-    mutate(across(everything(), ~ if_else(. %in% c("", "NA", " "), NA, .)))
+  if(any(str_detect(colnames(raw), "\\bbirth\\b")) & !missing(index)) {
 
-  date_c <-
-    unique(c(dict$var[which(str_detect(dict$format, "date"))], date.vars, dict$var[which(str_detect(dict$var, "date"))]))
+    index_c <- data %>% select({{index}}) %>% names()
 
-  if(length(date_c) > 0) {
-
-    raw <- raw %>%
-      datR(date_c)
+    raw <- raw %>% mutate(age = round((as.numeric(!!sym(index_c) -
+                                                    birth))/365.25, 1))
 
   }
 
- if(!is.null(cpr)) {
-
-
-
-   raw <- left_join(raw, cprlist, by = "id") %>%
-          cpR(extract = T)
-
-   if(!missing(index)) {
-
-     index_c <- data %>% select({{index}}) %>% names()
-
-     raw <- raw %>%
-       mutate(age = round((as.numeric(!!sym(index_c) - birth)) / 365.25, 1))
-
-   }
-
-
- }
-
- return(raw)
-
-
+  return(raw)
 }
 
