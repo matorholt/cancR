@@ -4,10 +4,12 @@
 \alias{pvertR}
 \title{Format p-values to AMA manual of style}
 \usage{
-pvertR(x)
+pvertR(x, na = "NA")
 }
 \arguments{
 \item{x}{A p-value}
+
+\item{na}{the print of NA values, default = "NA.}
 }
 \value{
 Prints the raw p-value according to AMA manual of style

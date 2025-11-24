@@ -12,8 +12,8 @@
 #'
 #'
 #' @param data dataframe
-#' @param vars Vector of variables that should be factorized
-#' @param num_vars vector of variables with pseudonumeric ordering
+#' @param vars Vector of variables that should be factorized. The names from the lists "reference", "labels" and "levels" are automatically registered.
+#' @param num.vars vector of variables with pseudonumeric ordering
 #' @param reference List of variables with the reference level (e.g. list("v1" = "a"))
 #' @param levels List of variables with the corresponding levels (e.g. list("v1" = "c("a","b","c","d","e")))
 #' @param labels List of variables with the corresponding labels (e.g. list("v3" = c("e" = "epsilon", "d" = "delta")))
@@ -35,10 +35,10 @@
 #                v3 = sample(letters[1:5], size = n, replace=TRUE),
 #                vnum = sample(c("<40", "50-60", "10-20", "100-110", ">110", "cci_0"), size = n, replace=TRUE),
 #                comorb = rbinom(n, 1, 0.5)))
-#
+
 # df %>%
 #   factR(comorb) %>%
-#   factR(num_vars = comorb)
+#   factR(num.vars = comorb)
 #
 #
 # # #Lazy_coding
@@ -62,7 +62,7 @@
 #
 # #Change labels without changing levels
 # df %>%
-#   factR(c(v1, v2, v3), labels = list("v3" = c("alpha" = "a")), lab_to_lev = F) %>%
+#   factR(c(v1, v2, v3), labels = list("v3" = list("alpha" = "a")), lab_to_lev = F) %>%
 #   str
 #
 # #Changing everything
@@ -91,17 +91,19 @@
 #
 # # Sort pseudo numeric character variable
 # df %>%
-#     factR(num_vars=vnum,
-#           labels = list("vnum" = c("test" = "cci_0"))) %>%
-#   str
+#   factR(
+#     num.vars=vnum,
+#     labels = list("vnum" = c("test" = "cci_0")))
 
-factR <- function(data, vars, num_vars, reference = list(), levels = list(), labels = list(), lab_to_lev = FALSE, reverse = F) {
+factR <- function(data, vars, num.vars, reference = list(), levels = list(), labels = list(), lab_to_lev = FALSE, reverse = F) {
+
+  num_c <-
+    data %>% select({{num.vars}}) %>% names()
 
   vars_c <-
-    data %>% select({{vars}}) %>% names()
-  num_c <-
-    data %>% select({{num_vars}}) %>% names()
+    unique(c(data %>% select({{vars}}) %>% names(), names(reference), names(levels), names(labels)))
 
+    vars_c <- vars_c[vars_c %nin% num_c]
 
   if(class(levels) == "character") {
     levels <- list(levels)
@@ -121,7 +123,13 @@ factR <- function(data, vars, num_vars, reference = list(), levels = list(), lab
   data <- copy(data)
   setDT(data)
 
+
+
+  if(length(vars_c) > 0) {
+
   for(v in vars_c) {
+
+
 
     if(lab_to_lev) {
 
@@ -148,33 +156,38 @@ factR <- function(data, vars, num_vars, reference = list(), levels = list(), lab
 
   }
 
+}
+
   for(v in num_c) {
 
-    n <- as.character(data[,get(v)])
+    vals <- lapply(df[[v]], function(x) {
 
-    names(n) <-
-      lapply(n, function(x) {
-        x2 <- as.numeric(paste0(unlist(str_extract_all(x, "\\d")), collapse=""))
+      if(str_detect(x, "\\<")) y <- -1000000
+      else if(str_detect(x, "\\>")) y <- 1000000
+      else y <- 0
 
-        if(str_detect(x, "<")) {
-          x2 <- -x2
-        } else if(str_detect(x, ">|\\+")) {x2 <- x2+100000000}
-        else {x2}
+      as.numeric(paste0(unlist(str_extract_all(x, "\\d")), collapse=""))+y
 
-      })
+    })
+
+    val_list <- as.list(as.character(unique(df[[v]]))) %>% set_names(unique(vals))
+    val_list <- val_list[order(as.numeric(names(val_list)))]
 
     if(v %nin% names(levels)) {
 
-      levels[[v]] <- unique(n[as.character(sort(as.numeric(names(n))))])
+      levels[[v]] <- unlist(val_list)
 
     }
 
 
 
-    data[, substitute(v) := fct_relevel(get(v), levels[[v]])][
-      , substitute(v) := fct_recode(get(v), !!!setNames(labels[[v]], as.character(names(labels[[v]]))))]
+    data[, substitute(v) := fct_relevel(get(v), levels[[v]])]
 
+    if(v %in% names(labels)) {
 
+      data[, substitute(v) := fct_recode(get(v), !!!setNames(labels[[v]], as.character(names(labels[[v]]))))]
+
+    }
   }
 
   as.data.frame(data)

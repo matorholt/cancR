@@ -28,6 +28,7 @@ redcap_df <-
              type = rbinom(n, size = 2, prob = 0.5),
              localisation = rbinom(n, size = 5, prob = 0.5),
              necrosis = sample(c(0,1,NA), size = n, replace = TRUE),
+             margins = sample(c("0","1"), size = n, replace=TRUE),
              cd10 = sample(c(0,1,NA), size = n, replace = TRUE),
              sox10 = sample(c(0,1,NA), size = n, replace = TRUE),
              ck = sample(c(0,1,NA), size = n, replace = TRUE)) %>%

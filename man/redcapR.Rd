@@ -8,6 +8,7 @@ redcapR(
   data,
   dictionary,
   namelist = list(),
+  date.vars = NULL,
   autoformat = T,
   formatlist = NULL,
   cprlist = NULL,
@@ -20,6 +21,8 @@ redcapR(
 \item{dictionary}{data dictionary in semicolon-separated .csv format}
 
 \item{namelist}{optional list for manual labelling e.g. list("observer" = list("John" = "1", "Me" = "2"))}
+
+\item{date.vars}{vector of variable names containing date if not automatically converted}
 
 \item{autoformat}{whether all labels should be in lowercase and underscores as spaces}
 

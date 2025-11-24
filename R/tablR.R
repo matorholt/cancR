@@ -6,6 +6,7 @@
 #' @param data dataframe
 #' @param group Grouping variable. If omitted a single column tabel is provided
 #' @param vars Variables that the grouping variable should be aggregated by
+#' @param num.vars vector of variables that should be sorted based on numerical order
 #' @param test Whether statistical tests should be performed (default = FALSE)
 #' @param total Whether a total column should be included (default = FALSE)
 #' @param numeric Selection of the type of stats for numerical variables (e.g. median, q1q3, range, mean, sd)
@@ -57,6 +58,7 @@
 tablR <- function(data,
                    group,
                    vars,
+                  num.vars,
                    test=FALSE,
                    total=FALSE,
                    numeric = c("median", "q1q3", "range"),
@@ -104,6 +106,7 @@ tablR <- function(data,
   #In case you forgot
   vars_c <- unique(c(vars_c, names(labs.subheadings)))
   vars_cat <- data %>% select(where(is.factor) | where(is.character)) %>% names
+  num_c <- data %>% select({{num.vars}}) %>% names
 
   #Group formatting
   if(!missing(group)) {
@@ -115,7 +118,13 @@ tablR <- function(data,
     }
 
     #Group name inserted if omitted from argument
-    if(pluck_depth(labs.groups) == 2) labs.groups <- list(labs.groups) %>% set_names(group_c)
+    if(length(labs.groups) == 0) {
+
+       labs.groups <- as.list(unique(data[[group_c]])) %>% set_names(str_to_title(unique(data[[group_c]])))
+    }
+
+       if(pluck_depth(labs.groups) == 2) labs.groups <- list(labs.groups) %>% set_names(group_c)
+
 
     data <- data %>%
       factR(group_c,
@@ -123,11 +132,14 @@ tablR <- function(data,
             lab_to_lev = T,
             reverse = reverse)
 
+
+
   }
 
   #Format levels
   data <- data %>%
     factR(vars=c(vars_c[vars_c %in% vars_cat]),
+          num.vars = num_c,
           labels = labs.subheadings,
           reference = reference,
           lab_to_lev=T)
@@ -196,11 +208,12 @@ tablR <- function(data,
   headings <- c(vars_c[vars_c %nin% unlist(simplify)], names(simplify))
   headings_index <- which(tab[, 1] %nin% headings)
 
-  if(length(labs.headings) > 0) {
+  if(test) {
+
 
     tab <- tab %>%
-      mutate(var = str_replace_all(var, names(labs.headings) %>% set_names(labs.headings)))
-
+    rename("P-value" = `p value`) %>%
+      mutate(`P-value` = pvertR(`P-value`, na= " "))
   }
 
   #Formatting
@@ -211,7 +224,7 @@ tablR <- function(data,
            #Remove -
            var = str_remove(var, "-\\s{2}"),
            #Autoformat to upper case
-           var = ifelse(str_detect(var, paste0("\\b", names(labs.headings), "\\b", collapse="|")), var, str_to_title(var)),
+           var = ifelse(str_detect(var, paste0("\\b", c(unlist(labs.headings), "xzx"), "\\b", collapse="|")), var, str_to_title(str_replace_all(var, "_", " "))),
            var = case_when(str_detect(var, "\\bSd\\b") ~ "SD",
                            str_detect(var, "\\bIqr\\b") ~ "IQR",
                            T ~ var),
@@ -220,13 +233,6 @@ tablR <- function(data,
            var = str_remove(var, "xzx")) %>%
     rename(" " = 1)
 
-  if(test) {
-
-    tab <- tab %>%
-      rename("p-value" = `p value`) %>%
-      mutate("p-value" := ifelse(`p-value` != "     ", pvertR(as.numeric(`p-value`)), " "))
-
-  }
 
   if(print) {
     print(tab)
@@ -248,5 +254,7 @@ tablR <- function(data,
 
   }
 
+
 }
+
 

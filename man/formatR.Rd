@@ -6,8 +6,8 @@
 \usage{
 formatR(
   data,
-  cat_vars = c(case, sex, cci, region, education, income, marital),
-  num_vars = c(period, age_group),
+  cat.vars = c(case, sex, cci, region, education, income, marital),
+  num.vars = c(period, age_group),
   cut_vars = c(age, index),
   labels = list(),
   seqlist = list(),
@@ -18,9 +18,9 @@ formatR(
 \arguments{
 \item{data}{dataframe. Works with piping}
 
-\item{cat_vars}{Vector of categorical covariates which should be formatted to factors}
+\item{cat.vars}{Vector of categorical covariates which should be formatted to factors}
 
-\item{num_vars}{vector of pseudonumerical variables that should be ordered (e.g. 1990-2000, 2000-2010).}
+\item{num.vars}{vector of pseudonumerical variables that should be ordered (e.g. 1990-2000, 2000-2010).}
 
 \item{cut_vars}{vector of numerical covariates that should be cut}
 

@@ -125,7 +125,7 @@ cutR <- function(data, vars, seqlist, name.list = list(), name.pattern = NULL, d
 
     #Modify seqlist
     if(exists("seq_value")) {
-      seqlist[[v]] <- seq_value
+      seqlist[[v]] <- seq_value[[v]]
     }
 
 

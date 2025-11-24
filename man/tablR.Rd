@@ -8,6 +8,7 @@ tablR(
   data,
   group,
   vars,
+  num.vars,
   test = FALSE,
   total = FALSE,
   numeric = c("median", "q1q3", "range"),
@@ -17,12 +18,14 @@ tablR(
   labs.groups = list(),
   labs.headings = list(),
   labs.subheadings = list(),
-  reverse = T,
+  reverse = F,
   test.stats = c("kwt", "chisq"),
   show.na = FALSE,
   censur = F,
   digits = 1,
-  simplify = F
+  simplify = list(),
+  print = F,
+  flextable = F
 )
 }
 \arguments{
@@ -31,6 +34,8 @@ tablR(
 \item{group}{Grouping variable. If omitted a single column tabel is provided}
 
 \item{vars}{Variables that the grouping variable should be aggregated by}
+
+\item{num.vars}{vector of variables that should be sorted based on numerical order}
 
 \item{test}{Whether statistical tests should be performed (default = FALSE)}
 

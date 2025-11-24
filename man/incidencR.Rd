@@ -14,7 +14,10 @@ incidencR(
   breaks = 12,
   digits = 4,
   event.digits = 2,
-  quantiles = T
+  cause = 1,
+  survtime = T,
+  proportions = F,
+  conditional = F
 )
 }
 \arguments{
@@ -36,7 +39,13 @@ incidencR(
 
 \item{event.digits}{whether eventtimes should be rounded. Default is 2 to preserve exact times}
 
-\item{quantiles}{Whether median time to event should be calculated (default = TRUE)}
+\item{cause}{cause of interest, default = 1}
+
+\item{survtime}{Whether median time to event should be calculated (default = F)}
+
+\item{proportions}{Whether risk of event in different windows should be estimated (default = F)}
+
+\item{conditional}{Whether conditional risk at the time horizon should be calculated (default = F)}
 }
 \value{
 Life_table: Event table \cr

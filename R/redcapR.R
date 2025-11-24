@@ -9,6 +9,7 @@
 #' @param dictionary data dictionary in semicolon-separated .csv format
 #' @param namelist optional list for manual labelling e.g. list("observer" = list("John" = "1", "Me" = "2"))
 #' @param autoformat whether all labels should be in lowercase and underscores as spaces
+#' @param date.vars vector of variable names containing date if not automatically converted
 #' @param formatlist optional list for recoding common values such as positiv -> 1/pos/yes e.g. list("pos" = "positive", "no" = "Not Present")
 #' @param cprlist optional dataframe containing cpr numbers for extraction of birth and sex
 #' @param index optional index date for calculation of age at index
@@ -18,29 +19,33 @@
 #'
 #'
 #
-# raw <- readR("../../Atypical fibroxanthoma/Surgical risk factors of AFX recurrence/Statistics/data/afx_data_16.09.2025.csv")
+
+# cpr <- readR("../../Atypical fibroxanthoma/Surgical risk factors of AFX recurrence/Statistics/CPRLIST.csv") %>%
+#   select(id, cpr)
+# raw <- readR("../../Atypical fibroxanthoma/Surgical risk factors of AFX recurrence/Statistics/data/afx_data_16.09.2025.csv") %>%
+#   filter(study_id %nin% raw$study_id[raw$study_id %nin% cpr$id])
 # dict <- readR("../../Atypical fibroxanthoma/Surgical risk factors of AFX recurrence/Statistics/data/data_dict.csv")
-# cpr <- readR("../../Atypical fibroxanthoma/Surgical risk factors of AFX recurrence/Statistics/CPRLIST.csv") %>% select(id, cpr)
-#
 #
 # redcapR(raw,
-#         dict,
-#         namelist = list("name" = list("n1" = "1",
-#                                       "n2" = "2",
-#                                       "n3" = "3",
-#                                       "n4" = "4")),
-#         formatlist = list("pos" = "Positive",
-#                           "neg" = "Negativ"),
-#         cprlist = cpr,
-#         index = datesurg)
+#               dict,
+#               namelist = list("name" = list("n1" = "1",
+#                                             "n2" = "2",
+#                                             "n3" = "3",
+#                                             "n4" = "4")),
+#               formatlist = list("pos" = "Positive",
+#                                 "neg" = "Negativ"),
+#               cprlist = cpr,
+#               index = datesurg)
 
 redcapR <- function(data,
                     dictionary,
                     namelist = list(),
+                    date.vars = NULL,
                     autoformat = T,
                     formatlist = NULL,
                     cprlist = NULL,
                     index) {
+
 
 
   dict <-
@@ -54,7 +59,6 @@ redcapR <- function(data,
   d <-
     dict %>%
     filter(type %in% c("radio", "checkbox"))
-
 
   varlist <- list()
 
@@ -91,32 +95,41 @@ redcapR <- function(data,
   }
 
   raw <- raw %>%
-     datR(vars = dict$var[str_detect(dict$format, "date")]) %>%
-     recodR(varlist, match = "boundary", replace=T) %>%
-     rename("id" = 1) %>%
-     mutate(across(everything(), ~ if_else(. %in% c("", "NA", " "), NA, .)))
+    recodR(varlist, match = "boundary", replace=T) %>%
+    rename("id" = 1) %>%
+    mutate(across(everything(), ~ if_else(. %in% c("", "NA", " "), NA, .)))
 
-  if(!is.null(cpr)) {
+  date_c <-
+    unique(c(dict$var[which(str_detect(dict$format, "date"))], date.vars, dict$var[which(str_detect(dict$var, "date"))]))
 
-    raw <- left_join(raw, cprlist, by = "id") %>%
-       drop_na(cpr) %>%
-       cpR(extract = T)
+  if(length(date_c) > 0) {
 
-    if(!missing(index)) {
-
-      index_c <- data %>% select({{index}}) %>% names()
-
-
-
-      raw <- raw %>%
-        mutate(age = round((as.numeric(!!sym(index_c) - birth)) / 365.25, 1))
-
-    }
-
+    raw <- raw %>%
+      datR(date_c)
 
   }
 
-  return(raw)
+ if(!is.null(cpr)) {
+
+
+
+   raw <- left_join(raw, cprlist, by = "id") %>%
+          cpR(extract = T)
+
+   if(!missing(index)) {
+
+     index_c <- data %>% select({{index}}) %>% names()
+
+     raw <- raw %>%
+       mutate(age = round((as.numeric(!!sym(index_c) - birth)) / 365.25, 1))
+
+   }
+
+
+ }
+
+ return(raw)
 
 
 }
+

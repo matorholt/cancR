@@ -1,15 +1,25 @@
 #' Format p-values to AMA manual of style
 #'
 #' @param x A p-value
+#' @param na the print of NA values, default = "NA.
 #' @return Prints the raw p-value according to AMA manual of style
 #' @export
 
-pvertR <- function(x) {
+pvertR <- function(x, na = "NA") {
   sapply(x, function(x) {
-    if(is.na(x)){
-      y="NA"
+    if(is.na(x) | str_detect(x, "\\d", negate=T)){
+      return(na)
     }
-    else if(x<0.001){
+
+    if(is.character(x)) {
+      if(str_detect(x, "\\<\\s?0.001")) {
+        return("p < 0.001")
+      } else {
+       x <- as.numeric(x)
+      }
+    }
+
+    if(x<0.001){
       y = "p < 0.001"
     }
     else if(x < 0.01){
@@ -25,8 +35,10 @@ pvertR <- function(x) {
       y = paste0("p = 1.00")
     }
     else {
-      y = "NA"
+      y = na
     }
     return(y)
   })
 }
+
+pvertR(" ", "-")

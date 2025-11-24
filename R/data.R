@@ -37,6 +37,7 @@
 #'   \item{type}{type of tumor, 0 = benign, 1 = in situ, 2 = malignant}
 #'   \item{localisation}{localisation of the primary tumor}
 #'   \item{necrosis}{whether necrosis was present in the primary tumor}
+#'   \item{margins}{whether there were positive or negative margins at last surgery}
 #'   \item{cd10, sox10, ck}{presence or abscence of immunohistochemical markers}
 #'   \item{death_date}{date of death}
 #'   \item{recurrence_date}{date of first recurrence}
