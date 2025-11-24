@@ -207,13 +207,15 @@ structR <- function(data,
   check_names <- data %>% select(matches("\\bt_")) %>%
     names()
 
-  if(min(data %>% select(matches(check_names)) %>% unlist) <= 0) {
+  #If any event times are negative, zero or NA
+  if(any(min(data %>% select(matches(check_names)) %>% unlist, na.rm=T) <= 0 | sum(is.na(data %>% select(matches(check_names)) %>% unlist))>0)) {
+
 
     checklist <- list()
 
     for(i in check_names) {
 
-      checklist[[i]] <- data[which(data[[i]] <= 0), c(i, "id")]
+      checklist[[i]] <- data[which(data[[i]] <= 0 | is.na(data[[i]])), c(i, "id")]
 
     }
 
@@ -221,7 +223,7 @@ structR <- function(data,
 
     frame <- plyr::join_all(checklist, by = "id", type = "full")
 
-    cat(paste0("Error: ", nrow(frame), " ID(s) with negative or zero times to event. Dataframe with errors returned:\n\n"))
+    cat(paste0("Error: ", nrow(frame), " ID(s) with blank, negative or zero times to event. Dataframe with errors returned:\n\n"))
 
     return(frame %>% select(!!sym(id_c), everything()))
 
