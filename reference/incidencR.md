@@ -15,7 +15,10 @@ incidencR(
   breaks = 12,
   digits = 4,
   event.digits = 2,
-  quantiles = T
+  cause = 1,
+  survtime = T,
+  proportions = F,
+  conditional = F
 )
 ```
 
@@ -60,9 +63,23 @@ incidencR(
   whether eventtimes should be rounded. Default is 2 to preserve exact
   times
 
-- quantiles:
+- cause:
 
-  Whether median time to event should be calculated (default = TRUE)
+  cause of interest, default = 1
+
+- survtime:
+
+  Whether median time to event should be calculated (default = F)
+
+- proportions:
+
+  Whether risk of event in different windows should be estimated
+  (default = F)
+
+- conditional:
+
+  Whether conditional risk at the time horizon should be calculated
+  (default = F)
 
 ## Value
 

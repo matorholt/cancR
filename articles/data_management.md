@@ -59,19 +59,19 @@ shows only the first six rows in the console
 ``` r
 head(redcap_df)
 #>   id sex  age      birth   followup date_of_surgery      size type localisation
-#> 1  1   1 40.9 26-04-1958 23-04-2021      1999-03-29  3.991349    0            2
-#> 2  2   2 57.8 18-01-1941 12-08-2024      1998-10-20 48.688670    0            1
-#> 3  3   2 32.2 30-07-1963 20-02-2022      1995-10-26 11.245841    0            4
-#> 4  4   2 58.7 31-12-1936 29-06-2024      1995-09-14 11.609164    2            1
-#> 5  5   2 29.3 12-01-1961 14-05-2023      1990-04-22  6.980464    0            3
-#> 6  6   2 18.3 10-12-1975 06-04-2025      1994-03-21 49.029171    2            0
-#>   necrosis cd10 sox10 ck death_date recurrence_date metastasis_date
-#> 1        0   NA     1  0       <NA>            <NA>            <NA>
-#> 2        1    0     0  0       <NA>      2014-12-09            <NA>
-#> 3        0    0     1 NA       <NA>            <NA>            <NA>
-#> 4        1    1    NA  0 2019-07-27            <NA>      2012-04-04
-#> 5        0    0     0  0 2018-04-19            <NA>      2011-01-16
-#> 6       NA   NA    NA  0       <NA>            <NA>            <NA>
+#> 1  1   1 79.1 20-09-1929 03-04-2023      2008-11-03  7.302734    1            3
+#> 2  2   2 38.1 12-10-1953 18-12-2025      1991-11-13 20.043036    1            1
+#> 3  3   1 60.6 11-05-1948 21-09-2025      2008-12-17 42.412003    1            2
+#> 4  4   1 45.2 22-04-1949 11-02-2022      1994-07-17 27.853775    1            3
+#> 5  5   2 39.5 18-01-1966 21-04-2022      2005-07-16 25.587530    2            1
+#> 6  6   1 81.2 06-11-1925 17-07-2023      2007-02-02 49.415904    2            3
+#>   necrosis margins cd10 sox10 ck death_date recurrence_date metastasis_date
+#> 1       NA       0    1     1  1       <NA>      2015-03-22            <NA>
+#> 2       NA       0    0     0 NA       <NA>            <NA>            <NA>
+#> 3        0       1   NA    NA  0 2017-09-02            <NA>            <NA>
+#> 4        1       0    0     0  0 2018-10-04      2011-12-31            <NA>
+#> 5       NA       0    0    NA  0       <NA>            <NA>            <NA>
+#> 6        1       1    1     1  0       <NA>            <NA>            <NA>
 ```
 
 All column names can be shown with
@@ -81,8 +81,9 @@ All column names can be shown with
 names(redcap_df)
 #>  [1] "id"              "sex"             "age"             "birth"          
 #>  [5] "followup"        "date_of_surgery" "size"            "type"           
-#>  [9] "localisation"    "necrosis"        "cd10"            "sox10"          
-#> [13] "ck"              "death_date"      "recurrence_date" "metastasis_date"
+#>  [9] "localisation"    "necrosis"        "margins"         "cd10"           
+#> [13] "sox10"           "ck"              "death_date"      "recurrence_date"
+#> [17] "metastasis_date"
 ```
 
 It is also important to assess the structure of the data to check for
@@ -91,23 +92,24 @@ variables as numeric etc.
 
 ``` r
 str(redcap_df)
-#> 'data.frame':    500 obs. of  16 variables:
+#> 'data.frame':    500 obs. of  17 variables:
 #>  $ id             : int  1 2 3 4 5 6 7 8 9 10 ...
-#>  $ sex            : num  1 2 2 2 2 2 2 1 1 2 ...
-#>  $ age            : num  40.9 57.8 32.2 58.7 29.3 18.3 52.7 36.2 42.6 55.8 ...
-#>  $ birth          : chr  "26-04-1958" "18-01-1941" "30-07-1963" "31-12-1936" ...
-#>  $ followup       : chr  "23-04-2021" "12-08-2024" "20-02-2022" "29-06-2024" ...
-#>  $ date_of_surgery: chr  "1999-03-29" "1998-10-20" "1995-10-26" "1995-09-14" ...
-#>  $ size           : num  3.99 48.69 11.25 11.61 6.98 ...
-#>  $ type           : int  0 0 0 2 0 2 0 2 2 1 ...
-#>  $ localisation   : int  2 1 4 1 3 0 3 5 4 1 ...
-#>  $ necrosis       : num  0 1 0 1 0 NA 1 NA 0 0 ...
-#>  $ cd10           : num  NA 0 0 1 0 NA 1 1 1 NA ...
-#>  $ sox10          : num  1 0 1 NA 0 NA 0 0 0 1 ...
-#>  $ ck             : num  0 0 NA 0 0 0 NA 0 0 1 ...
-#>  $ death_date     : chr  NA NA NA "2019-07-27" ...
-#>  $ recurrence_date: chr  NA "2014-12-09" NA NA ...
-#>  $ metastasis_date: chr  NA NA NA "2012-04-04" ...
+#>  $ sex            : num  1 2 1 1 2 1 1 1 2 2 ...
+#>  $ age            : num  79.1 38.1 60.6 45.2 39.5 81.2 74.9 38.8 31.8 51.3 ...
+#>  $ birth          : chr  "20-09-1929" "12-10-1953" "11-05-1948" "22-04-1949" ...
+#>  $ followup       : chr  "03-04-2023" "18-12-2025" "21-09-2025" "11-02-2022" ...
+#>  $ date_of_surgery: chr  "2008-11-03" "1991-11-13" "2008-12-17" "1994-07-17" ...
+#>  $ size           : num  7.3 20 42.4 27.9 25.6 ...
+#>  $ type           : int  1 1 1 1 2 2 0 0 0 2 ...
+#>  $ localisation   : int  3 1 2 3 1 3 2 5 3 1 ...
+#>  $ necrosis       : num  NA NA 0 1 NA 1 0 1 NA NA ...
+#>  $ margins        : chr  "0" "0" "1" "0" ...
+#>  $ cd10           : num  1 0 NA 0 0 1 0 0 1 1 ...
+#>  $ sox10          : num  1 0 NA 0 NA 1 1 0 1 1 ...
+#>  $ ck             : num  1 NA 0 0 0 0 0 NA 0 1 ...
+#>  $ death_date     : chr  NA NA "2017-09-02" "2018-10-04" ...
+#>  $ recurrence_date: chr  "2015-03-22" NA NA "2011-12-31" ...
+#>  $ metastasis_date: chr  NA NA NA NA ...
 ```
 
 Here we see that all date variables are coded as characters and not
@@ -131,13 +133,13 @@ missR(redcap_df)
 #> Nas detected in the following variables:
 #> 
 #>          variable NAs
-#> 1 metastasis_date 329
-#> 2      death_date 322
-#> 3 recurrence_date 261
-#> 4              ck 174
-#> 5        necrosis 169
-#> 6            cd10 167
-#> 7           sox10 164
+#> 1 metastasis_date 339
+#> 2      death_date 314
+#> 3 recurrence_date 254
+#> 4        necrosis 172
+#> 5            cd10 162
+#> 6           sox10 162
+#> 7              ck 157
 ```
 
 We can also check if numerical variables are normally distributed with
@@ -165,12 +167,12 @@ redcap_df %>%
   select(id, sex, birth) %>% 
   head
 #>   id sex      birth
-#> 1  1   1 26-04-1958
-#> 2  2   2 18-01-1941
-#> 3  3   2 30-07-1963
-#> 4  4   2 31-12-1936
-#> 5  5   2 12-01-1961
-#> 6  6   2 10-12-1975
+#> 1  1   1 20-09-1929
+#> 2  2   2 12-10-1953
+#> 3  3   1 11-05-1948
+#> 4  4   1 22-04-1949
+#> 5  5   2 18-01-1966
+#> 6  6   1 06-11-1925
 ```
 
 Variables are removed with a minus sign.
@@ -179,20 +181,20 @@ Variables are removed with a minus sign.
 redcap_df %>% 
   select(-id, -birth) %>% 
   head
-#>   sex  age   followup date_of_surgery      size type localisation necrosis cd10
-#> 1   1 40.9 23-04-2021      1999-03-29  3.991349    0            2        0   NA
-#> 2   2 57.8 12-08-2024      1998-10-20 48.688670    0            1        1    0
-#> 3   2 32.2 20-02-2022      1995-10-26 11.245841    0            4        0    0
-#> 4   2 58.7 29-06-2024      1995-09-14 11.609164    2            1        1    1
-#> 5   2 29.3 14-05-2023      1990-04-22  6.980464    0            3        0    0
-#> 6   2 18.3 06-04-2025      1994-03-21 49.029171    2            0       NA   NA
-#>   sox10 ck death_date recurrence_date metastasis_date
-#> 1     1  0       <NA>            <NA>            <NA>
-#> 2     0  0       <NA>      2014-12-09            <NA>
-#> 3     1 NA       <NA>            <NA>            <NA>
-#> 4    NA  0 2019-07-27            <NA>      2012-04-04
-#> 5     0  0 2018-04-19            <NA>      2011-01-16
-#> 6    NA  0       <NA>            <NA>            <NA>
+#>   sex  age   followup date_of_surgery      size type localisation necrosis
+#> 1   1 79.1 03-04-2023      2008-11-03  7.302734    1            3       NA
+#> 2   2 38.1 18-12-2025      1991-11-13 20.043036    1            1       NA
+#> 3   1 60.6 21-09-2025      2008-12-17 42.412003    1            2        0
+#> 4   1 45.2 11-02-2022      1994-07-17 27.853775    1            3        1
+#> 5   2 39.5 21-04-2022      2005-07-16 25.587530    2            1       NA
+#> 6   1 81.2 17-07-2023      2007-02-02 49.415904    2            3        1
+#>   margins cd10 sox10 ck death_date recurrence_date metastasis_date
+#> 1       0    1     1  1       <NA>      2015-03-22            <NA>
+#> 2       0    0     0 NA       <NA>            <NA>            <NA>
+#> 3       1   NA    NA  0 2017-09-02            <NA>            <NA>
+#> 4       0    0     0  0 2018-10-04      2011-12-31            <NA>
+#> 5       0    0    NA  0       <NA>            <NA>            <NA>
+#> 6       1    1     1  0       <NA>            <NA>            <NA>
 ```
 
 It is also possible to choose variable based on text patterns, which is
@@ -203,11 +205,11 @@ redcap_df %>%
   select(contains("_date")) %>% 
   head
 #>   death_date recurrence_date metastasis_date
-#> 1       <NA>            <NA>            <NA>
-#> 2       <NA>      2014-12-09            <NA>
-#> 3       <NA>            <NA>            <NA>
-#> 4 2019-07-27            <NA>      2012-04-04
-#> 5 2018-04-19            <NA>      2011-01-16
+#> 1       <NA>      2015-03-22            <NA>
+#> 2       <NA>            <NA>            <NA>
+#> 3 2017-09-02            <NA>            <NA>
+#> 4 2018-10-04      2011-12-31            <NA>
+#> 5       <NA>            <NA>            <NA>
 #> 6       <NA>            <NA>            <NA>
 ```
 
@@ -222,19 +224,19 @@ redcap_df %>%
   select(sex:sox10) %>% 
   head
 #>   sex  age      birth   followup date_of_surgery      size type localisation
-#> 1   1 40.9 26-04-1958 23-04-2021      1999-03-29  3.991349    0            2
-#> 2   2 57.8 18-01-1941 12-08-2024      1998-10-20 48.688670    0            1
-#> 3   2 32.2 30-07-1963 20-02-2022      1995-10-26 11.245841    0            4
-#> 4   2 58.7 31-12-1936 29-06-2024      1995-09-14 11.609164    2            1
-#> 5   2 29.3 12-01-1961 14-05-2023      1990-04-22  6.980464    0            3
-#> 6   2 18.3 10-12-1975 06-04-2025      1994-03-21 49.029171    2            0
-#>   necrosis cd10 sox10
-#> 1        0   NA     1
-#> 2        1    0     0
-#> 3        0    0     1
-#> 4        1    1    NA
-#> 5        0    0     0
-#> 6       NA   NA    NA
+#> 1   1 79.1 20-09-1929 03-04-2023      2008-11-03  7.302734    1            3
+#> 2   2 38.1 12-10-1953 18-12-2025      1991-11-13 20.043036    1            1
+#> 3   1 60.6 11-05-1948 21-09-2025      2008-12-17 42.412003    1            2
+#> 4   1 45.2 22-04-1949 11-02-2022      1994-07-17 27.853775    1            3
+#> 5   2 39.5 18-01-1966 21-04-2022      2005-07-16 25.587530    2            1
+#> 6   1 81.2 06-11-1925 17-07-2023      2007-02-02 49.415904    2            3
+#>   necrosis margins cd10 sox10
+#> 1       NA       0    1     1
+#> 2       NA       0    0     0
+#> 3        0       1   NA    NA
+#> 4        1       0    0     0
+#> 5       NA       0    0    NA
+#> 6        1       1    1     1
 ```
 
 ### Renaming variables
@@ -248,19 +250,26 @@ redcap_df %>%
          cytokeratin = ck) %>% 
   head
 #>   id sex  age      birth   followup      index      size type localisation
-#> 1  1   1 40.9 26-04-1958 23-04-2021 1999-03-29  3.991349    0            2
-#> 2  2   2 57.8 18-01-1941 12-08-2024 1998-10-20 48.688670    0            1
-#> 3  3   2 32.2 30-07-1963 20-02-2022 1995-10-26 11.245841    0            4
-#> 4  4   2 58.7 31-12-1936 29-06-2024 1995-09-14 11.609164    2            1
-#> 5  5   2 29.3 12-01-1961 14-05-2023 1990-04-22  6.980464    0            3
-#> 6  6   2 18.3 10-12-1975 06-04-2025 1994-03-21 49.029171    2            0
-#>   necrosis cd10 sox10 cytokeratin death_date recurrence_date metastasis_date
-#> 1        0   NA     1           0       <NA>            <NA>            <NA>
-#> 2        1    0     0           0       <NA>      2014-12-09            <NA>
-#> 3        0    0     1          NA       <NA>            <NA>            <NA>
-#> 4        1    1    NA           0 2019-07-27            <NA>      2012-04-04
-#> 5        0    0     0           0 2018-04-19            <NA>      2011-01-16
-#> 6       NA   NA    NA           0       <NA>            <NA>            <NA>
+#> 1  1   1 79.1 20-09-1929 03-04-2023 2008-11-03  7.302734    1            3
+#> 2  2   2 38.1 12-10-1953 18-12-2025 1991-11-13 20.043036    1            1
+#> 3  3   1 60.6 11-05-1948 21-09-2025 2008-12-17 42.412003    1            2
+#> 4  4   1 45.2 22-04-1949 11-02-2022 1994-07-17 27.853775    1            3
+#> 5  5   2 39.5 18-01-1966 21-04-2022 2005-07-16 25.587530    2            1
+#> 6  6   1 81.2 06-11-1925 17-07-2023 2007-02-02 49.415904    2            3
+#>   necrosis margins cd10 sox10 cytokeratin death_date recurrence_date
+#> 1       NA       0    1     1           1       <NA>      2015-03-22
+#> 2       NA       0    0     0          NA       <NA>            <NA>
+#> 3        0       1   NA    NA           0 2017-09-02            <NA>
+#> 4        1       0    0     0           0 2018-10-04      2011-12-31
+#> 5       NA       0    0    NA           0       <NA>            <NA>
+#> 6        1       1    1     1           0       <NA>            <NA>
+#>   metastasis_date
+#> 1            <NA>
+#> 2            <NA>
+#> 3            <NA>
+#> 4            <NA>
+#> 5            <NA>
+#> 6            <NA>
 ```
 
 ### Create/modify variables
@@ -276,19 +285,19 @@ redcap_df %>%
   mutate(necrosis = ifelse(necrosis == 1, "yes", "no")) %>% 
   head
 #>   id sex  age      birth   followup date_of_surgery      size type localisation
-#> 1  1   1 40.9 26-04-1958 23-04-2021      1999-03-29  3.991349    0            2
-#> 2  2   2 57.8 18-01-1941 12-08-2024      1998-10-20 48.688670    0            1
-#> 3  3   2 32.2 30-07-1963 20-02-2022      1995-10-26 11.245841    0            4
-#> 4  4   2 58.7 31-12-1936 29-06-2024      1995-09-14 11.609164    2            1
-#> 5  5   2 29.3 12-01-1961 14-05-2023      1990-04-22  6.980464    0            3
-#> 6  6   2 18.3 10-12-1975 06-04-2025      1994-03-21 49.029171    2            0
-#>   necrosis cd10 sox10 ck death_date recurrence_date metastasis_date
-#> 1       no   NA     1  0       <NA>            <NA>            <NA>
-#> 2      yes    0     0  0       <NA>      2014-12-09            <NA>
-#> 3       no    0     1 NA       <NA>            <NA>            <NA>
-#> 4      yes    1    NA  0 2019-07-27            <NA>      2012-04-04
-#> 5       no    0     0  0 2018-04-19            <NA>      2011-01-16
-#> 6     <NA>   NA    NA  0       <NA>            <NA>            <NA>
+#> 1  1   1 79.1 20-09-1929 03-04-2023      2008-11-03  7.302734    1            3
+#> 2  2   2 38.1 12-10-1953 18-12-2025      1991-11-13 20.043036    1            1
+#> 3  3   1 60.6 11-05-1948 21-09-2025      2008-12-17 42.412003    1            2
+#> 4  4   1 45.2 22-04-1949 11-02-2022      1994-07-17 27.853775    1            3
+#> 5  5   2 39.5 18-01-1966 21-04-2022      2005-07-16 25.587530    2            1
+#> 6  6   1 81.2 06-11-1925 17-07-2023      2007-02-02 49.415904    2            3
+#>   necrosis margins cd10 sox10 ck death_date recurrence_date metastasis_date
+#> 1     <NA>       0    1     1  1       <NA>      2015-03-22            <NA>
+#> 2     <NA>       0    0     0 NA       <NA>            <NA>            <NA>
+#> 3       no       1   NA    NA  0 2017-09-02            <NA>            <NA>
+#> 4      yes       0    0     0  0 2018-10-04      2011-12-31            <NA>
+#> 5     <NA>       0    0    NA  0       <NA>            <NA>            <NA>
+#> 6      yes       1    1     1  0       <NA>            <NA>            <NA>
 ```
 
 Notice that missing values in necrosis remain missing. If we want to
@@ -301,19 +310,19 @@ redcap_df %>%
   mutate(necrosis = ifelse(necrosis %in% 1, "yes", "no")) %>% 
   head
 #>   id sex  age      birth   followup date_of_surgery      size type localisation
-#> 1  1   1 40.9 26-04-1958 23-04-2021      1999-03-29  3.991349    0            2
-#> 2  2   2 57.8 18-01-1941 12-08-2024      1998-10-20 48.688670    0            1
-#> 3  3   2 32.2 30-07-1963 20-02-2022      1995-10-26 11.245841    0            4
-#> 4  4   2 58.7 31-12-1936 29-06-2024      1995-09-14 11.609164    2            1
-#> 5  5   2 29.3 12-01-1961 14-05-2023      1990-04-22  6.980464    0            3
-#> 6  6   2 18.3 10-12-1975 06-04-2025      1994-03-21 49.029171    2            0
-#>   necrosis cd10 sox10 ck death_date recurrence_date metastasis_date
-#> 1       no   NA     1  0       <NA>            <NA>            <NA>
-#> 2      yes    0     0  0       <NA>      2014-12-09            <NA>
-#> 3       no    0     1 NA       <NA>            <NA>            <NA>
-#> 4      yes    1    NA  0 2019-07-27            <NA>      2012-04-04
-#> 5       no    0     0  0 2018-04-19            <NA>      2011-01-16
-#> 6       no   NA    NA  0       <NA>            <NA>            <NA>
+#> 1  1   1 79.1 20-09-1929 03-04-2023      2008-11-03  7.302734    1            3
+#> 2  2   2 38.1 12-10-1953 18-12-2025      1991-11-13 20.043036    1            1
+#> 3  3   1 60.6 11-05-1948 21-09-2025      2008-12-17 42.412003    1            2
+#> 4  4   1 45.2 22-04-1949 11-02-2022      1994-07-17 27.853775    1            3
+#> 5  5   2 39.5 18-01-1966 21-04-2022      2005-07-16 25.587530    2            1
+#> 6  6   1 81.2 06-11-1925 17-07-2023      2007-02-02 49.415904    2            3
+#>   necrosis margins cd10 sox10 ck death_date recurrence_date metastasis_date
+#> 1       no       0    1     1  1       <NA>      2015-03-22            <NA>
+#> 2       no       0    0     0 NA       <NA>            <NA>            <NA>
+#> 3       no       1   NA    NA  0 2017-09-02            <NA>            <NA>
+#> 4      yes       0    0     0  0 2018-10-04      2011-12-31            <NA>
+#> 5       no       0    0    NA  0       <NA>            <NA>            <NA>
+#> 6      yes       1    1     1  0       <NA>            <NA>            <NA>
 ```
 
 If we want more explicit control with the recoding or we have more than
@@ -325,19 +334,19 @@ redcap_df %>%
                               necrosis == 0 ~ "no")) %>% 
   head
 #>   id sex  age      birth   followup date_of_surgery      size type localisation
-#> 1  1   1 40.9 26-04-1958 23-04-2021      1999-03-29  3.991349    0            2
-#> 2  2   2 57.8 18-01-1941 12-08-2024      1998-10-20 48.688670    0            1
-#> 3  3   2 32.2 30-07-1963 20-02-2022      1995-10-26 11.245841    0            4
-#> 4  4   2 58.7 31-12-1936 29-06-2024      1995-09-14 11.609164    2            1
-#> 5  5   2 29.3 12-01-1961 14-05-2023      1990-04-22  6.980464    0            3
-#> 6  6   2 18.3 10-12-1975 06-04-2025      1994-03-21 49.029171    2            0
-#>   necrosis cd10 sox10 ck death_date recurrence_date metastasis_date
-#> 1       no   NA     1  0       <NA>            <NA>            <NA>
-#> 2      yes    0     0  0       <NA>      2014-12-09            <NA>
-#> 3       no    0     1 NA       <NA>            <NA>            <NA>
-#> 4      yes    1    NA  0 2019-07-27            <NA>      2012-04-04
-#> 5       no    0     0  0 2018-04-19            <NA>      2011-01-16
-#> 6     <NA>   NA    NA  0       <NA>            <NA>            <NA>
+#> 1  1   1 79.1 20-09-1929 03-04-2023      2008-11-03  7.302734    1            3
+#> 2  2   2 38.1 12-10-1953 18-12-2025      1991-11-13 20.043036    1            1
+#> 3  3   1 60.6 11-05-1948 21-09-2025      2008-12-17 42.412003    1            2
+#> 4  4   1 45.2 22-04-1949 11-02-2022      1994-07-17 27.853775    1            3
+#> 5  5   2 39.5 18-01-1966 21-04-2022      2005-07-16 25.587530    2            1
+#> 6  6   1 81.2 06-11-1925 17-07-2023      2007-02-02 49.415904    2            3
+#>   necrosis margins cd10 sox10 ck death_date recurrence_date metastasis_date
+#> 1     <NA>       0    1     1  1       <NA>      2015-03-22            <NA>
+#> 2     <NA>       0    0     0 NA       <NA>            <NA>            <NA>
+#> 3       no       1   NA    NA  0 2017-09-02            <NA>            <NA>
+#> 4      yes       0    0     0  0 2018-10-04      2011-12-31            <NA>
+#> 5     <NA>       0    0    NA  0       <NA>            <NA>            <NA>
+#> 6      yes       1    1     1  0       <NA>            <NA>            <NA>
 ```
 
 Now we have preserved the missing values. We can also control what to do
@@ -350,19 +359,19 @@ redcap_df %>%
                               T ~ "missing")) %>% 
   head
 #>   id sex  age      birth   followup date_of_surgery      size type localisation
-#> 1  1   1 40.9 26-04-1958 23-04-2021      1999-03-29  3.991349    0            2
-#> 2  2   2 57.8 18-01-1941 12-08-2024      1998-10-20 48.688670    0            1
-#> 3  3   2 32.2 30-07-1963 20-02-2022      1995-10-26 11.245841    0            4
-#> 4  4   2 58.7 31-12-1936 29-06-2024      1995-09-14 11.609164    2            1
-#> 5  5   2 29.3 12-01-1961 14-05-2023      1990-04-22  6.980464    0            3
-#> 6  6   2 18.3 10-12-1975 06-04-2025      1994-03-21 49.029171    2            0
-#>   necrosis cd10 sox10 ck death_date recurrence_date metastasis_date
-#> 1       no   NA     1  0       <NA>            <NA>            <NA>
-#> 2      yes    0     0  0       <NA>      2014-12-09            <NA>
-#> 3       no    0     1 NA       <NA>            <NA>            <NA>
-#> 4      yes    1    NA  0 2019-07-27            <NA>      2012-04-04
-#> 5       no    0     0  0 2018-04-19            <NA>      2011-01-16
-#> 6  missing   NA    NA  0       <NA>            <NA>            <NA>
+#> 1  1   1 79.1 20-09-1929 03-04-2023      2008-11-03  7.302734    1            3
+#> 2  2   2 38.1 12-10-1953 18-12-2025      1991-11-13 20.043036    1            1
+#> 3  3   1 60.6 11-05-1948 21-09-2025      2008-12-17 42.412003    1            2
+#> 4  4   1 45.2 22-04-1949 11-02-2022      1994-07-17 27.853775    1            3
+#> 5  5   2 39.5 18-01-1966 21-04-2022      2005-07-16 25.587530    2            1
+#> 6  6   1 81.2 06-11-1925 17-07-2023      2007-02-02 49.415904    2            3
+#>   necrosis margins cd10 sox10 ck death_date recurrence_date metastasis_date
+#> 1  missing       0    1     1  1       <NA>      2015-03-22            <NA>
+#> 2  missing       0    0     0 NA       <NA>            <NA>            <NA>
+#> 3       no       1   NA    NA  0 2017-09-02            <NA>            <NA>
+#> 4      yes       0    0     0  0 2018-10-04      2011-12-31            <NA>
+#> 5  missing       0    0    NA  0       <NA>            <NA>            <NA>
+#> 6      yes       1    1     1  0       <NA>            <NA>            <NA>
 ```
 
 #### Collecting multiple mutate functions
@@ -378,25 +387,25 @@ redcap_df %>%
                           T ~ "intermediate")) %>% 
   head
 #>   id sex  age      birth   followup date_of_surgery         size type
-#> 1  1   f 40.9 26-04-1958 23-04-2021      1999-03-29        small    0
-#> 2  2   m 57.8 18-01-1941 12-08-2024      1998-10-20        large    0
-#> 3  3   m 32.2 30-07-1963 20-02-2022      1995-10-26 intermediate    0
-#> 4  4   m 58.7 31-12-1936 29-06-2024      1995-09-14 intermediate    2
-#> 5  5   m 29.3 12-01-1961 14-05-2023      1990-04-22        small    0
-#> 6  6   m 18.3 10-12-1975 06-04-2025      1994-03-21        large    2
-#>   localisation necrosis cd10 sox10 ck death_date recurrence_date
-#> 1            2        0   NA     1  0       <NA>            <NA>
-#> 2            1        1    0     0  0       <NA>      2014-12-09
-#> 3            4        0    0     1 NA       <NA>            <NA>
-#> 4            1        1    1    NA  0 2019-07-27            <NA>
-#> 5            3        0    0     0  0 2018-04-19            <NA>
-#> 6            0       NA   NA    NA  0       <NA>            <NA>
+#> 1  1   f 79.1 20-09-1929 03-04-2023      2008-11-03        small    1
+#> 2  2   m 38.1 12-10-1953 18-12-2025      1991-11-13 intermediate    1
+#> 3  3   f 60.6 11-05-1948 21-09-2025      2008-12-17        large    1
+#> 4  4   f 45.2 22-04-1949 11-02-2022      1994-07-17 intermediate    1
+#> 5  5   m 39.5 18-01-1966 21-04-2022      2005-07-16 intermediate    2
+#> 6  6   f 81.2 06-11-1925 17-07-2023      2007-02-02        large    2
+#>   localisation necrosis margins cd10 sox10 ck death_date recurrence_date
+#> 1            3       NA       0    1     1  1       <NA>      2015-03-22
+#> 2            1       NA       0    0     0 NA       <NA>            <NA>
+#> 3            2        0       1   NA    NA  0 2017-09-02            <NA>
+#> 4            3        1       0    0     0  0 2018-10-04      2011-12-31
+#> 5            1       NA       0    0    NA  0       <NA>            <NA>
+#> 6            3        1       1    1     1  0       <NA>            <NA>
 #>   metastasis_date new_variable
 #> 1            <NA>          new
 #> 2            <NA>          new
 #> 3            <NA>          new
-#> 4      2012-04-04          new
-#> 5      2011-01-16          new
+#> 4            <NA>          new
+#> 5            <NA>          new
 #> 6            <NA>          new
 ```
 
@@ -416,12 +425,12 @@ redcap_df %>%
   mutate(across(c(cd10, sox10, ck), ~ as.character(.))) %>% 
   head
 #>   cd10 sox10   ck
-#> 1 <NA>     1    0
-#> 2    0     0    0
-#> 3    0     1 <NA>
-#> 4    1  <NA>    0
-#> 5    0     0    0
-#> 6 <NA>  <NA>    0
+#> 1    1     1    1
+#> 2    0     0 <NA>
+#> 3 <NA>  <NA>    0
+#> 4    0     0    0
+#> 5    0  <NA>    0
+#> 6    1     1    0
 ```
 
 The `.` inside the `as.character(.)` refers to all the variables inside
@@ -450,25 +459,25 @@ redcap_df %>%
                      "lower_extremity" = 5))) %>% 
   head
 #>   id    sex  age      birth   followup date_of_surgery      size      type
-#> 1  1 female 40.9 26-04-1958 23-04-2021      1999-03-29  3.991349    benign
-#> 2  2   male 57.8 18-01-1941 12-08-2024      1998-10-20 48.688670    benign
-#> 3  3   male 32.2 30-07-1963 20-02-2022      1995-10-26 11.245841    benign
-#> 4  4   male 58.7 31-12-1936 29-06-2024      1995-09-14 11.609164 malignant
-#> 5  5   male 29.3 12-01-1961 14-05-2023      1990-04-22  6.980464    benign
-#> 6  6   male 18.3 10-12-1975 06-04-2025      1994-03-21 49.029171 malignant
-#>      localisation necrosis cd10 sox10 ck death_date recurrence_date
-#> 1            neck        0   NA     1  0       <NA>            <NA>
-#> 2            head        1    0     0  0       <NA>      2014-12-09
-#> 3 upper_extremity        0    0     1 NA       <NA>            <NA>
-#> 4            head        1    1    NA  0 2019-07-27            <NA>
-#> 5           trunk        0    0     0  0 2018-04-19            <NA>
-#> 6               0       NA   NA    NA  0       <NA>            <NA>
+#> 1  1 female 79.1 20-09-1929 03-04-2023      2008-11-03  7.302734   in_situ
+#> 2  2   male 38.1 12-10-1953 18-12-2025      1991-11-13 20.043036   in_situ
+#> 3  3 female 60.6 11-05-1948 21-09-2025      2008-12-17 42.412003   in_situ
+#> 4  4 female 45.2 22-04-1949 11-02-2022      1994-07-17 27.853775   in_situ
+#> 5  5   male 39.5 18-01-1966 21-04-2022      2005-07-16 25.587530 malignant
+#> 6  6 female 81.2 06-11-1925 17-07-2023      2007-02-02 49.415904 malignant
+#>   localisation necrosis margins cd10 sox10 ck death_date recurrence_date
+#> 1        trunk       NA       0    1     1  1       <NA>      2015-03-22
+#> 2         head       NA       0    0     0 NA       <NA>            <NA>
+#> 3         neck        0       1   NA    NA  0 2017-09-02            <NA>
+#> 4        trunk        1       0    0     0  0 2018-10-04      2011-12-31
+#> 5         head       NA       0    0    NA  0       <NA>            <NA>
+#> 6        trunk        1       1    1     1  0       <NA>            <NA>
 #>   metastasis_date
 #> 1            <NA>
 #> 2            <NA>
 #> 3            <NA>
-#> 4      2012-04-04
-#> 5      2011-01-16
+#> 4            <NA>
+#> 5            <NA>
 #> 6            <NA>
 ```
 
@@ -487,19 +496,19 @@ redcap_df %>%
   datR(c(contains("date"), birth, followup)) %>% 
   head
 #>   id sex  age      birth   followup date_of_surgery      size type localisation
-#> 1  1   1 40.9 1958-04-26 2021-04-23      1999-03-29  3.991349    0            2
-#> 2  2   2 57.8 1941-01-18 2024-08-12      1998-10-20 48.688670    0            1
-#> 3  3   2 32.2 1963-07-30 2022-02-20      1995-10-26 11.245841    0            4
-#> 4  4   2 58.7 1936-12-31 2024-06-29      1995-09-14 11.609164    2            1
-#> 5  5   2 29.3 1961-01-12 2023-05-14      1990-04-22  6.980464    0            3
-#> 6  6   2 18.3 1975-12-10 2025-04-06      1994-03-21 49.029171    2            0
-#>   necrosis cd10 sox10 ck death_date recurrence_date metastasis_date
-#> 1        0   NA     1  0       <NA>            <NA>            <NA>
-#> 2        1    0     0  0       <NA>      2014-12-09            <NA>
-#> 3        0    0     1 NA       <NA>            <NA>            <NA>
-#> 4        1    1    NA  0 2019-07-27            <NA>      2012-04-04
-#> 5        0    0     0  0 2018-04-19            <NA>      2011-01-16
-#> 6       NA   NA    NA  0       <NA>            <NA>            <NA>
+#> 1  1   1 79.1 1929-09-20 2023-04-03      2008-11-03  7.302734    1            3
+#> 2  2   2 38.1 1953-10-12 2025-12-18      1991-11-13 20.043036    1            1
+#> 3  3   1 60.6 1948-05-11 2025-09-21      2008-12-17 42.412003    1            2
+#> 4  4   1 45.2 1949-04-22 2022-02-11      1994-07-17 27.853775    1            3
+#> 5  5   2 39.5 1966-01-18 2022-04-21      2005-07-16 25.587530    2            1
+#> 6  6   1 81.2 1925-11-06 2023-07-17      2007-02-02 49.415904    2            3
+#>   necrosis margins cd10 sox10 ck death_date recurrence_date metastasis_date
+#> 1       NA       0    1     1  1       <NA>      2015-03-22            <NA>
+#> 2       NA       0    0     0 NA       <NA>            <NA>            <NA>
+#> 3        0       1   NA    NA  0 2017-09-02            <NA>            <NA>
+#> 4        1       0    0     0  0 2018-10-04      2011-12-31            <NA>
+#> 5       NA       0    0    NA  0       <NA>            <NA>            <NA>
+#> 6        1       1    1     1  0       <NA>            <NA>            <NA>
 ```
 
 ### Categorization of continuous variables
@@ -515,19 +524,26 @@ redcap_df %>%
   mutate(size_bin = ifelse(size > 20, "large", "small")) %>% 
   head
 #>   id sex  age      birth   followup date_of_surgery      size type localisation
-#> 1  1   1 40.9 26-04-1958 23-04-2021      1999-03-29  3.991349    0            2
-#> 2  2   2 57.8 18-01-1941 12-08-2024      1998-10-20 48.688670    0            1
-#> 3  3   2 32.2 30-07-1963 20-02-2022      1995-10-26 11.245841    0            4
-#> 4  4   2 58.7 31-12-1936 29-06-2024      1995-09-14 11.609164    2            1
-#> 5  5   2 29.3 12-01-1961 14-05-2023      1990-04-22  6.980464    0            3
-#> 6  6   2 18.3 10-12-1975 06-04-2025      1994-03-21 49.029171    2            0
-#>   necrosis cd10 sox10 ck death_date recurrence_date metastasis_date size_bin
-#> 1        0   NA     1  0       <NA>            <NA>            <NA>    small
-#> 2        1    0     0  0       <NA>      2014-12-09            <NA>    large
-#> 3        0    0     1 NA       <NA>            <NA>            <NA>    small
-#> 4        1    1    NA  0 2019-07-27            <NA>      2012-04-04    small
-#> 5        0    0     0  0 2018-04-19            <NA>      2011-01-16    small
-#> 6       NA   NA    NA  0       <NA>            <NA>            <NA>    large
+#> 1  1   1 79.1 20-09-1929 03-04-2023      2008-11-03  7.302734    1            3
+#> 2  2   2 38.1 12-10-1953 18-12-2025      1991-11-13 20.043036    1            1
+#> 3  3   1 60.6 11-05-1948 21-09-2025      2008-12-17 42.412003    1            2
+#> 4  4   1 45.2 22-04-1949 11-02-2022      1994-07-17 27.853775    1            3
+#> 5  5   2 39.5 18-01-1966 21-04-2022      2005-07-16 25.587530    2            1
+#> 6  6   1 81.2 06-11-1925 17-07-2023      2007-02-02 49.415904    2            3
+#>   necrosis margins cd10 sox10 ck death_date recurrence_date metastasis_date
+#> 1       NA       0    1     1  1       <NA>      2015-03-22            <NA>
+#> 2       NA       0    0     0 NA       <NA>            <NA>            <NA>
+#> 3        0       1   NA    NA  0 2017-09-02            <NA>            <NA>
+#> 4        1       0    0     0  0 2018-10-04      2011-12-31            <NA>
+#> 5       NA       0    0    NA  0       <NA>            <NA>            <NA>
+#> 6        1       1    1     1  0       <NA>            <NA>            <NA>
+#>   size_bin
+#> 1    small
+#> 2    large
+#> 3    large
+#> 4    large
+#> 5    large
+#> 6    large
 ```
 
 More splits with case_when()
@@ -539,25 +555,25 @@ redcap_df %>%
                           T ~ "intermediate")) %>% 
   head
 #>   id sex  age      birth   followup date_of_surgery      size type localisation
-#> 1  1   1 40.9 26-04-1958 23-04-2021      1999-03-29  3.991349    0            2
-#> 2  2   2 57.8 18-01-1941 12-08-2024      1998-10-20 48.688670    0            1
-#> 3  3   2 32.2 30-07-1963 20-02-2022      1995-10-26 11.245841    0            4
-#> 4  4   2 58.7 31-12-1936 29-06-2024      1995-09-14 11.609164    2            1
-#> 5  5   2 29.3 12-01-1961 14-05-2023      1990-04-22  6.980464    0            3
-#> 6  6   2 18.3 10-12-1975 06-04-2025      1994-03-21 49.029171    2            0
-#>   necrosis cd10 sox10 ck death_date recurrence_date metastasis_date
-#> 1        0   NA     1  0       <NA>            <NA>            <NA>
-#> 2        1    0     0  0       <NA>      2014-12-09            <NA>
-#> 3        0    0     1 NA       <NA>            <NA>            <NA>
-#> 4        1    1    NA  0 2019-07-27            <NA>      2012-04-04
-#> 5        0    0     0  0 2018-04-19            <NA>      2011-01-16
-#> 6       NA   NA    NA  0       <NA>            <NA>            <NA>
+#> 1  1   1 79.1 20-09-1929 03-04-2023      2008-11-03  7.302734    1            3
+#> 2  2   2 38.1 12-10-1953 18-12-2025      1991-11-13 20.043036    1            1
+#> 3  3   1 60.6 11-05-1948 21-09-2025      2008-12-17 42.412003    1            2
+#> 4  4   1 45.2 22-04-1949 11-02-2022      1994-07-17 27.853775    1            3
+#> 5  5   2 39.5 18-01-1966 21-04-2022      2005-07-16 25.587530    2            1
+#> 6  6   1 81.2 06-11-1925 17-07-2023      2007-02-02 49.415904    2            3
+#>   necrosis margins cd10 sox10 ck death_date recurrence_date metastasis_date
+#> 1       NA       0    1     1  1       <NA>      2015-03-22            <NA>
+#> 2       NA       0    0     0 NA       <NA>            <NA>            <NA>
+#> 3        0       1   NA    NA  0 2017-09-02            <NA>            <NA>
+#> 4        1       0    0     0  0 2018-10-04      2011-12-31            <NA>
+#> 5       NA       0    0    NA  0       <NA>            <NA>            <NA>
+#> 6        1       1    1     1  0       <NA>            <NA>            <NA>
 #>       size_bin
 #> 1        small
-#> 2        large
-#> 3 intermediate
+#> 2 intermediate
+#> 3        large
 #> 4 intermediate
-#> 5        small
+#> 5 intermediate
 #> 6        large
 ```
 
@@ -569,19 +585,19 @@ redcap_df %>%
        seq(0,50,10)) %>% 
   head
 #>   id sex  age      birth   followup date_of_surgery  size type localisation
-#> 1  1   1 40.9 26-04-1958 23-04-2021      1999-03-29  0-10    0            2
-#> 2  2   2 57.8 18-01-1941 12-08-2024      1998-10-20 40-50    0            1
-#> 3  3   2 32.2 30-07-1963 20-02-2022      1995-10-26 10-20    0            4
-#> 4  4   2 58.7 31-12-1936 29-06-2024      1995-09-14 10-20    2            1
-#> 5  5   2 29.3 12-01-1961 14-05-2023      1990-04-22  0-10    0            3
-#> 6  6   2 18.3 10-12-1975 06-04-2025      1994-03-21 40-50    2            0
-#>   necrosis cd10 sox10 ck death_date recurrence_date metastasis_date
-#> 1        0   NA     1  0       <NA>            <NA>            <NA>
-#> 2        1    0     0  0       <NA>      2014-12-09            <NA>
-#> 3        0    0     1 NA       <NA>            <NA>            <NA>
-#> 4        1    1    NA  0 2019-07-27            <NA>      2012-04-04
-#> 5        0    0     0  0 2018-04-19            <NA>      2011-01-16
-#> 6       NA   NA    NA  0       <NA>            <NA>            <NA>
+#> 1  1   1 79.1 20-09-1929 03-04-2023      2008-11-03  0-10    1            3
+#> 2  2   2 38.1 12-10-1953 18-12-2025      1991-11-13 20-30    1            1
+#> 3  3   1 60.6 11-05-1948 21-09-2025      2008-12-17 40-50    1            2
+#> 4  4   1 45.2 22-04-1949 11-02-2022      1994-07-17 20-30    1            3
+#> 5  5   2 39.5 18-01-1966 21-04-2022      2005-07-16 20-30    2            1
+#> 6  6   1 81.2 06-11-1925 17-07-2023      2007-02-02 40-50    2            3
+#>   necrosis margins cd10 sox10 ck death_date recurrence_date metastasis_date
+#> 1       NA       0    1     1  1       <NA>      2015-03-22            <NA>
+#> 2       NA       0    0     0 NA       <NA>            <NA>            <NA>
+#> 3        0       1   NA    NA  0 2017-09-02            <NA>            <NA>
+#> 4        1       0    0     0  0 2018-10-04      2011-12-31            <NA>
+#> 5       NA       0    0    NA  0       <NA>            <NA>            <NA>
+#> 6        1       1    1     1  0       <NA>            <NA>            <NA>
 ```
 
 Multiple splits can also be performed with cutR() with name assigning
@@ -595,26 +611,26 @@ redcap_df %>%
                         "size" = "size_bin")) %>% 
   head
 #>   id sex  age      birth   followup date_of_surgery      size type localisation
-#> 1  1   1 40.9 26-04-1958 23-04-2021      1999-03-29  3.991349    0            2
-#> 2  2   2 57.8 18-01-1941 12-08-2024      1998-10-20 48.688670    0            1
-#> 3  3   2 32.2 30-07-1963 20-02-2022      1995-10-26 11.245841    0            4
-#> 4  4   2 58.7 31-12-1936 29-06-2024      1995-09-14 11.609164    2            1
-#> 5  5   2 29.3 12-01-1961 14-05-2023      1990-04-22  6.980464    0            3
-#> 6  6   2 18.3 10-12-1975 06-04-2025      1994-03-21 49.029171    2            0
-#>   necrosis cd10 sox10 ck death_date recurrence_date metastasis_date age_group
-#> 1        0   NA     1  0       <NA>            <NA>            <NA>     40-50
-#> 2        1    0     0  0       <NA>      2014-12-09            <NA>     50-60
-#> 3        0    0     1 NA       <NA>            <NA>            <NA>     30-40
-#> 4        1    1    NA  0 2019-07-27            <NA>      2012-04-04     50-60
-#> 5        0    0     0  0 2018-04-19            <NA>      2011-01-16     20-30
-#> 6       NA   NA    NA  0       <NA>            <NA>            <NA>     10-20
-#>   size_bin
-#> 1     2-14
-#> 2    39-50
-#> 3     2-14
-#> 4     2-14
-#> 5     2-14
-#> 6    39-50
+#> 1  1   1 79.1 20-09-1929 03-04-2023      2008-11-03  7.302734    1            3
+#> 2  2   2 38.1 12-10-1953 18-12-2025      1991-11-13 20.043036    1            1
+#> 3  3   1 60.6 11-05-1948 21-09-2025      2008-12-17 42.412003    1            2
+#> 4  4   1 45.2 22-04-1949 11-02-2022      1994-07-17 27.853775    1            3
+#> 5  5   2 39.5 18-01-1966 21-04-2022      2005-07-16 25.587530    2            1
+#> 6  6   1 81.2 06-11-1925 17-07-2023      2007-02-02 49.415904    2            3
+#>   necrosis margins cd10 sox10 ck death_date recurrence_date metastasis_date
+#> 1       NA       0    1     1  1       <NA>      2015-03-22            <NA>
+#> 2       NA       0    0     0 NA       <NA>            <NA>            <NA>
+#> 3        0       1   NA    NA  0 2017-09-02            <NA>            <NA>
+#> 4        1       0    0     0  0 2018-10-04      2011-12-31            <NA>
+#> 5       NA       0    0    NA  0       <NA>            <NA>            <NA>
+#> 6        1       1    1     1  0       <NA>            <NA>            <NA>
+#>   age_group size_bin
+#> 1     70-80     2-14
+#> 2     30-40    14-24
+#> 3     60-70    38-50
+#> 4     40-50    24-38
+#> 5     40-50    24-38
+#> 6     80-90    38-50
 ```
 
 The new variables can also be given the same name pattern if the input
@@ -625,1510 +641,1511 @@ redcap_df %>%
   #Conversion into date format
   datR(contains("date")) %>% 
   cutR(vars = c(recurrence_date, metastasis_date),
-       seqlist = seq(1900,2030,10),
+       seqlist = list("recurrence_date" = seq(1900,2030,10),
+                      "metastasis_date" = seq(1900,2030,10)),
        name.pattern = "_bin")
 #>      id sex  age      birth   followup date_of_surgery      size type
-#> 1     1   1 40.9 26-04-1958 23-04-2021      1999-03-29  3.991349    0
-#> 2     2   2 57.8 18-01-1941 12-08-2024      1998-10-20 48.688670    0
-#> 3     3   2 32.2 30-07-1963 20-02-2022      1995-10-26 11.245841    0
-#> 4     4   2 58.7 31-12-1936 29-06-2024      1995-09-14 11.609164    2
-#> 5     5   2 29.3 12-01-1961 14-05-2023      1990-04-22  6.980464    0
-#> 6     6   2 18.3 10-12-1975 06-04-2025      1994-03-21 49.029171    2
-#> 7     7   2 52.7 14-04-1945 19-03-2024      1997-12-19 48.978832    0
-#> 8     8   1 36.2 01-09-1969 14-10-2024      2005-10-30 43.577441    2
-#> 9     9   1 42.6 01-04-1962 25-01-2021      2004-11-09  8.699874    2
-#> 10   10   2 55.8 04-01-1954 02-04-2024      2009-10-22 35.560789    1
-#> 11   11   1 67.4 26-09-1930 21-06-2023      1998-02-24 27.234067    0
-#> 12   12   2 46.0 08-05-1962 17-02-2025      2008-04-23 11.060677    1
-#> 13   13   2 54.2 13-09-1948 01-07-2021      2002-11-15 40.521277    2
-#> 14   14   1 39.6 16-08-1950 24-10-2022      1990-03-12 32.026478    1
-#> 15   15   1 70.7 26-03-1939 05-07-2023      2009-11-18 15.910118    0
-#> 16   16   1 58.8 01-07-1945 19-06-2024      2004-04-01 26.707943    1
-#> 17   17   1 56.8 27-09-1946 05-09-2022      2003-07-16 47.472564    1
-#> 18   18   2 32.0 24-05-1972 12-08-2022      2004-05-31 15.683065    0
-#> 19   19   1 23.4 27-11-1975 17-11-2024      1999-05-08 14.008700    2
-#> 20   20   1 30.3 01-09-1978 08-03-2023      2008-12-01 25.246919    1
-#> 21   21   1 58.1 30-07-1935 20-07-2024      1993-09-17 33.808313    2
-#> 22   22   1 36.5 07-01-1959 07-09-2022      1995-07-08 40.656375    2
-#> 23   23   1 64.5 30-03-1929 21-09-2022      1993-10-10 28.811464    1
-#> 24   24   2 46.9 11-03-1956 21-07-2021      2003-02-02 43.499568    1
-#> 25   25   1 73.8 01-09-1935 31-08-2025      2009-06-16 22.116865    2
-#> 26   26   1 31.8 03-03-1974 02-02-2021      2006-01-07 23.264187    2
-#> 27   27   2 52.2 14-07-1946 05-06-2021      1998-10-07  9.470696    0
-#> 28   28   2 51.5 17-06-1940 07-02-2021      1992-01-02  2.088167    0
-#> 29   29   1 31.4 12-03-1977 28-07-2021      2008-07-28 46.733846    0
-#> 30   30   1 57.5 12-05-1940 06-12-2022      1997-11-26 10.804406    1
-#> 31   31   2 44.1 27-06-1954 11-07-2024      1998-08-04  7.348631    2
-#> 32   32   2 81.9 04-11-1927 20-02-2022      2009-10-09 45.616307    0
-#> 33   33   2 58.0 31-07-1941 29-11-2021      1999-07-22 26.452243    0
-#> 34   34   2 64.6 16-07-1927 02-07-2023      1992-02-13 44.296574    0
-#> 35   35   2 65.6 22-12-1925 26-02-2022      1991-07-15 31.041682    1
-#> 36   36   1 37.4 08-01-1972 24-05-2025      2009-06-10 15.680843    1
-#> 37   37   1 52.7 27-05-1940 07-09-2022      1993-01-29 24.687938    1
-#> 38   38   2 82.7 08-01-1926 07-01-2021      2008-09-04  4.014951    0
-#> 39   39   2 49.3 10-03-1945 18-07-2024      1994-06-25 42.780687    1
-#> 40   40   2 19.1 05-06-1979 26-08-2021      1998-07-03 23.409384    0
-#> 41   41   2 44.8 27-05-1963 10-06-2023      2008-03-07 31.865790    1
-#> 42   42   2 18.7 09-04-1972 07-01-2022      1990-12-09 24.282276    2
-#> 43   43   2 16.8 24-11-1973 27-04-2024      1990-09-16 28.743681    1
-#> 44   44   1 70.4 16-10-1936 28-08-2025      2007-03-21 35.697078    1
-#> 45   45   2 43.4 25-07-1965 20-05-2023      2008-12-23 18.212949    0
-#> 46   46   1 13.4 08-10-1979 05-01-2023      1993-03-02 43.948013    0
-#> 47   47   1 41.6 12-08-1963 22-09-2023      2005-03-18 42.103034    1
-#> 48   48   1 20.3 02-06-1977 12-10-2024      1997-09-12 24.129047    0
-#> 49   49   1 29.8 11-03-1963 20-03-2021      1993-01-12 10.193068    1
-#> 50   50   2 38.5 17-12-1959 30-05-2023      1998-07-03 31.155631    1
-#> 51   51   1 52.8 17-12-1940 28-11-2022      1993-10-07 42.959891    0
-#> 52   52   2 85.3 03-05-1921 20-07-2022      2006-08-31 30.674709    0
-#> 53   53   1 70.0 22-11-1924 17-06-2024      1994-12-05 45.147110    1
-#> 54   54   1 37.9 09-01-1964 16-11-2021      2001-12-01 42.932966    1
-#> 55   55   1 59.3 23-10-1931 02-02-2022      1991-02-15  9.169283    2
-#> 56   56   2 29.5 16-12-1973 05-10-2024      2003-06-01 39.343639    0
-#> 57   57   2 71.7 15-04-1924 13-01-2023      1995-12-14 23.241119    1
-#> 58   58   2 62.1 29-05-1946 11-11-2021      2008-06-26 19.266183    1
-#> 59   59   1 74.1 13-03-1927 27-10-2022      2001-04-08 26.571829    2
-#> 60   60   1 41.4 05-01-1949 11-02-2022      1990-06-02 48.604305    1
-#> 61   61   1 59.1 29-07-1932 23-07-2022      1991-09-02 47.616481    2
-#> 62   62   2 52.2 19-07-1939 06-05-2023      1991-09-28 41.386443    1
-#> 63   63   1 84.2 22-08-1925 05-10-2023      2009-11-11 42.151840    2
-#> 64   64   1 67.2 22-05-1942 01-12-2022      2009-08-11 28.903493    2
-#> 65   65   2 60.0 02-08-1946 02-05-2025      2006-07-16 43.379109    1
-#> 66   66   1 59.7 29-04-1944 11-06-2021      2004-01-01 42.465384    1
-#> 67   67   2 48.0 18-05-1954 21-05-2023      2002-05-11  7.521407    1
-#> 68   68   2 67.1 14-06-1938 15-03-2022      2005-07-26  4.153029    1
-#> 69   69   2 63.9 04-09-1932 04-12-2023      1996-08-15 45.754790    2
-#> 70   70   1 78.9 28-10-1920 28-10-2023      1999-10-06 29.341309    2
-#> 71   71   2 78.3 17-06-1926 25-05-2021      2004-09-18 34.479392    2
-#> 72   72   2 40.2 08-07-1967 28-03-2021      2007-10-02 46.949310    2
-#> 73   73   2 38.5 09-04-1954 28-07-2023      1992-10-10 44.303703    2
-#> 74   74   2 74.0 26-12-1925 15-10-2025      2000-01-04 29.896589    0
-#> 75   75   1 49.2 05-08-1954 05-11-2022      2003-10-11 42.710822    0
-#> 76   76   2 24.8 07-07-1971 21-04-2025      1996-04-20 12.578559    1
-#> 77   77   1 70.2 21-05-1923 13-08-2023      1993-07-21 17.336243    0
-#> 78   78   1 39.9 05-02-1950 01-09-2024      1990-01-15  8.300089    1
-#> 79   79   1 67.0 24-07-1928 27-12-2023      1995-07-10 34.802177    2
-#> 80   80   2 34.8 24-07-1972 08-01-2025      2007-04-30  4.712726    1
-#> 81   81   2 62.6 06-09-1935 01-06-2025      1998-04-05 43.920577    2
-#> 82   82   2 75.7 05-06-1921 17-03-2021      1997-02-06 29.114070    1
-#> 83   83   2 65.7 30-04-1925 26-06-2023      1991-01-26 37.619278    1
-#> 84   84   2 61.9 13-05-1933 25-05-2022      1995-04-13 40.729330    1
-#> 85   85   1 34.8 10-07-1959 07-08-2025      1994-04-12 40.275932    1
-#> 86   86   2 76.8 07-03-1930 07-08-2024      2006-12-23 13.314298    2
-#> 87   87   1 39.5 01-04-1965 08-04-2023      2004-09-15 30.560904    1
-#> 88   88   2 77.0 23-02-1921 28-08-2022      1998-02-27 29.408628    0
-#> 89   89   2 62.6 21-10-1936 05-11-2023      1999-05-19  7.309463    2
-#> 90   90   1 68.2 26-11-1924 14-06-2022      1993-02-22  6.307458    1
-#> 91   91   2 29.7 29-07-1965 11-03-2022      1995-03-30 11.280840    0
-#> 92   92   1 56.8 18-02-1937 01-08-2021      1993-12-12 47.831321    1
-#> 93   93   2 79.7 30-05-1924 03-10-2021      2004-02-09 49.889953    0
-#> 94   94   1 50.6 09-08-1945 30-07-2024      1996-03-17 16.631674    0
-#> 95   95   2 73.2 05-04-1923 26-09-2024      1996-06-07 32.821859    2
-#> 96   96   1 68.7 04-07-1930 18-09-2025      1999-03-24  5.328178    1
-#> 97   97   2 32.8 21-09-1969 24-10-2023      2002-07-26 45.153776    1
-#> 98   98   1 84.1 20-02-1922 08-01-2025      2006-04-02 44.466058    0
-#> 99   99   2 45.1 12-10-1959 17-09-2025      2004-11-10 40.796444    0
-#> 100 100   1 43.3 01-04-1959 09-05-2021      2002-08-03 12.898573    2
-#> 101 101   1 53.7 24-03-1951 30-08-2025      2004-12-01 33.574683    1
-#> 102 102   2 65.7 22-02-1942 13-05-2024      2007-11-16 41.635655    0
-#> 103 103   1 48.0 14-01-1942 01-07-2025      1990-01-31 48.686526    1
-#> 104 104   2 52.6 11-05-1949 05-03-2024      2001-12-07  8.618654    2
-#> 105 105   2 42.0 13-05-1950 12-02-2024      1992-05-20 44.745530    2
-#> 106 106   2 47.8 01-08-1948 05-06-2024      1996-05-19  6.092790    0
-#> 107 107   2 34.2 29-04-1961 07-05-2024      1995-07-24 14.355257    0
-#> 108 108   1 24.0 09-10-1972 30-10-2023      1996-10-27 32.547667    0
-#> 109 109   2 14.5 19-05-1980 07-08-2021      1994-11-19 42.002756    2
-#> 110 110   1 21.4 20-04-1971 14-12-2021      1992-09-20 49.281281    1
-#> 111 111   1 80.6 02-05-1922 28-07-2022      2002-11-23  6.213211    2
-#> 112 112   2 65.8 03-07-1931 30-05-2023      1997-04-13 32.191060    2
-#> 113 113   1 59.1 18-12-1933 05-03-2022      1993-01-10 29.012219    1
-#> 114 114   1 33.7 21-08-1968 06-12-2023      2002-05-15 48.506308    0
-#> 115 115   1 55.9 22-03-1943 29-06-2024      1999-02-18 35.669890    2
-#> 116 116   1 32.6 14-09-1966 06-10-2024      1999-04-24  3.187798    0
-#> 117 117   2 32.6 20-09-1959 09-02-2025      1992-04-13  9.081231    2
-#> 118 118   2 68.0 17-05-1936 26-06-2022      2004-05-08 43.520691    1
-#> 119 119   2 39.0 23-05-1965 13-02-2025      2004-05-20  9.715573    1
-#> 120 120   1 57.5 27-06-1943 01-05-2024      2000-12-23 27.396645    1
-#> 121 121   1 40.5 18-11-1961 24-09-2025      2002-05-18 43.743490    1
-#> 122 122   1 79.4 16-11-1928 05-11-2021      2008-04-11 29.094798    2
-#> 123 123   2 68.0 17-05-1940 05-11-2024      2008-05-11 44.419099    2
-#> 124 124   1 65.9 21-03-1929 19-12-2024      1995-02-21 32.723713    2
-#> 125 125   1 30.8 18-12-1978 29-09-2024      2009-09-19 43.238188    2
-#> 126 126   1 57.5 22-06-1948 08-07-2023      2005-12-14  5.427242    2
-#> 127 127   1 31.0 22-11-1977 27-04-2024      2008-11-26 42.627430    0
-#> 128 128   2 57.8 21-07-1942 15-07-2025      2000-05-26 22.959899    1
-#> 129 129   2 53.8 26-04-1937 19-05-2024      1991-02-17  4.917862    2
-#> 130 130   2 29.8 20-06-1978 26-09-2025      2008-04-11 47.355089    1
-#> 131 131   1 16.6 23-05-1974 24-02-2022      1991-01-13 40.415487    2
-#> 132 132   2 50.5 15-07-1953 07-02-2024      2004-01-06 41.441022    2
-#> 133 133   1 65.1 02-02-1930 01-09-2022      1995-02-23 49.310100    1
-#> 134 134   2 76.0 12-01-1927 12-07-2024      2003-01-09 41.401651    0
-#> 135 135   1 30.1 24-09-1977 14-10-2022      2007-10-13 34.251138    2
-#> 136 136   2 78.1 15-07-1924 03-07-2021      2002-08-14 13.324153    1
-#> 137 137   1 54.2 15-12-1936 16-06-2021      1991-02-13 26.115708    0
-#> 138 138   1 29.5 02-06-1961 09-06-2023      1990-12-05 32.136884    2
-#> 139 139   2 58.2 13-08-1949 22-01-2021      2007-11-05 35.219618    1
-#> 140 140   2 70.5 15-07-1930 17-02-2023      2001-01-29 14.561083    2
-#> 141 141   1 20.9 15-12-1978 13-04-2023      1999-11-22 22.712597    1
-#> 142 142   1 30.0 15-09-1970 11-08-2024      2000-09-17 13.847556    0
-#> 143 143   1 32.6 16-07-1958 06-07-2022      1991-02-09 10.485425    1
-#> 144 144   1 69.4 18-06-1934 13-12-2021      2003-11-21 15.360415    1
-#> 145 145   1 12.5 22-01-1980 04-10-2021      1992-08-08 34.985108    1
-#> 146 146   1 73.3 22-08-1934 17-11-2021      2007-12-16 34.544373    0
-#> 147 147   2 58.6 27-04-1938 16-12-2025      1996-12-19 44.455509    1
-#> 148 148   1 15.3 04-03-1977 11-02-2021      1992-06-10 27.360902    0
-#> 149 149   2 79.1 26-07-1930 23-09-2021      2009-09-12 24.971597    2
-#> 150 150   2 72.6 01-11-1923 22-09-2021      1996-06-13  8.618002    0
-#> 151 151   1 66.9 06-03-1925 05-08-2021      1992-01-14 21.105545    2
-#> 152 152   2 16.2 17-04-1976 16-10-2024      1992-07-01 43.146653    1
-#> 153 153   2 22.2 08-01-1972 15-03-2022      1994-04-05 15.697355    2
-#> 154 154   2 28.4 25-06-1964 08-04-2023      1992-11-02 41.226424    1
-#> 155 155   1 72.5 03-03-1927 07-09-2025      1999-08-30 47.242959    2
-#> 156 156   2 39.1 15-12-1954 21-09-2021      1994-01-03  9.877846    1
-#> 157 157   1 54.8 14-06-1944 20-08-2022      1999-04-12 33.360556    0
-#> 158 158   1 53.5 01-07-1950 19-04-2022      2004-01-07 28.560428    0
-#> 159 159   1 42.2 14-01-1961 09-12-2021      2003-03-31  6.273928    1
-#> 160 160   2 57.2 22-12-1932 09-11-2024      1990-02-24 22.310174    0
-#> 161 161   2 35.0 24-10-1961 19-03-2025      1996-10-08 25.743271    0
-#> 162 162   2 33.5 18-09-1973 07-06-2021      2007-03-18 43.046086    1
-#> 163 163   1 70.6 03-09-1924 13-08-2022      1995-04-10  3.174722    1
-#> 164 164   2 66.4 13-04-1932 20-09-2025      1998-09-11 31.559543    0
-#> 165 165   2 22.0 09-03-1976 30-06-2022      1998-02-26 22.461918    0
-#> 166 166   1 67.4 31-05-1927 26-06-2024      1994-10-15 24.347088    2
-#> 167 167   2 70.7 01-10-1922 12-12-2025      1993-06-03 45.515778    2
-#> 168 168   2 58.2 20-08-1946 29-09-2024      2004-10-20  8.050159    1
-#> 169 169   1 74.5 26-01-1930 22-11-2024      2004-07-20  3.908747    0
-#> 170 170   2 30.3 31-03-1979 07-10-2024      2009-07-22 15.671632    0
-#> 171 171   2 76.9 12-06-1927 23-02-2023      2004-05-01 11.627237    1
-#> 172 172   2 29.1 30-04-1971 11-03-2022      2000-05-23 24.211482    2
-#> 173 173   2 28.6 28-09-1972 16-03-2023      2001-05-11 17.245995    1
-#> 174 174   1 69.6 24-01-1928 16-07-2023      1997-09-17 27.918511    0
-#> 175 175   1 77.2 07-10-1929 11-11-2023      2006-12-30 29.003186    0
-#> 176 176   2 75.0 24-10-1934 01-05-2023      2009-10-08 47.179951    2
-#> 177 177   2 54.2 22-09-1948 14-12-2024      2002-12-21 37.214041    0
-#> 178 178   2 53.5 22-03-1940 10-06-2025      1993-10-04 40.571110    2
-#> 179 179   2 22.5 14-03-1974 21-11-2023      1996-09-04 31.650669    0
-#> 180 180   2 65.9 30-08-1940 22-07-2024      2006-08-01  4.810916    0
-#> 181 181   2 38.0 26-08-1969 06-11-2023      2007-08-31 17.779180    2
-#> 182 182   2 59.1 29-07-1935 08-06-2025      1994-09-05 19.528960    1
-#> 183 183   2 44.8 11-03-1961 14-05-2021      2005-12-16 21.004991    2
-#> 184 184   1 18.5 23-06-1980 13-03-2021      1998-12-25  6.877743    2
-#> 185 185   1 58.3 10-12-1946 25-02-2021      2005-03-23 38.049310    0
-#> 186 186   2 49.5 27-11-1949 24-08-2022      1999-05-18 46.204499    0
-#> 187 187   2 69.9 16-03-1933 10-08-2025      2003-02-03 43.847337    0
-#> 188 188   2 68.4 06-08-1940 10-08-2023      2008-12-12 48.393558    2
-#> 189 189   2 55.5 28-10-1949 08-03-2024      2005-05-15  2.507209    2
-#> 190 190   2 74.0 22-10-1928 14-03-2024      2002-11-02  9.570776    1
-#> 191 191   1 11.0 01-12-1980 23-04-2021      1991-11-18 13.595515    1
-#> 192 192   2 57.4 12-02-1933 17-12-2025      1990-07-21 31.525139    0
-#> 193 193   2 61.7 09-04-1942 24-11-2024      2003-12-12 45.725093    0
-#> 194 194   2 27.4 12-03-1979 02-11-2025      2006-08-21  2.561534    0
-#> 195 195   2 49.6 16-12-1957 19-06-2023      2007-07-27 15.497624    0
-#> 196 196   1 68.6 04-10-1936 08-09-2025      2005-05-03 44.780247    2
-#> 197 197   2 80.1 11-09-1923 18-10-2025      2003-11-01 32.678994    1
-#> 198 198   1 54.6 31-01-1954 02-08-2021      2008-09-16  4.073206    1
-#> 199 199   1 38.5 03-05-1971 29-03-2022      2009-11-09 29.516926    2
-#> 200 200   2 34.9 23-04-1973 04-08-2025      2008-04-03  6.937575    1
-#> 201 201   1 73.2 17-06-1928 05-03-2023      2001-09-12 29.328339    2
-#> 202 202   1 72.8 01-01-1920 15-01-2024      1992-11-04  6.124003    2
-#> 203 203   2 61.7 26-05-1929 07-08-2022      1991-02-18 19.575270    0
-#> 204 204   2 15.4 15-02-1976 03-05-2025      1991-07-24 37.531273    1
-#> 205 205   1 34.6 30-10-1970 18-09-2022      2005-06-10 10.494451    2
-#> 206 206   1 32.5 18-02-1976 05-02-2023      2008-08-09 18.338486    1
-#> 207 207   1 40.5 14-07-1958 08-02-2024      1999-01-19  4.633283    1
-#> 208 208   1 32.7 20-09-1960 03-12-2022      1993-06-19  5.052925    1
-#> 209 209   2 64.5 29-10-1943 10-04-2022      2008-04-11 12.732812    2
-#> 210 210   1 19.6 30-12-1974 24-06-2025      1994-08-09 41.280741    2
-#> 211 211   2 67.0 16-11-1927 08-01-2023      1994-11-27 41.567116    0
-#> 212 212   2 48.0 01-09-1955 17-01-2025      2003-09-01 38.183014    2
-#> 213 213   1 88.5 08-06-1921 22-12-2025      2009-12-02 30.757135    0
-#> 214 214   1 56.4 26-08-1947 23-02-2023      2004-01-16 27.107597    2
-#> 215 215   1 38.6 20-03-1965 22-03-2021      2003-10-11 22.630745    2
-#> 216 216   1 35.8 09-10-1960 03-02-2025      1996-08-09 30.001050    2
-#> 217 217   2 14.0 09-02-1979 23-04-2024      1993-01-22 16.934789    1
-#> 218 218   2 85.6 10-10-1921 21-11-2022      2007-05-14  7.425056    1
-#> 219 219   2 51.3 05-02-1958 16-05-2024      2009-06-05  4.688144    1
-#> 220 220   1 62.0 27-03-1943 04-06-2023      2005-04-07  4.974151    1
-#> 221 221   2 68.1 10-05-1940 04-09-2021      2008-06-01 46.761291    0
-#> 222 222   2 82.9 27-06-1920 28-02-2025      2003-06-04 13.558375    1
-#> 223 223   2 29.6 12-08-1972 03-04-2021      2002-03-15 30.416190    2
-#> 224 224   2 27.6 04-08-1973 25-10-2025      2001-03-05 13.108065    1
-#> 225 225   2 38.7 18-01-1957 22-01-2025      1995-09-21 40.134223    1
-#> 226 226   2 64.9 27-09-1935 30-04-2021      2000-09-01  8.222808    0
-#> 227 227   1 54.8 04-04-1944 16-04-2023      1999-01-06 46.080564    2
-#> 228 228   2 71.4 01-05-1936 01-11-2024      2007-09-28 15.454254    1
-#> 229 229   1 27.5 21-10-1978 21-03-2023      2006-04-11 20.015981    0
-#> 230 230   1 31.3 05-04-1961 04-05-2021      1992-08-01 49.440135    1
-#> 231 231   2 47.7 15-08-1946 30-01-2022      1994-04-24 35.423418    1
-#> 232 232   1 38.8 18-01-1964 03-02-2024      2002-11-14 19.131462    1
-#> 233 233   1 50.6 13-12-1955 21-10-2021      2006-07-30 27.928246    1
-#> 234 234   2 27.1 13-06-1980 22-05-2024      2007-08-06 47.610987    1
-#> 235 235   2 74.4 27-03-1924 26-12-2023      1998-08-24 28.112866    1
-#> 236 236   2 46.3 09-07-1957 16-10-2024      2003-11-08 18.620882    1
-#> 237 237   2 59.0 06-07-1937 14-10-2022      1996-06-28 25.378373    1
-#> 238 238   2 30.7 08-10-1977 17-08-2025      2008-06-10 24.232235    2
-#> 239 239   1 84.4 16-03-1923 14-11-2024      2007-07-25 16.418619    1
-#> 240 240   2 31.1 17-12-1969 26-08-2021      2001-01-06 34.718146    1
-#> 241 241   1 64.6 23-08-1926 18-02-2025      1991-04-06  2.572398    0
-#> 242 242   2 47.3 05-01-1944 03-07-2022      1991-04-15 33.299757    2
-#> 243 243   1 64.7 04-02-1931 21-11-2024      1995-10-07 32.477112    1
-#> 244 244   2 71.6 31-12-1924 11-09-2025      1996-07-29 22.034645    1
-#> 245 245   1 56.6 02-10-1940 20-04-2024      1997-05-03 12.257647    0
-#> 246 246   2 68.3 18-02-1936 27-04-2025      2004-06-10 38.815631    1
-#> 247 247   2 47.7 12-03-1949 28-11-2022      1996-11-18 46.674899    1
-#> 248 248   2 20.5 09-10-1975 15-12-2022      1996-04-14  3.305915    0
-#> 249 249   2 39.1 06-08-1968 18-01-2024      2007-09-17 14.181828    1
-#> 250 250   2 73.1 07-12-1933 10-02-2025      2007-01-03 32.404326    1
-#> 251 251   1 59.2 26-11-1947 01-09-2023      2007-02-25 32.090142    1
-#> 252 252   1 16.3 05-10-1973 09-09-2025      1990-01-30 39.497356    1
-#> 253 253   2 35.2 02-06-1967 18-03-2022      2002-08-01 38.097392    1
-#> 254 254   1 44.2 26-04-1952 29-12-2021      1996-07-15 23.233426    1
-#> 255 255   1 41.4 05-01-1964 15-09-2023      2005-05-24 11.370050    1
-#> 256 256   1 77.3 10-02-1925 08-04-2021      2002-05-24 20.748838    1
-#> 257 257   1 29.0 05-08-1979 24-07-2025      2008-08-08 35.822878    1
-#> 258 258   2 59.3 12-03-1933 20-10-2023      1992-06-25 24.495849    1
-#> 259 259   2 87.5 20-05-1921 01-05-2024      2008-11-10 42.190460    1
-#> 260 260   2 86.6 05-01-1922 21-12-2021      2008-08-18  8.815360    1
-#> 261 261   1 49.7 01-09-1956 11-07-2023      2006-05-16 24.196169    0
-#> 262 262   2 65.4 20-04-1932 31-10-2021      1997-09-29 18.563115    2
-#> 263 263   1 63.1 10-11-1941 28-10-2022      2004-12-30 13.334933    0
-#> 264 264   1 49.9 06-06-1946 10-06-2025      1996-04-24 44.229678    1
-#> 265 265   1 69.0 29-01-1932 19-01-2025      2001-02-12 17.275415    1
-#> 266 266   1 58.7 11-01-1950 26-10-2021      2008-09-21 12.402864    1
-#> 267 267   1 69.1 07-07-1930 27-11-2022      1999-08-17 42.863883    1
-#> 268 268   1 63.2 07-06-1943 18-04-2021      2006-08-16 43.404145    2
-#> 269 269   1 79.1 23-10-1921 21-12-2025      2000-11-20 24.754316    0
-#> 270 270   2 58.0 11-11-1944 16-06-2021      2002-11-26 22.901190    2
-#> 271 271   1 70.0 18-08-1937 05-11-2024      2007-08-12  3.702323    0
-#> 272 272   2 26.1 12-11-1977 17-05-2024      2004-01-01 29.075060    0
-#> 273 273   1 39.8 14-05-1955 15-05-2022      1995-03-15 12.703099    1
-#> 274 274   1 41.1 17-06-1958 12-06-2021      1999-07-14 14.269082    1
-#> 275 275   2 27.0 17-11-1971 28-04-2022      1998-11-16  7.712652    2
-#> 276 276   2 27.1 12-11-1979 30-03-2022      2006-12-17 12.396125    2
-#> 277 277   1 65.9 29-07-1943 26-02-2024      2009-06-28 40.228792    0
-#> 278 278   1 77.6 27-03-1931 02-12-2024      2008-10-19 44.612082    1
-#> 279 279   1 64.6 14-05-1929 03-08-2024      1993-12-01 13.432244    0
-#> 280 280   2  9.6 12-06-1980 14-05-2023      1990-01-24 21.491707    0
-#> 281 281   2 16.0 23-01-1977 28-05-2025      1993-01-15  4.268479    1
-#> 282 282   2 50.4 25-12-1947 04-09-2023      1998-05-28 20.178944    2
-#> 283 283   2 83.1 13-09-1926 08-05-2023      2009-10-07  9.445786    1
-#> 284 284   1 66.2 28-01-1941 05-11-2022      2007-04-26 37.184825    2
-#> 285 285   2 53.9 14-04-1950 14-12-2022      2004-03-25 15.399628    2
-#> 286 286   2 39.1 28-06-1958 24-03-2025      1997-07-29 39.345413    0
-#> 287 287   1 47.1 02-05-1944 26-03-2025      1991-05-22 39.609360    1
-#> 288 288   2 62.5 03-08-1943 25-11-2023      2006-01-18 39.343185    0
-#> 289 289   1 59.9 27-12-1940 15-09-2025      2000-11-24 36.551364    2
-#> 290 290   2 69.2 15-02-1938 23-05-2025      2007-05-04 40.237984    0
-#> 291 291   1 67.6 29-05-1942 04-07-2023      2009-12-25 14.108029    0
-#> 292 292   2 32.4 21-03-1965 10-03-2023      1997-07-30 22.346934    0
-#> 293 293   2 39.4 18-07-1954 14-09-2022      1993-12-22  5.529507    0
-#> 294 294   1 25.6 28-01-1971 07-02-2024      1996-09-03 15.824783    1
-#> 295 295   1 54.4 20-04-1938 16-07-2022      1992-09-18  6.331057    2
-#> 296 296   2 72.6 02-02-1922 23-09-2023      1994-09-19  8.373282    1
-#> 297 297   1 74.7 26-01-1935 03-04-2021      2009-10-21 40.825459    2
-#> 298 298   2 51.3 01-01-1945 22-09-2021      1996-05-08 37.634904    1
-#> 299 299   1 34.5 10-11-1962 22-11-2025      1997-04-25 22.895795    1
-#> 300 300   1 60.7 31-10-1930 18-08-2022      1991-06-26 35.283275    1
-#> 301 301   1 76.8 06-09-1924 04-07-2024      2001-06-15 38.386456    1
-#> 302 302   2 40.1 13-05-1958 18-03-2021      1998-06-27 44.201934    2
-#> 303 303   2 69.8 03-07-1928 25-03-2025      1998-04-14 47.650853    2
-#> 304 304   1 34.5 01-12-1961 24-01-2022      1996-05-23 29.504219    1
-#> 305 305   1 73.7 03-01-1936 14-06-2024      2009-10-01 23.028212    1
-#> 306 306   2 28.2 22-07-1973 21-10-2021      2001-10-08 10.009555    2
-#> 307 307   1 66.3 03-12-1935 19-05-2025      2002-03-13 21.320976    1
-#> 308 308   2 33.3 18-01-1958 08-11-2025      1991-05-20 20.177488    1
-#> 309 309   1 55.0 19-03-1953 03-04-2023      2008-03-23 28.535777    2
-#> 310 310   2 39.4 07-01-1951 12-09-2023      1990-05-25  6.708386    0
-#> 311 311   1 34.8 07-07-1958 13-06-2021      1993-05-07 14.080118    1
-#> 312 312   2 74.1 16-12-1925 05-04-2023      2000-02-06 33.934595    1
-#> 313 313   1 44.1 24-08-1956 07-07-2024      2000-09-12 26.935043    1
-#> 314 314   2 36.4 19-03-1967 21-05-2024      2003-08-16  6.826432    2
-#> 315 315   2 70.1 17-03-1937 27-08-2025      2007-04-14 27.016561    1
-#> 316 316   1 70.9 15-07-1929 01-05-2024      2000-06-18 24.191551    1
-#> 317 317   1 75.2 21-10-1933 13-09-2023      2008-12-16 44.820611    0
-#> 318 318   2 47.7 29-10-1944 12-05-2022      1992-07-01 43.916547    0
-#> 319 319   2 41.2 10-11-1954 01-03-2025      1996-01-15 21.888631    0
-#> 320 320   2 30.3 10-04-1960 25-05-2025      1990-07-15 32.090954    1
-#> 321 321   2 18.3 21-03-1977 12-08-2021      1995-07-09 17.721596    0
-#> 322 322   2 36.1 19-05-1967 27-01-2022      2003-06-08 21.650189    2
-#> 323 323   2 62.8 11-09-1929 14-09-2025      1992-06-27 15.517145    1
-#> 324 324   2 72.1 27-06-1924 22-11-2024      1996-07-30 41.757409    1
-#> 325 325   1 39.9 27-06-1961 03-05-2021      2001-06-04 34.324197    2
-#> 326 326   2 35.6 16-04-1969 07-09-2022      2004-11-17 46.466182    1
-#> 327 327   2 38.3 27-04-1963 14-10-2021      2001-08-08 14.620653    0
-#> 328 328   2 69.9 03-09-1934 20-01-2022      2004-08-07 33.997850    1
-#> 329 329   1 54.9 25-06-1942 07-08-2023      1997-05-23 44.648952    1
-#> 330 330   1 52.1 02-01-1950 24-06-2024      2002-01-25 35.757442    1
-#> 331 331   1 29.2 27-12-1972 26-08-2024      2002-03-01 15.120332    2
-#> 332 332   2 63.4 14-11-1926 12-05-2021      1990-03-22 22.479712    0
-#> 333 333   1 32.7 12-12-1975 19-05-2021      2008-09-04 28.051214    0
-#> 334 334   1 65.5 16-03-1941 08-08-2022      2006-09-26  2.582333    1
-#> 335 335   2 48.2 12-04-1944 14-06-2025      1992-06-29  2.910163    0
-#> 336 336   2 77.4 06-01-1929 13-04-2022      2006-06-12 28.948585    0
-#> 337 337   2 46.0 04-08-1957 28-11-2024      2003-07-19 11.320297    0
-#> 338 338   2 37.3 14-07-1956 09-05-2023      1993-10-31 28.817539    2
-#> 339 339   2 81.7 17-12-1922 19-06-2025      2004-08-23  9.163100    1
-#> 340 340   2 36.7 11-01-1970 23-07-2025      2006-09-12 14.887834    0
-#> 341 341   1 70.5 09-04-1928 08-08-2023      1998-09-22 37.037026    1
-#> 342 342   2 36.1 06-10-1966 29-03-2022      2002-11-27 37.524841    1
-#> 343 343   1 27.0 11-03-1972 09-01-2024      1999-03-01 36.468215    1
-#> 344 344   1 64.2 07-05-1934 14-10-2022      1998-07-13 19.308197    0
-#> 345 345   2 40.9 18-01-1954 31-12-2021      1994-12-21 16.694447    1
-#> 346 346   1 65.5 05-08-1940 28-10-2024      2006-02-06 16.737381    0
-#> 347 347   2 68.7 08-12-1923 13-09-2025      1992-09-05 35.619451    1
-#> 348 348   1 59.9 14-03-1939 27-10-2025      1999-02-13 15.496035    1
-#> 349 349   2 64.3 13-05-1944 17-04-2024      2008-09-01 42.301276    2
-#> 350 350   2 22.5 25-11-1971 14-07-2021      1994-06-03  2.167653    1
-#> 351 351   1 52.0 21-11-1955 24-11-2024      2007-11-09 43.247124    1
-#> 352 352   2 18.7 10-08-1980 11-01-2023      1999-04-16 47.892419    1
-#> 353 353   1 22.2 23-10-1968 25-12-2023      1991-01-13 30.941820    1
-#> 354 354   2 72.9 22-06-1928 11-11-2022      2001-05-03 25.566152    0
-#> 355 355   1 51.0 31-12-1946 02-01-2025      1997-12-20  6.027933    1
-#> 356 356   2 72.6 07-04-1921 18-02-2024      1993-11-10 46.658650    1
-#> 357 357   2 66.8 16-06-1935 28-01-2022      2002-04-05 35.484253    1
-#> 358 358   2 39.6 28-04-1962 27-02-2023      2001-11-30 22.884500    2
-#> 359 359   1 63.9 20-10-1927 17-12-2022      1991-09-08 14.085293    2
-#> 360 360   2 59.6 08-05-1940 02-10-2024      1999-12-11 43.012223    2
-#> 361 361   1 66.9 02-07-1933 26-08-2021      2000-06-10  3.338920    2
-#> 362 362   2 60.3 25-04-1936 22-10-2023      1996-07-31 39.569425    2
-#> 363 363   2 66.9 13-02-1939 19-01-2022      2006-01-05 34.461863    1
-#> 364 364   1 58.8 24-05-1940 06-12-2021      1999-02-23 20.431819    1
-#> 365 365   2 46.7 30-04-1957 23-07-2024      2004-01-03  9.778013    0
-#> 366 366   2 19.2 10-05-1979 09-12-2022      1998-07-16 49.438063    1
-#> 367 367   2 61.5 14-03-1943 26-03-2024      2004-09-10 34.554454    0
-#> 368 368   1 23.5 26-07-1969 29-12-2025      1993-02-11 20.223153    1
-#> 369 369   1 46.7 26-01-1953 05-03-2024      1999-10-09  3.112373    1
-#> 370 370   1 27.9 01-04-1977 01-04-2023      2005-02-28 13.279068    2
-#> 371 371   2 44.2 20-06-1962 11-07-2022      2006-09-06 28.125154    2
-#> 372 372   2 65.3 14-11-1937 26-04-2024      2003-03-16 28.519341    0
-#> 373 373   1 48.5 06-10-1943 13-09-2023      1992-03-26 29.015347    1
-#> 374 374   2 49.7 27-04-1951 15-01-2024      2001-01-06 30.109183    0
-#> 375 375   1 77.0 14-10-1931 05-11-2022      2008-10-29 37.312252    2
-#> 376 376   2 40.7 19-09-1966 01-09-2023      2007-06-17 42.045809    1
-#> 377 377   2 71.0 10-12-1932 21-09-2021      2003-12-14  3.245529    1
-#> 378 378   1 36.8 25-02-1969 28-03-2025      2005-12-06 42.388344    0
-#> 379 379   1 70.0 01-01-1934 09-02-2024      2004-01-13 46.940151    1
-#> 380 380   2 51.3 16-06-1941 09-08-2025      1992-10-21 22.930561    2
-#> 381 381   2 37.5 05-10-1955 09-02-2021      1993-03-28 31.865143    1
-#> 382 382   1 60.6 06-04-1935 25-04-2022      1995-11-01 33.496668    1
-#> 383 383   1 38.4 07-01-1956 08-01-2025      1994-06-03 20.691221    1
-#> 384 384   2 41.6 28-03-1953 08-04-2024      1994-10-23 28.014357    2
-#> 385 385   1 77.5 12-08-1927 04-04-2022      2005-02-28 23.472844    1
-#> 386 386   1 74.7 29-03-1920 01-10-2023      1994-12-22 12.721391    0
-#> 387 387   2 81.0 08-02-1926 19-04-2023      2007-02-15 33.839725    1
-#> 388 388   2 81.9 12-04-1922 07-02-2021      2004-03-19 36.824085    2
-#> 389 389   2 25.7 08-11-1970 14-02-2022      1996-08-08 23.511035    2
-#> 390 390   2 33.1 11-02-1961 12-03-2022      1994-03-12 24.895779    1
-#> 391 391   2 42.2 15-04-1958 25-01-2024      2000-06-26 48.821707    1
-#> 392 392   1 63.5 22-01-1930 17-05-2024      1993-07-27  6.092811    1
-#> 393 393   1 53.8 22-01-1940 26-05-2022      1993-10-26 14.638935    0
-#> 394 394   1 29.7 01-03-1980 19-07-2022      2009-11-18 12.199885    0
-#> 395 395   1 31.3 03-12-1970 14-10-2023      2002-04-04 27.519609    2
-#> 396 396   1 58.9 06-01-1949 21-04-2025      2007-11-13 21.114700    0
-#> 397 397   1 48.6 02-09-1949 16-01-2022      1998-04-19 38.743955    0
-#> 398 398   1 39.3 16-12-1960 09-09-2024      2000-03-24 14.211998    2
-#> 399 399   2 56.4 25-10-1944 05-05-2023      2001-03-28 29.171403    1
-#> 400 400   2 55.1 23-07-1938 26-01-2022      1993-08-16 13.212920    1
-#> 401 401   1 50.9 01-02-1945 05-08-2025      1995-12-12  2.747222    2
-#> 402 402   2 37.0 09-01-1972 19-05-2021      2008-12-22  2.735424    2
-#> 403 403   2 39.8 21-07-1959 16-07-2024      1999-05-24 44.329607    1
-#> 404 404   2 38.3 23-05-1960 10-11-2023      1998-09-22 27.489250    0
-#> 405 405   2 28.2 02-05-1965 28-04-2025      1993-07-29 26.583559    0
-#> 406 406   1 33.0 11-10-1975 23-07-2021      2008-10-20  6.118043    1
-#> 407 407   1 47.6 28-09-1951 30-10-2023      1999-04-23  4.571786    1
-#> 408 408   2 29.1 01-04-1962 29-08-2021      1991-05-21  5.811235    1
-#> 409 409   1 64.8 24-07-1941 14-10-2024      2006-05-05 13.259926    1
-#> 410 410   1 54.7 10-02-1943 27-01-2023      1997-10-29  5.364529    1
-#> 411 411   1 69.8 28-09-1932 22-03-2021      2002-07-15 11.298386    2
-#> 412 412   1 71.1 09-04-1934 24-11-2023      2005-05-06 12.383440    0
-#> 413 413   2 55.4 06-08-1950 20-07-2021      2005-12-28 39.923877    2
-#> 414 414   2 63.2 26-10-1945 27-04-2025      2009-01-16  5.822879    1
-#> 415 415   2 62.2 25-12-1939 05-11-2024      2002-02-26  4.897031    0
-#> 416 416   2 51.5 21-05-1956 22-09-2021      2007-11-10 20.521254    2
-#> 417 417   2 40.5 10-02-1960 10-06-2021      2000-08-12 31.198184    2
-#> 418 418   1 61.4 22-04-1936 24-01-2023      1997-09-17 39.356157    1
-#> 419 419   1 59.8 05-05-1931 17-05-2025      1991-02-10 18.038128    2
-#> 420 420   1 26.9 08-08-1972 04-06-2025      1999-06-21 47.529826    0
-#> 421 421   2 46.9 03-06-1954 30-05-2022      2001-04-25 41.305629    1
-#> 422 422   2 58.6 12-03-1944 19-05-2022      2002-10-06  5.449983    1
-#> 423 423   1 46.4 05-03-1960 01-11-2022      2006-07-23  9.863469    1
-#> 424 424   2 71.1 09-11-1920 06-01-2021      1991-12-27 16.986610    1
-#> 425 425   1 29.9 14-05-1961 24-09-2022      1991-04-02 28.939927    1
-#> 426 426   1 64.2 08-08-1932 20-09-2021      1996-10-16 47.043829    1
-#> 427 427   1 74.0 14-10-1920 06-08-2022      1994-10-31 13.252483    2
-#> 428 428   2 81.5 17-05-1925 29-11-2022      2006-11-22 22.777111    2
-#> 429 429   2 11.0 15-05-1979 03-11-2021      1990-05-11 15.211000    2
-#> 430 430   2 33.2 07-02-1976 03-06-2021      2009-05-05 38.343348    1
-#> 431 431   2 42.2 22-07-1953 29-04-2021      1995-10-09 33.025386    0
-#> 432 432   1 88.0 06-09-1920 30-10-2025      2008-09-21 31.698237    1
-#> 433 433   2 57.5 01-02-1944 30-11-2023      2001-07-23 33.663262    1
-#> 434 434   1 52.0 12-06-1953 12-07-2025      2005-06-24 35.678343    1
-#> 435 435   1 22.2 29-01-1970 06-08-2023      1992-03-31 10.907665    1
-#> 436 436   2 44.8 18-01-1951 24-01-2021      1995-10-21 35.058535    1
-#> 437 437   2 31.7 26-09-1970 30-05-2022      2002-05-27 33.702846    1
-#> 438 438   2 48.9 12-05-1947 07-03-2021      1996-03-26  7.118338    0
-#> 439 439   2 80.3 19-05-1923 29-08-2025      2003-09-05 19.611372    1
-#> 440 440   1 22.7 09-05-1968 04-10-2021      1991-02-05 29.923951    1
-#> 441 441   2 42.1 31-05-1967 05-10-2022      2009-06-26 49.518366    0
-#> 442 442   2 47.4 20-06-1955 13-02-2024      2002-11-07 15.221481    0
-#> 443 443   2 71.2 06-08-1931 21-06-2022      2002-10-31 22.956154    1
-#> 444 444   1 69.8 15-02-1921 01-05-2022      1990-12-05  6.561065    2
-#> 445 445   2 23.0 13-11-1980 26-11-2023      2003-11-27 22.502690    0
-#> 446 446   1 31.2 02-04-1962 07-01-2024      1993-07-02  8.519479    1
-#> 447 447   2 12.3 27-09-1977 24-08-2022      1990-01-23 22.656583    1
-#> 448 448   2 64.8 24-01-1933 11-06-2025      1997-11-25 37.903845    1
-#> 449 449   1 54.1 21-04-1946 07-05-2023      2000-05-09  9.354301    0
-#> 450 450   2 23.9 14-11-1969 21-01-2021      1993-10-04 41.890955    1
-#> 451 451   1 34.6 25-06-1972 21-03-2023      2007-01-30 39.608133    0
-#> 452 452   1 41.4 22-01-1962 03-07-2022      2003-06-11 10.503435    2
-#> 453 453   2 52.1 01-06-1956 22-04-2024      2008-06-22 29.129614    2
-#> 454 454   2 38.8 10-05-1953 30-05-2022      1992-02-23  5.378042    1
-#> 455 455   2 58.3 03-10-1946 09-03-2025      2005-01-09 41.401533    2
-#> 456 456   2 77.0 03-01-1924 22-10-2021      2001-01-01 26.926516    2
-#> 457 457   1 50.9 09-04-1950 25-11-2023      2001-03-06 31.443950    1
-#> 458 458   1 44.6 31-07-1955 27-02-2022      2000-03-18 21.154268    1
-#> 459 459   1 63.5 19-08-1942 23-03-2022      2006-02-13 17.972653    1
-#> 460 460   2 32.2 18-06-1974 07-03-2024      2006-08-27 19.760554    2
-#> 461 461   2 53.9 05-04-1951 23-05-2024      2005-03-12 35.416689    1
-#> 462 462   2 37.8 30-07-1965 17-12-2023      2003-05-03 42.890156    1
-#> 463 463   2 37.9 14-10-1965 08-11-2025      2003-09-17 24.432165    1
-#> 464 464   1 67.5 12-04-1924 16-02-2024      1991-10-14 32.827315    0
-#> 465 465   1 31.7 12-11-1960 03-06-2022      1992-07-30 35.277299    1
-#> 466 466   2 29.2 03-09-1966 11-02-2022      1995-12-03 37.656455    2
-#> 467 467   1 35.1 20-11-1955 08-12-2025      1990-12-24 34.533252    0
-#> 468 468   1 49.2 01-11-1954 18-08-2022      2004-01-25 16.696638    1
-#> 469 469   2 73.3 18-07-1936 07-07-2025      2009-11-16 40.441499    1
-#> 470 470   2 65.5 14-04-1937 07-06-2022      2002-10-30 33.843292    1
-#> 471 471   1 64.5 01-12-1931 16-12-2022      1996-05-29 47.800268    1
-#> 472 472   2 57.5 21-08-1951 03-01-2024      2009-02-26 28.271668    0
-#> 473 473   2 26.1 29-12-1966 03-08-2024      1993-01-31 32.724777    0
-#> 474 474   1 44.4 06-09-1961 29-06-2021      2006-01-29 16.839593    0
-#> 475 475   2 64.6 08-09-1936 19-05-2022      2001-04-11 29.423216    0
-#> 476 476   2 45.1 02-03-1953 29-04-2025      1998-03-21  7.052066    2
-#> 477 477   1 17.0 04-09-1973 01-01-2022      1990-09-20 25.006255    1
-#> 478 478   2 45.8 19-03-1945 01-06-2024      1991-01-19 41.341311    1
-#> 479 479   1 50.6 02-03-1946 20-08-2022      1996-09-30 14.201723    1
-#> 480 480   2 25.1 15-03-1978 02-03-2023      2003-05-05 37.354688    2
-#> 481 481   2 37.1 25-09-1957 23-01-2024      1994-11-03 32.839677    1
-#> 482 482   1 60.5 16-04-1948 29-09-2022      2008-10-19 34.284582    0
-#> 483 483   2 52.3 30-06-1956 30-11-2021      2008-11-04 44.061527    2
-#> 484 484   2 48.0 04-09-1949 06-07-2024      1997-08-21 34.953729    0
-#> 485 485   1 47.3 24-05-1950 27-01-2022      1997-09-16  8.386425    1
-#> 486 486   1 56.2 04-04-1943 25-10-2022      1999-06-24 14.487544    2
-#> 487 487   1 30.7 20-08-1966 03-09-2022      1997-05-15 26.478549    1
-#> 488 488   1 23.8 10-03-1974 23-06-2021      1998-01-06 28.878952    0
-#> 489 489   1 29.7 19-11-1973 25-07-2023      2003-07-31 47.837002    0
-#> 490 490   1 28.1 16-05-1972 26-01-2025      2000-06-16 47.751265    0
-#> 491 491   2 73.8 14-03-1929 01-07-2023      2002-12-21 20.759672    2
-#> 492 492   2 31.8 05-05-1963 30-04-2024      1995-02-21 38.181773    2
-#> 493 493   1 22.6 07-02-1978 28-06-2023      2000-08-31 43.328960    0
-#> 494 494   2 72.4 20-05-1928 05-08-2025      2000-10-15 49.282483    1
-#> 495 495   1 65.4 31-03-1936 15-10-2023      2001-08-12 29.067054    1
-#> 496 496   1 47.7 29-04-1955 07-11-2022      2002-12-30 44.123152    2
-#> 497 497   1 42.9 17-03-1956 16-06-2025      1999-02-18 41.460467    2
-#> 498 498   1 29.2 29-07-1961 25-03-2024      1990-10-28 24.048037    0
-#> 499 499   2 25.0 13-09-1980 25-09-2025      2005-08-26 49.166849    1
-#> 500 500   2 51.4 29-05-1947 24-04-2022      1998-10-24 33.284086    1
-#>     localisation necrosis cd10 sox10 ck death_date recurrence_date
-#> 1              2        0   NA     1  0       <NA>            <NA>
-#> 2              1        1    0     0  0       <NA>      2014-12-09
-#> 3              4        0    0     1 NA       <NA>            <NA>
-#> 4              1        1    1    NA  0 2019-07-27            <NA>
-#> 5              3        0    0     0  0 2018-04-19            <NA>
-#> 6              0       NA   NA    NA  0       <NA>            <NA>
-#> 7              3        1    1     0 NA       <NA>      2011-10-10
-#> 8              5       NA    1     0  0       <NA>            <NA>
-#> 9              4        0    1     0  0       <NA>            <NA>
-#> 10             1        0   NA     1  1       <NA>      2014-12-15
-#> 11             2       NA   NA     1  0 2019-03-12            <NA>
-#> 12             3        1   NA     1 NA 2019-02-16            <NA>
-#> 13             2       NA    0    NA  0       <NA>      2011-09-02
-#> 14             3        1    0     0  0 2017-07-18            <NA>
-#> 15             2       NA    1     0 NA       <NA>            <NA>
-#> 16             4        1    1    NA NA       <NA>      2014-05-27
-#> 17             2        1    0     0  0 2017-09-28            <NA>
-#> 18             2        1    0     1  0       <NA>            <NA>
-#> 19             3       NA    0     0 NA       <NA>      2010-06-11
-#> 20             4        0   NA     1  0 2020-02-17            <NA>
-#> 21             2        0    1    NA  0 2019-04-27            <NA>
-#> 22             3        1    1     0 NA       <NA>            <NA>
-#> 23             5        1   NA     1  0 2018-03-01      2011-01-03
-#> 24             3        0    1     1  0       <NA>            <NA>
-#> 25             2       NA    1     0  1 2016-02-24            <NA>
-#> 26             1        0   NA     0  0 2017-09-30            <NA>
-#> 27             2        0    1     0 NA       <NA>            <NA>
-#> 28             2        0   NA     1  1       <NA>      2012-01-18
-#> 29             1        0   NA    NA  0 2017-05-28            <NA>
-#> 30             1       NA    1     1  0       <NA>            <NA>
-#> 31             1        0    0     0  1       <NA>      2012-07-13
-#> 32             3        1   NA     1 NA       <NA>            <NA>
-#> 33             1        1    0     1 NA 2018-02-01      2014-09-28
-#> 34             1       NA    0     1  0 2019-04-04            <NA>
-#> 35             3       NA   NA     0  1 2016-09-20            <NA>
-#> 36             2       NA   NA     1 NA 2016-05-02            <NA>
-#> 37             3       NA    1     1  1       <NA>            <NA>
-#> 38             1        0    1    NA  0 2020-05-20      2013-10-26
-#> 39             3       NA    0    NA  1       <NA>      2012-07-20
-#> 40             3        1   NA    NA  0       <NA>            <NA>
-#> 41             3        0    0     1 NA       <NA>      2012-06-29
-#> 42             1       NA    0     0  1       <NA>      2013-06-04
-#> 43             5       NA    1    NA  0       <NA>            <NA>
-#> 44             4        0   NA     0  1 2019-06-30            <NA>
-#> 45             2       NA    0     1  1       <NA>      2014-10-06
-#> 46             3        1    1     1  1       <NA>            <NA>
-#> 47             3       NA    1     1 NA       <NA>      2010-12-25
-#> 48             0        1    0     1  0 2016-11-21      2012-03-18
-#> 49             2       NA    0     0  0       <NA>            <NA>
-#> 50             2        1    0     1  1       <NA>            <NA>
-#> 51             4        1    1     0 NA 2018-08-01            <NA>
-#> 52             1       NA    1    NA NA       <NA>      2012-09-10
-#> 53             1        0    0     0  0       <NA>      2013-04-22
-#> 54             2       NA    1     1  0       <NA>      2010-08-27
-#> 55             3        1   NA     0  1 2020-08-31      2010-05-27
-#> 56             2        0    1     1  0       <NA>            <NA>
-#> 57             2        1    1     1  0 2016-02-10            <NA>
-#> 58             3        0    1    NA NA 2020-07-02      2014-03-31
-#> 59             2        1   NA     1  0       <NA>      2013-09-25
-#> 60             4       NA    1     1 NA       <NA>      2014-05-26
-#> 61             4        0    0     0  0       <NA>      2012-09-17
-#> 62             3       NA   NA    NA NA 2016-10-03      2013-11-13
-#> 63             1        0    1     0  1       <NA>            <NA>
-#> 64             1        1    1     1  0 2016-07-28      2011-12-02
-#> 65             2       NA    0     1  1       <NA>            <NA>
-#> 66             3        1   NA     1  0       <NA>      2014-12-07
-#> 67             2        0    0    NA  1       <NA>      2011-06-25
-#> 68             2        0    0     0  1 2017-09-05      2015-03-26
-#> 69             1        0    0     0  1       <NA>            <NA>
-#> 70             2        1    1     0  0 2019-10-04            <NA>
-#> 71             2       NA    0     0  1 2018-05-10      2012-09-03
-#> 72             1       NA   NA    NA  0       <NA>      2015-03-10
-#> 73             3        0    1     1  0       <NA>      2010-07-13
-#> 74             2        1    0    NA  1       <NA>      2015-10-23
-#> 75             3        0    0    NA NA       <NA>            <NA>
-#> 76             0       NA    0     0  1       <NA>      2014-05-18
-#> 77             2        0    0    NA  0       <NA>            <NA>
-#> 78             3        0    1     1  0       <NA>            <NA>
-#> 79             2        0   NA     0  1       <NA>            <NA>
-#> 80             3        0    1    NA  1 2016-10-24            <NA>
-#> 81             2        0    0    NA NA       <NA>            <NA>
-#> 82             3       NA   NA     1  0       <NA>            <NA>
-#> 83             2        0    1     0 NA 2020-08-20      2013-02-26
-#> 84             2        0   NA    NA NA       <NA>      2011-04-29
-#> 85             2        0   NA     0  0       <NA>            <NA>
-#> 86             3        0    1     0 NA       <NA>            <NA>
-#> 87             4        1    1    NA  1       <NA>      2015-10-29
-#> 88             2       NA   NA    NA  0 2020-05-04            <NA>
-#> 89             5        1    1     0  1       <NA>            <NA>
-#> 90             2        1    0     1  0       <NA>            <NA>
-#> 91             1       NA   NA     0  0 2019-04-07      2013-01-02
-#> 92             4       NA    1     1  0       <NA>      2014-03-05
-#> 93             1       NA    1     0  0       <NA>            <NA>
-#> 94             3        1    0     1  1       <NA>      2012-01-28
-#> 95             2       NA   NA     1 NA       <NA>      2012-08-15
-#> 96             4       NA    1     1 NA       <NA>            <NA>
-#> 97             1        1   NA    NA  0       <NA>      2010-12-02
-#> 98             2       NA    0     0 NA 2017-07-14      2011-03-31
-#> 99             2       NA    0    NA NA 2020-08-28      2012-04-01
-#> 100            3       NA   NA    NA  1 2018-04-27            <NA>
-#> 101            2        1   NA     0  1 2020-04-01      2013-03-09
-#> 102            3        1   NA     0  1       <NA>      2011-05-13
-#> 103            2        0   NA     0  1       <NA>            <NA>
-#> 104            3        0    0    NA  1       <NA>            <NA>
-#> 105            4        0   NA     1  1       <NA>      2013-04-05
-#> 106            3       NA   NA    NA  1       <NA>      2014-03-22
-#> 107            2       NA   NA     0  1       <NA>            <NA>
-#> 108            2        1    0    NA  1       <NA>      2015-09-02
-#> 109            2        1    0     1 NA       <NA>      2010-09-05
-#> 110            4       NA   NA     1  1       <NA>            <NA>
-#> 111            3        0   NA    NA NA       <NA>      2010-01-30
-#> 112            0        0    1     1 NA       <NA>      2012-11-29
-#> 113            2        1   NA     0 NA       <NA>      2010-05-29
-#> 114            3       NA    1    NA NA 2019-04-03            <NA>
-#> 115            0        0    0    NA NA       <NA>            <NA>
-#> 116            1        0    1     1 NA 2017-06-16      2011-11-25
-#> 117            2        1    0     0  0 2017-01-06            <NA>
-#> 118            3        0    0     0  1       <NA>            <NA>
-#> 119            3       NA    0     0 NA       <NA>      2010-05-15
-#> 120            2        1    0     1 NA 2016-01-25      2015-04-03
-#> 121            2        0    0    NA NA 2016-01-15      2015-10-11
-#> 122            3        0    1     0  1       <NA>            <NA>
-#> 123            3        0    0     1  1       <NA>            <NA>
-#> 124            2       NA    0    NA NA       <NA>            <NA>
-#> 125            2       NA    0     1  0       <NA>            <NA>
-#> 126            3        0    0    NA  0       <NA>            <NA>
-#> 127            3        1    0     1  0       <NA>            <NA>
-#> 128            3        1   NA    NA  0       <NA>            <NA>
-#> 129            3        1    0    NA  1       <NA>            <NA>
-#> 130            1        1   NA    NA NA       <NA>      2010-09-08
-#> 131            3        0    1    NA  1       <NA>      2015-02-16
-#> 132            3        0   NA     0 NA 2016-03-24            <NA>
-#> 133            3       NA    0     1  1       <NA>            <NA>
-#> 134            3        1   NA     1  1       <NA>            <NA>
-#> 135            3        1    1     1  1 2019-01-04            <NA>
-#> 136            2        1    0    NA  0 2019-10-18            <NA>
-#> 137            1        1    0     0 NA       <NA>            <NA>
-#> 138            1       NA    0     1  0       <NA>      2010-01-01
-#> 139            1       NA    0     1  1       <NA>      2015-02-14
-#> 140            3        1   NA     0 NA       <NA>            <NA>
-#> 141            2       NA   NA    NA  1       <NA>            <NA>
-#> 142            1        0    1     0 NA       <NA>      2013-04-15
-#> 143            4        1   NA     1  0       <NA>            <NA>
-#> 144            3        1    1    NA  0 2017-06-23            <NA>
-#> 145            5        1    0    NA  1       <NA>      2012-03-03
-#> 146            2       NA   NA     0 NA       <NA>            <NA>
-#> 147            3       NA   NA     0  0       <NA>      2012-12-01
-#> 148            1        0    1     0 NA 2016-12-11      2010-12-19
-#> 149            3        1    0    NA  0       <NA>            <NA>
-#> 150            2        0   NA     1 NA 2018-01-01            <NA>
-#> 151            2        0   NA     0  0       <NA>      2015-03-06
-#> 152            2        1   NA    NA NA       <NA>            <NA>
-#> 153            1       NA   NA    NA  0 2019-01-17      2014-08-03
-#> 154            1        1    0    NA NA       <NA>            <NA>
-#> 155            3       NA    1     1  0       <NA>      2013-06-01
-#> 156            2       NA    0     0  1       <NA>            <NA>
-#> 157            3        0    0    NA NA       <NA>            <NA>
-#> 158            1        1    0    NA NA       <NA>      2010-07-07
-#> 159            3        1    1     1  0       <NA>            <NA>
-#> 160            2        0    0     0  1       <NA>      2012-03-13
-#> 161            4       NA    1    NA NA       <NA>      2013-07-03
-#> 162            2        1    0     0  0 2019-03-29            <NA>
-#> 163            2        1    1     1  1       <NA>      2010-10-19
-#> 164            3       NA    1    NA  1       <NA>            <NA>
-#> 165            4       NA   NA     1  0 2018-02-13      2013-02-27
-#> 166            0       NA    0     1 NA       <NA>            <NA>
-#> 167            2       NA    1     1  0       <NA>      2012-11-18
-#> 168            3       NA    1    NA  1       <NA>      2012-08-06
-#> 169            4        1   NA    NA  0       <NA>            <NA>
-#> 170            1        1    0     1 NA       <NA>      2010-01-17
-#> 171            3        1    0     0 NA       <NA>      2012-01-15
-#> 172            2        1    0     1  0       <NA>            <NA>
-#> 173            3       NA    0     1  0 2019-02-05      2011-04-14
-#> 174            5        1    0    NA NA       <NA>      2013-12-18
-#> 175            3        0    1     1 NA       <NA>            <NA>
-#> 176            3        0   NA     0  0 2020-08-12      2015-11-08
-#> 177            4       NA    1     1  1       <NA>      2014-03-01
-#> 178            3        0    0     1  1 2020-11-01      2013-03-15
-#> 179            3        0    1     1  0 2020-03-07      2015-12-24
-#> 180            2        0   NA     1  1 2019-12-27            <NA>
-#> 181            3        0    1    NA  0       <NA>      2012-04-21
-#> 182            2        0    0     0 NA       <NA>      2012-10-14
-#> 183            2       NA    1     0  0       <NA>      2011-12-25
-#> 184            5        1    0    NA NA       <NA>            <NA>
-#> 185            5        1    1     1  0 2016-06-27            <NA>
-#> 186            2        1   NA     1 NA 2020-06-14            <NA>
-#> 187            3        0   NA    NA  0       <NA>            <NA>
-#> 188            2       NA    1     1 NA       <NA>            <NA>
-#> 189            2       NA    0     1  0 2017-09-21            <NA>
-#> 190            5        0    1     1  0 2017-08-11      2011-11-18
-#> 191            2        0   NA     1 NA       <NA>            <NA>
-#> 192            4        0    1     1 NA 2018-05-26            <NA>
-#> 193            3        0    0     1  1       <NA>            <NA>
-#> 194            3       NA   NA     1  0       <NA>            <NA>
-#> 195            1        0   NA     0  1       <NA>            <NA>
-#> 196            2        1   NA    NA  0 2019-07-21      2010-05-30
-#> 197            5        1   NA     1  1       <NA>      2011-01-12
-#> 198            1       NA    0    NA NA 2016-04-26      2014-06-05
-#> 199            4       NA    0     1 NA 2016-06-11      2010-10-21
-#> 200            5       NA    0     1  0       <NA>      2014-02-23
-#> 201            1       NA    0     1 NA 2017-07-16      2015-01-13
-#> 202            3        0   NA    NA  0 2018-09-21            <NA>
-#> 203            3        1    0     1 NA       <NA>      2010-09-09
-#> 204            2       NA    1     1  1       <NA>            <NA>
-#> 205            3        0   NA     0  0 2019-07-12      2013-02-10
-#> 206            5        0   NA     1  1 2016-11-20      2015-05-13
-#> 207            2        0    0     0 NA       <NA>      2010-11-28
-#> 208            2       NA    1     1  1 2020-09-21            <NA>
-#> 209            1        0    0     0  1       <NA>      2015-12-21
-#> 210            3        1   NA     0  0       <NA>      2013-06-24
-#> 211            2       NA    1    NA  0       <NA>            <NA>
-#> 212            3        1   NA     0 NA       <NA>            <NA>
-#> 213            2        1    1     1  0       <NA>            <NA>
-#> 214            3        1   NA     1  1       <NA>      2015-11-13
-#> 215            4       NA    0    NA NA       <NA>            <NA>
-#> 216            3        0   NA    NA NA       <NA>            <NA>
-#> 217            1        0    0     1  1 2018-08-07            <NA>
-#> 218            1        0    1    NA NA       <NA>            <NA>
-#> 219            2       NA   NA     0  0       <NA>      2013-01-05
-#> 220            1        1    1     1 NA 2020-07-19      2012-05-13
-#> 221            2       NA   NA    NA NA 2016-03-25      2013-04-11
-#> 222            2        0    1     1  1       <NA>            <NA>
-#> 223            1       NA   NA     1 NA       <NA>            <NA>
-#> 224            4        0   NA     1  0       <NA>      2013-01-15
-#> 225            4        0    0    NA  1 2018-09-30            <NA>
-#> 226            4       NA   NA     1  0       <NA>      2011-08-03
-#> 227            1        0   NA     1 NA 2020-11-23      2014-09-11
-#> 228            3       NA    1    NA NA       <NA>            <NA>
-#> 229            1       NA    1     1 NA       <NA>            <NA>
-#> 230            3       NA    0     1 NA       <NA>      2011-01-25
-#> 231            3       NA   NA     0 NA       <NA>            <NA>
-#> 232            4       NA    1     1 NA 2016-11-14      2015-03-15
-#> 233            3        0    0     0 NA 2018-10-24      2012-08-05
-#> 234            4        0    1     0  0       <NA>            <NA>
-#> 235            3        0   NA    NA  0       <NA>            <NA>
-#> 236            2       NA   NA     1 NA       <NA>      2012-05-31
-#> 237            2       NA    1     1 NA 2018-07-17      2011-06-30
-#> 238            3       NA   NA     0 NA 2017-10-17            <NA>
-#> 239            2        1    0    NA  0 2016-05-14      2013-01-25
-#> 240            4        1    1     1 NA 2020-01-20      2012-09-04
-#> 241            3       NA    0     1 NA       <NA>      2010-10-18
-#> 242            3       NA    1     0  1       <NA>            <NA>
-#> 243            2       NA   NA     1  1       <NA>            <NA>
-#> 244            3        1    0     1  1 2018-10-09            <NA>
-#> 245            2       NA   NA     0  1       <NA>      2010-09-18
-#> 246            3        1    1     0  1       <NA>            <NA>
-#> 247            3        1    1    NA  1 2016-04-23      2010-04-02
-#> 248            3       NA    1     0  1       <NA>            <NA>
-#> 249            2       NA    0     1  0 2016-07-05            <NA>
-#> 250            2        1    1    NA NA       <NA>            <NA>
-#> 251            3        1    0    NA  0       <NA>            <NA>
-#> 252            1        1    0     1  0 2020-09-29      2013-12-22
-#> 253            3       NA   NA     1  0       <NA>      2010-07-17
-#> 254            1       NA    0    NA NA       <NA>            <NA>
-#> 255            4        0    1     1  0 2017-10-26      2013-07-08
-#> 256            3        0   NA    NA  1 2019-10-07            <NA>
-#> 257            3        0    1     0  0       <NA>            <NA>
-#> 258            2        0    1    NA  1       <NA>            <NA>
-#> 259            1        1    0     0 NA       <NA>      2013-03-11
-#> 260            3       NA   NA     1  0 2019-02-15            <NA>
-#> 261            2       NA    1     1  0       <NA>      2012-12-12
-#> 262            4       NA    1     0  1       <NA>            <NA>
-#> 263            3        0    0     0  1       <NA>            <NA>
-#> 264            1        0    0    NA  0 2019-08-08            <NA>
-#> 265            2        0   NA    NA  0 2016-09-07            <NA>
-#> 266            2       NA    0    NA NA       <NA>      2015-11-11
-#> 267            3        1    1     1  1       <NA>            <NA>
-#> 268            3        1    0     1  1       <NA>      2012-01-08
-#> 269            3        1    1     1  0       <NA>      2012-09-20
-#> 270            3       NA    0    NA NA 2019-12-31            <NA>
-#> 271            4        0    1     1 NA 2016-05-01      2015-07-18
-#> 272            4       NA   NA     1  0       <NA>            <NA>
-#> 273            1       NA    1     0 NA       <NA>      2015-09-24
-#> 274            3       NA    1    NA NA       <NA>      2015-04-09
-#> 275            4       NA    1    NA  0       <NA>            <NA>
-#> 276            2       NA   NA     1 NA       <NA>      2011-07-11
-#> 277            0       NA    1     1  1 2017-03-07      2012-08-25
-#> 278            2        1   NA     0  0       <NA>      2010-01-21
-#> 279            1        1    0    NA NA 2019-07-09            <NA>
-#> 280            4       NA    0     1 NA       <NA>      2015-08-03
-#> 281            3       NA    1    NA NA 2016-02-19      2013-08-19
-#> 282            2        1    1     0  1       <NA>            <NA>
-#> 283            3        1    0    NA  0       <NA>            <NA>
-#> 284            1        1   NA     1  0 2020-08-30      2010-08-29
-#> 285            1        1    0     0 NA 2020-12-07            <NA>
-#> 286            2       NA    1     0 NA       <NA>      2015-09-18
-#> 287            2        0    0     0 NA       <NA>      2013-01-28
-#> 288            2        1    0    NA  0       <NA>            <NA>
-#> 289            4        0    1     1 NA       <NA>            <NA>
-#> 290            4       NA    1     1  0       <NA>      2012-05-26
-#> 291            1        0    0    NA NA       <NA>            <NA>
-#> 292            1        1   NA     0  0       <NA>            <NA>
-#> 293            3        1    0     0  1       <NA>            <NA>
-#> 294            0        1    1    NA  1       <NA>      2014-06-18
-#> 295            3        1   NA     1  1 2016-06-15            <NA>
-#> 296            1       NA    0     0 NA 2019-06-08            <NA>
-#> 297            3        0   NA    NA  1 2018-12-12            <NA>
-#> 298            4        1   NA     0  0       <NA>            <NA>
-#> 299            1       NA   NA     0  0 2019-03-06      2013-03-06
-#> 300            4       NA    1     0 NA       <NA>            <NA>
-#> 301            2       NA   NA     1 NA       <NA>            <NA>
-#> 302            3        0   NA    NA NA 2017-05-20            <NA>
-#> 303            3       NA    1     0 NA       <NA>      2010-09-02
-#> 304            4        0    0     1  1       <NA>            <NA>
-#> 305            2       NA   NA    NA  1       <NA>            <NA>
-#> 306            1        0   NA     0  0 2018-10-17      2014-07-13
-#> 307            3        1    1    NA NA       <NA>      2010-11-12
-#> 308            2        0   NA    NA  1 2018-09-20            <NA>
-#> 309            3       NA    1    NA  1       <NA>      2011-03-16
-#> 310            2        1   NA     1 NA 2016-06-09      2014-07-03
-#> 311            3        0    0     0 NA       <NA>            <NA>
-#> 312            1        0   NA    NA  0       <NA>            <NA>
-#> 313            3        0   NA     1  0 2018-03-22            <NA>
-#> 314            1        1   NA     0  1       <NA>            <NA>
-#> 315            3        0   NA     1  0 2020-01-21            <NA>
-#> 316            3        1    1     1  0       <NA>            <NA>
-#> 317            1        1    1     1 NA 2016-07-08      2011-08-23
-#> 318            3        1    1     1 NA 2018-07-18      2012-03-15
-#> 319            4        0    0     0  0       <NA>            <NA>
-#> 320            2        0   NA     0 NA       <NA>            <NA>
-#> 321            1       NA   NA    NA  1 2016-01-31            <NA>
-#> 322            3       NA   NA     1 NA 2016-07-26            <NA>
-#> 323            3        0    0    NA  0       <NA>      2015-04-16
-#> 324            3        1    1     1 NA       <NA>            <NA>
-#> 325            5       NA    1    NA  1       <NA>      2015-07-10
-#> 326            2        0   NA     1  1 2018-06-24            <NA>
-#> 327            2        0   NA     1 NA 2017-09-27            <NA>
-#> 328            2       NA    0    NA  1       <NA>            <NA>
-#> 329            3       NA    0     0  0       <NA>      2015-03-11
-#> 330            3        1   NA     0 NA 2017-09-04            <NA>
-#> 331            2        1    1     0 NA 2018-12-17            <NA>
-#> 332            2       NA    1     1 NA 2016-04-19            <NA>
-#> 333            1        0    0     1  1       <NA>            <NA>
-#> 334            3        1   NA     1  0 2019-04-01            <NA>
-#> 335            2        1    1    NA  0 2019-02-27            <NA>
-#> 336            3       NA   NA    NA  0       <NA>            <NA>
-#> 337            2        0    0     1 NA       <NA>      2014-05-23
-#> 338            1       NA   NA     1  1 2018-09-13            <NA>
-#> 339            1       NA   NA     0  0       <NA>      2010-03-29
-#> 340            2        1   NA    NA  0 2016-03-17      2013-10-01
-#> 341            2        0    1     0  0 2020-07-20            <NA>
-#> 342            3        0    0    NA  0 2017-08-04      2010-09-22
-#> 343            5        1    1    NA  1 2019-09-13            <NA>
-#> 344            2        1    1    NA  0       <NA>      2012-10-19
-#> 345            5        1   NA    NA  1       <NA>            <NA>
-#> 346            3       NA    0     1 NA 2016-03-13            <NA>
-#> 347            3       NA    0     0  0       <NA>            <NA>
-#> 348            2       NA   NA     0 NA 2019-09-06            <NA>
-#> 349            1        0   NA    NA  1       <NA>            <NA>
-#> 350            1        1    1     1  1       <NA>      2010-11-09
-#> 351            4        1    0    NA NA 2016-11-23      2015-06-23
-#> 352            1        0    1     1 NA       <NA>            <NA>
-#> 353            3        0    0     0  0       <NA>      2011-01-27
-#> 354            4       NA   NA    NA  0 2016-07-09      2014-04-12
-#> 355            2        0   NA     1 NA       <NA>            <NA>
-#> 356            2       NA    0     1 NA       <NA>            <NA>
-#> 357            3        1    1     0 NA 2017-08-19            <NA>
-#> 358            2        1    1    NA NA 2016-08-06      2013-10-11
-#> 359            2        1   NA    NA  0       <NA>      2012-04-24
-#> 360            4        0    1     0  1       <NA>            <NA>
-#> 361            2        0   NA    NA  0       <NA>      2013-05-19
-#> 362            2       NA    1    NA  0       <NA>      2014-11-25
-#> 363            3        0    0     0  1 2018-07-15      2015-01-27
-#> 364            2       NA    0    NA NA       <NA>            <NA>
-#> 365            3        1    1    NA  0 2019-07-24      2014-01-08
-#> 366            3        1    0    NA NA 2020-09-26            <NA>
-#> 367            2       NA    1     1 NA       <NA>      2010-03-24
-#> 368            2        1   NA    NA NA       <NA>            <NA>
-#> 369            4        0    0    NA  0       <NA>      2010-02-13
-#> 370            3        1   NA     0  0       <NA>            <NA>
-#> 371            0        0    1    NA  1 2017-05-14      2014-01-12
-#> 372            5       NA    0     1  0 2019-03-07            <NA>
-#> 373            3       NA   NA    NA  1       <NA>      2014-07-25
-#> 374            2        0    0     1  0       <NA>      2015-09-30
-#> 375            2        1    0     1  0       <NA>            <NA>
-#> 376            3        1   NA     0  1 2019-01-07            <NA>
-#> 377            1       NA   NA     1  0 2017-04-12            <NA>
-#> 378            2        1   NA     0 NA 2018-04-26            <NA>
-#> 379            2       NA    0     0  0       <NA>      2013-03-05
-#> 380            3        1    0    NA  0 2019-02-24      2011-01-10
-#> 381            5        0    0    NA  0       <NA>            <NA>
-#> 382            1        0    1     0  0       <NA>            <NA>
-#> 383            2        1   NA    NA NA       <NA>      2015-02-10
-#> 384            1       NA    0     0  1       <NA>      2014-04-03
-#> 385            2        1    0     0  0       <NA>            <NA>
-#> 386            3        1    1    NA  0       <NA>      2011-01-22
-#> 387            4        1    0     0 NA       <NA>      2014-05-03
-#> 388            2        0    0     1  0       <NA>            <NA>
-#> 389            3        0    1    NA  0 2017-04-25      2012-12-11
-#> 390            3        0    1     0 NA 2016-12-16            <NA>
-#> 391            0        0    1     1  0 2018-06-16      2015-01-05
-#> 392            4        1   NA    NA  0       <NA>      2012-04-06
-#> 393            3        1    0     1  0       <NA>      2011-05-08
-#> 394            2       NA    1     0 NA 2018-05-16      2013-10-28
-#> 395            4        1    0    NA  0 2019-04-08      2010-05-10
-#> 396            2        1    0     1  0       <NA>      2012-02-17
-#> 397            3        0    0     1 NA 2018-09-14      2012-02-25
-#> 398            2        1    1     0  1       <NA>      2012-07-03
-#> 399            5        1   NA     1  0 2019-07-07            <NA>
-#> 400            2       NA    1     1  1 2017-11-28      2013-09-24
-#> 401            2       NA    0    NA NA       <NA>            <NA>
-#> 402            2       NA    1     0 NA       <NA>      2011-12-20
-#> 403            3        0    1     0  1       <NA>            <NA>
-#> 404            3        1   NA    NA  0 2020-12-01      2015-07-02
-#> 405            3        1   NA     0  0 2017-08-23            <NA>
-#> 406            3        1   NA     1 NA       <NA>            <NA>
-#> 407            4       NA    0     1  1       <NA>      2013-12-27
-#> 408            3        1   NA    NA  0 2018-04-13      2014-02-10
-#> 409            2        0    0    NA NA 2018-06-25            <NA>
-#> 410            2        0    1     0 NA       <NA>      2015-06-27
-#> 411            2        1    0     0  1       <NA>      2010-06-13
-#> 412            3        0   NA    NA  0       <NA>      2010-04-18
-#> 413            1        0   NA     1  1 2019-10-17            <NA>
-#> 414            2        1   NA    NA  0       <NA>      2011-05-24
-#> 415            3        1    1     1  1       <NA>            <NA>
-#> 416            1        1    0    NA  1 2019-05-18      2011-02-06
-#> 417            2       NA    1    NA  0       <NA>            <NA>
-#> 418            3       NA   NA     1  0       <NA>            <NA>
-#> 419            2        1    1    NA NA 2020-06-15            <NA>
-#> 420            1        1    0     0  1 2016-10-20            <NA>
-#> 421            4       NA   NA    NA NA       <NA>      2014-04-02
-#> 422            2        0    0    NA  0       <NA>      2014-10-26
-#> 423            1       NA   NA    NA  1       <NA>      2011-03-19
-#> 424            0        1   NA    NA  0 2018-01-14            <NA>
-#> 425            2        0   NA     1 NA       <NA>      2011-08-17
-#> 426            4        0    1    NA  0       <NA>            <NA>
-#> 427            4        1    1     0 NA       <NA>      2010-08-16
-#> 428            1        1   NA    NA  0 2018-04-04            <NA>
-#> 429            0       NA    1    NA NA       <NA>      2013-03-31
-#> 430            0        1    0     0  0 2017-05-02            <NA>
-#> 431            3        1    0    NA  1 2018-11-20            <NA>
-#> 432            2        0    1     1  0       <NA>      2011-09-06
-#> 433            4       NA   NA    NA  0 2017-03-04            <NA>
-#> 434            3        1   NA     1  1       <NA>      2013-07-16
-#> 435            2        1    0     1 NA       <NA>            <NA>
-#> 436            2        0   NA     1  1       <NA>      2011-09-20
-#> 437            2        1    1    NA  0       <NA>      2012-01-03
-#> 438            2       NA    0     0  1 2017-09-25            <NA>
-#> 439            1        0    0     1  0 2019-05-04      2010-02-03
-#> 440            1        0    1     1 NA       <NA>            <NA>
-#> 441            2       NA    1    NA  0       <NA>      2011-07-17
-#> 442            3        0   NA    NA NA       <NA>      2010-08-20
-#> 443            2       NA    1     0 NA       <NA>      2014-05-04
-#> 444            2        1    1    NA  0       <NA>      2011-03-03
-#> 445            3        1   NA     1 NA 2017-11-15      2012-08-03
-#> 446            2       NA    0     1 NA       <NA>      2010-08-23
-#> 447            4        1    1     1  0       <NA>      2013-06-17
-#> 448            4        0   NA     1 NA 2017-10-30      2012-02-26
-#> 449            2       NA    1     1  1       <NA>            <NA>
-#> 450            4       NA    0     0  1       <NA>            <NA>
-#> 451            4       NA    1     1  1       <NA>      2013-05-23
-#> 452            4        0    1    NA NA       <NA>      2011-09-14
-#> 453            3        1    1     0  0       <NA>            <NA>
-#> 454            3        1   NA     1 NA       <NA>      2015-01-09
-#> 455            1        0    1    NA  1 2020-07-18      2014-09-18
-#> 456            3        0   NA     1  0 2017-06-09      2013-05-16
-#> 457            2        1   NA     0  1 2019-04-05      2010-08-15
-#> 458            3        1    0    NA NA 2018-02-03      2014-01-25
-#> 459            2        0    1    NA  0       <NA>            <NA>
-#> 460            1        0   NA    NA  1 2019-01-16      2014-07-30
-#> 461            4        1    0     0  0       <NA>      2014-04-11
-#> 462            3       NA    0     0  1       <NA>            <NA>
-#> 463            4        0    0    NA  0       <NA>            <NA>
-#> 464            5       NA   NA     1 NA       <NA>      2014-08-06
-#> 465            3        1   NA     1  1 2019-04-24      2015-03-09
-#> 466            4       NA    0     0 NA 2018-06-06      2010-06-07
-#> 467            1       NA    0    NA  0       <NA>      2013-06-25
-#> 468            3        0   NA     0  0       <NA>            <NA>
-#> 469            1        0    0     1  0       <NA>      2013-11-22
-#> 470            4       NA   NA    NA  0 2020-05-22            <NA>
-#> 471            2        0    1     1  0       <NA>            <NA>
-#> 472            4       NA    1     1 NA 2019-11-16            <NA>
-#> 473            2        1    0     1  1       <NA>            <NA>
-#> 474            3       NA    1     0 NA 2018-12-26            <NA>
-#> 475            4        0   NA     1  1       <NA>      2013-11-10
-#> 476            3        0   NA     1 NA       <NA>      2013-04-03
-#> 477            4        1    0     0  1 2020-09-02            <NA>
-#> 478            3        0    0    NA  1 2020-10-20            <NA>
-#> 479            3        1    0     0 NA       <NA>      2011-01-24
-#> 480            4        0    1     1  0       <NA>            <NA>
-#> 481            1        0    0    NA  0       <NA>            <NA>
-#> 482            3       NA    0     1 NA 2016-10-28            <NA>
-#> 483            3        0    1    NA  0       <NA>            <NA>
-#> 484            3       NA    1     1  1       <NA>      2014-06-22
-#> 485            2        1    0     0  1       <NA>            <NA>
-#> 486            3       NA    0     1 NA 2017-01-02            <NA>
-#> 487            0        1    1     0  0       <NA>      2010-04-09
-#> 488            3       NA   NA    NA NA       <NA>            <NA>
-#> 489            2       NA   NA     1 NA       <NA>      2010-09-12
-#> 490            3       NA    0     0 NA       <NA>            <NA>
-#> 491            3        0   NA     0  0       <NA>            <NA>
-#> 492            3        1   NA     0  1 2019-06-20      2010-06-10
-#> 493            3        0    0    NA  1       <NA>      2011-04-04
-#> 494            2        0   NA     1 NA       <NA>      2010-12-03
-#> 495            2        1   NA     1 NA       <NA>            <NA>
-#> 496            3       NA   NA    NA  0       <NA>            <NA>
-#> 497            2        1    0    NA  1       <NA>            <NA>
-#> 498            2        0    1     1  0       <NA>      2013-11-04
-#> 499            3       NA    1    NA NA 2016-03-26      2011-07-29
-#> 500            1        1    1     1 NA 2020-04-18      2015-02-01
+#> 1     1   1 79.1 20-09-1929 03-04-2023      2008-11-03  7.302734    1
+#> 2     2   2 38.1 12-10-1953 18-12-2025      1991-11-13 20.043036    1
+#> 3     3   1 60.6 11-05-1948 21-09-2025      2008-12-17 42.412003    1
+#> 4     4   1 45.2 22-04-1949 11-02-2022      1994-07-17 27.853775    1
+#> 5     5   2 39.5 18-01-1966 21-04-2022      2005-07-16 25.587530    2
+#> 6     6   1 81.2 06-11-1925 17-07-2023      2007-02-02 49.415904    2
+#> 7     7   1 74.9 16-06-1921 15-11-2023      1996-05-23 41.732124    0
+#> 8     8   1 38.8 12-11-1960 07-10-2021      1999-08-31  9.040216    0
+#> 9     9   2 31.8 11-11-1958 11-03-2025      1990-08-29 10.726850    0
+#> 10   10   2 51.3 18-08-1953 28-11-2021      2004-12-08 21.547746    2
+#> 11   11   1 61.8 17-03-1946 09-06-2023      2008-01-13  2.391121    1
+#> 12   12   1 71.7 14-07-1927 24-04-2024      1999-04-07 39.742290    2
+#> 13   13   1 12.2 01-03-1980 01-06-2022      1992-05-20 29.106387    2
+#> 14   14   1 61.5 28-09-1944 08-06-2021      2006-03-15 14.732677    0
+#> 15   15   1 14.1 25-01-1979 11-10-2025      1993-03-09 41.706223    0
+#> 16   16   2 33.5 30-06-1957 22-03-2025      1991-01-11 17.586347    0
+#> 17   17   2 58.9 10-01-1943 24-12-2024      2001-12-08 49.737437    1
+#> 18   18   2 22.8 13-08-1974 31-10-2022      1997-05-31 13.495825    1
+#> 19   19   2 34.8 01-06-1966 01-05-2023      2001-04-03 41.000573    0
+#> 20   20   1 58.2 05-02-1939 01-10-2024      1997-04-26  3.757738    1
+#> 21   21   1 83.0 09-04-1925 07-02-2025      2008-04-16 43.065297    1
+#> 22   22   1 14.2 14-05-1980 06-09-2024      1994-07-21  2.055776    1
+#> 23   23   1 35.3 26-10-1969 31-07-2022      2005-03-02 14.913462    2
+#> 24   24   1 64.0 10-01-1941 17-11-2024      2005-01-01 24.138031    1
+#> 25   25   1 74.9 03-10-1927 25-05-2025      2002-08-20 32.619267    2
+#> 26   26   1 23.9 11-06-1980 11-01-2025      2004-05-15  6.672936    0
+#> 27   27   2 52.2 27-02-1951 07-05-2022      2003-04-25 17.229275    1
+#> 28   28   1 61.6 06-11-1941 19-06-2021      2003-06-18 29.638771    2
+#> 29   29   1 62.0 07-07-1947 16-02-2025      2009-07-19 33.848387    0
+#> 30   30   2 13.4 26-12-1978 02-03-2025      1992-05-23 39.984863    1
+#> 31   31   2 41.0 17-05-1955 04-03-2023      1996-05-11  7.678103    1
+#> 32   32   2 68.0 11-09-1940 04-12-2022      2008-09-21 13.096115    1
+#> 33   33   1 61.1 14-02-1931 20-11-2021      1992-04-05 18.827938    2
+#> 34   34   2 48.1 03-10-1961 20-01-2025      2009-11-22 24.000126    2
+#> 35   35   1 63.5 12-12-1932 02-01-2024      1996-06-16  5.465167    2
+#> 36   36   1 80.1 24-12-1921 23-08-2021      2002-02-14 13.681715    2
+#> 37   37   2 29.9 24-07-1968 12-05-2025      1998-06-02 26.876216    1
+#> 38   38   1 66.7 15-11-1936 24-04-2025      2003-07-15 26.060213    1
+#> 39   39   2 61.3 28-11-1928 03-09-2024      1990-03-04 34.377430    1
+#> 40   40   2 15.8 16-08-1977 15-03-2023      1993-05-29 11.577926    1
+#> 41   41   2 21.9 02-02-1979 27-02-2021      2000-12-16 27.101734    2
+#> 42   42   2 60.2 06-10-1947 26-02-2023      2007-12-30 13.854975    1
+#> 43   43   1 65.3 01-11-1943 10-05-2025      2009-02-26 14.552530    2
+#> 44   44   2 35.3 07-07-1961 04-10-2024      1996-11-08 40.458647    1
+#> 45   45   2 46.1 15-03-1955 11-05-2025      2001-05-08 21.472465    2
+#> 46   46   2 38.9 07-05-1963 29-09-2021      2002-04-14 14.782384    2
+#> 47   47   2 51.3 09-11-1945 29-02-2024      1997-03-03  4.409674    0
+#> 48   48   2 25.0 17-05-1970 01-03-2022      1995-05-28 40.968918    1
+#> 49   49   1 42.8 02-06-1948 22-10-2022      1991-04-01 21.772799    0
+#> 50   50   1 42.1 20-03-1965 29-06-2023      2007-04-08 30.293670    2
+#> 51   51   2 55.1 07-12-1936 04-11-2023      1992-01-10  3.819298    1
+#> 52   52   1 12.1 20-10-1978 06-03-2022      1990-11-22 15.793618    1
+#> 53   53   2 80.9 16-07-1924 18-04-2021      2005-05-29 25.703852    2
+#> 54   54   2 50.2 05-02-1950 05-03-2021      2000-04-09 16.007153    2
+#> 55   55   1 44.0 31-07-1962 26-05-2023      2006-07-26 48.081492    1
+#> 56   56   1 46.2 26-04-1946 28-04-2022      1992-07-13 32.215416    2
+#> 57   57   2 63.9 30-04-1926 24-03-2021      1990-03-21 38.448700    1
+#> 58   58   2 66.5 21-04-1937 09-07-2023      2003-10-23 12.827958    1
+#> 59   59   2 67.3 18-10-1933 04-04-2022      2001-02-02 46.673566    0
+#> 60   60   1 67.1 12-01-1925 18-09-2022      1992-02-17 44.144884    1
+#> 61   61   1 47.1 14-06-1957 11-02-2022      2004-07-26 45.773806    1
+#> 62   62   2 73.1 05-08-1929 02-11-2021      2002-08-30 20.737338    0
+#> 63   63   2 27.3 05-08-1963 07-12-2022      1990-12-04 19.794364    0
+#> 64   64   2 26.7 20-11-1969 19-02-2025      1996-08-09 16.026805    0
+#> 65   65   2 45.8 06-04-1947 06-11-2024      1993-02-06 32.810424    1
+#> 66   66   2 23.0 03-04-1979 27-02-2023      2002-03-16 20.719872    0
+#> 67   67   2 51.5 27-08-1946 07-04-2022      1998-02-14  3.622404    1
+#> 68   68   1 13.9 20-05-1976 24-09-2022      1990-04-22 30.031049    1
+#> 69   69   2 60.5 18-06-1946 22-01-2023      2006-12-30 41.085420    1
+#> 70   70   2 40.0 28-10-1964 03-04-2022      2004-11-15 29.469483    1
+#> 71   71   2 58.1 19-02-1939 29-05-2021      1997-03-28 13.329535    2
+#> 72   72   2 75.6 06-12-1925 10-01-2022      2001-07-23  7.454305    1
+#> 73   73   1 63.6 17-12-1926 29-12-2025      1990-08-02 41.673049    0
+#> 74   74   1 39.4 11-07-1958 15-11-2025      1997-11-19 47.118705    2
+#> 75   75   1 57.0 01-06-1947 11-10-2021      2004-06-07  3.471758    0
+#> 76   76   2 54.3 22-09-1942 07-03-2023      1997-01-11  3.974018    1
+#> 77   77   2 79.1 17-04-1930 17-09-2021      2009-05-23 43.966868    0
+#> 78   78   1 45.3 25-02-1958 18-01-2024      2003-05-31 18.906573    0
+#> 79   79   1 72.6 30-01-1927 03-04-2024      1999-08-23 16.759293    1
+#> 80   80   2 54.3 27-06-1944 20-02-2022      1998-09-28 43.816731    1
+#> 81   81   2 13.4 16-04-1978 07-03-2024      1991-09-18 46.306456    2
+#> 82   82   2 56.1 21-09-1941 11-07-2022      1997-10-12 25.532135    1
+#> 83   83   1 27.3 06-12-1965 25-10-2022      1993-04-07 25.629678    2
+#> 84   84   1 52.0 14-03-1944 12-07-2024      1996-03-16 10.881128    0
+#> 85   85   1 18.8 17-05-1976 05-08-2024      1995-02-17 14.562217    1
+#> 86   86   2 23.3 12-12-1978 27-05-2023      2002-04-12 18.715867    2
+#> 87   87   1 15.9 04-09-1976 15-12-2023      1992-07-19 35.160967    0
+#> 88   88   2 62.3 19-07-1937 16-09-2024      1999-11-05  8.737871    2
+#> 89   89   1 71.3 24-08-1931 13-01-2024      2002-12-23 24.885250    2
+#> 90   90   2 43.6 29-12-1953 02-05-2023      1997-08-12 41.965751    1
+#> 91   91   1 52.9 25-02-1950 09-10-2024      2003-01-05 14.748146    1
+#> 92   92   1 28.7 17-02-1974 25-11-2021      2002-10-13 39.211267    1
+#> 93   93   2 41.8 29-03-1956 24-06-2021      1998-01-12 10.903756    1
+#> 94   94   2 19.3 17-06-1972 03-11-2023      1991-10-18 20.731209    2
+#> 95   95   1 49.6 21-04-1960 26-10-2023      2009-11-21 49.617203    1
+#> 96   96   1 68.8 08-07-1925 04-03-2021      1994-04-16  9.046204    1
+#> 97   97   1 39.4 19-03-1953 11-11-2024      1992-08-09 10.214997    2
+#> 98   98   2 56.6 21-07-1951 09-10-2021      2008-03-12  8.367885    1
+#> 99   99   2 68.0 22-02-1932 04-03-2025      2000-02-07 36.174600    1
+#> 100 100   1 65.4 26-01-1937 20-04-2021      2002-06-16 45.768884    0
+#> 101 101   2 42.1 08-10-1954 08-08-2025      1996-11-08 21.981528    1
+#> 102 102   2 69.7 20-10-1935 06-12-2022      2005-07-07 39.672103    1
+#> 103 103   2 38.7 15-02-1965 12-04-2024      2003-11-06  9.409927    2
+#> 104 104   1 17.0 13-08-1973 31-10-2021      1990-08-29  2.590012    1
+#> 105 105   1 71.1 18-06-1930 16-11-2024      2001-07-24  5.947301    1
+#> 106 106   1 56.1 23-02-1942 13-10-2025      1998-04-05 26.916464    0
+#> 107 107   1 66.0 11-10-1935 19-01-2022      2001-09-29  5.278040    0
+#> 108 108   2 48.0 14-10-1955 24-09-2022      2003-10-24 40.908432    1
+#> 109 109   1 47.1 03-10-1950 18-05-2024      1997-10-27  5.833061    1
+#> 110 110   1 36.6 11-02-1968 10-05-2021      2004-09-10  9.426511    0
+#> 111 111   1 71.7 29-12-1923 23-06-2021      1995-09-25  5.230215    2
+#> 112 112   1 19.4 12-11-1978 16-10-2025      1998-04-13 22.978392    1
+#> 113 113   1 66.1 10-11-1924 21-04-2025      1991-01-04 38.177094    1
+#> 114 114   2 84.2 25-04-1920 22-01-2023      2004-07-24  2.583805    1
+#> 115 115   2 48.2 23-02-1942 28-03-2022      1990-05-24 21.508201    1
+#> 116 116   2 33.2 01-07-1973 19-03-2021      2006-09-04 21.759335    1
+#> 117 117   2 25.0 23-08-1969 27-07-2022      1994-08-05 48.905769    1
+#> 118 118   1 33.3 26-06-1968 30-05-2025      2001-10-12 12.627527    1
+#> 119 119   2 24.2 29-11-1969 05-12-2023      1994-02-25 37.362133    0
+#> 120 120   2 45.9 19-10-1945 04-02-2022      1991-09-29 41.540153    0
+#> 121 121   2 84.5 14-10-1922 02-06-2021      2007-04-11 47.616509    1
+#> 122 122   2 71.8 12-06-1937 03-11-2024      2009-04-04  6.729146    1
+#> 123 123   1 86.9 17-01-1921 27-08-2025      2007-11-26 35.236110    1
+#> 124 124   1 71.7 09-02-1922 29-09-2025      1993-10-22 15.642867    1
+#> 125 125   2 74.2 03-04-1934 24-04-2022      2008-06-07 40.451602    2
+#> 126 126   1 83.6 28-04-1921 18-01-2023      2004-12-21 41.926146    0
+#> 127 127   1 28.0 12-06-1977 27-01-2021      2005-06-26 34.632251    2
+#> 128 128   2 69.6 27-08-1937 29-06-2025      2007-04-03 21.969893    1
+#> 129 129   2 63.1 22-08-1930 05-11-2025      1993-10-04 18.503444    1
+#> 130 130   1 23.5 15-11-1971 18-12-2021      1995-05-28 16.249984    0
+#> 131 131   1 52.7 03-02-1950 15-02-2021      2002-10-24 41.462413    1
+#> 132 132   1 42.3 05-01-1965 28-09-2024      2007-04-22 26.042233    1
+#> 133 133   2 54.5 06-09-1951 31-01-2025      2006-02-20 25.845742    2
+#> 134 134   1 60.4 23-07-1946 30-03-2022      2006-12-08 19.489373    1
+#> 135 135   2 63.5 21-02-1933 16-07-2021      1996-08-13 42.770311    2
+#> 136 136   1 73.0 13-07-1925 13-10-2025      1998-07-11 17.049564    0
+#> 137 137   2 33.0 29-01-1958 09-08-2025      1991-01-29 12.181203    1
+#> 138 138   2 39.9 12-04-1960 03-06-2024      2000-03-23 30.118086    1
+#> 139 139   2 62.8 31-07-1941 04-01-2022      2004-05-04 42.433609    1
+#> 140 140   1 20.2 18-10-1970 07-12-2021      1990-12-18  8.018428    2
+#> 141 141   2 79.2 07-12-1924 02-11-2025      2004-02-05 20.121458    1
+#> 142 142   1 63.2 19-04-1946 31-03-2021      2009-06-30 34.236978    1
+#> 143 143   1 40.1 07-12-1967 24-04-2025      2008-01-08 11.012886    2
+#> 144 144   2 71.1 08-11-1920 08-09-2022      1991-12-07 26.228433    0
+#> 145 145   1 62.6 03-08-1938 03-04-2022      2001-03-15  3.309769    0
+#> 146 146   2 37.9 29-01-1957 18-02-2023      1995-01-06 25.822297    1
+#> 147 147   2 28.0 08-02-1967 01-02-2025      1995-01-26 47.472882    1
+#> 148 148   2 23.1 10-11-1979 27-09-2022      2002-11-30 20.296742    1
+#> 149 149   1 56.5 17-01-1934 26-09-2021      1990-07-26 35.514259    1
+#> 150 150   1 80.5 04-04-1929 18-05-2025      2009-10-06 35.060759    1
+#> 151 151   2 31.2 26-03-1961 17-12-2025      1992-05-24 24.931072    0
+#> 152 152   1 76.1 22-08-1928 06-09-2021      2004-10-07 15.120685    0
+#> 153 153   1 37.6 28-01-1965 23-07-2023      2002-09-08 38.331984    1
+#> 154 154   1 62.0 09-02-1929 31-12-2023      1991-01-23 13.881539    2
+#> 155 155   1 35.9 28-07-1958 11-04-2021      1994-06-09 27.024295    1
+#> 156 156   2 27.0 31-05-1973 26-12-2025      2000-06-01 31.416476    2
+#> 157 157   2 29.3 11-11-1970 05-06-2025      2000-03-14  6.562399    1
+#> 158 158   2 24.6 10-03-1979 04-06-2022      2003-11-01 29.156421    0
+#> 159 159   2 55.5 03-07-1935 23-04-2025      1990-12-20  2.809960    2
+#> 160 160   2 72.1 27-08-1927 01-05-2021      1999-09-15 11.594186    0
+#> 161 161   1 67.5 06-08-1927 03-11-2022      1995-02-03 22.044022    2
+#> 162 162   1 61.0 22-08-1939 09-07-2023      2000-08-07 11.864292    0
+#> 163 163   1 31.3 09-09-1968 30-03-2022      2000-01-10 20.106628    2
+#> 164 164   2 41.5 28-10-1956 28-09-2024      1998-05-08  5.669682    2
+#> 165 165   1 25.1 14-03-1980 14-07-2024      2005-04-30  8.958752    0
+#> 166 166   1 63.6 17-10-1941 12-10-2022      2005-05-30 28.572414    1
+#> 167 167   2 49.0 18-07-1951 14-01-2021      2000-07-31 33.763643    2
+#> 168 168   1 61.9 13-03-1929 14-11-2022      1991-02-08 37.311080    0
+#> 169 169   1 53.2 25-01-1943 05-12-2024      1996-04-07 20.058052    2
+#> 170 170   2 40.8 03-07-1954 09-09-2022      1995-04-12 43.700343    1
+#> 171 171   1 45.1 24-05-1960 01-01-2021      2005-07-05 40.182562    1
+#> 172 172   1 33.8 22-09-1969 03-08-2022      2003-07-20 41.446545    2
+#> 173 173   2 55.8 22-05-1948 05-07-2022      2004-03-23 45.281375    2
+#> 174 174   1 44.7 26-12-1956 20-11-2025      2001-09-14 49.160352    1
+#> 175 175   1 53.9 06-12-1951 13-11-2023      2005-11-10 14.765652    1
+#> 176 176   2 42.8 02-08-1949 07-05-2021      1992-05-05 39.780722    1
+#> 177 177   2 70.5 17-09-1931 02-07-2024      2002-02-28 11.155857    1
+#> 178 178   2 48.3 05-10-1960 20-06-2025      2009-01-15  2.179957    2
+#> 179 179   2 34.3 25-05-1957 24-11-2024      1991-08-28 28.735801    1
+#> 180 180   1 25.5 19-06-1977 23-10-2021      2002-12-31 21.667965    2
+#> 181 181   2 85.0 24-12-1922 28-11-2024      2007-12-06 46.301542    2
+#> 182 182   1 53.8 15-03-1944 01-03-2024      1997-12-23 27.011047    1
+#> 183 183   1 65.7 03-02-1925 06-06-2023      1990-10-28  3.986845    0
+#> 184 184   1 31.8 15-06-1965 09-01-2021      1997-03-16 29.160860    2
+#> 185 185   1 36.9 08-06-1957 25-09-2022      1994-04-28 11.656764    1
+#> 186 186   1 36.8 14-02-1958 28-04-2023      1994-11-20 22.866312    0
+#> 187 187   2 43.8 08-06-1961 18-06-2024      2005-03-29 13.379459    0
+#> 188 188   1 57.1 05-09-1949 31-05-2024      2006-10-10 49.369295    0
+#> 189 189   2 67.2 10-08-1941 13-07-2024      2008-10-23 33.012953    0
+#> 190 190   1 20.4 14-06-1972 21-02-2022      1992-11-01 39.554468    1
+#> 191 191   1 70.9 10-03-1928 03-11-2025      1999-02-01 49.588234    1
+#> 192 192   2 56.4 17-11-1951 13-06-2022      2008-04-14 41.222776    0
+#> 193 193   1 71.4 24-05-1930 28-06-2023      2001-10-15 17.425043    1
+#> 194 194   2 68.2 22-03-1923 27-05-2023      1991-05-18  6.704268    1
+#> 195 195   2 51.6 22-06-1942 25-05-2024      1994-01-22 18.073838    0
+#> 196 196   2 28.7 28-07-1962 20-10-2022      1991-04-23  2.904960    1
+#> 197 197   1 74.8 22-11-1922 19-05-2025      1997-09-12  4.125206    1
+#> 198 198   2 31.2 01-01-1975 12-09-2023      2006-03-29 39.305902    0
+#> 199 199   1 64.2 06-03-1926 19-05-2022      1990-05-15  9.143475    1
+#> 200 200   1 26.4 24-12-1963 09-08-2022      1990-05-14  3.846807    1
+#> 201 201   2 35.7 11-01-1969 28-07-2022      2004-09-29 39.390784    1
+#> 202 202   2 44.6 11-10-1951 06-06-2021      1996-05-17  2.873392    2
+#> 203 203   1 14.9 04-10-1980 23-03-2023      1995-09-04 12.945873    1
+#> 204 204   2 70.9 09-09-1925 08-03-2022      1996-07-30 42.850285    1
+#> 205 205   2 64.0 24-04-1928 11-04-2025      1992-04-06 17.039190    2
+#> 206 206   2 41.6 21-07-1963 11-07-2025      2005-03-11 38.770020    1
+#> 207 207   1 46.4 14-12-1958 01-05-2022      2005-05-20 19.377413    1
+#> 208 208   1 78.5 27-09-1929 04-12-2021      2008-04-11 11.180091    2
+#> 209 209   2 32.2 06-08-1963 20-04-2025      1995-10-27 24.807764    1
+#> 210 210   1 27.6 12-05-1977 20-11-2022      2004-12-26 13.887107    2
+#> 211 211   1 72.9 08-06-1926 23-07-2025      1999-04-29 47.472440    1
+#> 212 212   1 44.9 24-06-1959 15-10-2025      2004-04-30 11.942504    2
+#> 213 213   1 22.5 07-11-1974 20-03-2022      1997-05-21 44.895517    0
+#> 214 214   2 39.1 17-11-1960 03-01-2022      2000-01-09 48.090926    1
+#> 215 215   1 38.1 02-11-1955 25-07-2021      1993-11-29 48.930065    1
+#> 216 216   1 36.3 23-12-1969 05-10-2024      2006-04-05  5.253332    1
+#> 217 217   1 57.4 12-10-1933 25-12-2023      1991-02-28  3.528300    2
+#> 218 218   2 60.9 13-09-1933 17-10-2025      1994-08-19 23.352242    2
+#> 219 219   2 71.8 28-12-1920 18-03-2022      1992-10-02 17.445659    2
+#> 220 220   1 61.9 19-02-1944 10-05-2025      2005-12-31 36.716259    0
+#> 221 221   2 34.4 01-11-1962 18-11-2025      1997-03-27 42.874395    1
+#> 222 222   2 78.6 16-01-1927 12-11-2022      2005-09-02 25.357448    1
+#> 223 223   2 54.8 23-11-1945 16-01-2023      2000-09-04 20.270040    1
+#> 224 224   2 41.5 05-09-1958 07-08-2021      2000-03-15 22.056614    1
+#> 225 225   2 44.0 15-08-1963 14-02-2023      2007-08-13 31.989831    0
+#> 226 226   1 65.4 10-02-1929 13-08-2022      1994-07-09 22.367917    1
+#> 227 227   2 36.3 31-01-1959 28-06-2022      1995-05-30 14.396015    0
+#> 228 228   1 74.7 30-06-1926 01-11-2021      2001-03-22 48.003998    1
+#> 229 229   1 40.6 11-10-1966 11-03-2024      2007-05-27  3.479267    2
+#> 230 230   2 43.6 20-07-1959 03-10-2024      2003-02-10 14.358430    2
+#> 231 231   1 31.0 23-06-1964 08-06-2025      1995-06-21  7.458403    1
+#> 232 232   1 33.3 24-02-1962 23-09-2022      1995-06-24 13.647848    2
+#> 233 233   1 83.7 09-10-1923 28-03-2023      2007-06-06 48.612946    1
+#> 234 234   1 31.9 25-06-1967 14-02-2023      1999-05-08 42.907175    0
+#> 235 235   1 54.8 31-05-1954 08-08-2021      2009-03-13 21.047384    1
+#> 236 236   2 78.0 22-03-1926 06-05-2023      2004-03-08 25.044454    1
+#> 237 237   2 69.9 07-04-1931 20-10-2025      2001-03-12 48.229305    0
+#> 238 238   2 62.8 07-07-1943 09-08-2023      2006-04-12 48.064324    1
+#> 239 239   2 38.9 01-02-1960 05-06-2023      1998-12-18 40.741343    1
+#> 240 240   2 59.1 09-10-1933 08-01-2022      1992-11-03 33.463685    1
+#> 241 241   2 23.6 21-04-1976 18-02-2022      1999-12-05 38.424393    1
+#> 242 242   2 40.3 24-02-1960 09-08-2024      2000-06-25 36.122586    1
+#> 243 243   1 84.6 13-01-1922 06-05-2023      2006-09-03 47.492584    1
+#> 244 244   2 33.5 26-05-1966 16-03-2022      1999-11-18 49.097076    2
+#> 245 245   1 37.4 28-03-1963 21-04-2022      2000-08-27  4.683177    1
+#> 246 246   2 10.8 10-08-1979 25-04-2025      1990-05-20 13.779277    1
+#> 247 247   1 22.7 15-02-1971 05-02-2024      1993-11-05 15.004823    1
+#> 248 248   2 29.9 22-05-1974 15-06-2021      2004-04-18 45.639179    1
+#> 249 249   1 48.3 24-11-1951 28-09-2024      2000-03-03 20.097610    0
+#> 250 250   2 59.8 01-08-1934 25-06-2022      1994-05-15 15.202658    1
+#> 251 251   1 29.4 01-05-1979 05-07-2025      2008-09-11 10.555061    1
+#> 252 252   2 70.3 27-03-1920 06-07-2022      1990-07-09 24.709419    0
+#> 253 253   1 62.8 22-10-1931 03-06-2025      1994-08-24 21.141914    2
+#> 254 254   1 63.8 03-06-1935 13-03-2022      1999-03-25  8.319717    1
+#> 255 255   1 77.5 09-05-1922 06-06-2022      1999-11-18  2.894347    1
+#> 256 256   1 17.5 29-03-1980 03-09-2022      1997-10-06 31.852038    1
+#> 257 257   2 49.6 26-05-1941 07-03-2025      1990-12-29  5.754510    1
+#> 258 258   1 67.9 16-10-1936 05-08-2021      2004-09-03 33.677942    1
+#> 259 259   1 70.2 11-09-1926 02-01-2024      1996-11-22 37.007731    1
+#> 260 260   2 84.6 19-09-1921 07-04-2022      2006-05-07  5.393026    0
+#> 261 261   2 60.6 29-12-1948 24-12-2022      2009-08-03 30.580364    2
+#> 262 262   1 28.1 21-07-1979 21-03-2022      2007-09-10  6.358299    0
+#> 263 263   1 41.0 17-11-1967 12-10-2023      2008-11-20 45.386106    2
+#> 264 264   1 34.1 10-12-1968 22-07-2022      2003-01-18 37.619966    0
+#> 265 265   1 51.8 05-10-1953 14-02-2022      2005-07-23 19.711538    2
+#> 266 266   2 39.5 04-07-1960 14-04-2021      2000-01-07 22.672502    2
+#> 267 267   1 59.8 13-02-1931 09-04-2022      1990-12-07 18.813880    1
+#> 268 268   1 78.8 30-09-1930 05-04-2021      2009-07-27  3.110246    2
+#> 269 269   2 47.0 01-08-1946 10-03-2024      1993-08-04 18.167174    1
+#> 270 270   2 74.7 04-02-1933 16-10-2024      2007-10-31 19.785216    2
+#> 271 271   2 71.7 11-09-1927 02-05-2025      1999-05-10 10.109208    1
+#> 272 272   2 68.2 12-01-1924 06-01-2022      1992-03-24 33.693880    1
+#> 273 273   1 34.9 24-11-1971 22-01-2022      2006-11-02 30.721500    1
+#> 274 274   2 52.0 11-12-1954 04-04-2022      2006-12-16  8.646929    1
+#> 275 275   1 64.2 12-12-1931 09-08-2025      1996-02-13  7.722709    0
+#> 276 276   1 78.7 22-03-1923 28-09-2021      2001-12-18 26.921922    0
+#> 277 277   2 42.0 11-04-1948 19-11-2021      1990-04-01 35.115647    2
+#> 278 278   2 41.3 09-04-1959 22-07-2024      2000-08-08 14.482145    1
+#> 279 279   2 46.2 04-08-1956 03-04-2023      2002-10-25 22.614925    0
+#> 280 280   2 14.3 12-05-1978 15-03-2023      1992-09-04 46.106998    2
+#> 281 281   2 63.4 12-01-1927 17-10-2022      1990-06-22 39.476075    2
+#> 282 282   2 30.8 05-11-1977 22-11-2025      2008-08-10 29.956841    1
+#> 283 283   1 36.3 27-03-1960 04-08-2025      1996-06-28 44.910783    0
+#> 284 284   2 24.6 03-11-1971 16-03-2021      1996-06-21 36.577955    1
+#> 285 285   2 75.1 07-05-1920 05-03-2024      1995-06-09 18.254033    0
+#> 286 286   2 68.2 28-09-1939 08-03-2023      2007-12-03 49.940051    1
+#> 287 287   2 35.9 31-01-1963 29-09-2022      1998-12-30 18.017620    0
+#> 288 288   2 39.3 13-10-1968 30-03-2024      2008-02-18 43.396998    1
+#> 289 289   2 30.2 02-03-1962 18-10-2023      1992-05-29 25.109399    0
+#> 290 290   2 30.1 18-02-1965 27-01-2021      1995-03-18 21.659074    2
+#> 291 291   1 31.3 27-12-1975 15-07-2022      2007-04-21 14.243794    1
+#> 292 292   1 41.3 30-04-1957 19-12-2025      1998-08-01 17.382840    1
+#> 293 293   2 73.5 18-06-1929 31-10-2021      2002-12-05 47.383364    0
+#> 294 294   2 48.6 26-07-1950 30-12-2025      1999-03-05 33.808558    0
+#> 295 295   1 40.0 04-02-1966 16-09-2022      2006-02-18 24.781553    1
+#> 296 296   2 25.3 29-05-1977 07-11-2022      2002-09-04 18.273516    1
+#> 297 297   2 65.9 20-10-1936 27-04-2022      2002-09-23 40.761406    2
+#> 298 298   1 40.3 03-12-1951 16-10-2021      1992-04-01 44.178029    1
+#> 299 299   2 63.4 08-07-1945 24-11-2024      2008-11-18 33.076359    2
+#> 300 300   2 60.2 24-07-1936 08-06-2023      1996-10-20 39.738521    2
+#> 301 301   1 31.0 01-02-1967 24-05-2021      1998-02-08 46.235196    0
+#> 302 302   1 43.0 04-09-1953 20-02-2022      1996-09-06 33.117730    0
+#> 303 303   1 80.7 05-10-1921 15-07-2021      2002-06-01 22.026256    1
+#> 304 304   1 58.2 23-07-1942 13-10-2025      2000-10-18 32.297979    1
+#> 305 305   1 66.3 25-04-1942 14-09-2025      2008-08-08  2.177728    1
+#> 306 306   1 28.3 07-04-1974 29-10-2025      2002-07-08 34.516642    1
+#> 307 307   2 42.3 30-12-1962 14-10-2023      2005-05-05 36.982284    2
+#> 308 308   2 39.4 13-09-1961 20-12-2023      2001-02-13 24.971545    0
+#> 309 309   2 77.6 20-02-1927 22-01-2024      2004-10-10  9.231306    1
+#> 310 310   2 51.9 12-08-1946 05-11-2021      1998-07-05 32.500458    0
+#> 311 311   1 74.2 06-12-1931 12-07-2024      2006-01-30 35.146088    1
+#> 312 312   1 71.3 08-05-1924 08-09-2021      1995-08-15 30.234319    0
+#> 313 313   1 57.4 03-03-1940 23-08-2023      1997-07-24  9.922640    0
+#> 314 314   1 53.4 11-04-1955 07-06-2023      2008-09-06  4.007591    1
+#> 315 315   1 32.2 12-01-1974 03-12-2023      2006-03-20 24.193623    1
+#> 316 316   1 60.3 17-09-1944 24-06-2021      2004-12-20 10.077171    0
+#> 317 317   1 55.1 01-09-1948 07-10-2022      2003-10-15 15.910275    2
+#> 318 318   1 38.9 18-09-1953 21-12-2025      1992-08-06 18.027171    1
+#> 319 319   1 79.6 08-12-1927 22-01-2025      2007-07-13 21.340840    0
+#> 320 320   2 22.2 18-11-1978 04-10-2025      2001-02-07 30.209850    1
+#> 321 321   1 80.1 25-12-1924 12-08-2025      2005-01-18 14.302539    0
+#> 322 322   2 57.6 30-12-1943 17-05-2025      2001-08-15 38.126368    2
+#> 323 323   2 58.1 03-09-1941 01-08-2021      1999-10-06  9.805071    2
+#> 324 324   1 51.4 29-05-1956 24-02-2025      2007-11-06 32.426610    2
+#> 325 325   1 60.2 27-01-1944 08-07-2022      2004-04-04 29.737010    2
+#> 326 326   2 26.0 02-09-1969 18-01-2025      1995-09-07 42.467471    0
+#> 327 327   2 55.8 23-05-1944 20-06-2023      2000-03-13  7.370828    1
+#> 328 328   2 30.3 16-08-1970 16-05-2022      2000-12-08 10.229165    2
+#> 329 329   2 43.4 26-04-1954 24-12-2023      1997-09-07 20.614671    1
+#> 330 330   1 23.5 24-08-1967 17-09-2022      1991-02-23 21.734495    0
+#> 331 331   1 84.3 12-07-1925 14-12-2022      2009-11-01 20.333917    1
+#> 332 332   2 50.4 03-03-1953 06-03-2024      2003-08-09  2.697147    2
+#> 333 333   2 55.7 27-03-1941 09-05-2023      1996-11-29 14.553676    2
+#> 334 334   2 71.4 06-01-1927 04-03-2025      1998-06-03 43.095422    1
+#> 335 335   1 88.8 22-10-1920 07-12-2023      2009-08-19 48.047356    1
+#> 336 336   2 60.6 30-01-1934 23-07-2021      1994-09-20 13.869680    1
+#> 337 337   2 27.3 17-11-1980 15-01-2021      2008-03-20  3.477610    1
+#> 338 338   1 46.0 17-09-1947 18-05-2022      1993-09-08 14.485979    0
+#> 339 339   2 86.3 02-02-1922 16-02-2021      2008-06-04 26.597062    2
+#> 340 340   1 71.5 28-03-1935 08-05-2022      2006-10-03 48.411732    2
+#> 341 341   2 20.1 13-03-1973 29-04-2022      1993-04-14  7.438856    2
+#> 342 342   2 49.7 16-10-1943 01-10-2024      1993-06-22 38.307833    2
+#> 343 343   2 30.2 17-09-1967 26-01-2022      1997-11-27  6.317694    2
+#> 344 344   2 74.8 10-01-1921 27-10-2025      1995-11-03  8.762062    0
+#> 345 345   2 22.6 06-05-1977 27-03-2023      1999-11-24 25.125046    2
+#> 346 346   1 54.0 04-05-1951 06-09-2023      2005-05-12 34.493890    2
+#> 347 347   1 42.8 29-11-1949 09-01-2024      1992-09-30 49.311914    1
+#> 348 348   2 37.3 16-05-1967 16-10-2025      2004-08-22  8.104103    2
+#> 349 349   2 67.6 26-05-1923 24-02-2021      1991-01-09 46.280037    1
+#> 350 350   1 40.4 04-12-1968 24-08-2021      2009-04-27 28.646443    0
+#> 351 351   1 43.6 17-10-1956 05-06-2025      2000-05-12 29.489499    1
+#> 352 352   2 63.0 03-06-1936 02-09-2022      1999-05-22 44.771568    0
+#> 353 353   1 22.9 09-05-1980 18-06-2024      2003-04-20 14.331190    1
+#> 354 354   2 62.3 02-03-1946 05-05-2022      2008-06-11 48.387829    1
+#> 355 355   1 52.2 22-03-1955 30-11-2024      2007-06-13 49.013694    1
+#> 356 356   2 74.5 03-05-1922 23-03-2021      1996-10-25 31.995838    1
+#> 357 357   1 61.5 24-05-1947 09-03-2021      2008-11-06 21.550488    1
+#> 358 358   2 35.3 08-05-1961 18-10-2022      1996-08-09 39.463586    1
+#> 359 359   1 59.3 30-03-1949 10-11-2022      2008-07-25 10.944832    0
+#> 360 360   1 57.9 07-07-1940 19-08-2021      1998-06-10 14.694566    2
+#> 361 361   1 80.6 17-04-1920 12-07-2025      2000-12-08  6.191164    1
+#> 362 362   2 54.8 02-10-1953 03-07-2022      2008-07-03 12.618176    1
+#> 363 363   1 64.1 13-10-1934 05-11-2023      1998-11-11 15.420836    0
+#> 364 364   2 27.3 06-06-1975 02-12-2024      2002-09-08 11.988318    1
+#> 365 365   2 80.4 05-04-1928 27-10-2025      2008-08-25 47.712876    1
+#> 366 366   1 71.0 03-04-1926 16-12-2023      1997-03-16 45.048453    1
+#> 367 367   2 43.9 16-04-1949 03-09-2024      1993-03-27 43.337779    2
+#> 368 368   2 25.9 01-04-1965 24-05-2025      1991-03-05  6.518962    2
+#> 369 369   1 68.7 21-03-1930 05-06-2024      1998-12-01 36.148004    1
+#> 370 370   1 55.9 20-05-1934 17-02-2023      1990-04-07 11.978256    2
+#> 371 371   1 51.5 30-11-1940 04-03-2022      1992-05-16  4.439970    0
+#> 372 372   1 60.0 13-04-1949 08-10-2025      2009-05-01 46.536782    1
+#> 373 373   2 80.9 30-08-1925 14-02-2024      2006-07-16 20.863454    1
+#> 374 374   2 12.0 11-06-1978 23-01-2021      1990-05-25 34.850596    0
+#> 375 375   1 48.2 06-11-1948 07-12-2023      1997-01-24 43.401880    0
+#> 376 376   2 31.5 12-08-1959 09-12-2021      1991-02-17  4.699565    1
+#> 377 377   2 74.8 12-05-1920 22-09-2022      1995-02-16 20.089003    1
+#> 378 378   1 65.3 21-05-1941 22-05-2024      2006-08-31 30.528584    2
+#> 379 379   1 75.2 20-01-1921 17-02-2022      1996-04-13 13.885372    1
+#> 380 380   1 37.5 21-08-1960 22-07-2021      1998-02-02 18.427597    1
+#> 381 381   2 70.7 06-12-1924 24-04-2022      1995-08-08 26.996854    2
+#> 382 382   2 11.2 12-08-1980 02-05-2024      1991-10-28 40.178692    2
+#> 383 383   1 46.5 23-11-1944 31-05-2022      1991-05-16 13.475373    1
+#> 384 384   1 66.4 27-11-1925 29-06-2025      1992-04-10  7.857068    1
+#> 385 385   1 36.2 15-03-1955 04-02-2024      1991-06-02 19.347395    0
+#> 386 386   2 28.0 14-08-1976 26-03-2025      2004-08-14 46.395881    0
+#> 387 387   2 71.8 01-05-1921 03-11-2023      1993-02-19 49.601147    2
+#> 388 388   1 55.4 14-03-1940 25-02-2022      1995-07-27 30.254962    2
+#> 389 389   1 48.8 06-05-1958 01-08-2022      2007-03-10 36.040955    1
+#> 390 390   2 35.6 26-05-1963 19-05-2021      1999-01-12 48.379797    1
+#> 391 391   1 26.3 06-10-1973 12-06-2024      2000-01-21 44.918158    1
+#> 392 392   1 52.8 08-09-1956 29-12-2023      2009-07-06 19.030422    1
+#> 393 393   2 28.6 29-09-1968 15-05-2025      1997-04-28 26.946929    1
+#> 394 394   2 75.3 26-06-1922 06-12-2024      1997-10-18 27.518186    1
+#> 395 395   1 78.4 16-03-1929 16-03-2023      2007-08-09 17.569147    1
+#> 396 396   1 57.4 10-05-1947 31-08-2021      2004-10-06 15.137202    1
+#> 397 397   1 39.5 28-02-1954 07-01-2021      1993-09-05 37.745379    0
+#> 398 398   1 33.9 13-07-1965 08-01-2024      1999-06-16 29.121612    1
+#> 399 399   1 55.1 18-01-1942 10-03-2023      1997-02-18  5.298081    2
+#> 400 400   2 61.3 05-09-1943 19-12-2022      2004-12-05 22.302039    1
+#> 401 401   1 47.4 20-02-1945 13-07-2025      1992-07-22 46.597214    1
+#> 402 402   1 44.3 05-01-1961 17-01-2022      2005-05-09 20.478571    1
+#> 403 403   1 55.4 21-02-1954 12-07-2025      2009-07-25 21.787995    1
+#> 404 404   2 84.0 08-10-1921 03-03-2022      2005-10-09 37.093816    2
+#> 405 405   1 41.9 25-05-1953 13-05-2023      1995-04-17  2.060206    0
+#> 406 406   2 26.1 02-05-1972 11-10-2025      1998-06-12 36.205114    2
+#> 407 407   2 74.2 06-05-1921 25-02-2024      1995-07-18 11.235077    0
+#> 408 408   1 31.3 12-04-1975 23-09-2021      2006-08-10  2.716348    1
+#> 409 409   1 39.2 24-07-1962 02-10-2025      2001-09-24 18.294885    1
+#> 410 410   1 22.3 03-09-1974 12-09-2025      1996-12-10  3.744587    1
+#> 411 411   1 30.1 16-04-1969 20-10-2024      1999-05-17 48.879749    0
+#> 412 412   1 51.3 12-02-1940 05-08-2022      1991-05-26 36.646992    1
+#> 413 413   2 33.4 03-06-1973 30-07-2022      2006-11-06 24.488978    1
+#> 414 414   1 19.5 26-09-1979 22-12-2025      1999-03-29  4.779630    1
+#> 415 415   2 43.1 15-05-1966 02-12-2023      2009-06-22  5.308503    2
+#> 416 416   2 37.8 16-12-1969 29-11-2023      2007-10-11 42.649722    1
+#> 417 417   2 21.7 21-10-1968 24-07-2021      1990-07-12 20.581065    2
+#> 418 418   1 25.6 13-03-1979 13-08-2021      2004-10-22 27.452488    2
+#> 419 419   1 64.2 17-09-1939 27-06-2023      2003-11-18 10.821816    0
+#> 420 420   1 45.1 04-10-1951 09-10-2023      1996-11-11 23.870053    2
+#> 421 421   2 40.2 05-09-1967 13-04-2021      2007-11-14  4.771604    1
+#> 422 422   2 43.6 17-08-1948 21-01-2025      1992-03-08  4.317340    2
+#> 423 423   2 23.4 16-09-1976 04-07-2021      2000-02-11 14.094382    1
+#> 424 424   1 60.7 19-09-1948 04-03-2023      2009-05-26 14.059304    1
+#> 425 425   1 22.7 14-10-1971 13-01-2022      1994-07-07  3.522323    2
+#> 426 426   1 22.8 18-03-1974 28-05-2022      1996-12-26 39.839553    0
+#> 427 427   1 50.7 21-06-1949 01-08-2025      2000-03-02 49.825367    1
+#> 428 428   2 35.0 30-12-1971 28-08-2025      2006-12-26 43.499726    1
+#> 429 429   1 74.4 05-05-1924 02-09-2021      1998-09-11 31.260249    0
+#> 430 430   1 24.4 03-06-1977 23-11-2023      2001-11-11  7.081894    0
+#> 431 431   1 33.8 17-05-1969 19-06-2025      2003-02-18 37.233791    1
+#> 432 432   1 17.0 03-03-1974 20-04-2023      1991-03-18 40.958298    1
+#> 433 433   1 57.9 31-08-1938 29-11-2025      1996-07-11  7.989304    2
+#> 434 434   2 16.5 01-09-1980 06-08-2022      1997-02-15 43.400602    0
+#> 435 435   1 64.2 22-03-1934 07-09-2022      1998-05-23 45.317837    2
+#> 436 436   2 34.8 14-01-1959 30-05-2023      1993-10-25  4.221854    2
+#> 437 437   2 29.0 12-09-1964 26-03-2022      1993-08-27 35.562059    2
+#> 438 438   2 82.6 17-06-1924 27-10-2022      2007-02-06 18.817358    1
+#> 439 439   2 30.3 04-01-1960 17-09-2023      1990-04-27 10.350141    0
+#> 440 440   2 64.5 23-11-1941 28-07-2025      2006-06-02 28.209055    1
+#> 441 441   2 64.7 17-02-1935 15-05-2025      1999-11-14 23.940887    1
+#> 442 442   2 30.6 14-09-1970 22-05-2024      2001-04-10 20.209522    2
+#> 443 443   2 66.3 12-12-1931 06-09-2022      1998-03-13 18.546271    1
+#> 444 444   1 21.8 13-12-1978 18-06-2024      2000-10-15 13.881908    1
+#> 445 445   2 34.8 10-01-1969 26-12-2023      2003-10-26 45.243238    2
+#> 446 446   1 53.2 11-08-1953 30-03-2024      2006-11-02 34.081770    0
+#> 447 447   2 65.4 30-07-1944 02-03-2024      2009-12-06 22.880177    1
+#> 448 448   1 31.1 29-08-1975 02-06-2024      2006-10-08 30.752290    1
+#> 449 449   1 27.5 13-02-1967 25-07-2025      1994-08-28 43.332323    2
+#> 450 450   2 47.0 18-05-1952 03-12-2025      1999-05-01 48.271564    2
+#> 451 451   2 70.9 07-05-1933 10-01-2023      2004-04-09 38.828170    1
+#> 452 452   1 44.8 23-04-1946 01-08-2021      1991-01-30 14.639380    0
+#> 453 453   1 30.2 07-01-1972 08-05-2022      2002-03-05 20.355345    1
+#> 454 454   2 33.5 26-01-1960 15-05-2022      1993-07-27 28.323469    0
+#> 455 455   2 80.8 07-05-1927 21-12-2021      2008-02-25 25.044494    2
+#> 456 456   2 44.9 23-03-1951 08-02-2021      1996-02-07 10.485447    2
+#> 457 457   1 45.4 21-11-1946 20-11-2025      1992-04-18 11.323082    1
+#> 458 458   1 52.1 23-04-1940 14-05-2023      1992-05-20 11.149514    1
+#> 459 459   1 76.9 04-02-1923 01-04-2025      1999-12-16 16.843649    2
+#> 460 460   1 66.9 11-11-1931 02-02-2024      1998-10-23 20.909995    2
+#> 461 461   2 26.3 11-01-1970 22-05-2025      1996-05-10  5.905739    1
+#> 462 462   2 51.3 06-03-1957 23-04-2024      2008-06-15 38.127451    2
+#> 463 463   1 45.0 20-09-1945 22-12-2022      1990-10-07 18.110977    1
+#> 464 464   2 19.5 17-06-1979 20-02-2022      1998-12-04 46.337788    1
+#> 465 465   1 17.2 29-11-1976 23-07-2025      1994-02-24 19.164692    0
+#> 466 466   2 45.0 10-02-1963 20-10-2022      2008-02-13 18.941943    1
+#> 467 467   1 44.1 17-12-1959 01-11-2024      2004-01-25 21.856790    0
+#> 468 468   2 62.7 15-03-1928 02-12-2024      1990-12-01 12.246935    0
+#> 469 469   2 41.1 24-04-1963 22-01-2025      2004-05-26 49.701390    1
+#> 470 470   1 51.9 29-01-1951 21-01-2022      2002-12-23 30.930603    1
+#> 471 471   2 38.6 17-02-1956 26-06-2023      1994-09-14 28.770234    1
+#> 472 472   1 45.9 27-12-1956 23-04-2023      2002-12-01 44.911593    1
+#> 473 473   2 53.0 10-09-1951 25-03-2023      2004-09-06  5.347050    2
+#> 474 474   2 65.8 08-12-1942 08-10-2024      2008-09-12 39.534308    1
+#> 475 475   1 46.9 17-05-1962 30-12-2021      2009-04-22 41.533690    2
+#> 476 476   1 63.0 24-01-1932 11-03-2023      1995-01-25 25.407149    1
+#> 477 477   1 29.0 20-05-1970 09-01-2023      1999-05-29 20.559943    1
+#> 478 478   1 69.2 22-12-1926 29-07-2025      1996-03-19  4.588942    2
+#> 479 479   1 68.7 28-09-1935 28-10-2022      2004-06-17 46.190599    2
+#> 480 480   1 76.4 20-05-1925 10-11-2023      2001-10-21 14.218878    1
+#> 481 481   2 65.9 18-09-1931 30-09-2021      1997-07-29 27.029120    0
+#> 482 482   1 62.2 16-08-1937 06-03-2023      1999-11-06 41.506480    0
+#> 483 483   1 57.4 18-05-1943 13-04-2024      2000-10-26 47.405472    1
+#> 484 484   1 22.7 23-02-1977 23-11-2021      1999-11-24 42.655268    1
+#> 485 485   1 61.6 15-01-1944 22-10-2025      2005-08-05 25.670130    1
+#> 486 486   2 56.8 10-07-1934 18-10-2025      1991-04-19  7.365774    2
+#> 487 487   2 71.4 30-11-1925 29-08-2025      1997-04-07 16.097080    0
+#> 488 488   1 19.5 08-04-1980 03-08-2024      1999-10-18 29.333831    1
+#> 489 489   1 16.5 19-05-1976 05-07-2024      1992-11-08 48.851585    2
+#> 490 490   2 79.2 30-04-1923 29-08-2022      2002-07-29 14.323979    2
+#> 491 491   1 63.8 22-07-1926 17-04-2023      1990-04-26  6.125686    0
+#> 492 492   2 48.2 05-04-1956 07-11-2024      2004-06-24 48.946625    1
+#> 493 493   1 74.9 08-05-1920 19-04-2024      1995-04-05 33.898107    0
+#> 494 494   2 75.7 20-08-1926 25-02-2025      2002-05-16 30.244556    2
+#> 495 495   2 20.8 19-06-1973 03-04-2024      1994-03-29  9.893873    0
+#> 496 496   1 19.0 01-07-1972 03-11-2025      1991-07-04  6.770677    1
+#> 497 497   1 26.5 18-09-1965 29-01-2023      1992-03-14 44.410869    0
+#> 498 498   1 66.4 02-11-1931 11-08-2023      1998-03-16 34.909506    1
+#> 499 499   2 63.4 24-04-1944 05-09-2021      2007-09-12 34.178187    1
+#> 500 500   2 66.3 06-03-1942 21-11-2022      2008-06-07 17.151914    1
+#>     localisation necrosis margins cd10 sox10 ck death_date recurrence_date
+#> 1              3       NA       0    1     1  1       <NA>      2015-03-22
+#> 2              1       NA       0    0     0 NA       <NA>            <NA>
+#> 3              2        0       1   NA    NA  0 2017-09-02            <NA>
+#> 4              3        1       0    0     0  0 2018-10-04      2011-12-31
+#> 5              1       NA       0    0    NA  0       <NA>            <NA>
+#> 6              3        1       1    1     1  0       <NA>            <NA>
+#> 7              2        0       1    0     1  0       <NA>      2012-08-30
+#> 8              5        1       0    0     0 NA 2018-05-09      2012-01-31
+#> 9              3       NA       1    1     1  0       <NA>      2014-02-16
+#> 10             1       NA       1    1     1  1       <NA>      2014-08-15
+#> 11             3       NA       0   NA     0  0       <NA>      2011-04-04
+#> 12             2       NA       0    1     1 NA 2018-10-15      2012-06-29
+#> 13             3        0       1    0     1  0 2020-03-28      2014-09-16
+#> 14             0        1       0    0     0 NA       <NA>      2011-05-23
+#> 15             2        1       0    0    NA NA 2020-09-30      2014-01-06
+#> 16             4        0       0    0     0 NA       <NA>            <NA>
+#> 17             2       NA       1   NA     0 NA 2018-08-28            <NA>
+#> 18             3        0       1    1     0  1       <NA>            <NA>
+#> 19             4       NA       0   NA     0 NA       <NA>      2010-11-15
+#> 20             3        1       1   NA     1 NA       <NA>      2010-08-13
+#> 21             4        1       1    0     0  1       <NA>            <NA>
+#> 22             4        0       1   NA    NA NA       <NA>      2012-05-04
+#> 23             2       NA       0   NA     0 NA       <NA>      2010-06-12
+#> 24             3        1       0    1    NA  0 2020-11-06            <NA>
+#> 25             3        0       0   NA     1 NA 2020-05-29            <NA>
+#> 26             3        0       0    1     1  0       <NA>            <NA>
+#> 27             3       NA       0    1    NA  1 2017-06-25            <NA>
+#> 28             2        1       0   NA     0  0       <NA>            <NA>
+#> 29             4        1       0    0     1  1 2019-02-19            <NA>
+#> 30             4       NA       0    1     1  0 2018-07-01      2012-08-19
+#> 31             4       NA       1   NA     1 NA       <NA>            <NA>
+#> 32             2        1       0    0     1  1       <NA>            <NA>
+#> 33             4       NA       1    1     0  0       <NA>      2013-10-14
+#> 34             3        0       0    1     0  0 2017-06-14      2010-08-21
+#> 35             2       NA       0    1     0  1       <NA>      2015-02-10
+#> 36             4       NA       0   NA     0  0 2018-09-29      2015-01-24
+#> 37             4        0       1    1     0  1 2017-12-09      2012-09-02
+#> 38             4        1       0    1     0  1 2020-07-08      2011-01-23
+#> 39             3        0       1   NA     1  1 2020-10-02            <NA>
+#> 40             0        0       1    1     1 NA 2019-05-16      2014-09-30
+#> 41             1        1       0    1    NA  0       <NA>            <NA>
+#> 42             2       NA       1    0     1 NA       <NA>            <NA>
+#> 43             1       NA       1    0    NA  1       <NA>      2012-11-10
+#> 44             3        1       0    1     1 NA 2017-07-20            <NA>
+#> 45             4       NA       0    0     0  1       <NA>            <NA>
+#> 46             2        1       0    1    NA  1       <NA>            <NA>
+#> 47             2       NA       1   NA     0  1       <NA>            <NA>
+#> 48             3        0       0    1    NA  1       <NA>      2012-05-07
+#> 49             4        1       1   NA    NA NA 2019-02-25            <NA>
+#> 50             3        1       0    0     1  1       <NA>            <NA>
+#> 51             3        0       1    1     1  0 2018-04-29            <NA>
+#> 52             3        0       1   NA     0 NA 2016-04-26            <NA>
+#> 53             1        0       1   NA     1  0 2017-05-05            <NA>
+#> 54             2        1       1   NA     0  0 2020-01-31      2012-01-03
+#> 55             2       NA       1    0     1  0 2020-08-29            <NA>
+#> 56             1        1       1    1     0  0 2017-10-14            <NA>
+#> 57             1        1       1    1    NA  1       <NA>            <NA>
+#> 58             3       NA       1    0     0  0 2020-08-28      2014-02-08
+#> 59             3        1       0    0     1 NA 2016-04-23      2014-08-09
+#> 60             1       NA       1   NA    NA NA       <NA>      2011-10-20
+#> 61             0       NA       0   NA     0  0       <NA>      2011-02-23
+#> 62             2        1       0   NA    NA  0       <NA>      2013-11-11
+#> 63             4        1       1    0     0  0       <NA>      2010-11-17
+#> 64             3        0       1    1    NA  1 2017-05-19            <NA>
+#> 65             3        1       0    1     1 NA       <NA>      2015-08-31
+#> 66             3       NA       0    0     0  1 2017-01-12            <NA>
+#> 67             3        1       0   NA     1  1       <NA>      2010-08-28
+#> 68             3       NA       1    0     0  0       <NA>      2014-11-03
+#> 69             2       NA       0    1     0  1 2019-11-28      2012-06-14
+#> 70             3        0       1    1     0 NA       <NA>      2015-03-15
+#> 71             4       NA       0   NA    NA  1       <NA>      2011-06-14
+#> 72             2        1       1   NA     0  1       <NA>            <NA>
+#> 73             3        1       0   NA     0 NA       <NA>            <NA>
+#> 74             2        1       0    0     0  1       <NA>            <NA>
+#> 75             1        1       1    0     1  1       <NA>      2014-03-28
+#> 76             4        0       1   NA     1  1       <NA>            <NA>
+#> 77             2        1       1    0    NA  0 2020-07-26      2010-03-01
+#> 78             0        0       0    0     0 NA 2017-01-01      2011-12-15
+#> 79             4        1       0   NA     1  0       <NA>      2014-11-14
+#> 80             1        1       0    1    NA  0 2020-04-25            <NA>
+#> 81             1       NA       1   NA    NA  1       <NA>            <NA>
+#> 82             2       NA       0   NA     0  1       <NA>            <NA>
+#> 83             2        1       0   NA     0  1       <NA>            <NA>
+#> 84             2        0       1    1     0  1       <NA>            <NA>
+#> 85             2        1       0    0    NA  1       <NA>      2015-12-06
+#> 86             3       NA       1   NA    NA  1 2017-01-15      2014-01-28
+#> 87             1        0       1   NA    NA NA       <NA>      2012-07-17
+#> 88             2        0       0    0    NA  0 2016-08-12      2015-07-28
+#> 89             5       NA       0    1     1  1       <NA>      2014-08-13
+#> 90             4        1       0    1     1 NA 2020-08-23      2015-11-11
+#> 91             3        0       0    0     1  0 2016-02-16      2015-04-05
+#> 92             1        0       1    0     1  0       <NA>            <NA>
+#> 93             3       NA       1   NA    NA  1       <NA>      2011-03-11
+#> 94             2        1       0   NA    NA NA 2020-11-01      2015-03-06
+#> 95             3        1       0   NA     1 NA       <NA>            <NA>
+#> 96             4        0       0    1    NA NA 2016-02-13            <NA>
+#> 97             1        1       0    0     1 NA       <NA>            <NA>
+#> 98             2       NA       0    0     0  1       <NA>            <NA>
+#> 99             3        1       1   NA     1  0 2018-06-30            <NA>
+#> 100            1        1       0    0     0  1 2019-03-24            <NA>
+#> 101            4       NA       0    1     1 NA       <NA>      2013-01-24
+#> 102            4        0       0    0     1  1       <NA>            <NA>
+#> 103            4       NA       1    1    NA NA 2016-01-24            <NA>
+#> 104            3       NA       1   NA     0 NA       <NA>            <NA>
+#> 105            2        1       0   NA     1  0       <NA>            <NA>
+#> 106            2       NA       1    0     1  0       <NA>            <NA>
+#> 107            4        1       1   NA     1  0       <NA>            <NA>
+#> 108            2        1       1    1     0 NA 2020-07-31      2014-02-20
+#> 109            4       NA       0    1     0  1       <NA>      2015-06-30
+#> 110            2        1       1    1     0  1 2018-01-01      2012-02-14
+#> 111            3       NA       1    0    NA NA       <NA>      2012-09-20
+#> 112            4        1       1    0    NA NA       <NA>            <NA>
+#> 113            4       NA       0    1     1  1 2018-05-04      2014-02-07
+#> 114            2        1       0    1     0  1       <NA>            <NA>
+#> 115            4        0       0   NA    NA  1       <NA>      2014-12-11
+#> 116            4        0       0    0     1  0       <NA>            <NA>
+#> 117            3       NA       1   NA     1 NA 2018-11-11      2011-12-19
+#> 118            2       NA       0    0     0  0       <NA>            <NA>
+#> 119            0       NA       0   NA     1  1 2020-05-19      2014-09-27
+#> 120            4        0       0    0    NA  0       <NA>      2013-10-28
+#> 121            3        0       0   NA     1  1       <NA>      2010-05-02
+#> 122            2        0       0    0     0  0 2020-07-06      2013-02-20
+#> 123            3        0       1    1     0  1 2019-05-25      2010-07-17
+#> 124            4        1       1    0     0  0       <NA>            <NA>
+#> 125            2        0       1    0     0  0 2018-07-12      2014-09-14
+#> 126            2        0       1   NA     1  0       <NA>            <NA>
+#> 127            2       NA       1    1     1 NA       <NA>      2011-09-30
+#> 128            3        0       0    1     0  1 2017-01-16            <NA>
+#> 129            1        0       0   NA     1  1       <NA>      2013-08-11
+#> 130            3        0       1    1    NA  0       <NA>      2010-09-27
+#> 131            4       NA       0    0    NA  1 2019-03-10            <NA>
+#> 132            3        1       0   NA     1  0 2020-04-20            <NA>
+#> 133            2       NA       1    1     0 NA       <NA>      2014-08-10
+#> 134            3        0       1    1     1 NA       <NA>      2011-12-08
+#> 135            1       NA       0   NA     0 NA       <NA>            <NA>
+#> 136            0       NA       1    0     1  0 2016-02-17      2013-12-26
+#> 137            3        0       1   NA    NA  1 2019-03-06      2014-06-29
+#> 138            2       NA       1    1     1  1 2019-11-26            <NA>
+#> 139            1        1       1   NA     1 NA       <NA>      2011-11-27
+#> 140            2        0       0   NA    NA  0       <NA>      2014-12-10
+#> 141            1       NA       0    0     0  0       <NA>            <NA>
+#> 142            2        1       0    0     1  0       <NA>      2011-12-26
+#> 143            1       NA       1    0    NA  1 2016-11-27            <NA>
+#> 144            2       NA       1    1    NA  0       <NA>      2014-02-12
+#> 145            2        1       1   NA    NA  1       <NA>            <NA>
+#> 146            4        1       0    1     1 NA       <NA>      2013-08-30
+#> 147            2        0       1    1     1  1       <NA>            <NA>
+#> 148            2        0       1    0    NA  1 2019-04-28            <NA>
+#> 149            4        1       1    1     1  0       <NA>            <NA>
+#> 150            2       NA       1    1    NA  0 2017-03-22      2014-01-21
+#> 151            2       NA       0    0     1  0       <NA>      2014-12-24
+#> 152            4       NA       0   NA     0 NA 2017-09-21            <NA>
+#> 153            4        0       0    1    NA NA       <NA>            <NA>
+#> 154            2       NA       0    0    NA  1       <NA>      2010-08-18
+#> 155            1        1       1    1     0  0       <NA>      2011-03-14
+#> 156            2       NA       0   NA    NA NA 2020-03-17      2012-12-15
+#> 157            1        0       1   NA     0 NA       <NA>      2014-12-14
+#> 158            2        1       0    0    NA  0       <NA>            <NA>
+#> 159            1       NA       0    1     1  1 2019-12-14      2014-06-07
+#> 160            3       NA       0    1     1  1       <NA>      2010-08-16
+#> 161            1       NA       0   NA    NA  1 2016-08-17            <NA>
+#> 162            4       NA       0    0    NA  0 2018-04-18      2012-04-23
+#> 163            2        1       1    1     0  0       <NA>            <NA>
+#> 164            1       NA       1    0    NA  1 2018-10-20            <NA>
+#> 165            2       NA       1   NA     0  1 2017-11-09      2015-05-13
+#> 166            3        1       0   NA    NA NA       <NA>            <NA>
+#> 167            2       NA       1    0    NA NA 2019-06-23      2011-09-12
+#> 168            4       NA       1   NA     1  0       <NA>      2012-12-29
+#> 169            3        1       0   NA     0  1       <NA>            <NA>
+#> 170            2       NA       1    1     1  0       <NA>      2011-02-16
+#> 171            4        1       0   NA     0  0       <NA>      2012-03-16
+#> 172            3        0       1   NA     0  1 2020-10-15      2015-03-17
+#> 173            4       NA       0   NA     0  1       <NA>            <NA>
+#> 174            2       NA       0   NA     0  0 2019-04-22            <NA>
+#> 175            1        1       1    0     1 NA 2019-08-04      2014-02-23
+#> 176            3        1       1   NA    NA NA       <NA>      2012-11-28
+#> 177            3        0       0    1     1  0 2018-02-13      2010-01-24
+#> 178            2        0       0    1     1 NA       <NA>            <NA>
+#> 179            1        0       0    0     1  0       <NA>            <NA>
+#> 180            4        0       0    1    NA  0 2017-09-13            <NA>
+#> 181            2        1       0   NA    NA NA       <NA>      2013-03-14
+#> 182            3        1       0    1     1  1 2018-04-05            <NA>
+#> 183            3       NA       0   NA     1 NA       <NA>      2012-12-31
+#> 184            3        0       1    1     0 NA       <NA>            <NA>
+#> 185            2        0       0    1    NA NA 2017-06-22      2014-08-12
+#> 186            1        1       1    1    NA  1       <NA>      2012-02-18
+#> 187            2        1       1    1    NA  1       <NA>            <NA>
+#> 188            2       NA       0    0     0 NA       <NA>            <NA>
+#> 189            3        0       0    0     1 NA 2018-09-25            <NA>
+#> 190            4        1       0   NA     1  1       <NA>      2015-11-21
+#> 191            3        0       1   NA     0 NA 2019-08-11            <NA>
+#> 192            3       NA       1    1    NA  0       <NA>      2013-01-27
+#> 193            1        1       0    1     0  0       <NA>            <NA>
+#> 194            2        0       1    0     0  0       <NA>            <NA>
+#> 195            1       NA       0   NA     0  1       <NA>      2012-02-29
+#> 196            3        0       1   NA     0  1 2020-12-03      2015-11-09
+#> 197            4        1       1   NA     0  1 2020-04-12            <NA>
+#> 198            3       NA       0    0     1  0 2019-05-05            <NA>
+#> 199            2        1       0   NA     0 NA       <NA>      2015-09-24
+#> 200            2       NA       1    1     0  0       <NA>            <NA>
+#> 201            3       NA       1    0     0  1       <NA>      2015-08-14
+#> 202            2        0       1   NA     0 NA       <NA>            <NA>
+#> 203            2        0       1    0     0  1       <NA>            <NA>
+#> 204            4        0       0    0     1  1       <NA>            <NA>
+#> 205            2       NA       0   NA    NA  1       <NA>      2010-02-06
+#> 206            1        0       0    1     0  1       <NA>      2015-06-08
+#> 207            3        1       1   NA     1  0       <NA>      2013-05-17
+#> 208            2        1       1    0    NA  1 2016-01-31      2013-03-19
+#> 209            3        1       1    1    NA  1       <NA>            <NA>
+#> 210            2        1       0    1     0  1       <NA>      2013-05-10
+#> 211            3       NA       1    1    NA  1       <NA>            <NA>
+#> 212            2        1       1   NA    NA  1       <NA>      2012-11-07
+#> 213            2        0       1    1    NA NA       <NA>            <NA>
+#> 214            2       NA       0    1     1 NA 2016-10-15            <NA>
+#> 215            2        1       1    1    NA  0       <NA>            <NA>
+#> 216            4        1       0    0     1 NA       <NA>      2010-10-26
+#> 217            1        1       1    0    NA  1 2018-12-17      2010-07-05
+#> 218            1        1       1   NA     1 NA       <NA>            <NA>
+#> 219            0        0       1    0     1  1       <NA>      2013-05-18
+#> 220            4        0       0    1     0  0       <NA>            <NA>
+#> 221            3        0       0    0     1  1 2020-05-31      2014-09-24
+#> 222            5       NA       0    1     1  1       <NA>            <NA>
+#> 223            3        0       1    0     0  1       <NA>            <NA>
+#> 224            3       NA       0    1     1 NA 2019-01-12      2015-10-06
+#> 225            4       NA       0   NA    NA  0       <NA>            <NA>
+#> 226            2        0       1    0     1  0       <NA>      2013-01-13
+#> 227            2       NA       1   NA     0 NA       <NA>      2013-11-15
+#> 228            1       NA       0    1     0  1       <NA>      2015-01-31
+#> 229            3        1       0   NA     0 NA 2017-01-04            <NA>
+#> 230            3        1       1    0    NA  1       <NA>      2012-10-22
+#> 231            3       NA       1   NA     1 NA       <NA>            <NA>
+#> 232            3        0       0   NA     0  0       <NA>            <NA>
+#> 233            1       NA       0   NA     1  1 2020-02-14            <NA>
+#> 234            3        1       1   NA     0  1 2018-11-25            <NA>
+#> 235            2        1       1    1     0 NA       <NA>      2015-03-13
+#> 236            2       NA       0    1     0  0       <NA>            <NA>
+#> 237            4        0       1    1    NA  0       <NA>            <NA>
+#> 238            2       NA       0    0     0 NA 2017-01-08            <NA>
+#> 239            1        0       1    1     1  0       <NA>      2012-05-06
+#> 240            2        1       1   NA     1  0 2019-09-02            <NA>
+#> 241            3        0       1   NA    NA  1       <NA>      2010-03-28
+#> 242            3       NA       1   NA     1  1 2018-11-05            <NA>
+#> 243            3       NA       1    1     1  0       <NA>      2012-10-15
+#> 244            4       NA       0   NA    NA NA 2016-11-08            <NA>
+#> 245            2        1       1    1    NA  0 2017-09-07            <NA>
+#> 246            3        0       0    0    NA NA       <NA>            <NA>
+#> 247            3        1       0    1    NA  1 2016-07-13            <NA>
+#> 248            3        0       0    1     0  1       <NA>      2015-08-25
+#> 249            3       NA       1   NA     1 NA       <NA>            <NA>
+#> 250            1       NA       0    0    NA NA 2020-08-13      2012-05-05
+#> 251            2       NA       1    1     1  0       <NA>            <NA>
+#> 252            2       NA       1   NA     1  0       <NA>      2011-03-20
+#> 253            3       NA       0    1     1 NA       <NA>      2011-07-04
+#> 254            3       NA       0    0     0 NA 2020-07-30      2014-04-21
+#> 255            2        0       0   NA     1  0       <NA>      2013-07-10
+#> 256            3        0       1    1     0  1       <NA>            <NA>
+#> 257            3        0       0   NA     1  1       <NA>      2013-11-01
+#> 258            2        1       0    0     1  0       <NA>            <NA>
+#> 259            1       NA       1    1     0 NA 2017-07-06            <NA>
+#> 260            2        1       1    1     1  0       <NA>            <NA>
+#> 261            2        0       1    0     0  0       <NA>            <NA>
+#> 262            2        0       1    0     0  0       <NA>            <NA>
+#> 263            3       NA       1    1    NA NA       <NA>            <NA>
+#> 264            0        1       1    0    NA  0 2017-12-03      2010-12-02
+#> 265            3       NA       0    1    NA  0       <NA>      2011-12-13
+#> 266            3        1       1    0     1 NA 2018-07-17      2014-10-02
+#> 267            3       NA       1    0     1  0 2018-06-14      2013-09-26
+#> 268            3        1       1    1     1  1       <NA>      2015-11-25
+#> 269            1        0       1    0    NA  0 2018-06-10      2014-05-02
+#> 270            3       NA       0   NA     0  0 2019-02-10            <NA>
+#> 271            1        1       1    1     1  0       <NA>            <NA>
+#> 272            3        0       0   NA     1  0 2016-08-30            <NA>
+#> 273            2        0       0   NA     0  0       <NA>            <NA>
+#> 274            2        0       0   NA     1  0       <NA>      2014-12-03
+#> 275            1       NA       1    0     1  1       <NA>      2014-10-05
+#> 276            2       NA       1    1     0  1 2019-07-27            <NA>
+#> 277            5        1       1    0    NA NA       <NA>      2010-11-06
+#> 278            2        1       1    0     1 NA 2018-07-25      2012-07-20
+#> 279            3        1       1   NA    NA  1       <NA>      2011-07-28
+#> 280            3       NA       1    0     0  0       <NA>      2011-03-04
+#> 281            2        0       0   NA    NA  1 2019-12-20      2013-07-24
+#> 282            1       NA       1   NA     1  0       <NA>            <NA>
+#> 283            2        0       0    1    NA  0       <NA>      2015-05-20
+#> 284            4       NA       0    1    NA  0 2017-03-11            <NA>
+#> 285            2        1       0    1     1  0       <NA>      2012-05-21
+#> 286            3        1       0    0     1 NA 2016-01-12      2015-01-23
+#> 287            2       NA       1    0     0  1 2016-01-08            <NA>
+#> 288            3       NA       0    0     0 NA 2020-05-26      2015-10-23
+#> 289            2       NA       1    0     1  0       <NA>      2010-11-29
+#> 290            2        1       1    0     1 NA       <NA>      2015-02-22
+#> 291            2        0       0   NA     0 NA       <NA>      2014-10-14
+#> 292            0        0       0    1     0 NA 2017-11-25      2013-03-09
+#> 293            2        1       1    1     0  0 2017-03-26      2010-02-05
+#> 294            2        0       1    0    NA  0       <NA>      2010-10-13
+#> 295            2        0       1    1    NA NA       <NA>      2012-06-11
+#> 296            4        1       0    1     1 NA       <NA>      2014-07-14
+#> 297            2        1       0    0     1 NA 2017-02-26            <NA>
+#> 298            4       NA       1   NA     0  1       <NA>            <NA>
+#> 299            3       NA       0    0     1  0       <NA>      2012-07-21
+#> 300            4        0       0   NA    NA NA       <NA>            <NA>
+#> 301            2        0       0    1    NA  0 2018-07-09      2012-12-27
+#> 302            4        1       0   NA     0  1 2020-10-18            <NA>
+#> 303            4        0       0   NA    NA NA       <NA>      2015-02-26
+#> 304            2       NA       1   NA     0  1 2017-03-31            <NA>
+#> 305            3        0       0    0    NA NA 2016-05-20            <NA>
+#> 306            3       NA       1    1     0 NA       <NA>      2010-08-25
+#> 307            3        0       0    0    NA NA       <NA>            <NA>
+#> 308            2       NA       0    1     0  1 2016-09-30            <NA>
+#> 309            2       NA       1    1    NA  0 2019-12-10      2010-06-08
+#> 310            3        0       1   NA    NA  1       <NA>            <NA>
+#> 311            0       NA       1   NA    NA  0       <NA>            <NA>
+#> 312            4        1       1    0    NA  1 2020-07-10      2012-04-27
+#> 313            3       NA       0    0    NA  1 2018-03-14            <NA>
+#> 314            4       NA       1    1    NA  0       <NA>      2010-12-01
+#> 315            4        1       0    1     1  1 2020-01-03      2011-10-06
+#> 316            2        0       1    0     0  1       <NA>      2011-10-05
+#> 317            2        1       0    1     1  1       <NA>            <NA>
+#> 318            1       NA       0    1     0  1 2020-03-16            <NA>
+#> 319            2        0       1    0     1 NA       <NA>            <NA>
+#> 320            4       NA       0    0    NA NA 2016-03-15      2013-08-25
+#> 321            3        0       0   NA     1 NA 2016-06-14            <NA>
+#> 322            4        1       0    0     1  0       <NA>      2015-05-18
+#> 323            3        1       0   NA    NA NA       <NA>      2012-08-05
+#> 324            5        1       1    0     0  0       <NA>      2013-02-19
+#> 325            1        0       0    0     1 NA 2019-07-16      2010-06-26
+#> 326            2        0       1   NA     1  0       <NA>      2013-02-11
+#> 327            4        0       0    1     1  1 2018-04-26            <NA>
+#> 328            3        0       0    0    NA  1       <NA>      2010-08-10
+#> 329            2        0       0    1    NA  1 2020-09-27            <NA>
+#> 330            4        0       1    1     0 NA       <NA>            <NA>
+#> 331            1        0       0    0    NA  1       <NA>            <NA>
+#> 332            2       NA       0   NA     1  1       <NA>            <NA>
+#> 333            1       NA       0    1    NA  1 2020-06-25            <NA>
+#> 334            4        0       0    1     1  1       <NA>            <NA>
+#> 335            3        0       0   NA     0  1       <NA>            <NA>
+#> 336            1        1       0   NA    NA NA 2016-08-23      2011-02-11
+#> 337            4        1       1   NA     1  1       <NA>            <NA>
+#> 338            2        1       1    1    NA  1       <NA>            <NA>
+#> 339            4        1       1    1    NA  0       <NA>      2015-11-16
+#> 340            3        0       1    0     1 NA       <NA>      2013-12-23
+#> 341            2        0       1    0     1 NA       <NA>            <NA>
+#> 342            3        0       1    0     1  0 2019-09-15            <NA>
+#> 343            4        0       0    0    NA NA       <NA>            <NA>
+#> 344            4       NA       0    1     1  0 2016-08-15      2011-03-30
+#> 345            3        0       1   NA    NA  0       <NA>            <NA>
+#> 346            3       NA       1    1    NA  1       <NA>      2011-02-02
+#> 347            3        1       1    1     0  0       <NA>      2014-03-21
+#> 348            4        1       0   NA    NA  0       <NA>            <NA>
+#> 349            3        1       1    1     1  1       <NA>            <NA>
+#> 350            2        1       0   NA    NA NA       <NA>            <NA>
+#> 351            4        0       0    1    NA  1       <NA>      2014-02-13
+#> 352            0       NA       1    0     1  0 2019-07-28            <NA>
+#> 353            0        1       0    0     0 NA       <NA>            <NA>
+#> 354            1       NA       0    0     1 NA       <NA>            <NA>
+#> 355            3        1       1   NA     1  0       <NA>      2015-04-14
+#> 356            2        0       1   NA     0 NA 2020-06-28      2013-10-30
+#> 357            2        1       0   NA     1 NA 2016-08-25            <NA>
+#> 358            0        1       0   NA     1 NA       <NA>            <NA>
+#> 359            1        1       1    1     0 NA       <NA>            <NA>
+#> 360            1       NA       0   NA     0 NA 2019-09-18      2012-04-11
+#> 361            2       NA       1   NA    NA  0 2016-06-21            <NA>
+#> 362            3       NA       1   NA     1  0       <NA>      2012-07-02
+#> 363            2        0       1    0    NA  1       <NA>            <NA>
+#> 364            4        1       1    0     1 NA       <NA>      2013-07-16
+#> 365            2        1       1   NA     1  1       <NA>            <NA>
+#> 366            3       NA       0    0    NA  1       <NA>      2010-04-05
+#> 367            4        1       0    0     0  1       <NA>            <NA>
+#> 368            4        1       1   NA     0 NA 2018-07-16            <NA>
+#> 369            3        0       0    1     1  0       <NA>      2013-10-13
+#> 370            3        0       0    1     0  0       <NA>            <NA>
+#> 371            1        1       0    0     1  0       <NA>      2010-12-20
+#> 372            3        1       1   NA     0 NA 2020-02-28      2012-11-06
+#> 373            3        0       0    0    NA NA       <NA>      2010-01-30
+#> 374            3        1       0   NA     0  1       <NA>      2013-02-22
+#> 375            3        0       0    1    NA NA 2019-01-16      2015-02-28
+#> 376            3       NA       0    1    NA  0 2018-08-21            <NA>
+#> 377            1        1       0   NA     0 NA 2019-11-12      2010-06-14
+#> 378            2        0       1   NA    NA NA 2017-09-23      2012-11-11
+#> 379            2        0       0    0    NA  0       <NA>            <NA>
+#> 380            3        0       1    1     0  0       <NA>      2011-01-25
+#> 381            4        0       0    0     0  1 2020-08-01            <NA>
+#> 382            4       NA       1    1     0  1       <NA>            <NA>
+#> 383            3        0       1    1     0 NA       <NA>            <NA>
+#> 384            3       NA       1    0     1 NA       <NA>            <NA>
+#> 385            4       NA       0    0     0 NA       <NA>            <NA>
+#> 386            2       NA       1   NA     0  1       <NA>            <NA>
+#> 387            4        1       0    1    NA  1 2016-05-13      2014-07-26
+#> 388            2        1       1    0    NA  0 2020-08-16            <NA>
+#> 389            3       NA       1    0     1  0 2018-09-30      2011-09-20
+#> 390            2        1       1    0     1 NA 2016-04-21            <NA>
+#> 391            3        1       0    0    NA NA       <NA>            <NA>
+#> 392            2        1       1    1     1 NA       <NA>      2014-04-14
+#> 393            4        0       1    1     1  1 2017-01-28      2014-04-08
+#> 394            2       NA       0    1     0  1 2019-07-23            <NA>
+#> 395            3       NA       0    0    NA  0       <NA>            <NA>
+#> 396            4       NA       0    1     0  1       <NA>            <NA>
+#> 397            3        1       0    0     0 NA 2019-04-18      2014-09-02
+#> 398            0        0       0    1     1  1       <NA>            <NA>
+#> 399            2       NA       1   NA    NA  1       <NA>      2011-10-28
+#> 400            1       NA       1    0     0  0 2017-05-08      2014-08-29
+#> 401            2       NA       1   NA     0  0       <NA>      2013-03-07
+#> 402            3       NA       1    0    NA  0       <NA>      2010-08-14
+#> 403            2        0       1   NA     0  0       <NA>            <NA>
+#> 404            1        1       0    1     1  1       <NA>            <NA>
+#> 405            2       NA       1    0     0  1       <NA>      2014-06-25
+#> 406            2       NA       0   NA     1  0 2016-01-19      2010-04-08
+#> 407            3       NA       0    0    NA NA 2017-12-01      2011-06-02
+#> 408            3        0       0    1    NA  1       <NA>            <NA>
+#> 409            2       NA       1    1     0  0       <NA>      2011-11-08
+#> 410            3        0       0   NA     1  0       <NA>            <NA>
+#> 411            2       NA       0   NA     1  1 2020-03-07      2012-03-19
+#> 412            4       NA       1    1     0  1       <NA>      2010-09-24
+#> 413            1        0       1    1    NA NA       <NA>            <NA>
+#> 414            2        1       0   NA     0  0 2017-04-24            <NA>
+#> 415            4        0       1    1     1  1       <NA>            <NA>
+#> 416            2       NA       1    0     1  1       <NA>            <NA>
+#> 417            2        1       1    0     0 NA       <NA>            <NA>
+#> 418            2        0       1    1     0  1 2016-02-10            <NA>
+#> 419            2        1       1    0     0  1       <NA>      2010-03-27
+#> 420            1        0       0   NA    NA NA 2017-07-12            <NA>
+#> 421            2       NA       0    0    NA  0       <NA>            <NA>
+#> 422            3       NA       0   NA     1  0 2018-05-08            <NA>
+#> 423            2        1       1    0    NA  0       <NA>      2012-07-11
+#> 424            2        0       0    0     0 NA       <NA>            <NA>
+#> 425            4        0       1    1    NA NA 2020-08-20      2014-07-05
+#> 426            3        0       1    0     1  1 2019-10-29      2013-08-06
+#> 427            3       NA       0    0    NA  1       <NA>      2015-03-28
+#> 428            3       NA       0   NA     1  0       <NA>            <NA>
+#> 429            2       NA       0    0    NA  1       <NA>            <NA>
+#> 430            2        0       0    1    NA  1       <NA>            <NA>
+#> 431            3        1       1   NA    NA NA 2016-01-29      2015-04-25
+#> 432            1       NA       1    1     1  1       <NA>      2014-07-29
+#> 433            3        1       0    1     0 NA       <NA>      2010-01-08
+#> 434            3        0       0    0     1  1       <NA>      2011-07-20
+#> 435            4        1       1    0    NA  0 2018-04-10            <NA>
+#> 436            3        1       1    0     0 NA       <NA>      2012-06-04
+#> 437            2        0       0    0     0 NA       <NA>            <NA>
+#> 438            3       NA       1    1    NA  0       <NA>      2012-09-21
+#> 439            3       NA       1   NA    NA NA       <NA>            <NA>
+#> 440            4        1       1    0     0  0       <NA>            <NA>
+#> 441            4        1       1    0     0 NA       <NA>            <NA>
+#> 442            3        0       0    0     1  0       <NA>            <NA>
+#> 443            5       NA       1   NA    NA  1       <NA>            <NA>
+#> 444            3       NA       1   NA     0  1 2018-05-30            <NA>
+#> 445            2        0       0    0     0  1 2020-03-13      2015-03-31
+#> 446            3       NA       1   NA     1 NA       <NA>      2010-05-10
+#> 447            3        1       0    1     0 NA 2018-02-12            <NA>
+#> 448            2        0       1   NA    NA  0       <NA>            <NA>
+#> 449            4        0       0    0    NA NA       <NA>            <NA>
+#> 450            1        0       1    0    NA  1       <NA>      2011-01-22
+#> 451            3        1       0   NA     0  0       <NA>      2012-11-27
+#> 452            1        1       0   NA    NA NA       <NA>            <NA>
+#> 453            3        1       0    1    NA  1       <NA>      2013-07-31
+#> 454            3       NA       0   NA    NA  1       <NA>      2012-01-20
+#> 455            4        0       1    1     0  0 2020-11-03            <NA>
+#> 456            1        1       0    0    NA  1 2017-12-29            <NA>
+#> 457            3        1       1    0    NA  0       <NA>      2012-01-19
+#> 458            3        1       0   NA    NA NA       <NA>            <NA>
+#> 459            3        0       0    1     0  0       <NA>      2014-11-24
+#> 460            3        0       1   NA     1 NA       <NA>            <NA>
+#> 461            1       NA       1   NA     0  0       <NA>            <NA>
+#> 462            5        1       0    1     1  1       <NA>            <NA>
+#> 463            2       NA       0    0    NA  0 2020-01-25      2011-03-12
+#> 464            3        0       1    0    NA  0       <NA>      2011-10-08
+#> 465            4        1       1    0    NA NA 2016-09-10            <NA>
+#> 466            3        0       1   NA     1  1 2020-01-20      2012-10-19
+#> 467            2        1       0    0    NA NA 2019-12-15            <NA>
+#> 468            2        0       0   NA    NA  1       <NA>      2010-08-31
+#> 469            0        0       1    1    NA NA       <NA>            <NA>
+#> 470            2       NA       0    0     1 NA       <NA>            <NA>
+#> 471            3        0       0   NA     0 NA 2020-03-06            <NA>
+#> 472            2        0       0    0     0  1 2019-12-29            <NA>
+#> 473            2       NA       0    0     0 NA       <NA>            <NA>
+#> 474            2        0       1    0     1  0       <NA>      2015-06-05
+#> 475            2        1       0    0     1  0 2020-06-30            <NA>
+#> 476            2        0       1   NA     1 NA 2020-09-11            <NA>
+#> 477            2        0       1    1    NA  0 2017-04-08      2014-05-27
+#> 478            2       NA       1    0    NA  1 2016-04-10      2015-10-28
+#> 479            1        0       0    1     1  1       <NA>            <NA>
+#> 480            3        1       0    1     1  0       <NA>      2013-08-12
+#> 481            2        1       1   NA     0 NA 2018-02-05            <NA>
+#> 482            3       NA       0   NA     1  0 2019-03-13            <NA>
+#> 483            2        0       1    1    NA  1       <NA>            <NA>
+#> 484            3        1       0    0     0  0 2020-10-07      2010-10-28
+#> 485            2        0       1    0     1 NA       <NA>      2014-03-23
+#> 486            1       NA       0   NA     1  0       <NA>      2014-08-25
+#> 487            2        0       1    1    NA NA       <NA>            <NA>
+#> 488            3        1       1    1    NA  1       <NA>            <NA>
+#> 489            2        1       0    1     1  0       <NA>      2011-06-21
+#> 490            2        0       0    0    NA  0       <NA>            <NA>
+#> 491            2        0       1    1    NA NA       <NA>      2010-02-10
+#> 492            2        0       1   NA     1  1 2016-03-14      2014-04-12
+#> 493            4        0       1   NA     1  1       <NA>            <NA>
+#> 494            2        0       0   NA     1  0       <NA>            <NA>
+#> 495            3       NA       1    0     0  0 2016-03-23      2012-09-10
+#> 496            3        0       1    0     0 NA       <NA>            <NA>
+#> 497            3       NA       1    0     1  0 2016-05-09      2015-01-16
+#> 498            2        0       0    1    NA  0       <NA>      2010-08-06
+#> 499            4        0       1    1     0  1 2018-12-24            <NA>
+#> 500            2        0       0    0     0  1 2017-05-12      2013-04-08
 #>     metastasis_date recurrence_date_bin metastasis_date_bin
-#> 1              <NA>                <NA>                <NA>
-#> 2              <NA>           2010-2020                <NA>
+#> 1              <NA>           2010-2020                <NA>
+#> 2              <NA>                <NA>                <NA>
 #> 3              <NA>                <NA>                <NA>
-#> 4        2012-04-04                <NA>           2010-2020
-#> 5        2011-01-16                <NA>           2010-2020
+#> 4              <NA>           2010-2020                <NA>
+#> 5              <NA>                <NA>                <NA>
 #> 6              <NA>                <NA>                <NA>
 #> 7              <NA>           2010-2020                <NA>
-#> 8              <NA>                <NA>                <NA>
-#> 9        2010-08-17                <NA>           2010-2020
+#> 8        2011-10-13           2010-2020           2010-2020
+#> 9              <NA>           2010-2020                <NA>
 #> 10             <NA>           2010-2020                <NA>
-#> 11             <NA>                <NA>                <NA>
-#> 12             <NA>                <NA>                <NA>
+#> 11             <NA>           2010-2020                <NA>
+#> 12             <NA>           2010-2020                <NA>
 #> 13             <NA>           2010-2020                <NA>
-#> 14             <NA>                <NA>                <NA>
-#> 15       2015-09-01                <NA>           2010-2020
-#> 16             <NA>           2010-2020                <NA>
-#> 17       2012-08-18                <NA>           2010-2020
-#> 18       2014-09-13                <NA>           2010-2020
-#> 19       2015-10-01           2010-2020           2010-2020
-#> 20             <NA>                <NA>                <NA>
-#> 21             <NA>                <NA>                <NA>
-#> 22             <NA>                <NA>                <NA>
-#> 23       2010-04-11           2010-2020           2010-2020
+#> 14             <NA>           2010-2020                <NA>
+#> 15             <NA>           2010-2020                <NA>
+#> 16       2012-04-11                <NA>           2010-2020
+#> 17             <NA>                <NA>                <NA>
+#> 18             <NA>                <NA>                <NA>
+#> 19             <NA>           2010-2020                <NA>
+#> 20             <NA>           2010-2020                <NA>
+#> 21       2012-04-13                <NA>           2010-2020
+#> 22       2014-03-30           2010-2020           2010-2020
+#> 23       2014-10-10           2010-2020           2010-2020
 #> 24             <NA>                <NA>                <NA>
 #> 25             <NA>                <NA>                <NA>
 #> 26             <NA>                <NA>                <NA>
-#> 27             <NA>                <NA>                <NA>
-#> 28       2015-11-02           2010-2020           2010-2020
-#> 29       2011-11-24                <NA>           2010-2020
-#> 30             <NA>                <NA>                <NA>
-#> 31             <NA>           2010-2020                <NA>
-#> 32       2011-04-26                <NA>           2010-2020
-#> 33       2010-04-20           2010-2020           2010-2020
-#> 34             <NA>                <NA>                <NA>
-#> 35             <NA>                <NA>                <NA>
-#> 36       2014-08-11                <NA>           2010-2020
-#> 37             <NA>                <NA>                <NA>
+#> 27       2013-05-21                <NA>           2010-2020
+#> 28             <NA>                <NA>                <NA>
+#> 29             <NA>                <NA>                <NA>
+#> 30       2014-02-27           2010-2020           2010-2020
+#> 31             <NA>                <NA>                <NA>
+#> 32       2011-04-24                <NA>           2010-2020
+#> 33       2014-06-21           2010-2020           2010-2020
+#> 34       2013-09-08           2010-2020           2010-2020
+#> 35       2013-10-15           2010-2020           2010-2020
+#> 36       2011-05-26           2010-2020           2010-2020
+#> 37             <NA>           2010-2020                <NA>
 #> 38             <NA>           2010-2020                <NA>
-#> 39       2014-03-28           2010-2020           2010-2020
-#> 40             <NA>                <NA>                <NA>
-#> 41       2010-09-11           2010-2020           2010-2020
-#> 42             <NA>           2010-2020                <NA>
-#> 43             <NA>                <NA>                <NA>
-#> 44             <NA>                <NA>                <NA>
-#> 45       2014-09-05           2010-2020           2010-2020
+#> 39             <NA>                <NA>                <NA>
+#> 40             <NA>           2010-2020                <NA>
+#> 41             <NA>                <NA>                <NA>
+#> 42             <NA>                <NA>                <NA>
+#> 43       2011-08-18           2010-2020           2010-2020
+#> 44       2011-11-01                <NA>           2010-2020
+#> 45       2014-09-05                <NA>           2010-2020
 #> 46             <NA>                <NA>                <NA>
-#> 47             <NA>           2010-2020                <NA>
-#> 48       2010-11-22           2010-2020           2010-2020
-#> 49       2014-10-09                <NA>           2010-2020
+#> 47       2011-10-26                <NA>           2010-2020
+#> 48             <NA>           2010-2020                <NA>
+#> 49             <NA>                <NA>                <NA>
 #> 50             <NA>                <NA>                <NA>
-#> 51       2015-11-27                <NA>           2010-2020
-#> 52             <NA>           2010-2020                <NA>
-#> 53             <NA>           2010-2020                <NA>
+#> 51             <NA>                <NA>                <NA>
+#> 52             <NA>                <NA>                <NA>
+#> 53             <NA>                <NA>                <NA>
 #> 54             <NA>           2010-2020                <NA>
-#> 55             <NA>           2010-2020                <NA>
-#> 56       2010-03-25                <NA>           2010-2020
-#> 57       2013-11-25                <NA>           2010-2020
-#> 58       2015-08-06           2010-2020           2010-2020
+#> 55             <NA>                <NA>                <NA>
+#> 56             <NA>                <NA>                <NA>
+#> 57             <NA>                <NA>                <NA>
+#> 58       2013-04-18           2010-2020           2010-2020
 #> 59             <NA>           2010-2020                <NA>
 #> 60             <NA>           2010-2020                <NA>
 #> 61             <NA>           2010-2020                <NA>
-#> 62             <NA>           2010-2020                <NA>
-#> 63             <NA>                <NA>                <NA>
-#> 64       2010-03-31           2010-2020           2010-2020
-#> 65             <NA>                <NA>                <NA>
-#> 66       2010-02-23           2010-2020           2010-2020
-#> 67       2013-04-13           2010-2020           2010-2020
+#> 62       2013-05-25           2010-2020           2010-2020
+#> 63             <NA>           2010-2020                <NA>
+#> 64       2014-07-11                <NA>           2010-2020
+#> 65             <NA>           2010-2020                <NA>
+#> 66             <NA>                <NA>                <NA>
+#> 67       2012-10-29           2010-2020           2010-2020
 #> 68             <NA>           2010-2020                <NA>
-#> 69             <NA>                <NA>                <NA>
-#> 70       2011-02-11                <NA>           2010-2020
+#> 69             <NA>           2010-2020                <NA>
+#> 70             <NA>           2010-2020                <NA>
 #> 71             <NA>           2010-2020                <NA>
-#> 72       2010-12-14           2010-2020           2010-2020
-#> 73       2011-11-12           2010-2020           2010-2020
-#> 74       2014-08-27           2010-2020           2010-2020
-#> 75             <NA>                <NA>                <NA>
-#> 76             <NA>           2010-2020                <NA>
-#> 77             <NA>                <NA>                <NA>
-#> 78             <NA>                <NA>                <NA>
-#> 79       2014-03-02                <NA>           2010-2020
+#> 72       2015-01-05                <NA>           2010-2020
+#> 73             <NA>                <NA>                <NA>
+#> 74       2015-12-04                <NA>           2010-2020
+#> 75             <NA>           2010-2020                <NA>
+#> 76             <NA>                <NA>                <NA>
+#> 77       2010-07-08           2010-2020           2010-2020
+#> 78             <NA>           2010-2020                <NA>
+#> 79             <NA>           2010-2020                <NA>
 #> 80             <NA>                <NA>                <NA>
 #> 81             <NA>                <NA>                <NA>
-#> 82       2015-10-20                <NA>           2010-2020
-#> 83       2014-12-29           2010-2020           2010-2020
-#> 84             <NA>           2010-2020                <NA>
-#> 85             <NA>                <NA>                <NA>
-#> 86             <NA>                <NA>                <NA>
-#> 87             <NA>           2010-2020                <NA>
-#> 88       2010-03-15                <NA>           2010-2020
-#> 89             <NA>                <NA>                <NA>
-#> 90             <NA>                <NA>                <NA>
-#> 91       2012-06-23           2010-2020           2010-2020
-#> 92             <NA>           2010-2020                <NA>
-#> 93             <NA>                <NA>                <NA>
+#> 82       2014-05-22                <NA>           2010-2020
+#> 83             <NA>                <NA>                <NA>
+#> 84             <NA>                <NA>                <NA>
+#> 85             <NA>           2010-2020                <NA>
+#> 86             <NA>           2010-2020                <NA>
+#> 87       2011-06-28           2010-2020           2010-2020
+#> 88       2013-11-28           2010-2020           2010-2020
+#> 89             <NA>           2010-2020                <NA>
+#> 90             <NA>           2010-2020                <NA>
+#> 91             <NA>           2010-2020                <NA>
+#> 92             <NA>                <NA>                <NA>
+#> 93       2015-08-01           2010-2020           2010-2020
 #> 94             <NA>           2010-2020                <NA>
-#> 95             <NA>           2010-2020                <NA>
+#> 95             <NA>                <NA>                <NA>
 #> 96             <NA>                <NA>                <NA>
-#> 97             <NA>           2010-2020                <NA>
-#> 98             <NA>           2010-2020                <NA>
-#> 99             <NA>           2010-2020                <NA>
+#> 97             <NA>                <NA>                <NA>
+#> 98             <NA>                <NA>                <NA>
+#> 99             <NA>                <NA>                <NA>
 #> 100            <NA>                <NA>                <NA>
-#> 101      2013-08-29           2010-2020           2010-2020
-#> 102            <NA>           2010-2020                <NA>
-#> 103      2010-08-25                <NA>           2010-2020
-#> 104      2013-08-13                <NA>           2010-2020
-#> 105            <NA>           2010-2020                <NA>
-#> 106            <NA>           2010-2020                <NA>
+#> 101            <NA>           2010-2020                <NA>
+#> 102            <NA>                <NA>                <NA>
+#> 103      2012-02-17                <NA>           2010-2020
+#> 104            <NA>                <NA>                <NA>
+#> 105            <NA>                <NA>                <NA>
+#> 106            <NA>                <NA>                <NA>
 #> 107            <NA>                <NA>                <NA>
-#> 108      2012-04-03           2010-2020           2010-2020
+#> 108            <NA>           2010-2020                <NA>
 #> 109            <NA>           2010-2020                <NA>
-#> 110            <NA>                <NA>                <NA>
+#> 110      2013-03-07           2010-2020           2010-2020
 #> 111            <NA>           2010-2020                <NA>
-#> 112            <NA>           2010-2020                <NA>
+#> 112      2015-11-07                <NA>           2010-2020
 #> 113            <NA>           2010-2020                <NA>
-#> 114      2015-04-21                <NA>           2010-2020
-#> 115      2014-11-13                <NA>           2010-2020
-#> 116      2014-11-17           2010-2020           2010-2020
-#> 117            <NA>                <NA>                <NA>
-#> 118      2012-06-20                <NA>           2010-2020
-#> 119            <NA>           2010-2020                <NA>
-#> 120            <NA>           2010-2020                <NA>
-#> 121            <NA>           2010-2020                <NA>
-#> 122            <NA>                <NA>                <NA>
-#> 123            <NA>                <NA>                <NA>
+#> 114      2014-07-21                <NA>           2010-2020
+#> 115            <NA>           2010-2020                <NA>
+#> 116            <NA>                <NA>                <NA>
+#> 117            <NA>           2010-2020                <NA>
+#> 118      2014-10-01                <NA>           2010-2020
+#> 119      2015-07-11           2010-2020           2010-2020
+#> 120      2012-07-12           2010-2020           2010-2020
+#> 121      2015-12-28           2010-2020           2010-2020
+#> 122            <NA>           2010-2020                <NA>
+#> 123            <NA>           2010-2020                <NA>
 #> 124            <NA>                <NA>                <NA>
-#> 125      2012-02-06                <NA>           2010-2020
+#> 125            <NA>           2010-2020                <NA>
 #> 126            <NA>                <NA>                <NA>
-#> 127            <NA>                <NA>                <NA>
+#> 127      2011-02-04           2010-2020           2010-2020
 #> 128            <NA>                <NA>                <NA>
-#> 129            <NA>                <NA>                <NA>
-#> 130            <NA>           2010-2020                <NA>
-#> 131            <NA>           2010-2020                <NA>
+#> 129            <NA>           2010-2020                <NA>
+#> 130      2015-10-17           2010-2020           2010-2020
+#> 131            <NA>                <NA>                <NA>
 #> 132            <NA>                <NA>                <NA>
-#> 133      2014-07-23                <NA>           2010-2020
-#> 134            <NA>                <NA>                <NA>
-#> 135            <NA>                <NA>                <NA>
-#> 136            <NA>                <NA>                <NA>
-#> 137            <NA>                <NA>                <NA>
-#> 138      2015-06-01           2010-2020           2010-2020
+#> 133            <NA>           2010-2020                <NA>
+#> 134            <NA>           2010-2020                <NA>
+#> 135      2010-05-24                <NA>           2010-2020
+#> 136            <NA>           2010-2020                <NA>
+#> 137            <NA>           2010-2020                <NA>
+#> 138            <NA>                <NA>                <NA>
 #> 139            <NA>           2010-2020                <NA>
-#> 140      2010-12-18                <NA>           2010-2020
+#> 140            <NA>           2010-2020                <NA>
 #> 141            <NA>                <NA>                <NA>
-#> 142      2015-02-10           2010-2020           2010-2020
-#> 143            <NA>                <NA>                <NA>
-#> 144      2013-07-10                <NA>           2010-2020
-#> 145            <NA>           2010-2020                <NA>
-#> 146      2013-06-06                <NA>           2010-2020
-#> 147            <NA>           2010-2020                <NA>
-#> 148            <NA>           2010-2020                <NA>
-#> 149      2013-07-18                <NA>           2010-2020
-#> 150            <NA>                <NA>                <NA>
-#> 151            <NA>           2010-2020                <NA>
+#> 142            <NA>           2010-2020                <NA>
+#> 143      2012-05-26                <NA>           2010-2020
+#> 144      2015-04-08           2010-2020           2010-2020
+#> 145      2010-12-27                <NA>           2010-2020
+#> 146            <NA>           2010-2020                <NA>
+#> 147      2013-03-16                <NA>           2010-2020
+#> 148      2015-06-26                <NA>           2010-2020
+#> 149            <NA>                <NA>                <NA>
+#> 150            <NA>           2010-2020                <NA>
+#> 151      2012-12-25           2010-2020           2010-2020
 #> 152            <NA>                <NA>                <NA>
-#> 153      2011-08-20           2010-2020           2010-2020
-#> 154      2011-01-18                <NA>           2010-2020
+#> 153            <NA>                <NA>                <NA>
+#> 154            <NA>           2010-2020                <NA>
 #> 155            <NA>           2010-2020                <NA>
-#> 156            <NA>                <NA>                <NA>
-#> 157            <NA>                <NA>                <NA>
-#> 158            <NA>           2010-2020                <NA>
-#> 159      2014-03-07                <NA>           2010-2020
+#> 156            <NA>           2010-2020                <NA>
+#> 157      2011-03-23           2010-2020           2010-2020
+#> 158            <NA>                <NA>                <NA>
+#> 159            <NA>           2010-2020                <NA>
 #> 160            <NA>           2010-2020                <NA>
-#> 161      2013-11-19           2010-2020           2010-2020
-#> 162            <NA>                <NA>                <NA>
-#> 163      2014-04-25           2010-2020           2010-2020
-#> 164            <NA>                <NA>                <NA>
+#> 161      2014-03-12                <NA>           2010-2020
+#> 162            <NA>           2010-2020                <NA>
+#> 163            <NA>                <NA>                <NA>
+#> 164      2011-12-02                <NA>           2010-2020
 #> 165            <NA>           2010-2020                <NA>
-#> 166            <NA>                <NA>                <NA>
-#> 167      2011-04-01           2010-2020           2010-2020
-#> 168            <NA>           2010-2020                <NA>
-#> 169            <NA>                <NA>                <NA>
+#> 166      2015-12-19                <NA>           2010-2020
+#> 167            <NA>           2010-2020                <NA>
+#> 168      2013-12-29           2010-2020           2010-2020
+#> 169      2014-04-11                <NA>           2010-2020
 #> 170            <NA>           2010-2020                <NA>
-#> 171            <NA>           2010-2020                <NA>
-#> 172            <NA>                <NA>                <NA>
-#> 173      2011-09-03           2010-2020           2010-2020
-#> 174      2012-05-15           2010-2020           2010-2020
-#> 175      2011-02-19                <NA>           2010-2020
-#> 176            <NA>           2010-2020                <NA>
+#> 171      2012-08-14           2010-2020           2010-2020
+#> 172            <NA>           2010-2020                <NA>
+#> 173            <NA>                <NA>                <NA>
+#> 174      2013-08-14                <NA>           2010-2020
+#> 175            <NA>           2010-2020                <NA>
+#> 176      2013-11-21           2010-2020           2010-2020
 #> 177            <NA>           2010-2020                <NA>
-#> 178            <NA>           2010-2020                <NA>
-#> 179      2011-10-19           2010-2020           2010-2020
+#> 178            <NA>                <NA>                <NA>
+#> 179      2011-06-25                <NA>           2010-2020
 #> 180            <NA>                <NA>                <NA>
 #> 181            <NA>           2010-2020                <NA>
-#> 182      2015-06-30           2010-2020           2010-2020
+#> 182      2010-10-01                <NA>           2010-2020
 #> 183            <NA>           2010-2020                <NA>
-#> 184            <NA>                <NA>                <NA>
-#> 185      2011-03-13                <NA>           2010-2020
-#> 186            <NA>                <NA>                <NA>
+#> 184      2011-06-02                <NA>           2010-2020
+#> 185      2013-05-09           2010-2020           2010-2020
+#> 186            <NA>           2010-2020                <NA>
 #> 187            <NA>                <NA>                <NA>
-#> 188      2010-07-04                <NA>           2010-2020
+#> 188            <NA>                <NA>                <NA>
 #> 189            <NA>                <NA>                <NA>
-#> 190      2014-10-20           2010-2020           2010-2020
+#> 190      2013-01-24           2010-2020           2010-2020
 #> 191            <NA>                <NA>                <NA>
-#> 192            <NA>                <NA>                <NA>
-#> 193      2014-04-27                <NA>           2010-2020
+#> 192            <NA>           2010-2020                <NA>
+#> 193            <NA>                <NA>                <NA>
 #> 194            <NA>                <NA>                <NA>
-#> 195            <NA>                <NA>                <NA>
-#> 196            <NA>           2010-2020                <NA>
-#> 197            <NA>           2010-2020                <NA>
-#> 198      2012-11-18           2010-2020           2010-2020
+#> 195            <NA>           2010-2020                <NA>
+#> 196      2014-09-02           2010-2020           2010-2020
+#> 197            <NA>                <NA>                <NA>
+#> 198            <NA>                <NA>                <NA>
 #> 199            <NA>           2010-2020                <NA>
-#> 200            <NA>           2010-2020                <NA>
-#> 201            <NA>           2010-2020                <NA>
+#> 200      2010-06-06                <NA>           2010-2020
+#> 201      2011-02-18           2010-2020           2010-2020
 #> 202            <NA>                <NA>                <NA>
-#> 203            <NA>           2010-2020                <NA>
-#> 204            <NA>                <NA>                <NA>
-#> 205      2010-10-30           2010-2020           2010-2020
+#> 203            <NA>                <NA>                <NA>
+#> 204      2014-12-08                <NA>           2010-2020
+#> 205      2011-01-23           2010-2020           2010-2020
 #> 206            <NA>           2010-2020                <NA>
-#> 207      2012-01-27           2010-2020           2010-2020
-#> 208      2012-03-10                <NA>           2010-2020
-#> 209            <NA>           2010-2020                <NA>
-#> 210            <NA>           2010-2020                <NA>
-#> 211            <NA>                <NA>                <NA>
-#> 212            <NA>                <NA>                <NA>
-#> 213      2013-08-03                <NA>           2010-2020
-#> 214      2013-09-05           2010-2020           2010-2020
-#> 215      2015-05-13                <NA>           2010-2020
-#> 216      2015-01-05                <NA>           2010-2020
-#> 217      2011-06-09                <NA>           2010-2020
+#> 207            <NA>           2010-2020                <NA>
+#> 208      2015-12-26           2010-2020           2010-2020
+#> 209      2011-01-25                <NA>           2010-2020
+#> 210      2013-01-25           2010-2020           2010-2020
+#> 211      2011-01-03                <NA>           2010-2020
+#> 212            <NA>           2010-2020                <NA>
+#> 213            <NA>                <NA>                <NA>
+#> 214      2015-08-16                <NA>           2010-2020
+#> 215      2013-03-22                <NA>           2010-2020
+#> 216            <NA>           2010-2020                <NA>
+#> 217            <NA>           2010-2020                <NA>
 #> 218            <NA>                <NA>                <NA>
 #> 219            <NA>           2010-2020                <NA>
-#> 220      2010-03-14           2010-2020           2010-2020
-#> 221      2015-06-26           2010-2020           2010-2020
+#> 220            <NA>                <NA>                <NA>
+#> 221            <NA>           2010-2020                <NA>
 #> 222            <NA>                <NA>                <NA>
 #> 223            <NA>                <NA>                <NA>
-#> 224      2015-07-30           2010-2020           2010-2020
-#> 225      2014-06-07                <NA>           2010-2020
-#> 226      2010-06-29           2010-2020           2010-2020
+#> 224            <NA>           2010-2020                <NA>
+#> 225            <NA>                <NA>                <NA>
+#> 226            <NA>           2010-2020                <NA>
 #> 227            <NA>           2010-2020                <NA>
-#> 228            <NA>                <NA>                <NA>
+#> 228            <NA>           2010-2020                <NA>
 #> 229            <NA>                <NA>                <NA>
-#> 230      2013-09-04           2010-2020           2010-2020
+#> 230      2014-08-21           2010-2020           2010-2020
 #> 231            <NA>                <NA>                <NA>
-#> 232            <NA>           2010-2020                <NA>
-#> 233      2014-04-21           2010-2020           2010-2020
+#> 232            <NA>                <NA>                <NA>
+#> 233            <NA>                <NA>                <NA>
 #> 234            <NA>                <NA>                <NA>
-#> 235            <NA>                <NA>                <NA>
-#> 236      2011-04-13           2010-2020           2010-2020
-#> 237            <NA>           2010-2020                <NA>
-#> 238            <NA>                <NA>                <NA>
+#> 235            <NA>           2010-2020                <NA>
+#> 236            <NA>                <NA>                <NA>
+#> 237            <NA>                <NA>                <NA>
+#> 238      2011-10-10                <NA>           2010-2020
 #> 239            <NA>           2010-2020                <NA>
-#> 240            <NA>           2010-2020                <NA>
+#> 240            <NA>                <NA>                <NA>
 #> 241            <NA>           2010-2020                <NA>
-#> 242      2010-10-23                <NA>           2010-2020
-#> 243            <NA>                <NA>                <NA>
-#> 244      2010-11-08                <NA>           2010-2020
-#> 245      2015-07-11           2010-2020           2010-2020
+#> 242            <NA>                <NA>                <NA>
+#> 243            <NA>           2010-2020                <NA>
+#> 244            <NA>                <NA>                <NA>
+#> 245      2014-12-20                <NA>           2010-2020
 #> 246            <NA>                <NA>                <NA>
-#> 247      2010-01-29           2010-2020           2010-2020
-#> 248            <NA>                <NA>                <NA>
-#> 249      2015-06-05                <NA>           2010-2020
-#> 250            <NA>                <NA>                <NA>
-#> 251      2013-01-23                <NA>           2010-2020
+#> 247            <NA>                <NA>                <NA>
+#> 248            <NA>           2010-2020                <NA>
+#> 249            <NA>                <NA>                <NA>
+#> 250            <NA>           2010-2020                <NA>
+#> 251            <NA>                <NA>                <NA>
 #> 252            <NA>           2010-2020                <NA>
 #> 253            <NA>           2010-2020                <NA>
-#> 254            <NA>                <NA>                <NA>
+#> 254            <NA>           2010-2020                <NA>
 #> 255            <NA>           2010-2020                <NA>
 #> 256            <NA>                <NA>                <NA>
-#> 257      2013-09-24                <NA>           2010-2020
-#> 258            <NA>                <NA>                <NA>
-#> 259      2011-09-08           2010-2020           2010-2020
+#> 257      2015-02-19           2010-2020           2010-2020
+#> 258      2011-10-19                <NA>           2010-2020
+#> 259            <NA>                <NA>                <NA>
 #> 260            <NA>                <NA>                <NA>
-#> 261            <NA>           2010-2020                <NA>
-#> 262      2015-08-09                <NA>           2010-2020
+#> 261            <NA>                <NA>                <NA>
+#> 262      2013-05-30                <NA>           2010-2020
 #> 263            <NA>                <NA>                <NA>
-#> 264      2010-04-13                <NA>           2010-2020
-#> 265            <NA>                <NA>                <NA>
+#> 264      2014-11-28           2010-2020           2010-2020
+#> 265            <NA>           2010-2020                <NA>
 #> 266            <NA>           2010-2020                <NA>
-#> 267            <NA>                <NA>                <NA>
+#> 267            <NA>           2010-2020                <NA>
 #> 268            <NA>           2010-2020                <NA>
-#> 269            <NA>           2010-2020                <NA>
-#> 270            <NA>                <NA>                <NA>
-#> 271      2013-04-25           2010-2020           2010-2020
+#> 269      2011-03-02           2010-2020           2010-2020
+#> 270      2014-06-11                <NA>           2010-2020
+#> 271      2010-11-29                <NA>           2010-2020
 #> 272            <NA>                <NA>                <NA>
-#> 273            <NA>           2010-2020                <NA>
-#> 274            <NA>           2010-2020                <NA>
-#> 275      2011-02-06                <NA>           2010-2020
-#> 276            <NA>           2010-2020                <NA>
-#> 277      2011-10-28           2010-2020           2010-2020
-#> 278      2011-04-12           2010-2020           2010-2020
-#> 279            <NA>                <NA>                <NA>
+#> 273      2013-03-23                <NA>           2010-2020
+#> 274      2012-07-28           2010-2020           2010-2020
+#> 275      2012-10-21           2010-2020           2010-2020
+#> 276      2011-07-08                <NA>           2010-2020
+#> 277            <NA>           2010-2020                <NA>
+#> 278            <NA>           2010-2020                <NA>
+#> 279      2011-05-12           2010-2020           2010-2020
 #> 280            <NA>           2010-2020                <NA>
-#> 281      2013-12-11           2010-2020           2010-2020
+#> 281      2012-03-02           2010-2020           2010-2020
 #> 282            <NA>                <NA>                <NA>
-#> 283            <NA>                <NA>                <NA>
-#> 284      2012-08-01           2010-2020           2010-2020
-#> 285            <NA>                <NA>                <NA>
+#> 283      2013-11-03           2010-2020           2010-2020
+#> 284            <NA>                <NA>                <NA>
+#> 285            <NA>           2010-2020                <NA>
 #> 286            <NA>           2010-2020                <NA>
-#> 287            <NA>           2010-2020                <NA>
-#> 288            <NA>                <NA>                <NA>
-#> 289      2012-03-31                <NA>           2010-2020
+#> 287      2010-09-07                <NA>           2010-2020
+#> 288            <NA>           2010-2020                <NA>
+#> 289      2011-07-19           2010-2020           2010-2020
 #> 290            <NA>           2010-2020                <NA>
-#> 291            <NA>                <NA>                <NA>
-#> 292      2012-01-02                <NA>           2010-2020
-#> 293            <NA>                <NA>                <NA>
-#> 294            <NA>           2010-2020                <NA>
-#> 295            <NA>                <NA>                <NA>
-#> 296      2012-12-25                <NA>           2010-2020
+#> 291            <NA>           2010-2020                <NA>
+#> 292      2010-10-28           2010-2020           2010-2020
+#> 293            <NA>           2010-2020                <NA>
+#> 294      2012-11-05           2010-2020           2010-2020
+#> 295      2013-04-11           2010-2020           2010-2020
+#> 296            <NA>           2010-2020                <NA>
 #> 297            <NA>                <NA>                <NA>
-#> 298      2014-04-04                <NA>           2010-2020
-#> 299      2012-11-12           2010-2020           2010-2020
-#> 300            <NA>                <NA>                <NA>
-#> 301      2014-10-24                <NA>           2010-2020
+#> 298            <NA>                <NA>                <NA>
+#> 299            <NA>           2010-2020                <NA>
+#> 300      2015-06-09                <NA>           2010-2020
+#> 301            <NA>           2010-2020                <NA>
 #> 302            <NA>                <NA>                <NA>
-#> 303      2012-04-13           2010-2020           2010-2020
-#> 304      2015-11-19                <NA>           2010-2020
-#> 305      2011-02-10                <NA>           2010-2020
-#> 306            <NA>           2010-2020                <NA>
-#> 307      2011-06-28           2010-2020           2010-2020
-#> 308      2013-07-27                <NA>           2010-2020
+#> 303            <NA>           2010-2020                <NA>
+#> 304      2014-07-09                <NA>           2010-2020
+#> 305      2015-10-05                <NA>           2010-2020
+#> 306      2011-03-11           2010-2020           2010-2020
+#> 307            <NA>                <NA>                <NA>
+#> 308      2014-12-18                <NA>           2010-2020
 #> 309            <NA>           2010-2020                <NA>
-#> 310            <NA>           2010-2020                <NA>
-#> 311      2015-11-06                <NA>           2010-2020
-#> 312            <NA>                <NA>                <NA>
-#> 313            <NA>                <NA>                <NA>
-#> 314      2015-09-27                <NA>           2010-2020
-#> 315      2012-02-01                <NA>           2010-2020
-#> 316      2013-11-23                <NA>           2010-2020
-#> 317      2013-01-31           2010-2020           2010-2020
-#> 318      2010-04-12           2010-2020           2010-2020
+#> 310            <NA>                <NA>                <NA>
+#> 311            <NA>                <NA>                <NA>
+#> 312            <NA>           2010-2020                <NA>
+#> 313      2010-12-04                <NA>           2010-2020
+#> 314            <NA>           2010-2020                <NA>
+#> 315            <NA>           2010-2020                <NA>
+#> 316            <NA>           2010-2020                <NA>
+#> 317            <NA>                <NA>                <NA>
+#> 318            <NA>                <NA>                <NA>
 #> 319            <NA>                <NA>                <NA>
-#> 320      2010-09-18                <NA>           2010-2020
-#> 321      2013-03-17                <NA>           2010-2020
-#> 322            <NA>                <NA>                <NA>
-#> 323            <NA>           2010-2020                <NA>
-#> 324            <NA>                <NA>                <NA>
-#> 325            <NA>           2010-2020                <NA>
-#> 326            <NA>                <NA>                <NA>
-#> 327      2015-07-28                <NA>           2010-2020
-#> 328            <NA>                <NA>                <NA>
-#> 329      2014-07-09           2010-2020           2010-2020
-#> 330            <NA>                <NA>                <NA>
+#> 320            <NA>           2010-2020                <NA>
+#> 321            <NA>                <NA>                <NA>
+#> 322      2014-04-13           2010-2020           2010-2020
+#> 323      2015-09-14           2010-2020           2010-2020
+#> 324            <NA>           2010-2020                <NA>
+#> 325      2014-05-13           2010-2020           2010-2020
+#> 326            <NA>           2010-2020                <NA>
+#> 327      2014-06-26                <NA>           2010-2020
+#> 328            <NA>           2010-2020                <NA>
+#> 329      2013-05-27                <NA>           2010-2020
+#> 330      2010-01-01                <NA>           2010-2020
 #> 331            <NA>                <NA>                <NA>
-#> 332      2015-07-14                <NA>           2010-2020
-#> 333            <NA>                <NA>                <NA>
+#> 332      2010-04-22                <NA>           2010-2020
+#> 333      2012-01-06                <NA>           2010-2020
 #> 334            <NA>                <NA>                <NA>
-#> 335      2014-07-01                <NA>           2010-2020
-#> 336            <NA>                <NA>                <NA>
-#> 337      2013-03-01           2010-2020           2010-2020
-#> 338      2013-08-27                <NA>           2010-2020
-#> 339      2013-09-12           2010-2020           2010-2020
+#> 335      2010-05-05                <NA>           2010-2020
+#> 336            <NA>           2010-2020                <NA>
+#> 337            <NA>                <NA>                <NA>
+#> 338            <NA>                <NA>                <NA>
+#> 339      2013-11-01           2010-2020           2010-2020
 #> 340            <NA>           2010-2020                <NA>
-#> 341      2014-08-30                <NA>           2010-2020
-#> 342            <NA>           2010-2020                <NA>
-#> 343            <NA>                <NA>                <NA>
+#> 341            <NA>                <NA>                <NA>
+#> 342      2015-10-22                <NA>           2010-2020
+#> 343      2013-10-01                <NA>           2010-2020
 #> 344            <NA>           2010-2020                <NA>
 #> 345            <NA>                <NA>                <NA>
-#> 346            <NA>                <NA>                <NA>
-#> 347      2015-07-19                <NA>           2010-2020
-#> 348            <NA>                <NA>                <NA>
-#> 349            <NA>                <NA>                <NA>
-#> 350            <NA>           2010-2020                <NA>
+#> 346            <NA>           2010-2020                <NA>
+#> 347            <NA>           2010-2020                <NA>
+#> 348      2011-03-27                <NA>           2010-2020
+#> 349      2013-05-19                <NA>           2010-2020
+#> 350      2012-06-12                <NA>           2010-2020
 #> 351            <NA>           2010-2020                <NA>
 #> 352            <NA>                <NA>                <NA>
-#> 353      2015-05-29           2010-2020           2010-2020
-#> 354            <NA>           2010-2020                <NA>
-#> 355            <NA>                <NA>                <NA>
-#> 356      2010-01-07                <NA>           2010-2020
-#> 357      2014-01-27                <NA>           2010-2020
-#> 358            <NA>           2010-2020                <NA>
-#> 359            <NA>           2010-2020                <NA>
-#> 360            <NA>                <NA>                <NA>
-#> 361            <NA>           2010-2020                <NA>
-#> 362      2015-02-28           2010-2020           2010-2020
-#> 363      2013-02-22           2010-2020           2010-2020
-#> 364            <NA>                <NA>                <NA>
-#> 365      2013-03-03           2010-2020           2010-2020
-#> 366            <NA>                <NA>                <NA>
-#> 367      2014-07-19           2010-2020           2010-2020
+#> 353            <NA>                <NA>                <NA>
+#> 354      2012-02-13                <NA>           2010-2020
+#> 355            <NA>           2010-2020                <NA>
+#> 356            <NA>           2010-2020                <NA>
+#> 357            <NA>                <NA>                <NA>
+#> 358      2010-02-06                <NA>           2010-2020
+#> 359      2013-02-19                <NA>           2010-2020
+#> 360            <NA>           2010-2020                <NA>
+#> 361            <NA>                <NA>                <NA>
+#> 362            <NA>           2010-2020                <NA>
+#> 363            <NA>                <NA>                <NA>
+#> 364      2010-08-08           2010-2020           2010-2020
+#> 365      2015-03-09                <NA>           2010-2020
+#> 366      2015-10-11           2010-2020           2010-2020
+#> 367            <NA>                <NA>                <NA>
 #> 368            <NA>                <NA>                <NA>
 #> 369            <NA>           2010-2020                <NA>
-#> 370            <NA>                <NA>                <NA>
-#> 371            <NA>           2010-2020                <NA>
-#> 372      2015-04-02                <NA>           2010-2020
+#> 370      2014-01-07                <NA>           2010-2020
+#> 371      2014-04-10           2010-2020           2010-2020
+#> 372            <NA>           2010-2020                <NA>
 #> 373            <NA>           2010-2020                <NA>
-#> 374      2014-12-14           2010-2020           2010-2020
-#> 375            <NA>                <NA>                <NA>
-#> 376      2010-03-09                <NA>           2010-2020
-#> 377      2012-12-29                <NA>           2010-2020
-#> 378            <NA>                <NA>                <NA>
-#> 379            <NA>           2010-2020                <NA>
-#> 380      2014-04-12           2010-2020           2010-2020
+#> 374            <NA>           2010-2020                <NA>
+#> 375      2012-04-04           2010-2020           2010-2020
+#> 376            <NA>                <NA>                <NA>
+#> 377      2015-04-03           2010-2020           2010-2020
+#> 378            <NA>           2010-2020                <NA>
+#> 379            <NA>                <NA>                <NA>
+#> 380            <NA>           2010-2020                <NA>
 #> 381            <NA>                <NA>                <NA>
-#> 382            <NA>                <NA>                <NA>
-#> 383      2012-11-08           2010-2020           2010-2020
-#> 384            <NA>           2010-2020                <NA>
+#> 382      2013-05-24                <NA>           2010-2020
+#> 383            <NA>                <NA>                <NA>
+#> 384            <NA>                <NA>                <NA>
 #> 385            <NA>                <NA>                <NA>
-#> 386      2010-01-21           2010-2020           2010-2020
-#> 387            <NA>           2010-2020                <NA>
-#> 388            <NA>                <NA>                <NA>
-#> 389            <NA>           2010-2020                <NA>
+#> 386            <NA>                <NA>                <NA>
+#> 387      2012-01-30           2010-2020           2010-2020
+#> 388      2012-04-22                <NA>           2010-2020
+#> 389      2014-01-14           2010-2020           2010-2020
 #> 390            <NA>                <NA>                <NA>
-#> 391      2010-08-22           2010-2020           2010-2020
+#> 391      2013-09-13                <NA>           2010-2020
 #> 392            <NA>           2010-2020                <NA>
-#> 393            <NA>           2010-2020                <NA>
-#> 394            <NA>           2010-2020                <NA>
-#> 395            <NA>           2010-2020                <NA>
-#> 396            <NA>           2010-2020                <NA>
-#> 397      2010-05-13           2010-2020           2010-2020
-#> 398            <NA>           2010-2020                <NA>
-#> 399            <NA>                <NA>                <NA>
+#> 393      2012-10-02           2010-2020           2010-2020
+#> 394            <NA>                <NA>                <NA>
+#> 395            <NA>                <NA>                <NA>
+#> 396            <NA>                <NA>                <NA>
+#> 397            <NA>           2010-2020                <NA>
+#> 398            <NA>                <NA>                <NA>
+#> 399      2015-10-31           2010-2020           2010-2020
 #> 400            <NA>           2010-2020                <NA>
-#> 401            <NA>                <NA>                <NA>
+#> 401            <NA>           2010-2020                <NA>
 #> 402            <NA>           2010-2020                <NA>
 #> 403            <NA>                <NA>                <NA>
-#> 404            <NA>           2010-2020                <NA>
-#> 405      2011-08-29                <NA>           2010-2020
-#> 406            <NA>                <NA>                <NA>
-#> 407      2010-04-03           2010-2020           2010-2020
-#> 408      2013-11-22           2010-2020           2010-2020
-#> 409            <NA>                <NA>                <NA>
-#> 410            <NA>           2010-2020                <NA>
+#> 404            <NA>                <NA>                <NA>
+#> 405      2011-06-13           2010-2020           2010-2020
+#> 406      2013-04-04           2010-2020           2010-2020
+#> 407            <NA>           2010-2020                <NA>
+#> 408            <NA>                <NA>                <NA>
+#> 409            <NA>           2010-2020                <NA>
+#> 410      2010-02-09                <NA>           2010-2020
 #> 411            <NA>           2010-2020                <NA>
 #> 412            <NA>           2010-2020                <NA>
-#> 413      2010-02-28                <NA>           2010-2020
-#> 414            <NA>           2010-2020                <NA>
-#> 415            <NA>                <NA>                <NA>
-#> 416      2010-07-28           2010-2020           2010-2020
-#> 417            <NA>                <NA>                <NA>
+#> 413            <NA>                <NA>                <NA>
+#> 414      2015-05-05                <NA>           2010-2020
+#> 415      2010-01-12                <NA>           2010-2020
+#> 416      2011-02-25                <NA>           2010-2020
+#> 417      2015-03-26                <NA>           2010-2020
 #> 418            <NA>                <NA>                <NA>
-#> 419      2013-11-08                <NA>           2010-2020
-#> 420      2011-03-04                <NA>           2010-2020
-#> 421            <NA>           2010-2020                <NA>
-#> 422      2013-08-08           2010-2020           2010-2020
-#> 423      2013-09-22           2010-2020           2010-2020
-#> 424            <NA>                <NA>                <NA>
-#> 425      2015-09-26           2010-2020           2010-2020
-#> 426            <NA>                <NA>                <NA>
+#> 419            <NA>           2010-2020                <NA>
+#> 420      2010-12-11                <NA>           2010-2020
+#> 421      2014-08-13                <NA>           2010-2020
+#> 422            <NA>                <NA>                <NA>
+#> 423      2011-09-01           2010-2020           2010-2020
+#> 424      2014-07-02                <NA>           2010-2020
+#> 425      2015-08-12           2010-2020           2010-2020
+#> 426      2013-09-15           2010-2020           2010-2020
 #> 427            <NA>           2010-2020                <NA>
-#> 428      2010-05-26                <NA>           2010-2020
-#> 429            <NA>           2010-2020                <NA>
+#> 428            <NA>                <NA>                <NA>
+#> 429      2013-02-04                <NA>           2010-2020
 #> 430            <NA>                <NA>                <NA>
-#> 431            <NA>                <NA>                <NA>
+#> 431            <NA>           2010-2020                <NA>
 #> 432            <NA>           2010-2020                <NA>
-#> 433            <NA>                <NA>                <NA>
-#> 434      2012-03-21           2010-2020           2010-2020
+#> 433            <NA>           2010-2020                <NA>
+#> 434      2013-02-15           2010-2020           2010-2020
 #> 435            <NA>                <NA>                <NA>
 #> 436            <NA>           2010-2020                <NA>
-#> 437            <NA>           2010-2020                <NA>
-#> 438            <NA>                <NA>                <NA>
-#> 439            <NA>           2010-2020                <NA>
+#> 437            <NA>                <NA>                <NA>
+#> 438            <NA>           2010-2020                <NA>
+#> 439            <NA>                <NA>                <NA>
 #> 440            <NA>                <NA>                <NA>
-#> 441            <NA>           2010-2020                <NA>
-#> 442      2011-11-04           2010-2020           2010-2020
-#> 443      2013-04-26           2010-2020           2010-2020
-#> 444            <NA>           2010-2020                <NA>
-#> 445            <NA>           2010-2020                <NA>
-#> 446      2013-08-21           2010-2020           2010-2020
-#> 447            <NA>           2010-2020                <NA>
-#> 448      2014-02-08           2010-2020           2010-2020
+#> 441            <NA>                <NA>                <NA>
+#> 442            <NA>                <NA>                <NA>
+#> 443            <NA>                <NA>                <NA>
+#> 444            <NA>                <NA>                <NA>
+#> 445      2014-12-23           2010-2020           2010-2020
+#> 446            <NA>           2010-2020                <NA>
+#> 447            <NA>                <NA>                <NA>
+#> 448      2013-11-04                <NA>           2010-2020
 #> 449            <NA>                <NA>                <NA>
-#> 450            <NA>                <NA>                <NA>
-#> 451      2011-06-21           2010-2020           2010-2020
-#> 452            <NA>           2010-2020                <NA>
-#> 453            <NA>                <NA>                <NA>
+#> 450            <NA>           2010-2020                <NA>
+#> 451            <NA>           2010-2020                <NA>
+#> 452            <NA>                <NA>                <NA>
+#> 453            <NA>           2010-2020                <NA>
 #> 454            <NA>           2010-2020                <NA>
-#> 455            <NA>           2010-2020                <NA>
-#> 456            <NA>           2010-2020                <NA>
+#> 455            <NA>                <NA>                <NA>
+#> 456            <NA>                <NA>                <NA>
 #> 457            <NA>           2010-2020                <NA>
-#> 458            <NA>           2010-2020                <NA>
-#> 459            <NA>                <NA>                <NA>
-#> 460            <NA>           2010-2020                <NA>
-#> 461            <NA>           2010-2020                <NA>
+#> 458            <NA>                <NA>                <NA>
+#> 459            <NA>           2010-2020                <NA>
+#> 460            <NA>                <NA>                <NA>
+#> 461            <NA>                <NA>                <NA>
 #> 462            <NA>                <NA>                <NA>
-#> 463      2010-08-15                <NA>           2010-2020
+#> 463      2014-09-17           2010-2020           2010-2020
 #> 464            <NA>           2010-2020                <NA>
-#> 465            <NA>           2010-2020                <NA>
-#> 466      2015-10-05           2010-2020           2010-2020
-#> 467            <NA>           2010-2020                <NA>
-#> 468            <NA>                <NA>                <NA>
-#> 469            <NA>           2010-2020                <NA>
-#> 470      2011-10-14                <NA>           2010-2020
-#> 471            <NA>                <NA>                <NA>
-#> 472      2015-03-16                <NA>           2010-2020
+#> 465      2015-04-04                <NA>           2010-2020
+#> 466      2011-05-24           2010-2020           2010-2020
+#> 467            <NA>                <NA>                <NA>
+#> 468      2014-11-16           2010-2020           2010-2020
+#> 469            <NA>                <NA>                <NA>
+#> 470            <NA>                <NA>                <NA>
+#> 471      2015-08-25                <NA>           2010-2020
+#> 472            <NA>                <NA>                <NA>
 #> 473            <NA>                <NA>                <NA>
-#> 474            <NA>                <NA>                <NA>
-#> 475            <NA>           2010-2020                <NA>
-#> 476            <NA>           2010-2020                <NA>
-#> 477            <NA>                <NA>                <NA>
-#> 478      2012-08-31                <NA>           2010-2020
-#> 479      2014-02-17           2010-2020           2010-2020
-#> 480      2015-05-09                <NA>           2010-2020
+#> 474            <NA>           2010-2020                <NA>
+#> 475            <NA>                <NA>                <NA>
+#> 476      2015-09-21                <NA>           2010-2020
+#> 477            <NA>           2010-2020                <NA>
+#> 478            <NA>           2010-2020                <NA>
+#> 479            <NA>                <NA>                <NA>
+#> 480            <NA>           2010-2020                <NA>
 #> 481            <NA>                <NA>                <NA>
-#> 482            <NA>                <NA>                <NA>
-#> 483      2011-11-30                <NA>           2010-2020
-#> 484      2014-05-30           2010-2020           2010-2020
-#> 485            <NA>                <NA>                <NA>
-#> 486            <NA>                <NA>                <NA>
-#> 487            <NA>           2010-2020                <NA>
-#> 488            <NA>                <NA>                <NA>
+#> 482      2015-05-15                <NA>           2010-2020
+#> 483      2010-05-02                <NA>           2010-2020
+#> 484      2012-04-20           2010-2020           2010-2020
+#> 485            <NA>           2010-2020                <NA>
+#> 486            <NA>           2010-2020                <NA>
+#> 487      2010-06-29                <NA>           2010-2020
+#> 488      2011-05-15                <NA>           2010-2020
 #> 489            <NA>           2010-2020                <NA>
 #> 490            <NA>                <NA>                <NA>
-#> 491            <NA>                <NA>                <NA>
-#> 492      2014-01-18           2010-2020           2010-2020
-#> 493            <NA>           2010-2020                <NA>
-#> 494            <NA>           2010-2020                <NA>
-#> 495      2011-05-22                <NA>           2010-2020
+#> 491      2014-02-10           2010-2020           2010-2020
+#> 492            <NA>           2010-2020                <NA>
+#> 493      2010-10-17                <NA>           2010-2020
+#> 494      2014-09-18                <NA>           2010-2020
+#> 495      2013-04-02           2010-2020           2010-2020
 #> 496            <NA>                <NA>                <NA>
-#> 497            <NA>                <NA>                <NA>
+#> 497            <NA>           2010-2020                <NA>
 #> 498            <NA>           2010-2020                <NA>
-#> 499      2010-10-20           2010-2020           2010-2020
+#> 499            <NA>                <NA>                <NA>
 #> 500            <NA>           2010-2020                <NA>
 ```
 
@@ -2145,23 +2162,24 @@ factor.
 redcap_df %>% 
   factR(type) %>% 
   str
-#> 'data.frame':    500 obs. of  16 variables:
+#> 'data.frame':    500 obs. of  17 variables:
 #>  $ id             : int  1 2 3 4 5 6 7 8 9 10 ...
-#>  $ sex            : num  1 2 2 2 2 2 2 1 1 2 ...
-#>  $ age            : num  40.9 57.8 32.2 58.7 29.3 18.3 52.7 36.2 42.6 55.8 ...
-#>  $ birth          : chr  "26-04-1958" "18-01-1941" "30-07-1963" "31-12-1936" ...
-#>  $ followup       : chr  "23-04-2021" "12-08-2024" "20-02-2022" "29-06-2024" ...
-#>  $ date_of_surgery: chr  "1999-03-29" "1998-10-20" "1995-10-26" "1995-09-14" ...
-#>  $ size           : num  3.99 48.69 11.25 11.61 6.98 ...
-#>  $ type           : Factor w/ 3 levels "1","0","2": 2 2 2 3 2 3 2 3 3 1 ...
-#>  $ localisation   : int  2 1 4 1 3 0 3 5 4 1 ...
-#>  $ necrosis       : num  0 1 0 1 0 NA 1 NA 0 0 ...
-#>  $ cd10           : num  NA 0 0 1 0 NA 1 1 1 NA ...
-#>  $ sox10          : num  1 0 1 NA 0 NA 0 0 0 1 ...
-#>  $ ck             : num  0 0 NA 0 0 0 NA 0 0 1 ...
-#>  $ death_date     : chr  NA NA NA "2019-07-27" ...
-#>  $ recurrence_date: chr  NA "2014-12-09" NA NA ...
-#>  $ metastasis_date: chr  NA NA NA "2012-04-04" ...
+#>  $ sex            : num  1 2 1 1 2 1 1 1 2 2 ...
+#>  $ age            : num  79.1 38.1 60.6 45.2 39.5 81.2 74.9 38.8 31.8 51.3 ...
+#>  $ birth          : chr  "20-09-1929" "12-10-1953" "11-05-1948" "22-04-1949" ...
+#>  $ followup       : chr  "03-04-2023" "18-12-2025" "21-09-2025" "11-02-2022" ...
+#>  $ date_of_surgery: chr  "2008-11-03" "1991-11-13" "2008-12-17" "1994-07-17" ...
+#>  $ size           : num  7.3 20 42.4 27.9 25.6 ...
+#>  $ type           : Factor w/ 3 levels "1","2","0": 1 1 1 1 2 2 3 3 3 2 ...
+#>  $ localisation   : int  3 1 2 3 1 3 2 5 3 1 ...
+#>  $ necrosis       : num  NA NA 0 1 NA 1 0 1 NA NA ...
+#>  $ margins        : chr  "0" "0" "1" "0" ...
+#>  $ cd10           : num  1 0 NA 0 0 1 0 0 1 1 ...
+#>  $ sox10          : num  1 0 NA 0 NA 1 1 0 1 1 ...
+#>  $ ck             : num  1 NA 0 0 0 0 0 NA 0 1 ...
+#>  $ death_date     : chr  NA NA "2017-09-02" "2018-10-04" ...
+#>  $ recurrence_date: chr  "2015-03-22" NA NA "2011-12-31" ...
+#>  $ metastasis_date: chr  NA NA NA NA ...
 ```
 
 The reference group is specified using the reference argument
@@ -2171,23 +2189,24 @@ redcap_df %>%
   factR(type,
         reference = "0") %>% 
   str
-#> 'data.frame':    500 obs. of  16 variables:
+#> 'data.frame':    500 obs. of  17 variables:
 #>  $ id             : int  1 2 3 4 5 6 7 8 9 10 ...
-#>  $ sex            : num  1 2 2 2 2 2 2 1 1 2 ...
-#>  $ age            : num  40.9 57.8 32.2 58.7 29.3 18.3 52.7 36.2 42.6 55.8 ...
-#>  $ birth          : chr  "26-04-1958" "18-01-1941" "30-07-1963" "31-12-1936" ...
-#>  $ followup       : chr  "23-04-2021" "12-08-2024" "20-02-2022" "29-06-2024" ...
-#>  $ date_of_surgery: chr  "1999-03-29" "1998-10-20" "1995-10-26" "1995-09-14" ...
-#>  $ size           : num  3.99 48.69 11.25 11.61 6.98 ...
-#>  $ type           : Factor w/ 3 levels "0","1","2": 1 1 1 3 1 3 1 3 3 2 ...
-#>  $ localisation   : int  2 1 4 1 3 0 3 5 4 1 ...
-#>  $ necrosis       : num  0 1 0 1 0 NA 1 NA 0 0 ...
-#>  $ cd10           : num  NA 0 0 1 0 NA 1 1 1 NA ...
-#>  $ sox10          : num  1 0 1 NA 0 NA 0 0 0 1 ...
-#>  $ ck             : num  0 0 NA 0 0 0 NA 0 0 1 ...
-#>  $ death_date     : chr  NA NA NA "2019-07-27" ...
-#>  $ recurrence_date: chr  NA "2014-12-09" NA NA ...
-#>  $ metastasis_date: chr  NA NA NA "2012-04-04" ...
+#>  $ sex            : num  1 2 1 1 2 1 1 1 2 2 ...
+#>  $ age            : num  79.1 38.1 60.6 45.2 39.5 81.2 74.9 38.8 31.8 51.3 ...
+#>  $ birth          : chr  "20-09-1929" "12-10-1953" "11-05-1948" "22-04-1949" ...
+#>  $ followup       : chr  "03-04-2023" "18-12-2025" "21-09-2025" "11-02-2022" ...
+#>  $ date_of_surgery: chr  "2008-11-03" "1991-11-13" "2008-12-17" "1994-07-17" ...
+#>  $ size           : num  7.3 20 42.4 27.9 25.6 ...
+#>  $ type           : Factor w/ 3 levels "0","1","2": 2 2 2 2 3 3 1 1 1 3 ...
+#>  $ localisation   : int  3 1 2 3 1 3 2 5 3 1 ...
+#>  $ necrosis       : num  NA NA 0 1 NA 1 0 1 NA NA ...
+#>  $ margins        : chr  "0" "0" "1" "0" ...
+#>  $ cd10           : num  1 0 NA 0 0 1 0 0 1 1 ...
+#>  $ sox10          : num  1 0 NA 0 NA 1 1 0 1 1 ...
+#>  $ ck             : num  1 NA 0 0 0 0 0 NA 0 1 ...
+#>  $ death_date     : chr  NA NA "2017-09-02" "2018-10-04" ...
+#>  $ recurrence_date: chr  "2015-03-22" NA NA "2011-12-31" ...
+#>  $ metastasis_date: chr  NA NA NA NA ...
 ```
 
 Levels can be manually assigned
@@ -2197,23 +2216,24 @@ redcap_df %>%
   factR(type,
         levels = c("2","1","0")) %>% 
   str
-#> 'data.frame':    500 obs. of  16 variables:
+#> 'data.frame':    500 obs. of  17 variables:
 #>  $ id             : int  1 2 3 4 5 6 7 8 9 10 ...
-#>  $ sex            : num  1 2 2 2 2 2 2 1 1 2 ...
-#>  $ age            : num  40.9 57.8 32.2 58.7 29.3 18.3 52.7 36.2 42.6 55.8 ...
-#>  $ birth          : chr  "26-04-1958" "18-01-1941" "30-07-1963" "31-12-1936" ...
-#>  $ followup       : chr  "23-04-2021" "12-08-2024" "20-02-2022" "29-06-2024" ...
-#>  $ date_of_surgery: chr  "1999-03-29" "1998-10-20" "1995-10-26" "1995-09-14" ...
-#>  $ size           : num  3.99 48.69 11.25 11.61 6.98 ...
-#>  $ type           : Factor w/ 3 levels "2","1","0": 3 3 3 1 3 1 3 1 1 2 ...
-#>  $ localisation   : int  2 1 4 1 3 0 3 5 4 1 ...
-#>  $ necrosis       : num  0 1 0 1 0 NA 1 NA 0 0 ...
-#>  $ cd10           : num  NA 0 0 1 0 NA 1 1 1 NA ...
-#>  $ sox10          : num  1 0 1 NA 0 NA 0 0 0 1 ...
-#>  $ ck             : num  0 0 NA 0 0 0 NA 0 0 1 ...
-#>  $ death_date     : chr  NA NA NA "2019-07-27" ...
-#>  $ recurrence_date: chr  NA "2014-12-09" NA NA ...
-#>  $ metastasis_date: chr  NA NA NA "2012-04-04" ...
+#>  $ sex            : num  1 2 1 1 2 1 1 1 2 2 ...
+#>  $ age            : num  79.1 38.1 60.6 45.2 39.5 81.2 74.9 38.8 31.8 51.3 ...
+#>  $ birth          : chr  "20-09-1929" "12-10-1953" "11-05-1948" "22-04-1949" ...
+#>  $ followup       : chr  "03-04-2023" "18-12-2025" "21-09-2025" "11-02-2022" ...
+#>  $ date_of_surgery: chr  "2008-11-03" "1991-11-13" "2008-12-17" "1994-07-17" ...
+#>  $ size           : num  7.3 20 42.4 27.9 25.6 ...
+#>  $ type           : Factor w/ 3 levels "2","1","0": 2 2 2 2 1 1 3 3 3 1 ...
+#>  $ localisation   : int  3 1 2 3 1 3 2 5 3 1 ...
+#>  $ necrosis       : num  NA NA 0 1 NA 1 0 1 NA NA ...
+#>  $ margins        : chr  "0" "0" "1" "0" ...
+#>  $ cd10           : num  1 0 NA 0 0 1 0 0 1 1 ...
+#>  $ sox10          : num  1 0 NA 0 NA 1 1 0 1 1 ...
+#>  $ ck             : num  1 NA 0 0 0 0 0 NA 0 1 ...
+#>  $ death_date     : chr  NA NA "2017-09-02" "2018-10-04" ...
+#>  $ recurrence_date: chr  "2015-03-22" NA NA "2011-12-31" ...
+#>  $ metastasis_date: chr  NA NA NA NA ...
 ```
 
 New labels can also be assigned and automatically specify levels
@@ -2222,28 +2242,29 @@ simultaneously
 ``` r
 redcap_df %>% 
   factR(type,
-        labels = c("benign" = "0",
-                      "intermediate" = "1",
-                      "malignant" = "2"),
+        labels = list("type" = list("benign" = "0",
+                                    "intermediate" = "1",
+                                    "malignant" = "2")),
         lab_to_lev = T) %>% 
   str
-#> 'data.frame':    500 obs. of  16 variables:
+#> 'data.frame':    500 obs. of  17 variables:
 #>  $ id             : int  1 2 3 4 5 6 7 8 9 10 ...
-#>  $ sex            : num  1 2 2 2 2 2 2 1 1 2 ...
-#>  $ age            : num  40.9 57.8 32.2 58.7 29.3 18.3 52.7 36.2 42.6 55.8 ...
-#>  $ birth          : chr  "26-04-1958" "18-01-1941" "30-07-1963" "31-12-1936" ...
-#>  $ followup       : chr  "23-04-2021" "12-08-2024" "20-02-2022" "29-06-2024" ...
-#>  $ date_of_surgery: chr  "1999-03-29" "1998-10-20" "1995-10-26" "1995-09-14" ...
-#>  $ size           : num  3.99 48.69 11.25 11.61 6.98 ...
-#>  $ type           : Factor w/ 3 levels "benign","intermediate",..: 1 1 1 3 1 3 1 3 3 2 ...
-#>  $ localisation   : int  2 1 4 1 3 0 3 5 4 1 ...
-#>  $ necrosis       : num  0 1 0 1 0 NA 1 NA 0 0 ...
-#>  $ cd10           : num  NA 0 0 1 0 NA 1 1 1 NA ...
-#>  $ sox10          : num  1 0 1 NA 0 NA 0 0 0 1 ...
-#>  $ ck             : num  0 0 NA 0 0 0 NA 0 0 1 ...
-#>  $ death_date     : chr  NA NA NA "2019-07-27" ...
-#>  $ recurrence_date: chr  NA "2014-12-09" NA NA ...
-#>  $ metastasis_date: chr  NA NA NA "2012-04-04" ...
+#>  $ sex            : num  1 2 1 1 2 1 1 1 2 2 ...
+#>  $ age            : num  79.1 38.1 60.6 45.2 39.5 81.2 74.9 38.8 31.8 51.3 ...
+#>  $ birth          : chr  "20-09-1929" "12-10-1953" "11-05-1948" "22-04-1949" ...
+#>  $ followup       : chr  "03-04-2023" "18-12-2025" "21-09-2025" "11-02-2022" ...
+#>  $ date_of_surgery: chr  "2008-11-03" "1991-11-13" "2008-12-17" "1994-07-17" ...
+#>  $ size           : num  7.3 20 42.4 27.9 25.6 ...
+#>  $ type           : Factor w/ 3 levels "benign","intermediate",..: 2 2 2 2 3 3 1 1 1 3 ...
+#>  $ localisation   : int  3 1 2 3 1 3 2 5 3 1 ...
+#>  $ necrosis       : num  NA NA 0 1 NA 1 0 1 NA NA ...
+#>  $ margins        : chr  "0" "0" "1" "0" ...
+#>  $ cd10           : num  1 0 NA 0 0 1 0 0 1 1 ...
+#>  $ sox10          : num  1 0 NA 0 NA 1 1 0 1 1 ...
+#>  $ ck             : num  1 NA 0 0 0 0 0 NA 0 1 ...
+#>  $ death_date     : chr  NA NA "2017-09-02" "2018-10-04" ...
+#>  $ recurrence_date: chr  "2015-03-22" NA NA "2011-12-31" ...
+#>  $ metastasis_date: chr  NA NA NA NA ...
 ```
 
 Lastly, all the arguments can be specified for multiple variables at
@@ -2260,23 +2281,24 @@ redcap_df %>%
                       "intermediate" = "1",
                       "malignant" = "2"))) %>% 
   str
-#> 'data.frame':    500 obs. of  16 variables:
+#> 'data.frame':    500 obs. of  17 variables:
 #>  $ id             : int  1 2 3 4 5 6 7 8 9 10 ...
-#>  $ sex            : Factor w/ 2 levels "m","f": 2 1 1 1 1 1 1 2 2 1 ...
-#>  $ age            : num  40.9 57.8 32.2 58.7 29.3 18.3 52.7 36.2 42.6 55.8 ...
-#>  $ birth          : chr  "26-04-1958" "18-01-1941" "30-07-1963" "31-12-1936" ...
-#>  $ followup       : chr  "23-04-2021" "12-08-2024" "20-02-2022" "29-06-2024" ...
-#>  $ date_of_surgery: chr  "1999-03-29" "1998-10-20" "1995-10-26" "1995-09-14" ...
-#>  $ size           : num  3.99 48.69 11.25 11.61 6.98 ...
-#>  $ type           : Factor w/ 3 levels "benign","intermediate",..: 1 1 1 3 1 3 1 3 3 2 ...
-#>  $ localisation   : int  2 1 4 1 3 0 3 5 4 1 ...
-#>  $ necrosis       : num  0 1 0 1 0 NA 1 NA 0 0 ...
-#>  $ cd10           : num  NA 0 0 1 0 NA 1 1 1 NA ...
-#>  $ sox10          : num  1 0 1 NA 0 NA 0 0 0 1 ...
-#>  $ ck             : num  0 0 NA 0 0 0 NA 0 0 1 ...
-#>  $ death_date     : chr  NA NA NA "2019-07-27" ...
-#>  $ recurrence_date: chr  NA "2014-12-09" NA NA ...
-#>  $ metastasis_date: chr  NA NA NA "2012-04-04" ...
+#>  $ sex            : Factor w/ 2 levels "m","f": 2 1 2 2 1 2 2 2 1 1 ...
+#>  $ age            : num  79.1 38.1 60.6 45.2 39.5 81.2 74.9 38.8 31.8 51.3 ...
+#>  $ birth          : chr  "20-09-1929" "12-10-1953" "11-05-1948" "22-04-1949" ...
+#>  $ followup       : chr  "03-04-2023" "18-12-2025" "21-09-2025" "11-02-2022" ...
+#>  $ date_of_surgery: chr  "2008-11-03" "1991-11-13" "2008-12-17" "1994-07-17" ...
+#>  $ size           : num  7.3 20 42.4 27.9 25.6 ...
+#>  $ type           : Factor w/ 3 levels "benign","intermediate",..: 2 2 2 2 3 3 1 1 1 3 ...
+#>  $ localisation   : int  3 1 2 3 1 3 2 5 3 1 ...
+#>  $ necrosis       : num  NA NA 0 1 NA 1 0 1 NA NA ...
+#>  $ margins        : chr  "0" "0" "1" "0" ...
+#>  $ cd10           : num  1 0 NA 0 0 1 0 0 1 1 ...
+#>  $ sox10          : num  1 0 NA 0 NA 1 1 0 1 1 ...
+#>  $ ck             : num  1 NA 0 0 0 0 0 NA 0 1 ...
+#>  $ death_date     : chr  NA NA "2017-09-02" "2018-10-04" ...
+#>  $ recurrence_date: chr  "2015-03-22" NA NA "2011-12-31" ...
+#>  $ metastasis_date: chr  NA NA NA NA ...
 ```
 
 ### Subset rows (filters)
@@ -2289,19 +2311,19 @@ redcap_df %>%
   filter(necrosis == 0) %>% 
   head
 #>   id sex  age      birth   followup date_of_surgery      size type localisation
-#> 1  1   1 40.9 26-04-1958 23-04-2021      1999-03-29  3.991349    0            2
-#> 2  3   2 32.2 30-07-1963 20-02-2022      1995-10-26 11.245841    0            4
-#> 3  5   2 29.3 12-01-1961 14-05-2023      1990-04-22  6.980464    0            3
-#> 4  9   1 42.6 01-04-1962 25-01-2021      2004-11-09  8.699874    2            4
-#> 5 10   2 55.8 04-01-1954 02-04-2024      2009-10-22 35.560789    1            1
-#> 6 20   1 30.3 01-09-1978 08-03-2023      2008-12-01 25.246919    1            4
-#>   necrosis cd10 sox10 ck death_date recurrence_date metastasis_date
-#> 1        0   NA     1  0       <NA>            <NA>            <NA>
-#> 2        0    0     1 NA       <NA>            <NA>            <NA>
-#> 3        0    0     0  0 2018-04-19            <NA>      2011-01-16
-#> 4        0    1     0  0       <NA>            <NA>      2010-08-17
-#> 5        0   NA     1  1       <NA>      2014-12-15            <NA>
-#> 6        0   NA     1  0 2020-02-17            <NA>            <NA>
+#> 1  3   1 60.6 11-05-1948 21-09-2025      2008-12-17 42.412003    1            2
+#> 2  7   1 74.9 16-06-1921 15-11-2023      1996-05-23 41.732124    0            2
+#> 3 13   1 12.2 01-03-1980 01-06-2022      1992-05-20 29.106387    2            3
+#> 4 16   2 33.5 30-06-1957 22-03-2025      1991-01-11 17.586347    0            4
+#> 5 18   2 22.8 13-08-1974 31-10-2022      1997-05-31 13.495825    1            3
+#> 6 22   1 14.2 14-05-1980 06-09-2024      1994-07-21  2.055776    1            4
+#>   necrosis margins cd10 sox10 ck death_date recurrence_date metastasis_date
+#> 1        0       1   NA    NA  0 2017-09-02            <NA>            <NA>
+#> 2        0       1    0     1  0       <NA>      2012-08-30            <NA>
+#> 3        0       1    0     1  0 2020-03-28      2014-09-16            <NA>
+#> 4        0       0    0     0 NA       <NA>            <NA>      2012-04-11
+#> 5        0       1    1     0  1       <NA>            <NA>            <NA>
+#> 6        0       1   NA    NA NA       <NA>      2012-05-04      2014-03-30
 ```
 
 In case of multiple conditions we use the `%in%` operator, as this
@@ -2312,19 +2334,19 @@ redcap_df %>%
   filter(localisation %in% c(1,2,3)) %>% 
   head
 #>   id sex  age      birth   followup date_of_surgery      size type localisation
-#> 1  1   1 40.9 26-04-1958 23-04-2021      1999-03-29  3.991349    0            2
-#> 2  2   2 57.8 18-01-1941 12-08-2024      1998-10-20 48.688670    0            1
-#> 3  4   2 58.7 31-12-1936 29-06-2024      1995-09-14 11.609164    2            1
-#> 4  5   2 29.3 12-01-1961 14-05-2023      1990-04-22  6.980464    0            3
-#> 5  7   2 52.7 14-04-1945 19-03-2024      1997-12-19 48.978832    0            3
-#> 6 10   2 55.8 04-01-1954 02-04-2024      2009-10-22 35.560789    1            1
-#>   necrosis cd10 sox10 ck death_date recurrence_date metastasis_date
-#> 1        0   NA     1  0       <NA>            <NA>            <NA>
-#> 2        1    0     0  0       <NA>      2014-12-09            <NA>
-#> 3        1    1    NA  0 2019-07-27            <NA>      2012-04-04
-#> 4        0    0     0  0 2018-04-19            <NA>      2011-01-16
-#> 5        1    1     0 NA       <NA>      2011-10-10            <NA>
-#> 6        0   NA     1  1       <NA>      2014-12-15            <NA>
+#> 1  1   1 79.1 20-09-1929 03-04-2023      2008-11-03  7.302734    1            3
+#> 2  2   2 38.1 12-10-1953 18-12-2025      1991-11-13 20.043036    1            1
+#> 3  3   1 60.6 11-05-1948 21-09-2025      2008-12-17 42.412003    1            2
+#> 4  4   1 45.2 22-04-1949 11-02-2022      1994-07-17 27.853775    1            3
+#> 5  5   2 39.5 18-01-1966 21-04-2022      2005-07-16 25.587530    2            1
+#> 6  6   1 81.2 06-11-1925 17-07-2023      2007-02-02 49.415904    2            3
+#>   necrosis margins cd10 sox10 ck death_date recurrence_date metastasis_date
+#> 1       NA       0    1     1  1       <NA>      2015-03-22            <NA>
+#> 2       NA       0    0     0 NA       <NA>            <NA>            <NA>
+#> 3        0       1   NA    NA  0 2017-09-02            <NA>            <NA>
+#> 4        1       0    0     0  0 2018-10-04      2011-12-31            <NA>
+#> 5       NA       0    0    NA  0       <NA>            <NA>            <NA>
+#> 6        1       1    1     1  0       <NA>            <NA>            <NA>
 ```
 
 For numerical variables we use \<, \>, ==, \>= and \<=
@@ -2334,19 +2356,19 @@ redcap_df %>%
   filter(size > 20) %>% 
   head
 #>   id sex  age      birth   followup date_of_surgery     size type localisation
-#> 1  2   2 57.8 18-01-1941 12-08-2024      1998-10-20 48.68867    0            1
-#> 2  6   2 18.3 10-12-1975 06-04-2025      1994-03-21 49.02917    2            0
-#> 3  7   2 52.7 14-04-1945 19-03-2024      1997-12-19 48.97883    0            3
-#> 4  8   1 36.2 01-09-1969 14-10-2024      2005-10-30 43.57744    2            5
-#> 5 10   2 55.8 04-01-1954 02-04-2024      2009-10-22 35.56079    1            1
-#> 6 11   1 67.4 26-09-1930 21-06-2023      1998-02-24 27.23407    0            2
-#>   necrosis cd10 sox10 ck death_date recurrence_date metastasis_date
-#> 1        1    0     0  0       <NA>      2014-12-09            <NA>
-#> 2       NA   NA    NA  0       <NA>            <NA>            <NA>
-#> 3        1    1     0 NA       <NA>      2011-10-10            <NA>
-#> 4       NA    1     0  0       <NA>            <NA>            <NA>
-#> 5        0   NA     1  1       <NA>      2014-12-15            <NA>
-#> 6       NA   NA     1  0 2019-03-12            <NA>            <NA>
+#> 1  2   2 38.1 12-10-1953 18-12-2025      1991-11-13 20.04304    1            1
+#> 2  3   1 60.6 11-05-1948 21-09-2025      2008-12-17 42.41200    1            2
+#> 3  4   1 45.2 22-04-1949 11-02-2022      1994-07-17 27.85378    1            3
+#> 4  5   2 39.5 18-01-1966 21-04-2022      2005-07-16 25.58753    2            1
+#> 5  6   1 81.2 06-11-1925 17-07-2023      2007-02-02 49.41590    2            3
+#> 6  7   1 74.9 16-06-1921 15-11-2023      1996-05-23 41.73212    0            2
+#>   necrosis margins cd10 sox10 ck death_date recurrence_date metastasis_date
+#> 1       NA       0    0     0 NA       <NA>            <NA>            <NA>
+#> 2        0       1   NA    NA  0 2017-09-02            <NA>            <NA>
+#> 3        1       0    0     0  0 2018-10-04      2011-12-31            <NA>
+#> 4       NA       0    0    NA  0       <NA>            <NA>            <NA>
+#> 5        1       1    1     1  0       <NA>            <NA>            <NA>
+#> 6        0       1    0     1  0       <NA>      2012-08-30            <NA>
 ```
 
 We can also use between() to specify an interval
@@ -2356,19 +2378,19 @@ redcap_df %>%
   filter(between(size, 10,20)) %>% 
   head
 #>   id sex  age      birth   followup date_of_surgery     size type localisation
-#> 1  3   2 32.2 30-07-1963 20-02-2022      1995-10-26 11.24584    0            4
-#> 2  4   2 58.7 31-12-1936 29-06-2024      1995-09-14 11.60916    2            1
-#> 3 12   2 46.0 08-05-1962 17-02-2025      2008-04-23 11.06068    1            3
-#> 4 15   1 70.7 26-03-1939 05-07-2023      2009-11-18 15.91012    0            2
-#> 5 18   2 32.0 24-05-1972 12-08-2022      2004-05-31 15.68306    0            2
-#> 6 19   1 23.4 27-11-1975 17-11-2024      1999-05-08 14.00870    2            3
-#>   necrosis cd10 sox10 ck death_date recurrence_date metastasis_date
-#> 1        0    0     1 NA       <NA>            <NA>            <NA>
-#> 2        1    1    NA  0 2019-07-27            <NA>      2012-04-04
-#> 3        1   NA     1 NA 2019-02-16            <NA>            <NA>
-#> 4       NA    1     0 NA       <NA>            <NA>      2015-09-01
-#> 5        1    0     1  0       <NA>            <NA>      2014-09-13
-#> 6       NA    0     0 NA       <NA>      2010-06-11      2015-10-01
+#> 1  9   2 31.8 11-11-1958 11-03-2025      1990-08-29 10.72685    0            3
+#> 2 14   1 61.5 28-09-1944 08-06-2021      2006-03-15 14.73268    0            0
+#> 3 16   2 33.5 30-06-1957 22-03-2025      1991-01-11 17.58635    0            4
+#> 4 18   2 22.8 13-08-1974 31-10-2022      1997-05-31 13.49582    1            3
+#> 5 23   1 35.3 26-10-1969 31-07-2022      2005-03-02 14.91346    2            2
+#> 6 27   2 52.2 27-02-1951 07-05-2022      2003-04-25 17.22927    1            3
+#>   necrosis margins cd10 sox10 ck death_date recurrence_date metastasis_date
+#> 1       NA       1    1     1  0       <NA>      2014-02-16            <NA>
+#> 2        1       0    0     0 NA       <NA>      2011-05-23            <NA>
+#> 3        0       0    0     0 NA       <NA>            <NA>      2012-04-11
+#> 4        0       1    1     0  1       <NA>            <NA>            <NA>
+#> 5       NA       0   NA     0 NA       <NA>      2010-06-12      2014-10-10
+#> 6       NA       0    1    NA  1 2017-06-25            <NA>      2013-05-21
 ```
 
 Multiple conditions can be combined using so-called “boolean” operators
@@ -2381,20 +2403,20 @@ satisified.
 redcap_df %>% 
   filter(necrosis == 1 & (localisation %in% c(1,2,3) | size > 10)) %>% 
   head
-#>   id sex  age      birth   followup date_of_surgery     size type localisation
-#> 1  2   2 57.8 18-01-1941 12-08-2024      1998-10-20 48.68867    0            1
-#> 2  4   2 58.7 31-12-1936 29-06-2024      1995-09-14 11.60916    2            1
-#> 3  7   2 52.7 14-04-1945 19-03-2024      1997-12-19 48.97883    0            3
-#> 4 12   2 46.0 08-05-1962 17-02-2025      2008-04-23 11.06068    1            3
-#> 5 14   1 39.6 16-08-1950 24-10-2022      1990-03-12 32.02648    1            3
-#> 6 16   1 58.8 01-07-1945 19-06-2024      2004-04-01 26.70794    1            4
-#>   necrosis cd10 sox10 ck death_date recurrence_date metastasis_date
-#> 1        1    0     0  0       <NA>      2014-12-09            <NA>
-#> 2        1    1    NA  0 2019-07-27            <NA>      2012-04-04
-#> 3        1    1     0 NA       <NA>      2011-10-10            <NA>
-#> 4        1   NA     1 NA 2019-02-16            <NA>            <NA>
-#> 5        1    0     0  0 2017-07-18            <NA>            <NA>
-#> 6        1    1    NA NA       <NA>      2014-05-27            <NA>
+#>   id sex  age      birth   followup date_of_surgery      size type localisation
+#> 1  4   1 45.2 22-04-1949 11-02-2022      1994-07-17 27.853775    1            3
+#> 2  6   1 81.2 06-11-1925 17-07-2023      2007-02-02 49.415904    2            3
+#> 3 14   1 61.5 28-09-1944 08-06-2021      2006-03-15 14.732677    0            0
+#> 4 15   1 14.1 25-01-1979 11-10-2025      1993-03-09 41.706223    0            2
+#> 5 20   1 58.2 05-02-1939 01-10-2024      1997-04-26  3.757738    1            3
+#> 6 21   1 83.0 09-04-1925 07-02-2025      2008-04-16 43.065297    1            4
+#>   necrosis margins cd10 sox10 ck death_date recurrence_date metastasis_date
+#> 1        1       0    0     0  0 2018-10-04      2011-12-31            <NA>
+#> 2        1       1    1     1  0       <NA>            <NA>            <NA>
+#> 3        1       0    0     0 NA       <NA>      2011-05-23            <NA>
+#> 4        1       0    0    NA NA 2020-09-30      2014-01-06            <NA>
+#> 5        1       1   NA     1 NA       <NA>      2010-08-13            <NA>
+#> 6        1       1    0     0  1       <NA>            <NA>      2012-04-13
 ```
 
 ### Arranging/sorting data
@@ -2407,19 +2429,19 @@ redcap_df %>%
   arrange(size) %>% 
   head()
 #>    id sex  age      birth   followup date_of_surgery     size type localisation
-#> 1  28   2 51.5 17-06-1940 07-02-2021      1992-01-02 2.088167    0            2
-#> 2 350   2 22.5 25-11-1971 14-07-2021      1994-06-03 2.167653    1            1
-#> 3 189   2 55.5 28-10-1949 08-03-2024      2005-05-15 2.507209    2            2
-#> 4 194   2 27.4 12-03-1979 02-11-2025      2006-08-21 2.561534    0            3
-#> 5 241   1 64.6 23-08-1926 18-02-2025      1991-04-06 2.572398    0            3
-#> 6 334   1 65.5 16-03-1941 08-08-2022      2006-09-26 2.582333    1            3
-#>   necrosis cd10 sox10 ck death_date recurrence_date metastasis_date
-#> 1        0   NA     1  1       <NA>      2012-01-18      2015-11-02
-#> 2        1    1     1  1       <NA>      2010-11-09            <NA>
-#> 3       NA    0     1  0 2017-09-21            <NA>            <NA>
-#> 4       NA   NA     1  0       <NA>            <NA>            <NA>
-#> 5       NA    0     1 NA       <NA>      2010-10-18            <NA>
-#> 6        1   NA     1  0 2019-04-01            <NA>            <NA>
+#> 1  22   1 14.2 14-05-1980 06-09-2024      1994-07-21 2.055776    1            4
+#> 2 405   1 41.9 25-05-1953 13-05-2023      1995-04-17 2.060206    0            2
+#> 3 305   1 66.3 25-04-1942 14-09-2025      2008-08-08 2.177728    1            3
+#> 4 178   2 48.3 05-10-1960 20-06-2025      2009-01-15 2.179957    2            2
+#> 5  11   1 61.8 17-03-1946 09-06-2023      2008-01-13 2.391121    1            3
+#> 6 114   2 84.2 25-04-1920 22-01-2023      2004-07-24 2.583805    1            2
+#>   necrosis margins cd10 sox10 ck death_date recurrence_date metastasis_date
+#> 1        0       1   NA    NA NA       <NA>      2012-05-04      2014-03-30
+#> 2       NA       1    0     0  1       <NA>      2014-06-25      2011-06-13
+#> 3        0       0    0    NA NA 2016-05-20            <NA>      2015-10-05
+#> 4        0       0    1     1 NA       <NA>            <NA>            <NA>
+#> 5       NA       0   NA     0  0       <NA>      2011-04-04            <NA>
+#> 6        1       0    1     0  1       <NA>            <NA>      2014-07-21
 ```
 
 Descending size
@@ -2429,19 +2451,19 @@ redcap_df %>%
   arrange(desc(size)) %>% 
   head
 #>    id sex  age      birth   followup date_of_surgery     size type localisation
-#> 1  93   2 79.7 30-05-1924 03-10-2021      2004-02-09 49.88995    0            1
-#> 2 441   2 42.1 31-05-1967 05-10-2022      2009-06-26 49.51837    0            2
-#> 3 230   1 31.3 05-04-1961 04-05-2021      1992-08-01 49.44014    1            3
-#> 4 366   2 19.2 10-05-1979 09-12-2022      1998-07-16 49.43806    1            3
-#> 5 133   1 65.1 02-02-1930 01-09-2022      1995-02-23 49.31010    1            3
-#> 6 494   2 72.4 20-05-1928 05-08-2025      2000-10-15 49.28248    1            2
-#>   necrosis cd10 sox10 ck death_date recurrence_date metastasis_date
-#> 1       NA    1     0  0       <NA>            <NA>            <NA>
-#> 2       NA    1    NA  0       <NA>      2011-07-17            <NA>
-#> 3       NA    0     1 NA       <NA>      2011-01-25      2013-09-04
-#> 4        1    0    NA NA 2020-09-26            <NA>            <NA>
-#> 5       NA    0     1  1       <NA>            <NA>      2014-07-23
-#> 6        0   NA     1 NA       <NA>      2010-12-03            <NA>
+#> 1 286   2 68.2 28-09-1939 08-03-2023      2007-12-03 49.94005    1            3
+#> 2 427   1 50.7 21-06-1949 01-08-2025      2000-03-02 49.82537    1            3
+#> 3  17   2 58.9 10-01-1943 24-12-2024      2001-12-08 49.73744    1            2
+#> 4 469   2 41.1 24-04-1963 22-01-2025      2004-05-26 49.70139    1            0
+#> 5  95   1 49.6 21-04-1960 26-10-2023      2009-11-21 49.61720    1            3
+#> 6 387   2 71.8 01-05-1921 03-11-2023      1993-02-19 49.60115    2            4
+#>   necrosis margins cd10 sox10 ck death_date recurrence_date metastasis_date
+#> 1        1       0    0     1 NA 2016-01-12      2015-01-23            <NA>
+#> 2       NA       0    0    NA  1       <NA>      2015-03-28            <NA>
+#> 3       NA       1   NA     0 NA 2018-08-28            <NA>            <NA>
+#> 4        0       1    1    NA NA       <NA>            <NA>            <NA>
+#> 5        1       0   NA     1 NA       <NA>            <NA>            <NA>
+#> 6        1       0    1    NA  1 2016-05-13      2014-07-26      2012-01-30
 ```
 
 ### Missing data
@@ -2454,13 +2476,13 @@ redcap_df %>%
 #> Nas detected in the following variables:
 #> 
 #>          variable NAs
-#> 1 metastasis_date 329
-#> 2      death_date 322
-#> 3 recurrence_date 261
-#> 4              ck 174
-#> 5        necrosis 169
-#> 6            cd10 167
-#> 7           sox10 164
+#> 1 metastasis_date 339
+#> 2      death_date 314
+#> 3 recurrence_date 254
+#> 4        necrosis 172
+#> 5            cd10 162
+#> 6           sox10 162
+#> 7              ck 157
 ```
 
 Missing values can be dropped with drop_na()
@@ -2470,19 +2492,19 @@ redcap_df %>%
   drop_na(metastasis_date, necrosis) %>% 
   head
 #>   id sex  age      birth   followup date_of_surgery      size type localisation
-#> 1  4   2 58.7 31-12-1936 29-06-2024      1995-09-14 11.609164    2            1
-#> 2  5   2 29.3 12-01-1961 14-05-2023      1990-04-22  6.980464    0            3
-#> 3  9   1 42.6 01-04-1962 25-01-2021      2004-11-09  8.699874    2            4
-#> 4 17   1 56.8 27-09-1946 05-09-2022      2003-07-16 47.472564    1            2
-#> 5 18   2 32.0 24-05-1972 12-08-2022      2004-05-31 15.683065    0            2
-#> 6 23   1 64.5 30-03-1929 21-09-2022      1993-10-10 28.811464    1            5
-#>   necrosis cd10 sox10 ck death_date recurrence_date metastasis_date
-#> 1        1    1    NA  0 2019-07-27            <NA>      2012-04-04
-#> 2        0    0     0  0 2018-04-19            <NA>      2011-01-16
-#> 3        0    1     0  0       <NA>            <NA>      2010-08-17
-#> 4        1    0     0  0 2017-09-28            <NA>      2012-08-18
-#> 5        1    0     1  0       <NA>            <NA>      2014-09-13
-#> 6        1   NA     1  0 2018-03-01      2011-01-03      2010-04-11
+#> 1  8   1 38.8 12-11-1960 07-10-2021      1999-08-31  9.040216    0            5
+#> 2 16   2 33.5 30-06-1957 22-03-2025      1991-01-11 17.586347    0            4
+#> 3 21   1 83.0 09-04-1925 07-02-2025      2008-04-16 43.065297    1            4
+#> 4 22   1 14.2 14-05-1980 06-09-2024      1994-07-21  2.055776    1            4
+#> 5 32   2 68.0 11-09-1940 04-12-2022      2008-09-21 13.096115    1            2
+#> 6 34   2 48.1 03-10-1961 20-01-2025      2009-11-22 24.000126    2            3
+#>   necrosis margins cd10 sox10 ck death_date recurrence_date metastasis_date
+#> 1        1       0    0     0 NA 2018-05-09      2012-01-31      2011-10-13
+#> 2        0       0    0     0 NA       <NA>            <NA>      2012-04-11
+#> 3        1       1    0     0  1       <NA>            <NA>      2012-04-13
+#> 4        0       1   NA    NA NA       <NA>      2012-05-04      2014-03-30
+#> 5        1       0    0     1  1       <NA>            <NA>      2011-04-24
+#> 6        0       0    1     0  0 2017-06-14      2010-08-21      2013-09-08
 ```
 
 Sometimes we want to remove rows where at least one of the values are
@@ -2495,19 +2517,19 @@ redcap_df %>%
        filter = "remove") %>% 
   head
 #>   id sex  age      birth   followup date_of_surgery      size type localisation
-#> 1  2   2 57.8 18-01-1941 12-08-2024      1998-10-20 48.688670    0            1
-#> 2  5   2 29.3 12-01-1961 14-05-2023      1990-04-22  6.980464    0            3
-#> 3  8   1 36.2 01-09-1969 14-10-2024      2005-10-30 43.577441    2            5
-#> 4  9   1 42.6 01-04-1962 25-01-2021      2004-11-09  8.699874    2            4
-#> 5 14   1 39.6 16-08-1950 24-10-2022      1990-03-12 32.026478    1            3
-#> 6 17   1 56.8 27-09-1946 05-09-2022      2003-07-16 47.472564    1            2
-#>   necrosis cd10 sox10 ck death_date recurrence_date metastasis_date
-#> 1        1    0     0  0       <NA>      2014-12-09            <NA>
-#> 2        0    0     0  0 2018-04-19            <NA>      2011-01-16
-#> 3       NA    1     0  0       <NA>            <NA>            <NA>
-#> 4        0    1     0  0       <NA>            <NA>      2010-08-17
-#> 5        1    0     0  0 2017-07-18            <NA>            <NA>
-#> 6        1    0     0  0 2017-09-28            <NA>      2012-08-18
+#> 1  1   1 79.1 20-09-1929 03-04-2023      2008-11-03  7.302734    1            3
+#> 2  4   1 45.2 22-04-1949 11-02-2022      1994-07-17 27.853775    1            3
+#> 3  6   1 81.2 06-11-1925 17-07-2023      2007-02-02 49.415904    2            3
+#> 4  7   1 74.9 16-06-1921 15-11-2023      1996-05-23 41.732124    0            2
+#> 5  9   2 31.8 11-11-1958 11-03-2025      1990-08-29 10.726850    0            3
+#> 6 10   2 51.3 18-08-1953 28-11-2021      2004-12-08 21.547746    2            1
+#>   necrosis margins cd10 sox10 ck death_date recurrence_date metastasis_date
+#> 1       NA       0    1     1  1       <NA>      2015-03-22            <NA>
+#> 2        1       0    0     0  0 2018-10-04      2011-12-31            <NA>
+#> 3        1       1    1     1  0       <NA>            <NA>            <NA>
+#> 4        0       1    0     1  0       <NA>      2012-08-30            <NA>
+#> 5       NA       1    1     1  0       <NA>      2014-02-16            <NA>
+#> 6       NA       1    1     1  1       <NA>      2014-08-15            <NA>
 ```
 
 We can also flag the rows into a new variable
@@ -2519,19 +2541,26 @@ redcap_df %>%
        new = "flag") %>% 
   head
 #>   id sex  age      birth   followup date_of_surgery      size type localisation
-#> 1  1   1 40.9 26-04-1958 23-04-2021      1999-03-29  3.991349    0            2
-#> 2  2   2 57.8 18-01-1941 12-08-2024      1998-10-20 48.688670    0            1
-#> 3  3   2 32.2 30-07-1963 20-02-2022      1995-10-26 11.245841    0            4
-#> 4  4   2 58.7 31-12-1936 29-06-2024      1995-09-14 11.609164    2            1
-#> 5  5   2 29.3 12-01-1961 14-05-2023      1990-04-22  6.980464    0            3
-#> 6  6   2 18.3 10-12-1975 06-04-2025      1994-03-21 49.029171    2            0
-#>   necrosis cd10 sox10 ck death_date recurrence_date metastasis_date flag
-#> 1        0   NA     1  0       <NA>            <NA>            <NA>    1
-#> 2        1    0     0  0       <NA>      2014-12-09            <NA>    0
-#> 3        0    0     1 NA       <NA>            <NA>            <NA>    1
-#> 4        1    1    NA  0 2019-07-27            <NA>      2012-04-04    1
-#> 5        0    0     0  0 2018-04-19            <NA>      2011-01-16    0
-#> 6       NA   NA    NA  0       <NA>            <NA>            <NA>    1
+#> 1  1   1 79.1 20-09-1929 03-04-2023      2008-11-03  7.302734    1            3
+#> 2  2   2 38.1 12-10-1953 18-12-2025      1991-11-13 20.043036    1            1
+#> 3  3   1 60.6 11-05-1948 21-09-2025      2008-12-17 42.412003    1            2
+#> 4  4   1 45.2 22-04-1949 11-02-2022      1994-07-17 27.853775    1            3
+#> 5  5   2 39.5 18-01-1966 21-04-2022      2005-07-16 25.587530    2            1
+#> 6  6   1 81.2 06-11-1925 17-07-2023      2007-02-02 49.415904    2            3
+#>   necrosis margins cd10 sox10 ck death_date recurrence_date metastasis_date
+#> 1       NA       0    1     1  1       <NA>      2015-03-22            <NA>
+#> 2       NA       0    0     0 NA       <NA>            <NA>            <NA>
+#> 3        0       1   NA    NA  0 2017-09-02            <NA>            <NA>
+#> 4        1       0    0     0  0 2018-10-04      2011-12-31            <NA>
+#> 5       NA       0    0    NA  0       <NA>            <NA>            <NA>
+#> 6        1       1    1     1  0       <NA>            <NA>            <NA>
+#>   flag
+#> 1    0
+#> 2    1
+#> 3    1
+#> 4    0
+#> 5    1
+#> 6    0
 ```
 
 ### Join multiple data frames
@@ -2555,25 +2584,25 @@ If we want to join two data frames, we use left_join().
 left_join(redcap_df, analysis_df, by = "id") %>% 
   tail
 #>       id sex  age      birth   followup date_of_surgery     size type
-#> 1427 498   1 29.2 29-07-1961 25-03-2024      1990-10-28 24.04804    0
-#> 1428 498   1 29.2 29-07-1961 25-03-2024      1990-10-28 24.04804    0
-#> 1429 499   2 25.0 13-09-1980 25-09-2025      2005-08-26 49.16685    1
-#> 1430 499   2 25.0 13-09-1980 25-09-2025      2005-08-26 49.16685    1
-#> 1431 499   2 25.0 13-09-1980 25-09-2025      2005-08-26 49.16685    1
-#> 1432 500   2 51.4 29-05-1947 24-04-2022      1998-10-24 33.28409    1
-#>      localisation necrosis cd10 sox10 ck death_date recurrence_date
-#> 1427            2        0    1     1  0       <NA>      2013-11-04
-#> 1428            2        0    1     1  0       <NA>      2013-11-04
-#> 1429            3       NA    1    NA NA 2016-03-26      2011-07-29
-#> 1430            3       NA    1    NA NA 2016-03-26      2011-07-29
-#> 1431            3       NA    1    NA NA 2016-03-26      2011-07-29
-#> 1432            1        1    1     1 NA 2020-04-18      2015-02-01
+#> 1427 498   1 66.4 02-11-1931 11-08-2023      1998-03-16 34.90951    1
+#> 1428 498   1 66.4 02-11-1931 11-08-2023      1998-03-16 34.90951    1
+#> 1429 499   2 63.4 24-04-1944 05-09-2021      2007-09-12 34.17819    1
+#> 1430 499   2 63.4 24-04-1944 05-09-2021      2007-09-12 34.17819    1
+#> 1431 499   2 63.4 24-04-1944 05-09-2021      2007-09-12 34.17819    1
+#> 1432 500   2 66.3 06-03-1942 21-11-2022      2008-06-07 17.15191    1
+#>      localisation necrosis margins cd10 sox10 ck death_date recurrence_date
+#> 1427            2        0       0    1    NA  0       <NA>      2010-08-06
+#> 1428            2        0       0    1    NA  0       <NA>      2010-08-06
+#> 1429            4        0       1    1     0  1 2018-12-24            <NA>
+#> 1430            4        0       1    1     0  1 2018-12-24            <NA>
+#> 1431            4        0       1    1     0  1 2018-12-24            <NA>
+#> 1432            2        0       0    0     0  1 2017-05-12      2013-04-08
 #>      metastasis_date       X6       X7         X8          X9         X10 X1 X2
 #> 1427            <NA> 61.70529 67.99959 -0.2146209  0.45695559 -0.63244990 T0  1
 #> 1428            <NA> 70.45285 63.29462 -0.9465149 -0.03072066 -0.55711509 T0  1
-#> 1429      2010-10-20 59.17862 66.46530  1.9006568  0.58998279 -0.79226076 T0  1
-#> 1430      2010-10-20 55.40593 54.43776 -0.6452489  1.21994339  0.08777097 T0  1
-#> 1431      2010-10-20 49.97634 59.53915 -0.3484089  1.32272643 -0.45083066 T0  2
+#> 1429            <NA> 59.17862 66.46530  1.9006568  0.58998279 -0.79226076 T0  1
+#> 1430            <NA> 55.40593 54.43776 -0.6452489  1.21994339  0.08777097 T0  1
+#> 1431            <NA> 49.97634 59.53915 -0.3484089  1.32272643 -0.45083066 T0  2
 #> 1432            <NA> 84.66726 70.04153 -1.1777740 -0.79106526  3.03003518 T1  1
 #>      X3 X4 X5   ttt event     time2 event2 event3      X6_bin      X7_bin
 #> 1427 T1  0  1 142.8     0 142.03070      0      1 59.21-69.28 63.27-78.64
@@ -2653,19 +2682,19 @@ analysis_df %>%
 #> 2025 NA NA NA NA  NA <NA> <NA> <NA> <NA> <NA>  NA  <NA>    NA     NA     NA 474
 #> 2026 NA NA NA NA  NA <NA> <NA> <NA> <NA> <NA>  NA  <NA>    NA     NA     NA 491
 #>      X6_bin X7_bin X8_bin X9_bin X10_bin date_of_surgery death_date
-#> 2021   <NA>   <NA>   <NA>   <NA>    <NA>      2003-09-05 2019-05-04
-#> 2022   <NA>   <NA>   <NA>   <NA>    <NA>      1997-11-25 2017-10-30
-#> 2023   <NA>   <NA>   <NA>   <NA>    <NA>      2004-01-25       <NA>
-#> 2024   <NA>   <NA>   <NA>   <NA>    <NA>      2009-02-26 2019-11-16
-#> 2025   <NA>   <NA>   <NA>   <NA>    <NA>      2006-01-29 2018-12-26
-#> 2026   <NA>   <NA>   <NA>   <NA>    <NA>      2002-12-21       <NA>
+#> 2021   <NA>   <NA>   <NA>   <NA>    <NA>      1990-04-27       <NA>
+#> 2022   <NA>   <NA>   <NA>   <NA>    <NA>      2006-10-08       <NA>
+#> 2023   <NA>   <NA>   <NA>   <NA>    <NA>      1990-12-01       <NA>
+#> 2024   <NA>   <NA>   <NA>   <NA>    <NA>      2002-12-01 2019-12-29
+#> 2025   <NA>   <NA>   <NA>   <NA>    <NA>      2008-09-12       <NA>
+#> 2026   <NA>   <NA>   <NA>   <NA>    <NA>      1990-04-26       <NA>
 #>      recurrence_date metastasis_date
-#> 2021      2010-02-03            <NA>
-#> 2022      2012-02-26      2014-02-08
-#> 2023            <NA>            <NA>
-#> 2024            <NA>      2015-03-16
-#> 2025            <NA>            <NA>
-#> 2026            <NA>            <NA>
+#> 2021            <NA>            <NA>
+#> 2022            <NA>      2013-11-04
+#> 2023      2010-08-31      2014-11-16
+#> 2024            <NA>            <NA>
+#> 2025      2015-06-05            <NA>
+#> 2026      2010-02-10      2014-02-10
 ```
 
 Here we se missing data for dataset X and complete data for dataset Y as
@@ -2682,17 +2711,17 @@ r2 <- redcap_df %>% filter(id >= 100)
 #Binding it back together
 bind_rows(r1, r2) %>% head
 #>   id sex  age      birth   followup date_of_surgery      size type localisation
-#> 1  1   1 40.9 26-04-1958 23-04-2021      1999-03-29  3.991349    0            2
-#> 2  2   2 57.8 18-01-1941 12-08-2024      1998-10-20 48.688670    0            1
-#> 3  3   2 32.2 30-07-1963 20-02-2022      1995-10-26 11.245841    0            4
-#> 4  4   2 58.7 31-12-1936 29-06-2024      1995-09-14 11.609164    2            1
-#> 5  5   2 29.3 12-01-1961 14-05-2023      1990-04-22  6.980464    0            3
-#> 6  6   2 18.3 10-12-1975 06-04-2025      1994-03-21 49.029171    2            0
-#>   necrosis cd10 sox10 ck death_date recurrence_date metastasis_date
-#> 1        0   NA     1  0       <NA>            <NA>            <NA>
-#> 2        1    0     0  0       <NA>      2014-12-09            <NA>
-#> 3        0    0     1 NA       <NA>            <NA>            <NA>
-#> 4        1    1    NA  0 2019-07-27            <NA>      2012-04-04
-#> 5        0    0     0  0 2018-04-19            <NA>      2011-01-16
-#> 6       NA   NA    NA  0       <NA>            <NA>            <NA>
+#> 1  1   1 79.1 20-09-1929 03-04-2023      2008-11-03  7.302734    1            3
+#> 2  2   2 38.1 12-10-1953 18-12-2025      1991-11-13 20.043036    1            1
+#> 3  3   1 60.6 11-05-1948 21-09-2025      2008-12-17 42.412003    1            2
+#> 4  4   1 45.2 22-04-1949 11-02-2022      1994-07-17 27.853775    1            3
+#> 5  5   2 39.5 18-01-1966 21-04-2022      2005-07-16 25.587530    2            1
+#> 6  6   1 81.2 06-11-1925 17-07-2023      2007-02-02 49.415904    2            3
+#>   necrosis margins cd10 sox10 ck death_date recurrence_date metastasis_date
+#> 1       NA       0    1     1  1       <NA>      2015-03-22            <NA>
+#> 2       NA       0    0     0 NA       <NA>            <NA>            <NA>
+#> 3        0       1   NA    NA  0 2017-09-02            <NA>            <NA>
+#> 4        1       0    0     0  0 2018-10-04      2011-12-31            <NA>
+#> 5       NA       0    0    NA  0       <NA>            <NA>            <NA>
+#> 6        1       1    1     1  0       <NA>            <NA>            <NA>
 ```

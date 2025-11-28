@@ -59,7 +59,10 @@
 <span>  breaks <span class="op">=</span> <span class="fl">12</span>,</span>
 <span>  digits <span class="op">=</span> <span class="fl">4</span>,</span>
 <span>  event.digits <span class="op">=</span> <span class="fl">2</span>,</span>
-<span>  quantiles <span class="op">=</span> <span class="cn">T</span></span>
+<span>  cause <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  survtime <span class="op">=</span> <span class="cn">T</span>,</span>
+<span>  proportions <span class="op">=</span> <span class="cn">F</span>,</span>
+<span>  conditional <span class="op">=</span> <span class="cn">F</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -103,8 +106,20 @@
 <dd><p>whether eventtimes should be rounded. Default is 2 to preserve exact times</p></dd>
 
 
-<dt id="arg-quantiles">quantiles<a class="anchor" aria-label="anchor" href="#arg-quantiles"></a></dt>
-<dd><p>Whether median time to event should be calculated (default = TRUE)</p></dd>
+<dt id="arg-cause">cause<a class="anchor" aria-label="anchor" href="#arg-cause"></a></dt>
+<dd><p>cause of interest, default = 1</p></dd>
+
+
+<dt id="arg-survtime">survtime<a class="anchor" aria-label="anchor" href="#arg-survtime"></a></dt>
+<dd><p>Whether median time to event should be calculated (default = F)</p></dd>
+
+
+<dt id="arg-proportions">proportions<a class="anchor" aria-label="anchor" href="#arg-proportions"></a></dt>
+<dd><p>Whether risk of event in different windows should be estimated (default = F)</p></dd>
+
+
+<dt id="arg-conditional">conditional<a class="anchor" aria-label="anchor" href="#arg-conditional"></a></dt>
+<dd><p>Whether conditional risk at the time horizon should be calculated (default = F)</p></dd>
 
 </dl></div>
     <div class="section level2">

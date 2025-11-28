@@ -45,6 +45,11 @@ A data frame with 2000 rows and 14 columns:
   status indicator where 0 is censoring, 1 is event of interest and 2 is
   death as a competing risk
 
+- event3:
+
+  status indicator with multiple competing risks. 0=censorm, 1=event,
+  2=death, 3=competing event
+
 - id:
 
   patient id

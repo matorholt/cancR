@@ -8,8 +8,8 @@ and labels
 ``` r
 formatR(
   data,
-  cat_vars = c(case, sex, cci, region, education, income, marital),
-  num_vars = c(period, age_group),
+  cat.vars = c(case, sex, cci, region, education, income, marital),
+  num.vars = c(period, age_group),
   cut_vars = c(age, index),
   labels = list(),
   seqlist = list(),
@@ -24,11 +24,11 @@ formatR(
 
   dataframe. Works with piping
 
-- cat_vars:
+- cat.vars:
 
   Vector of categorical covariates which should be formatted to factors
 
-- num_vars:
+- num.vars:
 
   vector of pseudonumerical variables that should be ordered (e.g.
   1990-2000, 2000-2010).

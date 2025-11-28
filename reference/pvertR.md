@@ -5,7 +5,7 @@ Format p-values to AMA manual of style
 ## Usage
 
 ``` r
-pvertR(x)
+pvertR(x, na = "NA")
 ```
 
 ## Arguments
@@ -13,6 +13,10 @@ pvertR(x)
 - x:
 
   A p-value
+
+- na:
+
+  the print of NA values, default = "NA.
 
 ## Value
 

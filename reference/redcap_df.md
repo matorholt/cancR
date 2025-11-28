@@ -53,6 +53,10 @@ A data frame with 500 rows and 15 columns:
 
   whether necrosis was present in the primary tumor
 
+- margins:
+
+  whether there were positive or negative margins at last surgery
+
 - cd10, sox10, ck:
 
   presence or abscence of immunohistochemical markers

@@ -21,7 +21,7 @@ remaining variables
 factR(
   data,
   vars,
-  num_vars,
+  num.vars,
   reference = list(),
   levels = list(),
   labels = list(),
@@ -38,9 +38,10 @@ factR(
 
 - vars:
 
-  Vector of variables that should be factorized
+  Vector of variables that should be factorized. The names from the
+  lists "reference", "labels" and "levels" are automatically registered.
 
-- num_vars:
+- num.vars:
 
   vector of variables with pseudonumeric ordering
 

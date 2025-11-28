@@ -12,6 +12,7 @@ redcapR(
   data,
   dictionary,
   namelist = list(),
+  date.vars = NULL,
   autoformat = T,
   formatlist = NULL,
   cprlist = NULL,
@@ -33,6 +34,11 @@ redcapR(
 
   optional list for manual labelling e.g. list("observer" = list("John"
   = "1", "Me" = "2"))
+
+- date.vars:
+
+  vector of variable names containing date if not automatically
+  converted
 
 - autoformat:
 
