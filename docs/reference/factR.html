@@ -73,7 +73,7 @@ The order of effects is:</p><ol><li><p>Set as factor (fct_infreq setting levels 
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">factR</span><span class="op">(</span></span>
 <span>  <span class="va">data</span>,</span>
 <span>  <span class="va">vars</span>,</span>
-<span>  <span class="va">num_vars</span>,</span>
+<span>  <span class="va">num.vars</span>,</span>
 <span>  reference <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
@@ -91,10 +91,10 @@ The order of effects is:</p><ol><li><p>Set as factor (fct_infreq setting levels 
 
 
 <dt id="arg-vars">vars<a class="anchor" aria-label="anchor" href="#arg-vars"></a></dt>
-<dd><p>Vector of variables that should be factorized</p></dd>
+<dd><p>Vector of variables that should be factorized. The names from the lists "reference", "labels" and "levels" are automatically registered.</p></dd>
 
 
-<dt id="arg-num-vars">num_vars<a class="anchor" aria-label="anchor" href="#arg-num-vars"></a></dt>
+<dt id="arg-num-vars">num.vars<a class="anchor" aria-label="anchor" href="#arg-num-vars"></a></dt>
 <dd><p>vector of variables with pseudonumeric ordering</p></dd>
 
 

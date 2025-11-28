@@ -160,7 +160,7 @@ factR <- function(data, vars, num.vars, reference = list(), levels = list(), lab
 
   for(v in num_c) {
 
-    vals <- lapply(df[[v]], function(x) {
+    vals <- lapply(data[[v]], function(x) {
 
       if(str_detect(x, "\\<")) y <- -1000000
       else if(str_detect(x, "\\>")) y <- 1000000
@@ -170,7 +170,7 @@ factR <- function(data, vars, num.vars, reference = list(), levels = list(), lab
 
     })
 
-    val_list <- as.list(as.character(unique(df[[v]]))) %>% set_names(unique(vals))
+    val_list <- as.list(as.character(unique(data[[v]]))) %>% set_names(unique(vals))
     val_list <- val_list[order(as.numeric(names(val_list)))]
 
     if(v %nin% names(levels)) {

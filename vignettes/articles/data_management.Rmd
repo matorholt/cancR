@@ -301,7 +301,8 @@ redcap_df %>%
   #Conversion into date format
   datR(contains("date")) %>% 
   cutR(vars = c(recurrence_date, metastasis_date),
-       seqlist = seq(1900,2030,10),
+       seqlist = list("recurrence_date" = seq(1900,2030,10),
+                      "metastasis_date" = seq(1900,2030,10)),
        name.pattern = "_bin")
 ```
 
@@ -338,9 +339,9 @@ New labels can also be assigned and automatically specify levels simultaneously
 ```{r}
 redcap_df %>% 
   factR(type,
-        labels = c("benign" = "0",
-                      "intermediate" = "1",
-                      "malignant" = "2"),
+        labels = list("type" = list("benign" = "0",
+                                    "intermediate" = "1",
+                                    "malignant" = "2")),
         lab_to_lev = T) %>% 
   str
 ```

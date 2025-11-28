@@ -120,7 +120,7 @@ tablR <- function(data,
     #Group name inserted if omitted from argument
     if(length(labs.groups) == 0) {
 
-       labs.groups <- as.list(unique(data[[group_c]])) %>% set_names(str_to_title(unique(data[[group_c]])))
+      labs.groups <- as.list(as.character(unique(data[[group_c]]))) %>% set_names(str_to_title(unique(data[[group_c]])))
     }
 
        if(pluck_depth(labs.groups) == 2) labs.groups <- list(labs.groups) %>% set_names(group_c)
@@ -205,7 +205,7 @@ tablR <- function(data,
 
   }
 
-  headings <- c(vars_c[vars_c %nin% unlist(simplify)], names(simplify))
+  headings <- c(vars_c[vars_c %nin% unlist(simplify)], names(simplify), unlist(labs.headings))
   headings_index <- which(tab[, 1] %nin% headings)
 
   if(test) {

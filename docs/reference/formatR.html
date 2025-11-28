@@ -51,8 +51,8 @@
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">formatR</span><span class="op">(</span></span>
 <span>  <span class="va">data</span>,</span>
-<span>  cat_vars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">case</span>, <span class="va">sex</span>, <span class="va">cci</span>, <span class="va">region</span>, <span class="va">education</span>, <span class="va">income</span>, <span class="va">marital</span><span class="op">)</span>,</span>
-<span>  num_vars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">period</span>, <span class="va">age_group</span><span class="op">)</span>,</span>
+<span>  cat.vars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">case</span>, <span class="va">sex</span>, <span class="va">cci</span>, <span class="va">region</span>, <span class="va">education</span>, <span class="va">income</span>, <span class="va">marital</span><span class="op">)</span>,</span>
+<span>  num.vars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">period</span>, <span class="va">age_group</span><span class="op">)</span>,</span>
 <span>  cut_vars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">age</span>, <span class="va">index</span><span class="op">)</span>,</span>
 <span>  labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  seqlist <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
@@ -69,11 +69,11 @@
 <dd><p>dataframe. Works with piping</p></dd>
 
 
-<dt id="arg-cat-vars">cat_vars<a class="anchor" aria-label="anchor" href="#arg-cat-vars"></a></dt>
+<dt id="arg-cat-vars">cat.vars<a class="anchor" aria-label="anchor" href="#arg-cat-vars"></a></dt>
 <dd><p>Vector of categorical covariates which should be formatted to factors</p></dd>
 
 
-<dt id="arg-num-vars">num_vars<a class="anchor" aria-label="anchor" href="#arg-num-vars"></a></dt>
+<dt id="arg-num-vars">num.vars<a class="anchor" aria-label="anchor" href="#arg-num-vars"></a></dt>
 <dd><p>vector of pseudonumerical variables that should be ordered (e.g. 1990-2000, 2000-2010).</p></dd>
 
 
