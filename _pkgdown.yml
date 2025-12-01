@@ -100,11 +100,13 @@ navbar:
         href: articles/cancR.html
       - text: R setup
         href: articles/setup.html
-      - text: Export from Redcap
+      - text: Redcap and R
         href: articles/redcap.html
       - text: R guides
       - text: Basic R
         href: articles/basic.html
+      - text: Importing data
+        href: articles/import.html
       - text: Data Management
         href: articles/data_management.html
       - text: Tables

@@ -36,6 +36,7 @@
 #                vnum = sample(c("<40", "50-60", "10-20", "100-110", ">110", "cci_0"), size = n, replace=TRUE),
 #                comorb = rbinom(n, 1, 0.5)))
 
+#Already a factor
 # df %>%
 #   factR(comorb) %>%
 #   factR(num.vars = comorb)
@@ -84,10 +85,11 @@
 #   str
 #
 # #Single variable
-#
-#     df %>%
-#     factR(vars = v1, levels = c("b", "e")) %>%
-#       str
+    # df %>%
+    # factR(vars = v1, levels = c("b", "e")) %>%
+    #   str
+
+
 #
 # # Sort pseudo numeric character variable
 # df %>%
@@ -101,28 +103,45 @@ factR <- function(data, vars, num.vars, reference = list(), levels = list(), lab
     data %>% select({{num.vars}}) %>% names()
 
   vars_c <-
-    unique(c(data %>% select({{vars}}) %>% names(), names(reference), names(levels), names(labels)))
+    data %>% select({{vars}}, matches(c(names(labels), names(reference), names(levels), "xemptyx"))) %>% names
 
     vars_c <- vars_c[vars_c %nin% num_c]
 
-  if(class(levels) == "character") {
-    levels <- list(levels)
+  if(length(vars_c) == 1 & length(levels) == 1) {
+
+    if(class(levels) == "character") {
+      levels <- list(levels)
+
+    }
     names(levels) <- vars_c
   }
 
-  if(class(labels) == "character") {
-    labels <- list(labels)
-    names(labels) <- vars_c
-  }
+    if(length(vars_c) == 1 & length(labels) == 1) {
 
-  if(class(reference) == "character") {
-    reference <- list(reference)
-    names(reference) <- vars_c
-  }
+      if(class(labels) == "character") {
+        labels <- as.list(labels)
+
+
+      }
+
+      labels <- list(labels) %>% set_names(vars_c)
+
+
+    }
+
+    if(length(vars_c) == 1 & length(reference) == 1) {
+
+      if(class(reference) == "character") {
+        reference <- list(reference)
+
+      }
+      names(reference) <- vars_c
+    }
+
+
 
   data <- copy(data)
   setDT(data)
-
 
 
   if(length(vars_c) > 0) {
@@ -193,3 +212,4 @@ factR <- function(data, vars, num.vars, reference = list(), levels = list(), lab
   as.data.frame(data)
 
 }
+

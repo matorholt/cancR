@@ -1,5 +1,5 @@
 ---
-title: "Export data from Redcap"
+title: "Redcap and R"
 output:
   html_document:
     toc: true
@@ -64,9 +64,34 @@ Rename the file for brevity, here we name it redcap_df. If multiple datasets are
 knitr::include_graphics("figures/r_7.png")
 ```
 
-Finally, load the data into R using the function fread. The path can be simplified to: "data/redcap_data.csv" as the project file already knows the entire path to the main folder (working directory). Here we assign the data to the object "raw".
+Finally, load the data into R using the function `readR()`. The path can be simplified to: "data/redcap_data.csv" as the project file already knows the entire path to the main folder (working directory). Here we assign the data to the object "raw".
 
-```{r, echo=F, out.width="70%", fig.align = "center"}
-knitr::include_graphics("figures/r_8.png")
+```{r, eval =F}
+mydata <- readR("data/redcap_data.csv")
+```
+
+## Import redcap with labels
+
+Redcap sheets do not automatically come with all the customized labels from the redcap modules. To import these, use the `redcapR` function. The function needs a redcap dataset (in this case our redcap_data.csv) and the data dictionary that contains all labels.
+
+The data dictionary can be found in the `Dictionary panel`
+
+```{r, echo=F}
+knitr::include_graphics("figures/r_9.png")
+```
+
+
+```{r, echo=F}
+knitr::include_graphics("figures/r_10.png")
+```
+
+When the redcap dataset and data dictionary have been saved in the `data` folder, they can be used in the `redcapR()` function
+
+```{r, eval = F}
+redcap_data <- readR("data/redcap_data.csv")
+dictionary <- readR("data/data_dictionary.csv")
+
+mydata <- redcapR(redcap_data,
+                  dictionary)
 ```
 
