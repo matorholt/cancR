@@ -33,6 +33,7 @@ reference:
   - inferencR
   - clustR
   - followR
+  - ratR
 
 - title: Tables and figures
   desc: >
@@ -66,6 +67,8 @@ reference:
   - match_df
   - redcap_df
   - covariates_df
+  - population_denmark
+  - population_who
 
 - title: Miscellaneous functions
   desc: >

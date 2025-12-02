@@ -88,4 +88,33 @@
 #' }
 "covariates_df"
 
+#' @title population_denmark
+#'
+#' @description Population tables for Denmark stratified on 5-year age groups and sex in the period 1990-2025
+#'
+#'
+#' @format A data frame with 1296 rows and 4 columns:
+#' \describe{
+#'   \item{sex}{sex, m=male, f=female}
+#'   \item{age_group}{age groups in 5-year intervals}
+#'   \item{year}{year}
+#'   \item{population}{number of inhabitants in Denmark in the given stratum}
+#'
+#'   ...
+#' }
+"population_denmark"
 
+#' @title population_who
+#'
+#' @description WHO standard population in 5-year age groups and sex
+#'
+#'
+#' @format A data frame with 36 rows and 3 columns:
+#' \describe{
+#'   \item{sex}{sex, m=male, f=female}
+#'   \item{age_group}{age groups in 5-year intervals}
+#'   \item{population}{number of inhabitants in Denmark in the given stratum}
+#'
+#'   ...
+#' }
+"population_who"
