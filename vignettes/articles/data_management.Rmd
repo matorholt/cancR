@@ -328,22 +328,22 @@ redcap_df %>%
 Levels can be manually assigned
 
 ```{r}
-redcap_df %>% 
-  factR(type,
-        levels = c("2","1","0")) %>% 
-  str
+# redcap_df %>% 
+#   factR(type,
+#         levels = c("2","1","0")) %>% 
+#   str
 ```
 
 New labels can also be assigned and automatically specify levels simultaneously
 
 ```{r}
-redcap_df %>% 
-  factR(type,
-        labels = list("type" = list("benign" = "0",
-                                    "intermediate" = "1",
-                                    "malignant" = "2")),
-        lab_to_lev = T) %>% 
-  str
+# redcap_df %>% 
+#   factR(type,
+#         labels = list("type" = list("benign" = "0",
+#                                     "intermediate" = "1",
+#                                     "malignant" = "2")),
+#         lab_to_lev = T) %>% 
+#   str
 ```
 
 Lastly, all the arguments can be specified for multiple variables at once

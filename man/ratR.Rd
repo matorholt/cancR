@@ -9,6 +9,7 @@ ratR(
   group,
   strata = list(c("year")),
   pyears = 1e+05,
+  ci.method = "lognormal",
   index,
   age = age,
   sex = sex
@@ -23,6 +24,8 @@ ratR(
 
 \item{pyears}{the unit of the incidence rate. Default is per million person years}
 
+\item{ci.method}{the method for derivation of confidence intervals. Default is "lognormal"}
+
 \item{index}{variable name of the index data}
 
 \item{age}{name of the age variable}
@@ -33,5 +36,5 @@ ratR(
 a standardized incidence rate of the overall population and, if specified in the strata-argument, stratified incidence rates
 }
 \description{
-Directly standardized incidence rates inspired by the dsr package. The incidence rates are standardized on 5-year age intervals and sex for each year in the period 1990-2025 based on population tables of the Danish population. Lastly the incidence rates are weighted based on the WHO world population.
+Directly standardized incidence rates inspired by the dsr package by Matt Kumar. The incidence rates are standardized on 5-year age intervals and sex for each year in the period 1990-2025 based on population tables of the Danish population. Lastly the incidence rates are weighted based on the WHO world population.
 }
