@@ -8,8 +8,8 @@ ratR(
   data,
   group,
   strata = list(c("year")),
-  pyears = 1e+05,
-  ci.method = "lognormal",
+  unit = 1e+05,
+  ci.method = "normal",
   index,
   age = age,
   sex = sex
@@ -22,15 +22,15 @@ ratR(
 
 \item{strata}{list of vectors for which strata the incidence rates should be reported (e.g. per age-group and sex)}
 
-\item{pyears}{the unit of the incidence rate. Default is per million person years}
-
-\item{ci.method}{the method for derivation of confidence intervals. Default is "lognormal"}
+\item{ci.method}{the method for derivation of confidence intervals. Default is "normal". If negative CIs are reported, use "lognormal"}
 
 \item{index}{variable name of the index data}
 
 \item{age}{name of the age variable}
 
 \item{sex}{name of the sex variable}
+
+\item{pyears}{the unit of the incidence rate. Default is per million person years}
 }
 \value{
 a standardized incidence rate of the overall population and, if specified in the strata-argument, stratified incidence rates

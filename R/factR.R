@@ -107,27 +107,31 @@ factR <- function(data, vars, num.vars, reference = list(), levels = list(), lab
 
     vars_c <- vars_c[vars_c %nin% num_c]
 
-  if(length(vars_c) == 1 & length(levels) == 1) {
+    #Allow unnamed lists
+  if(length(vars_c) == 1) {
 
-    if(class(levels) == "character") {
-      levels <- list(levels)
+
+  if(length(levels) > 0) {
+    if(!is.null(names(levels))) {
+      levels <- unlist(levels %>% set_names(NULL))
 
     }
+    levels <- list(as.list(levels))
     names(levels) <- vars_c
+
   }
 
-    if(length(vars_c) == 1 & length(labels) == 1) {
+    if(length(labels) > 0) {
 
-      if(class(labels) == "character") {
-        labels <- as.list(labels)
+    if(names(labels) != vars_c) {
 
-
-      }
-
-      labels <- list(labels) %>% set_names(vars_c)
-
+      labels <- list(as.list(labels)) %>% set_names(vars_c)
 
     }
+
+    }
+  }
+
 
     if(length(vars_c) == 1 & length(reference) == 1) {
 
@@ -175,7 +179,7 @@ factR <- function(data, vars, num.vars, reference = list(), levels = list(), lab
 
   }
 
-}
+  }
 
   for(v in num_c) {
 

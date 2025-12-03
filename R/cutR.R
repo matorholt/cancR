@@ -48,15 +48,30 @@
 #        seqlist = seq(1800,2050,10)) %>%
 #   str
 #
-# Multiple variables with same sequence 2
+# Multiple variables with same sequence 2 (three examples)
+# redcap_df %>%
+#   #Induce NA
+#   mutate(size = ifelse(row_number() %in% ceiling(runif(20, 1, 500)), NA, size)) %>%
+#   datR(c(birth, followup, date_of_surgery)) %>%
+#   cutR(vars = c(size, type, localisation),
+#        seqlist = seq(0,100,10))
+#
 # redcap_df %>%
 #   #Induce NA
 #   mutate(size = ifelse(row_number() %in% ceiling(runif(20, 1, 500)), NA, size)) %>%
 #   datR(c(birth, followup, date_of_surgery)) %>%
 #   cutR(vars = c(size, type, localisation),
 #        seqlist = list("quantile", c(0,0.5,1)),
-#        name.pattern = "_bin") %>%
-#   str
+#        name.pattern = "_test")
+#
+# redcap_df %>%
+#   #Conversion into date format
+#   datR(contains("date")) %>%
+#   cutR(vars = c(recurrence_date, metastasis_date),
+#        seqlist = list("recurrence_date" = seq(1900,2030,10),
+#                       "metastasis_date" = seq(1900,2030,10)),
+#        name.pattern = "_bin")
+
 
 
 cutR <- function(data, vars, seqlist, name.list = list(), name.pattern = NULL, digits = 0) {
@@ -65,28 +80,39 @@ cutR <- function(data, vars, seqlist, name.list = list(), name.pattern = NULL, d
     data %>% select({{vars}}) %>% names()
 
   if(length(vars_c) == 1 & (is.null(names(seqlist)) | class(seqlist) == "numeric")) {
-    seqlist <- list(seqlist)
+
+     seqlist <- list(seqlist)
     names(seqlist) <- vars_c
 
   }
 
+  #If single sequence is provided, assign to seq_value
   if(length(vars_c) > 1 & class(seqlist) == "numeric") {
 
     seq_value <- seqlist
     seqlist <- list()
 
 
+
+
   } else if((length(seqlist) != length(vars_c)*2) & length(names(seqlist)) != length(vars_c)) {
+
+
 
     seq_value <- seqlist
     seqlist <- list()
+
+
   }
+
 
   if(class(name.list) != "list") {
 
     names <- list(name.list)
     names(names) <- vars_c
   }
+
+
 
   if(!is.null(name.pattern)) {
 
@@ -95,12 +121,21 @@ cutR <- function(data, vars, seqlist, name.list = list(), name.pattern = NULL, d
   }
 
 
-
   #Default newvars
     default_names <- as.list(vars_c)
     names(default_names) <- vars_c
 
   newvars <- modifyList(default_names, name.list)
+
+  if(exists("seq_value")) {
+seqlist <- lapply(seq_along(vars_c), function(x) {
+  seq_value
+
+}) %>% set_names(vars_c)
+
+  }
+
+  #print(seqlist)
 
   for(v in vars_c) {
 
@@ -123,20 +158,17 @@ cutR <- function(data, vars, seqlist, name.list = list(), name.pattern = NULL, d
         mutate(!!sym(newvars[[v]]) := !!sym(v))
     }
 
-    #Modify seqlist
-    if(exists("seq_value")) {
-      seqlist[[v]] <- seq_value[[v]]
-    }
-
-
     if(seqlist[[v]][[1]] %in% "quantile") {
 
       seqlist[[v]] <- unique(quantile(data[[v]], seqlist[[v]][[2]], na.rm=T))
 
     } else if(seqlist[[v]][[1]] %in% "seq") {
-
       seqlist[[v]] <- do.call(seq, as.list(seqlist[[v]][[2]]))
     }
+
+    print(v)
+    print(seqlist[[v]])
+
 
     data <- data %>%
       mutate(!!sym(newvars[[v]]) := str_replace(cut(round(!!sym(newvars[[v]]), digits),
@@ -146,14 +178,14 @@ cutR <- function(data, vars, seqlist, name.list = list(), name.pattern = NULL, d
                                                     dig.lab=4),
                                                 "\\W(-?\\d+\\.?\\d*)\\,(-?\\d+\\.?\\d*)\\W",
                                                 "\\1-\\2")) %>%
-      factR(!!sym(newvars[[v]]))
+     factR(vars = !!sym(newvars[[v]]))
 
 
 
 
   }
 
-  data
+ data
 
 
 

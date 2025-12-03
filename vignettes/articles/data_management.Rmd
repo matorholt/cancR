@@ -275,9 +275,9 @@ redcap_df %>%
 Splits based on a sequence can be done with the cutR() function:
 
 ```{r}
-redcap_df %>% 
-  cutR(size, 
-       seq(0,50,10)) %>% 
+redcap_df %>%
+  cutR(size,
+       seq(0,50,10)) %>%
   head
 ```
 
@@ -297,13 +297,13 @@ redcap_df %>%
 The new variables can also be given the same name pattern if the input variables are similar such as dates
 
 ```{r}
-redcap_df %>% 
+redcap_df %>%
   #Conversion into date format
-  datR(contains("date")) %>% 
+  datR(contains("date")) %>%
   cutR(vars = c(recurrence_date, metastasis_date),
-       seqlist = list("recurrence_date" = seq(1900,2030,10),
-                      "metastasis_date" = seq(1900,2030,10)),
-       name.pattern = "_bin")
+       seqlist = list("seq", c(1900,2030,10)),
+       name.pattern = "_bin") %>% 
+  head
 ```
 
 ## Conversion to factor
@@ -328,22 +328,22 @@ redcap_df %>%
 Levels can be manually assigned
 
 ```{r}
-# redcap_df %>% 
-#   factR(type,
-#         levels = c("2","1","0")) %>% 
-#   str
+redcap_df %>%
+  factR(type,
+        levels = c("2","1","0")) %>%
+  str
 ```
 
 New labels can also be assigned and automatically specify levels simultaneously
 
 ```{r}
-# redcap_df %>% 
-#   factR(type,
-#         labels = list("type" = list("benign" = "0",
-#                                     "intermediate" = "1",
-#                                     "malignant" = "2")),
-#         lab_to_lev = T) %>% 
-#   str
+redcap_df %>%
+  factR(type,
+        labels = list("type" = list("benign" = "0",
+                                    "intermediate" = "1",
+                                    "malignant" = "2")),
+        lab_to_lev = T) %>%
+  str
 ```
 
 Lastly, all the arguments can be specified for multiple variables at once

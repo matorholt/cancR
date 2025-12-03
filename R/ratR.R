@@ -8,7 +8,7 @@
 #' @param group optional if incidence rates should be provided per group
 #' @param strata list of vectors for which strata the incidence rates should be reported (e.g. per age-group and sex)
 #' @param pyears the unit of the incidence rate. Default is per million person years
-#' @param ci.method the method for derivation of confidence intervals. Default is "lognormal"
+#' @param ci.method the method for derivation of confidence intervals. Default is "normal". If negative CIs are reported, use "lognormal"
 #' @param index variable name of the index data
 #' @param age name of the age variable
 #' @param sex name of the sex variable
@@ -17,22 +17,21 @@
 #' @export
 #'
 
-
-
 # df <- redcap_df %>%
 #   recodR(list("sex" = list("f" = 1,
 #                            "m" = 2))) %>%
 #   factR(vars=type)
 #
-# ratR(df,
-#      index = date_of_surgery,
-#      group = type,
-#      ci.method = "lognormal",
-#      strata = list(c("year"),
-#                    c("age", "sex"),
-#                    c("year", "age", "sex")))
+# res <- ratR(df,
+#             index = date_of_surgery,
+#             group = type,
+#             ci.method = "lognormal",
+#             strata = list(c("year"),
+#                           c("age", "sex"),
+#                           c("type", "age"),
+#                           c("year", "age", "sex")))
 
-ratR <- function(data, group, strata = list(c("year")), pyears = 100000, ci.method = "lognormal", index, age = age, sex = sex) {
+ratR <- function(data, group, strata = list(c("year")), unit = 100000, ci.method = "normal", index, age = age, sex = sex) {
 
   index_c <- data %>% select({{index}}) %>% names
   age_c <- data %>% select({{age}}) %>% names
@@ -51,7 +50,7 @@ ratR <- function(data, group, strata = list(c("year")), pyears = 100000, ci.meth
   }
 
 
-aggregate_df_years <-
+aggregate_df <-
     data %>%
     mutate(year = str_extract(!!sym(index_c), "\\d{4}")) %>%
     cutR(age_c,
@@ -60,23 +59,17 @@ aggregate_df_years <-
     mutate(age_group = ifelse(age_group == "85-150", "85+", as.character(age_group))) %>%
     select(year, age_group, matches(paste0("\\b", c(group_c, sex_c), "\\b", collapse="|"))) %>%
     group_by(!!sym(group_c), year, age_group, sex) %>%
-    summarise(count = n()) %>%
+    summarise(count = n(), .groups = "drop") %>%
     left_join(., population_denmark, by = c("year", "age_group", "sex")) %>%
     rename(fu = population) %>%
     left_join(., population_who, by = c("age_group", "sex")) %>%
     group_by(!!sym(group_c), year, age_group, sex) %>%
-    suppressWarnings(summarise(count = sum(count),
+    summarise(count = sum(count),
                                fu = mean(fu),
-                               population = mean(population))) %>%
+                               population = mean(population), .groups = "drop") %>%
     ungroup() %>%
     mutate(year = as.numeric(year)) %>%
     rename(age = age_group)
-
-aggregate_df <-
-  aggregate_df_years %>%
-  group_by(!!sym(group_c), age, sex) %>%
-  mutate(fu = mean(fu)) %>%
-  ungroup()
 
   get_rates <- function(frame) {
     frame %>% mutate(count=sum(count),
@@ -91,27 +84,27 @@ aggregate_df <-
 
     if(method == "gaussian") {
       frame <- frame %>%
-        mutate(lower=pyears*qgamma((1-0.95)/2, shape=rate^2/var)/(rate/var),
-               upper=pyears*qgamma(1-((1-0.95)/2), shape=1+(rate^2/var))/(rate/var))
+        mutate(lower=unit*qgamma((1-0.95)/2, shape=rate^2/var)/(rate/var),
+               upper=unit*qgamma(1-((1-0.95)/2), shape=1+(rate^2/var))/(rate/var))
     }
 
     if(method == "normal") {
 
       frame <- frame %>%
-      mutate(lower=pyears*(rate+qnorm((1-0.95)/2)*sqrt(var)),
-             upper=pyears*(rate-qnorm((1-0.95)/2)*sqrt(var)))
+      mutate(lower=unit*(rate+qnorm((1-0.95)/2)*sqrt(var)),
+             upper=unit*(rate-qnorm((1-0.95)/2)*sqrt(var)))
     }
 
     if(method == "lognormal") {
 
       frame <- frame %>%
-        mutate(lower=pyears*exp((log(rate)+qnorm((1-0.95)/2)*sqrt(var)/(rate))),
-               upper=pyears*exp((log(rate)-qnorm((1-0.95)/2)*sqrt(var)/(rate))))
+        mutate(lower=unit*exp((log(rate)+qnorm((1-0.95)/2)*sqrt(var)/(rate))),
+               upper=unit*exp((log(rate)-qnorm((1-0.95)/2)*sqrt(var)/(rate))))
 
     }
 
     frame %>%
-      mutate(rate=pyears*rate) %>%
+      mutate(rate=unit*rate) %>%
       select(!!sym(group_c), year, age, sex, count, fu, rate, lower, upper)
 
   }
@@ -146,15 +139,8 @@ aggregate_df <-
   #Strata
   for(i in strata) {
 
-    if("year" %in% i) {
-      frame <- aggregate_df_years
-    } else {
-      frame <- aggregate_df
-    }
-
-
     out.list[[paste0(i, collapse="_")]] <-
-      frame %>%
+      aggregate_df %>%
       group_by(!!!syms(i)) %>%
       get_rates() %>%
       distinct(!!!syms(i), .keep_all = T) %>%
