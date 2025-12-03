@@ -584,8 +584,6 @@ redcap_df %>%
   cutR(size,
        seq(0,50,10)) %>%
   head
-#> [1] "size"
-#> [1]  0 10 20 30 40 50
 #>   id sex  age      birth   followup date_of_surgery  size type localisation
 #> 1  1   1 79.1 20-09-1929 03-04-2023      2008-11-03  0-10    1            3
 #> 2  2   2 38.1 12-10-1953 18-12-2025      1991-11-13 20-30    1            1
@@ -612,10 +610,6 @@ redcap_df %>%
        name.list = list("age" = "age_group",
                         "size" = "size_bin")) %>% 
   head
-#> [1] "age"
-#>  [1]   0  10  20  30  40  50  60  70  80  90 100
-#> [1] "size"
-#> [1]  2.055776 13.609842 23.611147 38.209779 49.940051
 #>   id sex  age      birth   followup date_of_surgery      size type localisation
 #> 1  1   1 79.1 20-09-1929 03-04-2023      2008-11-03  7.302734    1            3
 #> 2  2   2 38.1 12-10-1953 18-12-2025      1991-11-13 20.043036    1            1
@@ -650,10 +644,6 @@ redcap_df %>%
        seqlist = list("seq", c(1900,2030,10)),
        name.pattern = "_bin") %>% 
   head
-#> [1] "recurrence_date"
-#>  [1] 1900 1910 1920 1930 1940 1950 1960 1970 1980 1990 2000 2010 2020 2030
-#> [1] "metastasis_date"
-#>  [1] 1900 1910 1920 1930 1940 1950 1960 1970 1980 1990 2000 2010 2020 2030
 #>   id sex  age      birth   followup date_of_surgery      size type localisation
 #> 1  1   1 79.1 20-09-1929 03-04-2023      2008-11-03  7.302734    1            3
 #> 2  2   2 38.1 12-10-1953 18-12-2025      1991-11-13 20.043036    1            1
