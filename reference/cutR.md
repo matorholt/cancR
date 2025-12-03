@@ -43,6 +43,8 @@ The inputted dataframe with the cut variables
 redcap_df %>%
   cutR(size, seq(0,100,10)) %>%
   str
+#> [1] "size"
+#>  [1]   0  10  20  30  40  50  60  70  80  90 100
 #> 'data.frame':    500 obs. of  17 variables:
 #>  $ id             : int  1 2 3 4 5 6 7 8 9 10 ...
 #>  $ sex            : num  1 2 1 1 2 1 1 1 2 2 ...

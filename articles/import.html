@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Redcap and R • cancR</title>
+<title>Import data to R • cancR</title>
 <!-- favicons --><link rel="icon" type="image/png" sizes="96x96" href="../favicon-96x96.png">
 <link rel="icon" type="”image/svg+xml”" href="../favicon.svg">
 <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
@@ -15,7 +15,7 @@
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Redcap and R">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Import data to R">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -68,76 +68,60 @@
 
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
-      <img src="../logo.png" class="logo" alt=""><h1>Redcap and R</h1>
+      <img src="../logo.png" class="logo" alt=""><h1>Import data to R</h1>
             
       
 
-      <div class="d-none name"><code>redcap.Rmd</code></div>
+      <div class="d-none name"><code>import.Rmd</code></div>
     </div>
 
     
     
-<div class="section level2">
-<h2 id="define-the-export">Define the export<a class="anchor" aria-label="anchor" href="#define-the-export"></a>
-</h2>
-<p>Open your project in Redcap and find the export tab on the left
-side</p>
-<p><img src="figures/r_0.png" class="r-plt" width="100%"></p>
-<p>Now create a new report. Here you define which parts of the data in
-redcap you wish to export.</p>
-<p><img src="figures/r_1.png" class="r-plt" width="100%"></p>
-<p>Give the report a name and choose the name of the project under “Add
-fields from instrument”. This adds all data from that specific
-instrument. In this example the project (instrument) is named MAT.</p>
-<p><img src="figures/r_2.png" class="r-plt" width="100%"></p>
-<p>An important field that needs to be checked is that multiple values
-should be collapsed into one column</p>
-<p><img src="figures/r_3.png" class="r-plt" width="100%"></p>
-</div>
-<div class="section level2">
-<h2 id="export-redcap-data">Export Redcap data<a class="anchor" aria-label="anchor" href="#export-redcap-data"></a>
-</h2>
-<p>When a report/export has been defined it will show in the data
-exports. Select “export data” to export the specified data in that given
-export.</p>
-<p><img src="figures/r_4.png" class="r-plt" width="100%"></p>
-<p>The format should be semi-colon separated csv.</p>
-<p><img src="figures/r_5.png" class="r-plt" width="100%"></p>
-<p>Next, move the file to the data folder in your statistics folder for
-the project</p>
-<p><img src="figures/r_6.png" class="r-plt" width="100%"></p>
-<p>Rename the file for brevity, here we name it redcap_df. If multiple
-datasets are placed here add a date.</p>
-<p><img src="figures/r_7.png" class="r-plt" width="100%"></p>
-<p>Finally, load the data into R using the function
-<code><a href="../reference/readR.html">readR()</a></code>. The path can be simplified to:
-“data/redcap_data.csv” as the project file already knows the entire path
-to the main folder (working directory). Here we assign the data to the
-object “raw”.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">mydata</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/readR.html">readR</a></span><span class="op">(</span><span class="st">"data/redcap_data.csv"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://matorholt.github.io/cancR/">cancR</a></span><span class="op">)</span></span></code></pre></div>
+<p>All data files should optimally be located in a <code>data</code>
+folder in the project folder. If the project is set up correctly (see
+the article <code>R setup</code>) we can call the files directly from
+the <code>data</code> folder: “data/file.csv”.</p>
+<div class="section level2">
+<h2 id="loading-data">Loading data<a class="anchor" aria-label="anchor" href="#loading-data"></a>
+</h2>
+<p>The <code><a href="../reference/readR.html">readR()</a></code> function in <code>cancR</code> makes loading
+easy by automatically chosing the correct function based on the file
+extension.</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">mydata</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/readR.html">readR</a></span><span class="op">(</span><span class="st">"data/dataset.csv"</span><span class="op">)</span></span></code></pre></div>
+<p><code><a href="../reference/readR.html">readR()</a></code> currently handles the extensions:
+<code>csv</code>, <code>xlsx</code>, <code>rds</code> and
+<code>txt</code>.</p>
 </div>
 <div class="section level2">
-<h2 id="import-redcap-with-labels">Import redcap with labels<a class="anchor" aria-label="anchor" href="#import-redcap-with-labels"></a>
+<h2 id="loading-data-from-redcap">Loading data from redcap<a class="anchor" aria-label="anchor" href="#loading-data-from-redcap"></a>
 </h2>
-<p>Redcap sheets do not automatically come with all the customized
-labels from the redcap modules. To import these, use the
-<code>redcapR</code> function. The function needs a redcap dataset (in
-this case our redcap_data.csv) and the data dictionary that contains all
-labels.</p>
-<p>The data dictionary can be found in the
-<code>Dictionary panel</code></p>
-<p><img src="figures/r_9.png" class="r-plt" width="148"></p>
-<p><img src="figures/r_10.png" class="r-plt" width="431"></p>
-<p>When the redcap dataset and data dictionary have been saved in the
-<code>data</code> folder, they can be used in the <code><a href="../reference/redcapR.html">redcapR()</a></code>
-function</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<p>Data from redcap can conveniently be loaded with
+<code><a href="../reference/redcapR.html">redcapR()</a></code>. This function takes two arguments: 1) The
+dataset exported from redcap (see how to export from redcap in the
+article <code>Redcap and R</code>) and 2) The data dictionary from
+redcap (see <code>Redcap and R</code>)</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">redcap_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/readR.html">readR</a></span><span class="op">(</span><span class="st">"data/redcap_data.csv"</span><span class="op">)</span></span>
 <span><span class="va">dictionary</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/readR.html">readR</a></span><span class="op">(</span><span class="st">"data/data_dictionary.csv"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">mydata</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/redcapR.html">redcapR</a></span><span class="op">(</span><span class="va">redcap_data</span>,</span>
 <span>                  <span class="va">dictionary</span><span class="op">)</span></span></code></pre></div>
+<p>This will apply all labels from redcap automatically so that manual
+recoding is not necessary.</p>
+<p>If there is a sheet containing CPR-numbers and id numbers it is also
+possible to automatically extract birth date and sex in
+<code>redcapR</code></p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">redcap_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/readR.html">readR</a></span><span class="op">(</span><span class="st">"data/redcap_data.csv"</span><span class="op">)</span></span>
+<span><span class="va">dictionary</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/readR.html">readR</a></span><span class="op">(</span><span class="st">"data/data_dictionary.csv"</span><span class="op">)</span></span>
+<span><span class="va">cprlist</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/readR.html">readR</a></span><span class="op">(</span><span class="st">"data/cprlist.csv"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">mydata</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/redcapR.html">redcapR</a></span><span class="op">(</span><span class="va">redcap_data</span>,</span>
+<span>                  <span class="va">dictionary</span>,</span>
+<span>                  <span class="va">cprlist</span><span class="op">)</span></span></code></pre></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

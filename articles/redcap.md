@@ -1,4 +1,4 @@
-# Export data from Redcap
+# Redcap and R
 
 ## Define the export
 
@@ -43,9 +43,38 @@ datasets are placed here add a date.
 
 ![](figures/r_7.png)
 
-Finally, load the data into R using the function fread. The path can be
-simplified to: “data/redcap_data.csv” as the project file already knows
-the entire path to the main folder (working directory). Here we assign
-the data to the object “raw”.
+Finally, load the data into R using the function
+[`readR()`](https://matorholt.github.io/cancR/reference/readR.md). The
+path can be simplified to: “data/redcap_data.csv” as the project file
+already knows the entire path to the main folder (working directory).
+Here we assign the data to the object “raw”.
 
-![](figures/r_8.png)
+``` r
+mydata <- readR("data/redcap_data.csv")
+```
+
+## Import redcap with labels
+
+Redcap sheets do not automatically come with all the customized labels
+from the redcap modules. To import these, use the `redcapR` function.
+The function needs a redcap dataset (in this case our redcap_data.csv)
+and the data dictionary that contains all labels.
+
+The data dictionary can be found in the `Dictionary panel`
+
+![](figures/r_9.png)
+
+![](figures/r_10.png)
+
+When the redcap dataset and data dictionary have been saved in the
+`data` folder, they can be used in the
+[`redcapR()`](https://matorholt.github.io/cancR/reference/redcapR.md)
+function
+
+``` r
+redcap_data <- readR("data/redcap_data.csv")
+dictionary <- readR("data/data_dictionary.csv")
+
+mydata <- redcapR(redcap_data,
+                  dictionary)
+```

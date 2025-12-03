@@ -108,6 +108,9 @@ Functions that perform statistical analysis
 - [`followR()`](https://matorholt.github.io/cancR/reference/followR.md)
   : Calculate median follow-up time using the inverse Kaplan-Meier
   method
+- [`ratR()`](https://matorholt.github.io/cancR/reference/ratR.md) :
+  Directly standardized incidence rates using the WHO standard
+  population
 
 ## Tables and figures
 
@@ -161,6 +164,10 @@ Datasets for testing functions
   : redcap_df
 - [`covariates_df`](https://matorholt.github.io/cancR/reference/covariates_df.md)
   : covariates_df
+- [`population_denmark`](https://matorholt.github.io/cancR/reference/population_denmark.md)
+  : population_denmark
+- [`population_who`](https://matorholt.github.io/cancR/reference/population_who.md)
+  : population_who
 
 ## Miscellaneous functions
 
@@ -203,10 +210,11 @@ Small utility functions
   package](https://matorholt.github.io/cancR/articles/cancR.md):
 - [Data
   Management](https://matorholt.github.io/cancR/articles/data_management.md):
+- [Import data to
+  R](https://matorholt.github.io/cancR/articles/import.md):
 - [Install and Update
   R](https://matorholt.github.io/cancR/articles/install.md):
-- [Export data from
-  Redcap](https://matorholt.github.io/cancR/articles/redcap.md):
+- [Redcap and R](https://matorholt.github.io/cancR/articles/redcap.md):
 - [Setup and New
   Projects](https://matorholt.github.io/cancR/articles/setup.md):
 - [Tables](https://matorholt.github.io/cancR/articles/tables.md):
