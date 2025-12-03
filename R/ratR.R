@@ -22,14 +22,18 @@
 #                            "m" = 2))) %>%
 #   factR(vars=type)
 #
-# res <- ratR(df,
-#             index = date_of_surgery,
-#             group = type,
-#             ci.method = "lognormal",
-#             strata = list(c("year"),
-#                           c("age", "sex"),
-#                           c("type", "age"),
-#                           c("year", "age", "sex")))
+# (res <-
+#     ratR(df,
+#          index = date_of_surgery,
+#          group = type,
+#          ci.method = "lognormal",
+#          strata = list(c("year"),
+#                        c("age", "sex"),
+#                        c("year", "type"),
+#                        c("year", "type", "age"),
+#                        c("type", "age"),
+#                        c("year", "age", "sex"))))
+
 
 ratR <- function(data, group, strata = list(c("year")), unit = 100000, ci.method = "normal", index, age = age, sex = sex) {
 
@@ -71,41 +75,58 @@ aggregate_df <-
     mutate(year = as.numeric(year)) %>%
     rename(age = age_group)
 
-  get_rates <- function(frame) {
-    frame %>% mutate(count=sum(count),
-                     pyears=sum(fu),
-                     #WHO standard is 100000 in total
-                     wts=population/1000000,
-                     rate=sum(wts*(count/pyears)),
-                     var=sum(as.numeric((wts^2)*(count/(pyears)^2))))
+
+
+  get_rates <- function(data, strata=NULL) {
+
+    strata_v <- unique(c(strata, c("age","sex")))
+
+    data %>%
+    group_by(!!!syms(strata_v)) %>%
+      summarise(count = sum(count),
+                fu = sum(fu),
+                population = first(population), .groups="drop") %>%
+      #Estimate standardized rates stratified on strata
+      group_by(!!!syms(strata)) %>%
+      mutate(count=sum(count),
+             pyears=sum(fu),
+             #WHO standard is 100000 in total
+             wts=population/1000000,
+             w_rate = wts*(count/pyears),
+             rate = sum(w_rate),
+             var=sum(as.numeric((wts^2)*(count/(pyears)^2)))) %>%
+      distinct(!!!syms(strata), .keep_all = T)
+
+
+
   }
 
-  get_ci <- function(frame, method) {
+  get_ci <- function(data, method, strata=NULL) {
 
     if(method == "gaussian") {
-      frame <- frame %>%
+      data <- data %>%
         mutate(lower=unit*qgamma((1-0.95)/2, shape=rate^2/var)/(rate/var),
                upper=unit*qgamma(1-((1-0.95)/2), shape=1+(rate^2/var))/(rate/var))
     }
 
     if(method == "normal") {
 
-      frame <- frame %>%
+      data <- data %>%
       mutate(lower=unit*(rate+qnorm((1-0.95)/2)*sqrt(var)),
              upper=unit*(rate-qnorm((1-0.95)/2)*sqrt(var)))
     }
 
     if(method == "lognormal") {
 
-      frame <- frame %>%
+      data <- data %>%
         mutate(lower=unit*exp((log(rate)+qnorm((1-0.95)/2)*sqrt(var)/(rate))),
                upper=unit*exp((log(rate)-qnorm((1-0.95)/2)*sqrt(var)/(rate))))
 
     }
 
-    frame %>%
+    data %>%
       mutate(rate=unit*rate) %>%
-      select(!!sym(group_c), year, age, sex, count, fu, rate, lower, upper)
+      select(!!!syms(strata), count, fu, rate, lower, upper)
 
   }
 
@@ -118,39 +139,32 @@ aggregate_df <-
     aggregate_df %>%
     get_rates() %>%
     slice(1) %>%
-    get_ci(method = ci.method) %>%
-    select(count, fu, rate, lower, upper)
+    get_ci(ci.method)
 
   if(!missing(group)) {
 
     out.list[[group_c]] <-
       aggregate_df %>%
-      group_by(!!sym(group_c)) %>%
-      get_rates() %>%
-      distinct(!!sym(group_c), .keep_all = T) %>%
-      get_ci(method = ci.method) %>%
-      select(-age, -sex, -year)
+      get_rates(strata=group_c) %>%
+      get_ci(ci.method, strata=group_c)
+
 
 
   }
-
-
 
   #Strata
   for(i in strata) {
 
     out.list[[paste0(i, collapse="_")]] <-
       aggregate_df %>%
-      group_by(!!!syms(i)) %>%
-      get_rates() %>%
-      distinct(!!!syms(i), .keep_all = T) %>%
-      get_ci(method = ci.method) %>%
-      select(matches(paste0(i, collapse="|")), count, fu, rate, lower, upper) %>%
-      ungroup()
+      get_rates(i) %>%
+      get_ci(ci.method, strata=i)
 
   }
 
   out.list
 
 }
+
+
 

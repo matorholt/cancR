@@ -135,7 +135,6 @@ seqlist <- lapply(seq_along(vars_c), function(x) {
 
   }
 
-  #print(seqlist)
 
   for(v in vars_c) {
 
@@ -165,9 +164,6 @@ seqlist <- lapply(seq_along(vars_c), function(x) {
     } else if(seqlist[[v]][[1]] %in% "seq") {
       seqlist[[v]] <- do.call(seq, as.list(seqlist[[v]][[2]]))
     }
-
-    print(v)
-    print(seqlist[[v]])
 
 
     data <- data %>%
