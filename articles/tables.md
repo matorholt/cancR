@@ -122,14 +122,14 @@ redcap_df %>%
     labs.headings = list("Age at Debut" = "age"),
     labs.subheadings = list("sex" = list("Female" = "2",
                                          "Male" = "1")))
-#>             benign (N=113) in situ (N=254) malignant (N=133)
-#> 1 age                                                       
-#> 2    Median       48.3            49.6              50.4    
-#> 3    Q1, Q3    31.8, 64.2      34.9, 66.0        34.8, 63.4 
-#> 4    Range     12.0 - 84.6     10.8 - 88.8       11.2 - 86.3
-#> 5 Sex                                                       
-#> 6    Female    47 (41.6%)      123 (48.4%)       74 (55.6%) 
-#> 7    Male      66 (58.4%)      131 (51.6%)       59 (44.4%)
+#>                benign (N=113) in situ (N=254) malignant (N=133)
+#> 1 Age at Debut                                                 
+#> 2    Median          48.3            49.6              50.4    
+#> 3    Q1, Q3       31.8, 64.2      34.9, 66.0        34.8, 63.4 
+#> 4    Range        12.0 - 84.6     10.8 - 88.8       11.2 - 86.3
+#> 5 Sex                                                          
+#> 6    Female       47 (41.6%)      123 (48.4%)       74 (55.6%) 
+#> 7    Male         66 (58.4%)      131 (51.6%)       59 (44.4%)
 ```
 
 #### Changing orders
@@ -158,7 +158,7 @@ redcap_df %>%
                                                   "Unspecified" = "5")),
     reference = list("sex" = c("Female")))
 #>                       benign (N=113) in situ (N=254) malignant (N=133)
-#> 1  age                                                                
+#> 1  Age at Debut                                                       
 #> 2     Median                48.3            49.6              50.4    
 #> 3     Q1, Q3             31.8, 64.2      34.9, 66.0        34.8, 63.4 
 #> 4     Range              12.0 - 84.6     10.8 - 88.8       11.2 - 86.3
@@ -201,7 +201,7 @@ redcap_df %>%
     reference = list("sex" = c("Female")),
     numeric = c("mean", "sd"))
 #>                       benign (N=113) in situ (N=254) malignant (N=133)
-#> 1  age                                                                
+#> 1  Age at Debut                                                       
 #> 2     Mean                   49.0           49.9               49.7   
 #> 3     SD                     19.2           19.1               18.5   
 #> 4  Sex                                                                

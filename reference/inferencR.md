@@ -14,9 +14,14 @@ inferencR(
   vars,
   outcome.vars,
   censoring.vars,
+  method = "tte",
+  treat.form = NULL,
+  event.form = NULL,
+  cens.form = NULL,
   time = 120,
   breaks = 12,
   estimator = "AIPTW",
+  plot = T,
   survtime = T,
   survscale = "AM",
   bins = 0.5,
@@ -46,12 +51,34 @@ inferencR(
 
 - vars:
 
-  variables that the treatment, censoring and event models should
-  include
+  vector of variables that should be included in the treatment,
+  censoring and outcome models
 
 - outcome.vars:
 
-  variables that should only be included in the outcome models
+  vector of variables that should only be included in the outcome model
+
+- censoring.vars:
+
+  vector of variables that should only be included in the censoring
+  model
+
+- method:
+
+  whether the outcome is "tte" (time-to-event) or "binary" (default =
+  "tte")
+
+- treat.form:
+
+  custom formula for the RHS of the treatment model
+
+- event.form:
+
+  custom formula for the RHS of the outcome model
+
+- cens.form:
+
+  custom formula for the RHS of the censoring model
 
 - time:
 
@@ -65,6 +92,11 @@ inferencR(
 
   whether the estimator should be "IPTW", "GFORMULA" or "AIPTW"
   (default)
+
+- plot:
+
+  whether plot data should be estimated for time optimization (default =
+  T)
 
 - survtime:
 

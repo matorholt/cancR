@@ -21,6 +21,7 @@ plotR(
   linewidth = 1,
   title = "",
   title.size = 7,
+  title.shift = c(0, 0),
   x.title = unit,
   x.title.size = 6,
   x.title.shift = 0,
@@ -114,6 +115,10 @@ plotR(
 - title.size:
 
   Plot title size
+
+- title.shift:
+
+  vector of XY shifting of the plot title
 
 - x.title:
 

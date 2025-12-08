@@ -186,6 +186,8 @@ Small utility functions
   levels and labels
 - [`geom_stepribbon()`](https://matorholt.github.io/cancR/reference/geom_stepribbon.md)
   : Stepribbon geom for survival curves
+- [`listR()`](https://matorholt.github.io/cancR/reference/listR.md) :
+  Routine modifications of lists
 - [`modeR()`](https://matorholt.github.io/cancR/reference/modeR.md) :
   Get the mode (most common value) of a vector.
 - [`numbR()`](https://matorholt.github.io/cancR/reference/numbR.md) :
