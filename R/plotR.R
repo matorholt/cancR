@@ -17,6 +17,7 @@
 #' @param linewidth thickness of the risk curve lines
 #' @param title Plot title
 #' @param title.size Plot title size
+#' @param title.shift vector of XY shifting of the plot title
 #' @param x.title X-axis title
 #' @param x.title.size X-axis title size
 #' @param x.title.shift X-axis vertical shift
@@ -109,6 +110,7 @@ plotR <- function(list,
                   linewidth = 1,
                   title = "",
                   title.size = 7,
+                  title.shift = c(0,0),
                   x.title = unit,
                   x.title.size = 6,
                   x.title.shift = 0,
@@ -207,7 +209,6 @@ plotR <- function(list,
 
   }
 
-
   if(censur) {
     tab <- tab %>% mutate(across(c(cumsum, n.risk), ~ ifelse(between(., 1, 3), "\u2264 3", .)))
   }
@@ -278,7 +279,7 @@ plotR <- function(list,
     scale_fill_manual(values = c(col[1:length(levels)]), labels = labs)
   if(se) p <- p + geom_stepribbon(aes(ymin = lower, ymax = upper), alpha = 0.2, color = NA)
   p <- p +
-    coord_cartesian(xlim=c(horizon*-0.1-y.title.shift,horizon), ylim = c(zmin,1.2*y)) +
+    coord_cartesian(xlim=c(horizon*-0.1-y.title.shift,horizon), ylim = c(zmin,1.2*y+pmax(res.shift[2],0))) +
     theme_classic() +
     theme(axis.line = element_blank(),
           axis.ticks = element_blank(),
@@ -309,7 +310,7 @@ plotR <- function(list,
   p <- p + annotate("text", x=-(horizon*0.01), y=seq(0,y,yscale), label = paste(seq(0,y*100,yscale*100), "%", sep=""), size = y.text.size*tscale, hjust="right") +
 
   #Title
-    annotate("text", x=0, y=y*1.09, label=title, size = title.size*tscale, hjust="left")
+    annotate("text", x=0+title.shift[1], y=y*1.09+title.shift[2], label=title, size = title.size*tscale, hjust="left")
 
  #Risk table
   if(any(table %nin% "none")) {
@@ -371,7 +372,7 @@ plotR <- function(list,
     p <- p + theme(legend.position = "none")
   }
 
-  xstart <- horizon*0.07
+  xstart <- horizon*0.1
   rows <- (y*(seq(0.92, 0.92-((0.07*res.spacing)*(length(levels)+1)), -0.07*res.spacing)))+res.shift[2]
 
   if(survscale == "OS") {
@@ -394,7 +395,7 @@ plotR <- function(list,
    #Segments
    p <- p +
      annotate("segment",
-              x=xstart*0.5+res.shift[1],
+              x=xstart*0.6+res.shift[1],
               xend=xstart*0.9+res.shift[1],
               y=rows[i+1],
               yend=rows[i+1], color = col[i], linewidth = linewidth*1.5)
@@ -460,7 +461,7 @@ plotR <- function(list,
   if(border) {
 
     top <- rows[1] + (rows[1]-rows[2])
-    left <- (xstart*0.3)+res.shift[1]
+    left <- (xstart*0.5)+res.shift[1]
     if(!is.null(style)) right <- right + horizon/60
 
     p <- p + annotate("segment", x=left, xend = right, y=top, yend = top, linewidth = border.linewidth) +
@@ -478,5 +479,3 @@ return(p)
 
 
 }
-
-

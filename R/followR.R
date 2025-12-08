@@ -9,8 +9,12 @@
 #' @return Returns the median follow-up time with IQR for the whole sample or groupwise
 #' @export
 #'
-#'
-followR <- function(df, timevar, event, group) {
+#' @examples
+#' followR(analysis_df, time2, event, group = X2)
+
+#followR(analysis_df, time2, event, group = X2)
+
+followR <- function(df, timevar, event, group, time.unit = "m2y") {
 
   #Formula generation
   lhs <- paste(c("Hist(", paste(substitute(timevar)), ",", paste(substitute(event)), ") ~"), collapse = "")
@@ -39,7 +43,27 @@ followR <- function(df, timevar, event, group) {
       bind_rows(fu_tab, .)
   }
 
+  switch(time.unit,
+         "m2y" = {
+           u <- 12
+           unit <- "years"},
+         "d2m" = {
+           u <- 365.25/12
+           unit <- "months"},
+         "d2y" = {
+           u <- 365.25
+           unit <- "years"
+         },
+         {
+           u <- 1
+           unit <- time.unit
 
-  return(fu_tab)
+         })
+
+  return(fu_tab %>%
+           mutate(across(c(fu:q3), ~ ./u)) %>%
+           rename(!!sym(unit) := fu,
+                  lower = q1,
+                  upper = q3))
 
 }

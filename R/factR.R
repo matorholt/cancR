@@ -154,7 +154,7 @@ factR <- function(data, vars, num.vars, reference = list(), levels = list(), lab
 
 
 
-    if(lab_to_lev) {
+    if(lab_to_lev & v %in% names(labels)) {
 
       levels[[v]] <- labels[[v]]
     }

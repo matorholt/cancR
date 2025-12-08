@@ -8,11 +8,17 @@
 #' @param treatment column indicating treatment variable. Currently only binary treatments are supported.
 #' @param timevar Time variable
 #' @param event Status indicator
-#' @param vars variables that the treatment, censoring and event models should include
-#' @param outcome.vars variables that should only be included in the outcome models
+#' @param vars vector of variables that should be included in the treatment, censoring and outcome models
+#' @param outcome.vars vector of variables that should only be included in the outcome model
+#' @param censoring.vars vector of variables that should only be included in the censoring model
+#' @param method whether the outcome is "tte" (time-to-event) or "binary" (default = "tte")
+#' @param treat.form custom formula for the RHS of the treatment model
+#' @param event.form custom formula for the RHS of the outcome model
+#' @param cens.form custom formula for the RHS of the censoring model
 #' @param time Time horizon of interest. Defaults to 60 (e.g. 5-years)
 #' @param breaks Interim time points of interest. Defaults to 12 months (1-year gaps)
 #' @param estimator whether the estimator should be "IPTW", "GFORMULA" or "AIPTW" (default)
+#' @param plot whether plot data should be estimated for time optimization (default = T)
 #' @param survtime Whether median time to event should be calculated (default = F)
 #' @param survscale Whether overall survial should be estimated as survival or all-cause mortality (1-survival)
 #' @param bins bins for the weights plot, default = 0.5
@@ -33,16 +39,6 @@
 #' @export
 #'
 
-# n <- 500
-# set.seed(1)
-# df <- riskRegression::sampleData(n, outcome="survival")
-# df$time <- round(df$time,1)*12
-# df$time2 <- df$time + rnorm(n)
-# df$X1 <- factor(rbinom(n, prob = c(0.3,0.4) , size = 2), labels = paste0("T",0:2))
-# df$X3 <- factor(rbinom(n, prob = c(0.3,0.4,0.3) , size = 3), labels = paste0("T",0:3))
-# df$event2 <- rbinom(n, 2, prob=.3)
-# df <- as.data.frame(df)
-#
 # tdf <- analysis_df %>%
 #   drop_na(X2) %>%
 #   mutate(X2 = fct_drop(X2))
@@ -52,9 +48,22 @@
 #                 timevar = ttt,
 #                 event = event2,
 #                 vars = c(X1, X3, X6, X7),
-#                 outcome.vars = X10)
+#                 outcome.vars = X10,
+#                 estimator = "AIPTW",
+#                 plot=T)
 #
 # plotR(t1)
+#
+# # Binary outcome
+# t2 <- inferencR(analysis_df,
+#                 treatment = X2,
+#                 event = event2,
+#                 vars = c(X1, X3, X6, X7),
+#                 estimator = "AIPTW",
+#                 method = "binary",
+#                 treat.form = "X1 * X3 + X4",
+#                 cens.form = "X2 + X1 * X3",
+#                 event.form = "X2 * X3")
 #
 # t2 <- inferencR(analysis_df,
 #                 treatment = X2,
@@ -72,9 +81,14 @@ inferencR <- function(data,
                       vars,
                       outcome.vars,
                       censoring.vars,
+                      method = "tte",
+                      treat.form = NULL,
+                      event.form = NULL,
+                      cens.form = NULL,
                       time = 120,
                       breaks = 12,
                       estimator = "AIPTW",
+                      plot = T,
                       survtime = T,
                       survscale = "AM",
                       bins = 0.5,
@@ -86,55 +100,30 @@ inferencR <- function(data,
 
   dat <- data %>%
     drop_na({{treatment}})
-  horizon <- time
 
   treat_c <- data %>% select({{treatment}}) %>% names()
-  timevar_c <- data %>% select({{timevar}}) %>% names()
   event_c <- data %>% select({{event}}) %>% names()
-
   vars_c <- data %>% select({{vars}}) %>% names()
-
   ovars_c <- data %>% select({{outcome.vars}}) %>% names()
-  cvars_c <- data %>% select({{censoring.vars}}) %>% names()
+
 
   levels <- levels(data[[treat_c]])
 
-  #Detect survival outcome
-  if(length(levels(dat[,event_c])) == 2) {
-    dat[,event_c] <- as.numeric(dat[,event_c]) - 1
-  }
+  #Outputs
+  out.list <- list()
 
-  if(length(unique(dat[, event_c])) == 2) {
-    surv = TRUE
-  } else {
-    surv = FALSE
-  }
-
-  #RISK TABLE
-  prod <- prodlim(as.formula(paste0("Hist(", timevar_c, ", ", event_c, ") ~", treat_c, collapse = "")), data=dat)
-  tab <- summary(prod, times = seq(0,horizon,1), intervals = TRUE, cause=1) %>%
-    group_by(!!sym(treat_c)) %>%
-    mutate(cumsum = cumsum(n.event)) %>%
-    ungroup() %>%
-    rename(time = time1) %>%
-    select(-time0, -n.lost, -contains("se.")) %>%
-    as.data.frame()
-
-  if(survtime) {
-
-    msurv <- list2DF(quantile(prodlim(as.formula(paste0("Hist(", timevar_c, ", ", event_c, ") ~", treat_c, collapse = "")), data = dat[dat[[event_c]] == 1,]), 0.5)) %>% select(-q)
-
-  }
-
-  #MODELS
-
+   #MODELS
   tvars <- paste0(vars_c, collapse = " + ")
-  cvars <- paste0(c(treat_c, vars_c, cvars_c), collapse = " + ")
   ovars <- paste0(c(treat_c, vars_c, ovars_c), collapse = " + ")
 
 
   #Treatment
-  treat.form <- paste0(treat_c, " == '", levels[2], "' ~ ", tvars)
+  if(is.null(treat.form)) {
+    treat.form <- paste0(treat_c, " == '", levels[2], "' ~ ", tvars)
+  } else {
+    treat.form <- paste0(treat_c, " == '", levels[2], "' ~ ", treat.form)
+  }
+
   treat.model <- glm(as.formula(treat.form), data=dat,family=binomial(link="logit"))
 
   weights <- dat %>% mutate(ps = predict(treat.model, newdata=dat, type="response"),
@@ -148,14 +137,64 @@ inferencR <- function(data,
                                             "ps" = "Propensity Scores"),
                             bins = bins)
 
+  if(method == "tte") {
+
+    horizon <- time
+    timevar_c <- data %>% select({{timevar}}) %>% names()
+    cvars_c <- data %>% select({{censoring.vars}}) %>% names()
+
+    #Detect survival outcome
+    if(length(levels(dat[,event_c])) == 2) {
+      dat[,event_c] <- as.numeric(dat[,event_c]) - 1
+    }
+
+    if(length(unique(dat[, event_c])) == 2) {
+      surv = TRUE
+    } else {
+      surv = FALSE
+    }
+
+    #RISK TABLE
+    prod <- prodlim(as.formula(paste0("Hist(", timevar_c, ", ", event_c, ") ~", treat_c, collapse = "")), data=dat)
+    tab <- summary(prod, times = seq(0,horizon,1), intervals = TRUE, cause=1) %>%
+      group_by(!!sym(treat_c)) %>%
+      mutate(cumsum = cumsum(n.event)) %>%
+      ungroup() %>%
+      rename(time = time1) %>%
+      select(-time0, -n.lost, -contains("se.")) %>%
+      as.data.frame()
+
+    out.list[["table"]] <- tab
+
+    if(survtime) {
+
+      msurv <- list2DF(quantile(prodlim(as.formula(paste0("Hist(", timevar_c, ", ", event_c, ") ~", treat_c, collapse = "")), data = dat[dat[[event_c]] == 1,]), 0.5)) %>% select(-q)
+
+      out.list[["time_to_event"]] <- msurv
+
+    }
+
   #Censoring
-  censor.form <- paste0("Surv(", timevar_c, ", ", event_c, "==0) ~ ", cvars)
+  cvars <- paste0(c(treat_c, vars_c, cvars_c), collapse = " + ")
+
+  if(is.null(cens.form)) {
+    censor.form <- paste0("Surv(", timevar_c, ", ", event_c, "==0) ~ ", cvars)
+  } else {
+    censor.form <- paste0("Surv(", timevar_c, ", ", event_c, "==0) ~ ", cens.form)
+  }
+
   censor.model <- coxph(as.formula(censor.form), data=dat,  x=TRUE)
   censor.model$call$formula <- censor.form
 
   #Event
   if(surv) {
-    event.form <- paste0("Surv(", timevar_c, ", ", event_c, ") ~ ", ovars)
+
+    if(is.null(event.form)) {
+      event.form <- paste0("Surv(", timevar_c, ", ", event_c, ") ~ ", ovars)
+    } else {
+      event.form <- paste0("Surv(", timevar_c, ", ", event_c, "==0) ~ ", event.form)
+    }
+
     event.model <- coxph(as.formula(event.form), data=dat, x=TRUE)
 
     #Diagnostics
@@ -165,7 +204,13 @@ inferencR <- function(data,
     names(diaglist)<- c("Cox_tests", "Cox_plots")
 
   } else {
-    event.form <- paste0("Hist(", timevar_c, ", ", event_c, ") ~ ", ovars)
+
+    if(is.null(event.form)) {
+      event.form <- paste0("Hist(", timevar_c, ", ", event_c, ") ~ ", ovars)
+    } else {
+      event.form <- paste0("Hist(", timevar_c, ", ", event_c, ") ~ ", event.form)
+    }
+
     event.model <- CSC(as.formula(event.form), data=dat)
 
     #Diagnostics
@@ -177,10 +222,42 @@ inferencR <- function(data,
     pct2 <- survminer::ggcoxzph(ct2)
     diaglist <- list(ct1,pct1,ct2,pct2)
     names(diaglist)<- c("Cause1_tests", "Cause1_plots", "Cause2_tests", "Cause2_plots")
+
+    out.list[["diagnostics"]] <- diaglist
+
   }
 
   event.model$call$formula <- as.formula(event.form)
 
+  } else if(method == "binary") {
+
+    #GLM
+    if(is.null(event.form)) {
+      event.form <- paste0(event_c, " == '", 1, "' ~ ", ovars)
+    } else {
+      event.form <- paste0(event_c, " == '", 1, "' ~ ", event.form)
+    }
+
+    event.model <- glm(as.formula(event.form), data=dat,family=binomial(link="logit"))
+
+    censor.form <- "-"
+    censor.model <- NULL
+    horizon <- NA
+    timevar_c <- "-"
+    surv <- F
+    survscale <- "-"
+    breaks <- "-"
+    plot <- F
+
+  }
+
+  out.list[["models"]] <- list("treatment" = summary(treat.model),
+                               "event" = event.model,
+                               "censoring" = censor.model,
+                               "formulas" = data.frame(model = c("treatment", "event", "censoring"),
+                                                       formula = c(treat.form, event.form, censor.form)))
+
+  out.list[["weights"]] <- list(weights, plot_weights)
 
 
   ate.frame <- ate(event = event.model,
@@ -191,27 +268,70 @@ inferencR <- function(data,
                 times = horizon,
                 cause=1)
 
-  plot.frame <- ate(event = event.model,
-                    treatment = treat.model,
-                    censor = censor.model,
-                    estimator = estimator,
-                    data = dat,
-                    times = unique(round(sort(c(0,dat[dat[, event_c] == 1 & dat[,timevar_c] < horizon, timevar_c],horizon)),event.digits)),
-                    cause=1)
+  if(plot) {
+
+    plot.frame <- ate(event = event.model,
+                      treatment = treat.model,
+                      censor = censor.model,
+                      estimator = estimator,
+                      data = dat,
+                      times = unique(round(sort(c(0,dat[dat[, event_c] == 1 & dat[,timevar_c] < horizon, timevar_c],horizon)),event.digits)),
+                      cause=1)
+
+    plot <-
+      as.data.frame(summary(plot.frame, short=TRUE, type = "meanRisk")$meanRisk)
+
+    if(surv & survscale == "OS") {
+      plot <- plot %>% mutate(across(c(estimate, lower, upper), ~1 - .))%>%
+        rename(upr = lower,
+               lwr = upper) %>%
+        rename(!!sym(treat_c) := treatment, est=estimate, upper = upr, lower = lwr)
+
+    } else {
+
+      plot <- plot %>%
+        rename(!!sym(treat_c) := treatment, est=estimate)
+    }
+
+    plot <- plot %>%
+      select(time:se, lower, upper) %>%
+      group_by(!!sym(treat_c)) %>%
+      slice(1:n(),n()) %>%
+      mutate(time = ifelse(row_number() == n(), time+0.6, time)) %>%
+      as.data.frame()
+
+    if(survscale == "OS") {
+      plot <- plot %>%
+        group_by(!!sym(treat_c)) %>%
+        #Fix drops in risk but retain CI width
+        mutate(across(c(lower, upper), ~ . + (cummin(est) - est)),
+               est = cummin(est),
+               across(c(est, lower, upper), ~ cummax(.))) %>%
+        ungroup() %>%
+        as.data.frame()
+
+    } else {
+      plot <- plot %>%
+        group_by(!!sym(treat_c)) %>%
+        mutate(across(c(lower, upper), ~ . + (cummax(est) - est)),
+               est = cummax(est)) %>%
+        ungroup() %>%
+        as.data.frame()
+    }
+
+    out.list[["plot_data"]] <- plot
+
+  }
+
+
 
   est <-
     as.data.frame(summary(ate.frame, short=T, type = "meanRisk")$meanRisk)
 
-  plot <-
-    as.data.frame(summary(plot.frame, short=TRUE, type = "meanRisk")$meanRisk)
-
   if(surv & survscale == "OS") {
-    est <- est %>% mutate(across(c(estimate, lower, upper), ~1 - .)) %>%
-      rename(upr = lower,
-             lwr = upper) %>%
-      rename(!!sym(treat_c) := treatment, est=estimate, upper = upr, lower = lwr)
 
-    plot <- plot %>% mutate(across(c(estimate, lower, upper), ~1 - .))%>%
+
+    est <- est %>% mutate(across(c(estimate, lower, upper), ~1 - .)) %>%
       rename(upr = lower,
              lwr = upper) %>%
       rename(!!sym(treat_c) := treatment, est=estimate, upper = upr, lower = lwr)
@@ -219,47 +339,16 @@ inferencR <- function(data,
   } else {
     est <- est %>%
       rename(!!sym(treat_c) := treatment, est=estimate)
-
-    plot <- plot %>%
-      rename(!!sym(treat_c) := treatment, est=estimate)
   }
 
   est <- est %>%
     select(time:se, lower, upper) %>%
     mutate(across(c(est:upper), ~round(.,digits)))
 
-  plot <- plot %>%
-    select(time:se, lower, upper) %>%
-    group_by(!!sym(treat_c)) %>%
-    slice(1:n(),n()) %>%
-    mutate(time = ifelse(row_number() == n(), time+0.6, time)) %>%
-    as.data.frame()
-
-  if(survscale == "OS") {
-    plot <- plot %>%
-      group_by(!!sym(treat_c)) %>%
-      #Fix drops in risk but retain CI width
-      mutate(across(c(lower, upper), ~ . + (cummin(est) - est)),
-             est = cummin(est),
-             across(c(est, lower, upper), ~ cummax(.))) %>%
-  ungroup() %>%
-  as.data.frame()
-
-  } else {
-    plot <- plot %>%
-      group_by(!!sym(treat_c)) %>%
-      mutate(across(c(lower, upper), ~ . + (cummax(est) - est)),
-             est = cummax(est)) %>%
-      ungroup() %>%
-      as.data.frame()
-  }
-
-
-
+  out.list[["risks"]] <- est
 
   rd <-
     as.data.frame(summary(ate.frame, short=T, type = "diffRisk")$diffRisk) %>%
-    filter(time == horizon) %>%
     rename(diff = estimate) %>%
     select(time, A, B,diff:p.value) %>%
     mutate(across(c(diff:upper), ~.*100),
@@ -267,13 +356,17 @@ inferencR <- function(data,
            p.exact = p.value,
            p.value = sapply(p.value, pvertR))
 
+
+  out.list[["difference"]] = rd
+
   rr <- as.data.frame(summary(ate.frame, short=T, type = "ratioRisk")$ratioRisk) %>%
-    filter(time == horizon) %>%
     rename(ratio = estimate) %>%
     select(time,A, B, ratio:p.value)%>%
     mutate(across(c(ratio:upper), ~round(.,digits-2)),
            p.exact = p.value,
            p.value = sapply(p.value, pvertR))
+
+  out.list[["ratio"]] <- rr
 
   counts <-
     bind_cols(
@@ -284,21 +377,11 @@ inferencR <- function(data,
         summarise(total = n()) %>%
         select(-!!sym(treat_c)))
 
+  out.list[["counts"]] <- counts
 
-  list <- list("table" = tab,
-               "plot_data" = plot,
-               "models" =  lst("treatment" = summary(treat.model),
-                               "event" = event.model,
-                               "censoring" = censor.model,
-                               "formulas" = data.frame(model = c("treatment", "event", "censoring"),
-                                                       formula = c(treat.form, event.form, censor.form))),
-               "weights" = list(weights, plot_weights),
-               "risks" = est,
-               "difference" = rd,
-               "ratio" = rr,
-               "counts" = counts,
-               "diag" = diaglist,
-               "info" = list("timevar" = timevar_c,
+
+  out.list[["info"]] <- list("method" = method,
+                             "timevar" = timevar_c,
                              "event" = event_c,
                              "group" = treat_c,
                              "group_levels" = levels,
@@ -306,19 +389,13 @@ inferencR <- function(data,
                              "survscale" = survscale,
                              "time" = horizon,
                              "breaks" = breaks,
-                             "event.digits" = event.digits))
-
-  if(survtime) {
-    list <- append(list, list("time_to_event" = msurv))
-  }
+                             "event.digits" = event.digits)
 
   cat(paste0("\nTotal runtime: \n"))
   cat(tockR("diff"))
 
-  class(list)<- "inferencR"
-  return(list)
+  class(out.list)<- "inferencR"
+  return(out.list)
 
 
 }
-
-

@@ -29,31 +29,33 @@
 #   mutate(margins = sample(c("0","1"), nrow(redcap_df), replace=TRUE)) %>%
 #   factR(c(type, sex, localisation, cd10, sox10, ck, margins, necrosis)) %>%
 #   tablR(group=type,
-#          vars = c(age, sex, localisation, cd10, sox10, ck, necrosis, margins),
-#          labs.groups = list("type" = list("Benign" = "0",
-#                                           "In situ" = "1",
-#                                           "Malignant" = "2")),
-#          reverse = T,
-#          labs.headings = list("Age at Debut" = "age",
-#                               "Gender" = "sex",
-#                               "CD10" = "cd10"),
-#          labs.subheadings = list("sex" = list("Female" = "2",
-#                                               "Male" = "1"),
-#                                  "localisation" = list("Neck" = "0",
-#                                                        "Head" = "1",
-#                                                        "Trunk" = "2",
-#                                                        "Upper Extremity" = "3",
-#                                                        "Lower Extremity" = "4",
-#                                                        "Unspecified" = "5")),
-#          reference = list("sex" = c("Male")),
-#          simplify=list("Immunohistochemistry" = c("cd10", "sox10", "ck"),
-#                        "Tumor" = c("necrosis", "margins")),
-#          censur=F,
-#          print=F,
-#          numeric = c("mean", "sd", "q1q3", "iqr"),
-#          flextable = F,
-#          test=T,
-#          total=T)
+#         vars = c(age, sex, localisation, cd10, sox10, ck, necrosis, margins),
+#         labs.groups = list("type" = list("Benign" = "0",
+#                                          "In situ" = "1",
+#                                          "Malignant" = "2")),
+#         reverse = T,
+#         labs.headings = list("Age at Debut" = "age",
+#                              "gender" = "sex",
+#                              "Cluster of diff 10" = "cd10",
+#                              "SOX10" = "sox10"),
+#         labs.subheadings = list("sex" = list("Female" = "2",
+#                                              "Male" = "1"),
+#                                 "localisation" = list("Neck" = "0",
+#                                                       "Head" = "1",
+#                                                       "Trunk" = "2",
+#                                                       "Upper Extremity" = "3",
+#                                                       "Lower Extremity" = "4",
+#                                                       "Unspecified" = "5")),
+#         reference = list("sex" = c("male")),
+#         simplify=list("Immunohistochemistry" = c("cd10", "sox10", "ck"),
+#                       "Tumor" = c("necrosis", "margins")),
+#         print=F)
+# censur=F,
+# print=F,
+# numeric = c("mean", "sd", "q1q3", "iqr"),
+# flextable = F,
+# test=T,
+# total=T)
 
 tablR <- function(data,
                    group,
@@ -85,10 +87,14 @@ tablR <- function(data,
 
   }
 
+
+
   direction <- match.arg(direction, c("colwise", "rowwise"))
   test.stats <- match.arg(test.stats, c("kwt", "chisq", "anova"), several.ok = T)
 
   data <- as.data.frame(data)
+
+
 
   if(direction == "rowwise") {
     categorical <- "countrowpct"
@@ -107,6 +113,7 @@ tablR <- function(data,
   vars_c <- unique(c(vars_c, names(labs.subheadings)))
   vars_cat <- data %>% select(where(is.factor) | where(is.character)) %>% names
   num_c <- data %>% select({{num.vars}}) %>% names
+
 
   #Group formatting
   if(!missing(group)) {
@@ -141,12 +148,15 @@ tablR <- function(data,
     factR(vars=c(vars_c[vars_c %in% vars_cat]),
           num.vars = num_c,
           labels = labs.subheadings,
+          levels = levels,
           reference = reference,
           lab_to_lev=T)
   #Set reference
   data <- data %>%
     factR(vars = names(reference),
           reference = reference)
+
+
 
   #Table controls
   c <- tableby.control(test=test, total=total,
@@ -166,17 +176,35 @@ tablR <- function(data,
 
   table <- tableby(as.formula(form), data=data, control=c)
 
+  if(length(labs.headings) > 0) {
+  headings_reverse <- names(labs.headings) %>% set_names(labs.headings)
+  } else {
+    headings_reverse <- labs.headings
+  }
+
+
+
   tab <- summary(table,
                  text=T,
-                 labelTranslations = labs.headings,
+                 labelTranslations = headings_reverse,
                  digits = digits) %>%
     as.data.frame() %>%
     rename("var" = 1)
+
+
+
 
   if(censur) {
 
     tab <- tab %>% mutate(across(everything(), ~ ifelse(str_detect(., "^(1|2|3)\\s\\("), "<=3", .)))
 
+  }
+
+  #Update names from labs.headings
+  if(length(labs.headings) > 0) {
+  simplify <- lapply(simplify, function(i) {
+    str_replace_all(unlist(i), names(labs.headings) %>% set_names(labs.headings))
+  })
   }
 
   if(length(simplify) > 0) {
@@ -197,7 +225,7 @@ tablR <- function(data,
       tab[min(indices),"var"] <- names(simplify[i])
       #Remove variable names
       tab <- tab[-indices[-1],]
-      #Add labels
+      # #Add labels
       tab[c((min(indices)+1):(min(indices)+length(simplify[[i]]))),"var"] <- paste0("-  ", simplify[[i]])
     }
 
@@ -205,7 +233,7 @@ tablR <- function(data,
 
   }
 
-  headings <- c(vars_c[vars_c %nin% unlist(simplify)], names(simplify), unlist(labs.headings))
+  headings <- c(vars_c[vars_c %nin% unlist(simplify)], names(simplify), unlist(labs.headings), unlist(headings_reverse))
   headings_index <- which(tab[, 1] %nin% headings)
 
   if(test) {
@@ -224,7 +252,7 @@ tablR <- function(data,
            #Remove -
            var = str_remove(var, "-\\s{2}"),
            #Autoformat to upper case
-           var = ifelse(str_detect(var, paste0("\\b", c(unlist(labs.headings), "xzx"), "\\b", collapse="|")), var, str_to_title(str_replace_all(var, "_", " "))),
+           var = ifelse(str_detect(var, paste0("\\b", c(names(labs.headings), "xzx"), "\\b", collapse="|")), var, str_to_title(str_replace_all(var, "_", " "))),
            var = case_when(str_detect(var, "\\bSd\\b") ~ "SD",
                            str_detect(var, "\\bIqr\\b") ~ "IQR",
                            T ~ var),
@@ -256,5 +284,3 @@ tablR <- function(data,
 
 
 }
-
-

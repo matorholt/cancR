@@ -80,6 +80,7 @@ reference:
   - combinR
   - formatR
   - geom_stepribbon
+  - listR
   - modeR
   - numbR
   - powR

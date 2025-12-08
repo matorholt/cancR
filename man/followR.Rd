@@ -4,7 +4,7 @@
 \alias{followR}
 \title{Calculate median follow-up time using the inverse Kaplan-Meier method}
 \usage{
-followR(df, timevar, event, group)
+followR(df, timevar, event, group, time.unit = "m2y")
 }
 \arguments{
 \item{df}{Input dataframe}
@@ -20,4 +20,7 @@ Returns the median follow-up time with IQR for the whole sample or groupwise
 }
 \description{
 Calculate median follow-up time using the inverse Kaplan-Meier method
+}
+\examples{
+followR(analysis_df, time2, event, group = X2, time.unit = "months")
 }
