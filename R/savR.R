@@ -85,6 +85,7 @@ savR <- function(object,
                  formats = c("pdf"),
                  size = 9,
                  table.width = 1,
+                 folder = "Tables and Figures",
                  sep = ";") {
 
   if(any(formats %nin% c("pdf", "svg", "tiff", "jpg", "png", "rds", "csv"))) {
@@ -125,10 +126,13 @@ savR <- function(object,
       stop()
 
     }
+
+    return(cat("Done"))
+
   }
 
-  if(!dir.exists(paste0(getwd(), "/Tables and Figures"))) {
-    dir.create(paste0(getwd(), "/Tables and Figures"))
+  if(!dir.exists(paste0(getwd(), "/", folder))) {
+    dir.create(paste0(getwd(), "/", folder))
   }
 
   if("summary.tableby" %in% class(object)) {
@@ -152,7 +156,7 @@ savR <- function(object,
       fontsize(size = size, part = "all") %>%
       autofit() %>%
       width(width=table.width) %>%
-      save_as_docx(path = paste0(getwd(), "/Tables and Figures/", name, ".docx", collapse=""))
+      save_as_docx(path = paste0(getwd(), "/", folder, "/", name, ".docx", collapse=""))
 
     cat("Done")
   }
@@ -183,7 +187,7 @@ savR <- function(object,
         if(p == "tiff") {
           ggsave(filename=paste0(name, ".", p, collapse=""),
                  plot=object,
-                 path="Tables and Figures",
+                 path=folder,
                  width = width,
                  height = height,
                  unit = unit,
@@ -195,7 +199,7 @@ savR <- function(object,
 
             ggsave(filename=paste0(name, ".", p, collapse=""),
                    plot=object,
-                   path="Tables and Figures",
+                   path=folder,
                    width = width,
                    height = height,
                    unit = unit,

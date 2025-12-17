@@ -17,6 +17,7 @@ savR(
   formats = c("pdf"),
   size = 9,
   table.width = 1,
+  folder = "Tables and Figures",
   sep = ";"
 )
 }

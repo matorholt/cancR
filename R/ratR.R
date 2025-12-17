@@ -18,8 +18,8 @@
 #'
 
 # df <- redcap_df %>%
-#   recodR(list("sex" = list("f" = 1,
-#                            "m" = 2))) %>%
+#   recodR(list("sex" = list("Female" = 1,
+#                            "Male" = 2))) %>%
 #   factR(vars=type)
 #
 # (res <-
@@ -33,7 +33,6 @@
 #                        c("year", "type", "age"),
 #                        c("type", "age"),
 #                        c("year", "age", "sex"))))
-
 
 ratR <- function(data, group, strata = list(c("year")), unit = 100000, ci.method = "normal", index, age = age, sex = sex) {
 
@@ -56,7 +55,8 @@ ratR <- function(data, group, strata = list(c("year")), unit = 100000, ci.method
 
 aggregate_df <-
     data %>%
-    mutate(year = str_extract(!!sym(index_c), "\\d{4}")) %>%
+    mutate(year = str_extract(!!sym(index_c), "\\d{4}"),
+           !!sym(sex_c) := str_to_lower(str_extract(!!sym(sex_c), "\\w"))) %>%
     cutR(age_c,
          c(seq(0,85,5), 150),
          name.list = list("age" = "age_group")) %>%
@@ -165,6 +165,4 @@ aggregate_df <-
   out.list
 
 }
-
-
 

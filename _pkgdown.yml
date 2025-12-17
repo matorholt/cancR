@@ -84,6 +84,7 @@ reference:
   - modeR
   - numbR
   - powR
+  - randomizR
   - rollR
   - tickR
   - tockR

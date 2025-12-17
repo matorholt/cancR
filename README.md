@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# cancR <img src="man/figures/logo.png" align="right" height="88" alt="" />
+# cancR <a href="https://matorholt.github.io/cancR/"><img src="man/figures/logo.png" align="right" height="250" alt="cancR website" /></a>
 
 <!-- badges: start -->
 

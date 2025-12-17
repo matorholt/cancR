@@ -22,5 +22,5 @@ Returns the median follow-up time with IQR for the whole sample or groupwise
 Calculate median follow-up time using the inverse Kaplan-Meier method
 }
 \examples{
-followR(analysis_df, time2, event, group = X2, time.unit = "months")
+followR(analysis_df, time2, event, group = X2)
 }

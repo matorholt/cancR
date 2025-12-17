@@ -4,7 +4,7 @@
 \alias{cpR}
 \title{Fix CPR numbers with removed leading zeros}
 \usage{
-cpR(data, cpr = cpr, extract = F)
+cpR(data, cpr = cpr, extract = F, remove.cpr = F, return.cpr = F)
 }
 \arguments{
 \item{data}{dataset}
@@ -12,6 +12,10 @@ cpR(data, cpr = cpr, extract = F)
 \item{cpr}{cpr-column}
 
 \item{extract}{TRUE if age and date of birth should be extracted}
+
+\item{remove.cpr}{whether invalid CPRs should be removed, default = F}
+
+\item{return.cpr}{whether the invalid CPRs should be returned as a vector, default = F}
 }
 \value{
 Returns same dataset with correct CPR numbers and optionally age and date of birth. Invalid CPRs stops the function and returns the invalid CPRs as a vector.
