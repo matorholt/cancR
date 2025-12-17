@@ -194,6 +194,8 @@ Small utility functions
   Format numeric vectors
 - [`powR()`](https://matorholt.github.io/cancR/reference/powR.md) :
   Converter from Rscript to powershell format
+- [`randomizR()`](https://matorholt.github.io/cancR/reference/randomizR.md)
+  : Generate stratified, block randomized allocation sequence
 - [`rollR()`](https://matorholt.github.io/cancR/reference/rollR.md) :
   Assign rolling ID.
 - [`tickR()`](https://matorholt.github.io/cancR/reference/tickR.md) :

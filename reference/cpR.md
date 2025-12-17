@@ -5,7 +5,7 @@ Fix CPR numbers with removed leading zeros
 ## Usage
 
 ``` r
-cpR(data, cpr = cpr, extract = F)
+cpR(data, cpr = cpr, extract = F, remove.cpr = F, return.cpr = F)
 ```
 
 ## Arguments
@@ -21,6 +21,14 @@ cpR(data, cpr = cpr, extract = F)
 - extract:
 
   TRUE if age and date of birth should be extracted
+
+- remove.cpr:
+
+  whether invalid CPRs should be removed, default = F
+
+- return.cpr:
+
+  whether the invalid CPRs should be returned as a vector, default = F
 
 ## Value
 

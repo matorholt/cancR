@@ -50,7 +50,7 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">cpR</span><span class="op">(</span><span class="va">data</span>, cpr <span class="op">=</span> <span class="va">cpr</span>, extract <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">cpR</span><span class="op">(</span><span class="va">data</span>, cpr <span class="op">=</span> <span class="va">cpr</span>, extract <span class="op">=</span> <span class="cn">F</span>, remove.cpr <span class="op">=</span> <span class="cn">F</span>, return.cpr <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -67,6 +67,14 @@
 
 <dt id="arg-extract">extract<a class="anchor" aria-label="anchor" href="#arg-extract"></a></dt>
 <dd><p>TRUE if age and date of birth should be extracted</p></dd>
+
+
+<dt id="arg-remove-cpr">remove.cpr<a class="anchor" aria-label="anchor" href="#arg-remove-cpr"></a></dt>
+<dd><p>whether invalid CPRs should be removed, default = F</p></dd>
+
+
+<dt id="arg-return-cpr">return.cpr<a class="anchor" aria-label="anchor" href="#arg-return-cpr"></a></dt>
+<dd><p>whether the invalid CPRs should be returned as a vector, default = F</p></dd>
 
 </dl></div>
     <div class="section level2">
