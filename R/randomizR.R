@@ -19,7 +19,7 @@
 #' @export
 
 # tickR()
-# depth_allocation <-
+# allocation <-
 #   randomizR(strata=c("age_group_depth",
 #                      "gender_depth",
 #                      "ana_site_depth",
@@ -28,9 +28,9 @@
 #                      "seq_slnb_depth"),
 #             block.size = c(2,4),
 #             block.probabilities = c(0.9,0.1),
-#             replications = 1000,
+#             replications = 50,
 #             block.delay = 10,
-#             token = '12345',
+#             token = '859A8159EB61A5AD6ABB8DE0BC78E67F',
 #             seed = 1,
 #             print=T)
 # tockR()
@@ -40,7 +40,7 @@ randomizR <- function(strata,
                       block.probabilities = NULL,
                       replications = 50,
                       allocation.levels = c("1","2"),
-                      allocation.name = "allocation",
+                      allocation.name = "redcap_randomization_group",
                       block.delay = 10,
                       token,
                       seed = 1,
@@ -61,6 +61,12 @@ randomizR <- function(strata,
   } else {
 
     levels <- strata
+
+  }
+
+  if(any(unlist(map_depth(levels, 1, is.null)))) {
+
+    return(cat("Error: Empty levels in one or more strata - check strata names"))
 
   }
 
@@ -113,8 +119,7 @@ randomizR <- function(strata,
     unite("stratum", all_of(strata), remove=F, sep = " ") %>%
     #Empty column for redcap
     mutate(redcap_randomization_number = NA) %>%
-    rename(!!sym(allocation.name) := allocation) %>%
-    select(redcap_randomization_number, !!sym(allocation.name), !!!syms(names(levels)), everything())
+    rename(!!sym(allocation.name) := allocation)
 
   #Strata report
   strata_report <- lapply(unique(allocations$stratum), function(s) {
@@ -144,21 +149,18 @@ randomizR <- function(strata,
   cat(paste0("Number of unique strata: ", n_distinct(allocations$stratum), "\n\n"))
   cat("Strata balances:\n")
 
-  strata_report %>% ungroup() %>% summarise(across(c((ncol(.)-(length(block.size)-1)):ncol(.)), ~ list(
+  suppressWarnings(strata_report %>% ungroup() %>% summarise(across(c((ncol(.)-(length(block.size)-1)):ncol(.)), ~ list(
     min(.),
     quantile(., 0.25),
     median(.),
     quantile(., 0.75),
     max(.)))) %>%
-    unnest(everything()) %>% print
+    unnest(everything()) %>% print)
 
   if(print) {
     print(strata_report, n=Inf)
   }
 
-  return(allocations)
+  return(allocations %>% select(redcap_randomization_number, !!sym(allocation.name), !!!syms(names(levels))))
 
 }
-
-
-
