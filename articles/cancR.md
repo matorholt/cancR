@@ -4,7 +4,7 @@
 
 If the cancR package has previously been installed on the computer and
 needs to be updated, use the pak-package with the command
-`pak::pak(matorholt/cancR)`
+`pak::pak("matorholt/cancR")`
 
 The cancR package is still under development, so regular updates are
 recommended.
@@ -35,7 +35,7 @@ Install the heaven package using devtools by writing the command
 ### Step 4
 
 Now install the cancR package with the pak command
-`pak::pak(matorholt/cancR)` (same as the “quick start”)
+`pak::pak("matorholt/cancR")` (same as the “quick start”)
 
 ![](figures/c_4.png)
 
