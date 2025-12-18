@@ -4,7 +4,8 @@
 
 If the cancR package has previously been installed on the computer and
 needs to be updated, use the pak-package with the command
-`pak::pak("matorholt/cancR")`
+`pak::pak("matorholt/cancR")`. R needs to be restarted after
+installing/updating cancR.
 
 The cancR package is still under development, so regular updates are
 recommended.
