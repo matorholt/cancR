@@ -15,7 +15,7 @@ knitr::opts_chunk$set(
 
 ## Quick start
 
-If the cancR package has previously been installed on the computer and needs to be updated, use the pak-package with the command `pak::pak(matorholt/cancR)`
+If the cancR package has previously been installed on the computer and needs to be updated, use the pak-package with the command `pak::pak("matorholt/cancR")`
 
 The cancR package is still under development, so regular updates are recommended.
 
@@ -42,7 +42,7 @@ Install the heaven package using devtools by writing the command `devtools::inst
 
 ### Step 4
 
-Now install the cancR package with the pak command `pak::pak(matorholt/cancR)` (same as the "quick start")
+Now install the cancR package with the pak command `pak::pak("matorholt/cancR")` (same as the "quick start")
 
 ```{r, echo=F, out.width="100%"}
 knitr::include_graphics("figures/c_4.png")

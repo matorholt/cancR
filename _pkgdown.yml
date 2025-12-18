@@ -1,6 +1,7 @@
 url: https://matorholt.github.io/cancR/
 template:
   bootstrap: 5
+  logo: man/figures/logo.png
 
 reference:
 - title: Data management functions

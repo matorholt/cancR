@@ -1,22 +1,20 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# cancR <a href="https://matorholt.github.io/cancR/"><img src="man/figures/logo.png" align="right" height="250" alt="cancR website" /></a>
-
-<!-- badges: start -->
-
-<!-- badges: end -->
+<img src="man/figures/logo.png" width="400px" style="display: block; margin: auto;" />
 
 ## Purpose
 
-The cancR package is developed for conducting epidemiological cancer
-research with R. The package functions spans across the entire project
-workflow, from data management to outputting results.
+The cancR package is developed for conducting registry-based
+epidemiological cancer research with R. The package functions span
+across the entire project workflow, from data management to plotting the
+results. Many of the functions can also be applied in a non-registry
+setting common data management tasks.
 
 ## Installation
 
 A detailed walkthrough on how to install the cancR package is provided
-as the article “Get Started”
+in the article “Install cancR” in the “Get started” section.
 
 ## Functions
 
@@ -39,14 +37,16 @@ articles with thorough examples of all functions.
 ## Maintenance
 
 The package is regularly maintained and updated. Bugs and suggestions
-are very welcome and should be sent to the package developer.
+are very welcome and should be sent to the package developer. It is
+recommended to update the cancR package often as it is still in the
+development phase.
 
 ## Acknowledgements
 
 The package developer wishes to thank the developers of prodlim,
 riskRegression, heaven, mets, rrapply and tidyverse for their incredible
 work. This package is merely just highlighting the qualities of those
-packages.
+packages. Also thank you to LG for design of the logo.
 
 #### 
 
