@@ -43,7 +43,6 @@ randomizR <- function(strata,
                       allocation.name = "redcap_randomization_group",
                       block.delay = 10,
                       token,
-                      seed = 1,
                       print=F) {
 
   if(class(strata) != "list") {
@@ -76,8 +75,6 @@ randomizR <- function(strata,
   allocations <-
     #For each stratum level combination
     lapply(1:nrow(strata_grid), function(s) {
-
-      set.seed(seed+s)
 
       #Avoid sequence containing only the first block size by inserting the second block size at a random point ranging between
       #block.delay:replications-max(block.size), but only if second block.size is not present
@@ -164,3 +161,5 @@ randomizR <- function(strata,
   return(allocations %>% select(redcap_randomization_number, !!sym(allocation.name), !!!syms(names(levels))))
 
 }
+
+
