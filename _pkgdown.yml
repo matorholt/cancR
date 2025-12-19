@@ -1,7 +1,29 @@
-url: https://matorholt.github.io/cancR/
+repo:
+  url:
+    home: https://matorholt.github.io/cancR/
+    source: https://github.com/matorholt/cancR
+
 template:
   bootstrap: 5
   logo: man/figures/logo.png
+
+home:
+  sidebar:
+    structure: [authors, citation, license, links]
+    components:
+      links:
+        title: Source Code
+        text: https://github.com/matorholt/cancR
+
+
+# home:
+#   sidebar:
+#    structure: [links, license, citation, authors, funding]
+#    components:
+#      funding:
+#        title: Funding
+#        text: check
+
 
 reference:
 - title: Data management functions

@@ -10,10 +10,11 @@ randomizR(
   block.probabilities = NULL,
   replications = 50,
   allocation.levels = c("1", "2"),
-  allocation.name = "allocation",
+  allocation.name = "redcap_randomization_group",
   block.delay = 10,
   token,
-  seed = 1,
+  seed = "none",
+  report = T,
   print = F
 )
 }
@@ -34,7 +35,9 @@ randomizR(
 
 \item{token}{token for redcap API to automatically extract strata levels from redcap. If strata is a vector of variables, token must be provided.}
 
-\item{seed}{seed for reproducibility}
+\item{seed}{seed for reproducibility. If "none", no seed is set}
+
+\item{report}{whether the allocation report should be made}
 
 \item{print}{whether a full report for each stratum should be printed}
 }
@@ -43,4 +46,21 @@ a data frame containing rows equal to the product of unique strata and replicati
 }
 \description{
 Stratified block randomization sequence with optional redcap API. Each stratum will have its own unique allocation sequence.
+}
+\examples{
+allocation <-
+  randomizR(strata=c("age_group_depth",
+                     "gender_depth",
+                     "ana_site_depth",
+                     "immuno_depth",
+                     "seq_width_depth",
+                     "seq_slnb_depth"),
+            block.size = c(2,4),
+            block.probabilities = c(0.9,0.1),
+            replications = 50,
+            block.delay = 10,
+            token = '859A8159EB61A5AD6ABB8DE0BC78E67F',
+            seed = 2,
+            report = T,
+            print=T)
 }

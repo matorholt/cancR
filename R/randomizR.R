@@ -12,11 +12,29 @@
 #' @param allocation.name column name for the allocated treatment levels, default = "allocation"
 #' @param block.delay number of blocks that is fixed to the first block.size to avoid large blocks in the beginning of the sequence
 #' @param token token for redcap API to automatically extract strata levels from redcap. If strata is a vector of variables, token must be provided.
-#' @param seed seed for reproducibility
+#' @param seed seed for reproducibility. If "none", no seed is set
+#' @param report whether the allocation report should be made
 #' @param print whether a full report for each stratum should be printed
 #'
 #' @returns a data frame containing rows equal to the product of unique strata and replications.
 #' @export
+#' @examples
+#' allocation <-
+#'   randomizR(strata=c("age_group_depth",
+#'                      "gender_depth",
+#'                      "ana_site_depth",
+#'                      "immuno_depth",
+#'                      "seq_width_depth",
+#'                      "seq_slnb_depth"),
+#'             block.size = c(2,4),
+#'             block.probabilities = c(0.9,0.1),
+#'             replications = 50,
+#'             block.delay = 10,
+#'             token = '859A8159EB61A5AD6ABB8DE0BC78E67F',
+#'             seed = 2,
+#'             report = T,
+#'             print=T)
+
 
 # tickR()
 # allocation <-
@@ -31,7 +49,8 @@
 #             replications = 50,
 #             block.delay = 10,
 #             token = '859A8159EB61A5AD6ABB8DE0BC78E67F',
-#             seed = 1,
+#             seed = 2,
+#             report = T,
 #             print=T)
 # tockR()
 
@@ -43,12 +62,14 @@ randomizR <- function(strata,
                       allocation.name = "redcap_randomization_group",
                       block.delay = 10,
                       token,
+                      seed = "none",
+                      report = T,
                       print=F) {
 
   if(class(strata) != "list") {
 
     #Use API to obtain levels for all strata
-    rcon <- redcapAPI::redcapConnection(url='https://redcap.regionh.dk/api/', token=token)
+    rcon <- suppressPackageStartupMessages(redcapAPI::redcapConnection(url='https://redcap.regionh.dk/api/', token=token))
     meta_data <- rcon$metadata()
 
     levels <- lapply(seq_along(strata), function(v) {
@@ -75,6 +96,13 @@ randomizR <- function(strata,
   allocations <-
     #For each stratum level combination
     lapply(1:nrow(strata_grid), function(s) {
+
+      if(is.numeric(seed)) {
+
+        set.seed(seed+s)
+
+      }
+
 
       #Avoid sequence containing only the first block size by inserting the second block size at a random point ranging between
       #block.delay:replications-max(block.size), but only if second block.size is not present
@@ -118,6 +146,8 @@ randomizR <- function(strata,
     mutate(redcap_randomization_number = NA) %>%
     rename(!!sym(allocation.name) := allocation)
 
+  if(report) {
+
   #Strata report
   strata_report <- lapply(unique(allocations$stratum), function(s) {
     df <- allocations %>% filter(stratum == s)
@@ -158,8 +188,11 @@ randomizR <- function(strata,
     print(strata_report, n=Inf)
   }
 
+  }
+
   return(allocations %>% select(redcap_randomization_number, !!sym(allocation.name), !!!syms(names(levels))))
 
 }
+
 
 
