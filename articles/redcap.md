@@ -44,10 +44,10 @@ datasets are placed here add a date.
 ![](figures/r_7.png)
 
 Finally, load the data into R using the function
-[`readR()`](https://matorholt.github.io/cancR/reference/readR.md). The
-path can be simplified to: “data/redcap_data.csv” as the project file
-already knows the entire path to the main folder (working directory).
-Here we assign the data to the object “raw”.
+[`readR()`](../reference/readR.md). The path can be simplified to:
+“data/redcap_data.csv” as the project file already knows the entire path
+to the main folder (working directory). Here we assign the data to the
+object “raw”.
 
 ``` r
 mydata <- readR("data/redcap_data.csv")
@@ -68,8 +68,7 @@ The data dictionary can be found in the `Dictionary panel`
 
 When the redcap dataset and data dictionary have been saved in the
 `data` folder, they can be used in the
-[`redcapR()`](https://matorholt.github.io/cancR/reference/redcapR.md)
-function
+[`redcapR()`](../reference/redcapR.md) function
 
 ``` r
 redcap_data <- readR("data/redcap_data.csv")

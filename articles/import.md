@@ -11,24 +11,24 @@ project folder. If the project is set up correctly (see the article
 
 ## Loading data
 
-The [`readR()`](https://matorholt.github.io/cancR/reference/readR.md)
-function in `cancR` makes loading easy by automatically chosing the
-correct function based on the file extension.
+The [`readR()`](../reference/readR.md) function in `cancR` makes loading
+easy by automatically chosing the correct function based on the file
+extension.
 
 ``` r
 mydata <- readR("data/dataset.csv")
 ```
 
-[`readR()`](https://matorholt.github.io/cancR/reference/readR.md)
-currently handles the extensions: `csv`, `xlsx`, `rds` and `txt`.
+[`readR()`](../reference/readR.md) currently handles the extensions:
+`csv`, `xlsx`, `rds` and `txt`.
 
 ## Loading data from redcap
 
 Data from redcap can conveniently be loaded with
-[`redcapR()`](https://matorholt.github.io/cancR/reference/redcapR.md).
-This function takes two arguments: 1) The dataset exported from redcap
-(see how to export from redcap in the article `Redcap and R`) and 2) The
-data dictionary from redcap (see `Redcap and R`)
+[`redcapR()`](../reference/redcapR.md). This function takes two
+arguments: 1) The dataset exported from redcap (see how to export from
+redcap in the article `Redcap and R`) and 2) The data dictionary from
+redcap (see `Redcap and R`)
 
 ``` r
 redcap_data <- readR("data/redcap_data.csv")

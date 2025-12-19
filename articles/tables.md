@@ -37,11 +37,9 @@ tablR(redcap_df,
 We instantly conclude that sex and type is incorrectly formatted, as we
 wish to see percentages and not a median as if the 0/1 structure was
 numeric. We convert the variables using
-[`factR()`](https://matorholt.github.io/cancR/reference/factR.md) and
-pipe into the
-[`tablR()`](https://matorholt.github.io/cancR/reference/tablR.md).
-Notice that when we pipe we do not need to specify the data frame in
-[`tablR()`](https://matorholt.github.io/cancR/reference/tablR.md)
+[`factR()`](../reference/factR.md) and pipe into the
+[`tablR()`](../reference/tablR.md). Notice that when we pipe we do not
+need to specify the data frame in [`tablR()`](../reference/tablR.md)
 
 ``` r
 redcap_df %>% 
@@ -102,7 +100,7 @@ redcap_df %>%
 ### Customizing tables
 
 Most of the content of the table can be customized in
-[`tablR()`](https://matorholt.github.io/cancR/reference/tablR.md)
+[`tablR()`](../reference/tablR.md)
 
 #### Changing labels
 

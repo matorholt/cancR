@@ -12,10 +12,11 @@ randomizR(
   block.probabilities = NULL,
   replications = 50,
   allocation.levels = c("1", "2"),
-  allocation.name = "allocation",
+  allocation.name = "redcap_randomization_group",
   block.delay = 10,
   token,
-  seed = 1,
+  seed = "none",
+  report = T,
   print = F
 )
 ```
@@ -59,7 +60,11 @@ randomizR(
 
 - seed:
 
-  seed for reproducibility
+  seed for reproducibility. If "none", no seed is set
+
+- report:
+
+  whether the allocation report should be made
 
 - print:
 
@@ -69,3 +74,24 @@ randomizR(
 
 a data frame containing rows equal to the product of unique strata and
 replications.
+
+## Examples
+
+``` r
+allocation <-
+  randomizR(strata=c("age_group_depth",
+                     "gender_depth",
+                     "ana_site_depth",
+                     "immuno_depth",
+                     "seq_width_depth",
+                     "seq_slnb_depth"),
+            block.size = c(2,4),
+            block.probabilities = c(0.9,0.1),
+            replications = 50,
+            block.delay = 10,
+            token = '859A8159EB61A5AD6ABB8DE0BC78E67F',
+            seed = 2,
+            report = T,
+            print=T)
+#> Error in loadNamespace(x): there is no package called ‘redcapAPI’
+```

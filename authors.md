@@ -6,6 +6,8 @@
 
 ## Citation
 
+Source: [`DESCRIPTION`](https://github.com/matorholt/cancR/DESCRIPTION)
+
 Ørholt M (2025). *cancR: cancR*. R package version 1.0.0,
 <https://matorholt.github.io/cancR/>.
 
