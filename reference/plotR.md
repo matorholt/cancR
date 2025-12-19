@@ -17,6 +17,7 @@ plotR(
   contrast = "rd",
   se = T,
   border = T,
+  p.values = T,
   style = NULL,
   linewidth = 1,
   title = "",
@@ -99,6 +100,10 @@ plotR(
 - border:
 
   whether there should be borders around the results
+
+- p.values:
+
+  whether p-values should be printed in the results, default = T
 
 - style:
 
