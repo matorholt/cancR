@@ -145,9 +145,40 @@
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>Returns a table and exports a word-file (optional if filename is provided)</p>
+    <p>Returns a table as a dataframe or flextable</p>
     </div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">tablR</span><span class="op">(</span><span class="va">population_denmark</span>,</span></span>
+<span class="r-in"><span>     group <span class="op">=</span> <span class="va">sex</span>,</span></span>
+<span class="r-in"><span>     vars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">age_group</span>, <span class="va">population</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                        M (N=648)          F (N=648)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  Age Group                                       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2     0-5         36 (5.6%)          36 (5.6%)     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3     10-15       36 (5.6%)          36 (5.6%)     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4     15-20       36 (5.6%)          36 (5.6%)     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5     20-25       36 (5.6%)          36 (5.6%)     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6     25-30       36 (5.6%)          36 (5.6%)     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7     30-35       36 (5.6%)          36 (5.6%)     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8     35-40       36 (5.6%)          36 (5.6%)     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9     40-45       36 (5.6%)          36 (5.6%)     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10    45-50       36 (5.6%)          36 (5.6%)     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11    5-10        36 (5.6%)          36 (5.6%)     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12    50-55       36 (5.6%)          36 (5.6%)     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13    55-60       36 (5.6%)          36 (5.6%)     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 14    60-65       36 (5.6%)          36 (5.6%)     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 15    65-70       36 (5.6%)          36 (5.6%)     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 16    70-75       36 (5.6%)          36 (5.6%)     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 17    75-80       36 (5.6%)          36 (5.6%)     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 18    80-85       36 (5.6%)          36 (5.6%)     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 19    85+         36 (5.6%)          36 (5.6%)     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 20 Population                                      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 21    Median       169647.0           165007.5     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 22    Q1, Q3  129036.5, 189037.0 132838.0, 183598.5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 23    Range   23026.0 - 220477.0 54832.0 - 211165.0</span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
 
