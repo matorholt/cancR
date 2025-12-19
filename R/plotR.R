@@ -13,6 +13,7 @@
 #' @param contrast The type of contrast that should be provided. Includes risk difference ("rd", default), risk ratio ("rr"), hazard ratio ("hr") or "none".
 #' @param se whether the confidence interval should be shown
 #' @param border whether there should be borders around the results
+#' @param p.values whether p-values should be printed in the results, default = T
 #' @param style the formatting style of the contrast. Currently JAMA and italic
 #' @param linewidth thickness of the risk curve lines
 #' @param title Plot title
@@ -89,7 +90,8 @@
 #                event = event2,
 #                group=X3)
 #
-# plotR(i)
+# plotR(i,
+#       p.values=F)
 
 
 
@@ -106,6 +108,7 @@ plotR <- function(list,
                   contrast = "rd",
                   se = T,
                   border = T,
+                  p.values = T,
                   style = NULL,
                   linewidth = 1,
                   title = "",
@@ -180,7 +183,9 @@ plotR <- function(list,
                     "-",
                     numbR(list[[c_var]][["upper"]], contrast.digits),
                     "), ",
-                    list[[c_var]][["p.value"]])
+                   list[[c_var]][["p.value"]])
+
+
 
   if(!is.null(style)) {
 
@@ -207,6 +212,10 @@ plotR <- function(list,
     c_labels <- c("reference", c_labels[1:(length(levels)-1)])
   }
 
+  }
+
+  if(!p.values) {
+    c_labels <- str_remove(c_labels, ",\\sp\\s=.*")
   }
 
   if(censur) {

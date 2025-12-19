@@ -16,6 +16,7 @@ plotR(
   contrast = "rd",
   se = T,
   border = T,
+  p.values = T,
   style = NULL,
   linewidth = 1,
   title = "",
@@ -69,6 +70,8 @@ plotR(
 \item{se}{whether the confidence interval should be shown}
 
 \item{border}{whether there should be borders around the results}
+
+\item{p.values}{whether p-values should be printed in the results, default = T}
 
 \item{style}{the formatting style of the contrast. Currently JAMA and italic}
 
