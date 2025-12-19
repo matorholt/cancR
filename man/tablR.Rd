@@ -62,8 +62,13 @@ tablR(
 \item{labels}{List specifying labels of the specific labels for each variable}
 }
 \value{
-Returns a table and exports a word-file (optional if filename is provided)
+Returns a table as a dataframe or flextable
 }
 \description{
 Wrapper for the tableby function in the Arsenal package
+}
+\examples{
+tablR(population_denmark,
+     group = sex,
+     vars = c(age_group, population))
 }

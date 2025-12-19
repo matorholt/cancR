@@ -15,15 +15,33 @@ home:
         title: Source Code
         text: https://github.com/matorholt/cancR
 
-
-# home:
-#   sidebar:
-#    structure: [links, license, citation, authors, funding]
-#    components:
-#      funding:
-#        title: Funding
-#        text: check
-
+navbar:
+  structure:
+    left:  [reference, articles]
+    right: [search, github]
+  components:
+    articles:
+      text: Articles
+      menu:
+      - text: Get started
+      - text: Install and Update R
+        href: articles/install.html
+      - text: Install cancR
+        href: articles/cancR.html
+      - text: R setup
+        href: articles/setup.html
+      - text: Redcap and R
+        href: articles/redcap.html
+      - text: R guides
+      - text: Basic R
+        href: articles/basic.html
+      - text: Importing data
+        href: articles/import.html
+      - text: Data Management
+        href: articles/data_management.html
+      - text: Tables
+        href: articles/tables.html
+      - text: cancR examples
 
 reference:
 - title: Data management functions
@@ -113,32 +131,6 @@ reference:
   - tockR
   - viewR
 
-navbar:
-  structure:
-    left:  [reference, articles]
-    right: [search, github]
-  components:
-    articles:
-      text: Articles
-      menu:
-      - text: Get started
-      - text: Install and Update R
-        href: articles/install.html
-      - text: Install cancR
-        href: articles/cancR.html
-      - text: R setup
-        href: articles/setup.html
-      - text: Redcap and R
-        href: articles/redcap.html
-      - text: R guides
-      - text: Basic R
-        href: articles/basic.html
-      - text: Importing data
-        href: articles/import.html
-      - text: Data Management
-        href: articles/data_management.html
-      - text: Tables
-        href: articles/tables.html
-      - text: cancR examples
+
 
 

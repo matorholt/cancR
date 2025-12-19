@@ -16,12 +16,12 @@
 #                    "9999999999",
 #                    "101011234"
 # )) %>%
-#   cpR(extract=F,
-#       return.cpr=T,
-#       remove.cpr=F)
+#   cpR(extract=T,
+#       return.cpr=F,
+#       remove.cpr=T)
 
 
-cpR <- function(data, cpr=cpr, extract=F, remove.cpr = F, return.cpr = F) {
+cpR <- function(data, cpr=cpr,extract=F, remove.cpr = F, return.cpr = F) {
 
   data <- data %>% ungroup()
 
@@ -39,10 +39,12 @@ cpR <- function(data, cpr=cpr, extract=F, remove.cpr = F, return.cpr = F) {
      warning(paste0(nrow(errors), " invalid CPR", rep("s", nrow(errors)>1), " detected and returned as vector"))
    return(errors[[cpr_c]])
    } else {
-     warning(paste0(nrow(errors), " invalid CPR", rep("s", nrow(errors)>1), " detected and removed"))
 
      if(remove.cpr) {
+       warning(paste0(nrow(errors), " invalid CPR", rep("s", nrow(errors)>1), " detected and removed"))
      data <- data %>% filter(!!sym(cpr_c) != errors[[cpr_c]])
+     } else {
+       warning(paste0(nrow(errors), " invalid CPR", rep("s", nrow(errors)>1), " detected"))
      }
    }
    }

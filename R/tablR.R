@@ -20,13 +20,17 @@
 #' @param censur whether counts <= 3 should be censored
 #' @param digits number of digits
 #'
-#' @return Returns a table and exports a word-file (optional if filename is provided)
+#' @return Returns a table as a dataframe or flextable
 #' @export
 #'
-#'
+#' @examples
+#' tablR(population_denmark,
+#'      group = sex,
+#'      vars = c(age_group, population))
 
 # redcap_df %>%
 #   mutate(margins = sample(c("0","1"), nrow(redcap_df), replace=TRUE)) %>%
+#   #mutate(type = ifelse(row_number() == 1, NA, type)) %>%
 #   factR(c(type, sex, localisation, cd10, sox10, ck, margins, necrosis)) %>%
 #   tablR(group=type,
 #         vars = c(age, sex, localisation, cd10, sox10, ck, necrosis, margins),
@@ -50,12 +54,7 @@
 #         simplify=list("Immunohistochemistry" = c("cd10", "sox10", "ck"),
 #                       "Tumor" = c("necrosis", "margins")),
 #         print=F)
-# censur=F,
-# print=F,
-# numeric = c("mean", "sd", "q1q3", "iqr"),
-# flextable = F,
-# test=T,
-# total=T)
+
 
 tablR <- function(data,
                    group,
@@ -83,7 +82,7 @@ tablR <- function(data,
 
   if(any(numeric %nin% numeric_choices)) {
 
-    cat(paste0("Error: ", numeric[numeric %nin% numeric_choices], " is not a valid option. Valid choices are: \n"), paste0(c(numeric_choices), sep = "\n"))
+    return(cat(paste0("Error: ", numeric[numeric %nin% numeric_choices], " is not a valid option. Valid choices are: \n"), paste0(c(numeric_choices), sep = "\n")))
 
   }
 
@@ -121,17 +120,23 @@ tablR <- function(data,
     group_c <- data %>% select({{group}}) %>% names
 
     if(all(class(data[, group_c]) %nin% c("factor", "character"))) {
-      cat("Error: Group is not a factor or character")
+      return(cat("Error: Group is not a factor or character"))
     }
 
     #Group name inserted if omitted from argument
     if(length(labs.groups) == 0) {
 
-      labs.groups <- as.list(as.character(unique(data[[group_c]]))) %>% set_names(str_to_title(unique(data[[group_c]])))
+      labs.groups <- as.list(as.character(na.omit(unique(data[[group_c]])))) %>% set_names(str_to_title(na.omit(unique(data[[group_c]]))))
     }
 
-       if(pluck_depth(labs.groups) == 2) labs.groups <- list(labs.groups) %>% set_names(group_c)
 
+
+       if(pluck_depth(labs.groups) == 2) {
+
+         labs.groups <-
+           list(labs.groups) %>% set_names(group_c)
+
+       }
 
     data <- data %>%
       factR(group_c,
