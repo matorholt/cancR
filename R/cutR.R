@@ -108,8 +108,9 @@ cutR <- function(data, vars, seqlist, name.list = list(), name.pattern = NULL, d
 
   if(class(name.list) != "list") {
 
-    names <- list(name.list)
-    names(names) <- vars_c
+    name.list <- list(name.list)
+    names(name.list) <- vars_c
+
   }
 
 
@@ -186,4 +187,3 @@ seqlist <- lapply(seq_along(vars_c), function(x) {
 
 
 }
-

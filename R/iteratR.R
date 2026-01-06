@@ -2,8 +2,9 @@
 #'
 #'
 #' @param data data frame, list of data frames or object of class "iteratR"
-#' @param names vector of names for the returned list of models. If missing the "events" names or names in the iteratR object are used.
+#' @param labels vector of names for the returned list of models. If missing the "events" names or names in the iteratR object are used.
 #' @param method which cancR function to use. Choose between "estimatR", "incidencR", "clustR" and "inferencR". The previous can be passed to "extractR" and "plotR"
+#' @param multivariable multivariable analysis for estimatR
 #' @param ... See arguments in the specific function documentations. Multiple arguments should be inputted as lists (e.g. time = list(60,60,120))
 
 #'
@@ -38,7 +39,9 @@
 #
 # #incidencR
 # inc <-
-#   iteratR(analysis_df,
+#   iteratR(
+#     data=split(analysis_df, ~ X1),
+#     #data=analysis_df,
 #           timevar = "ttt",
 #           event = c("event", "event", "event2"),
 #           group = "X3",
@@ -80,17 +83,27 @@
 # iteratR(plots,
 #         format = c("png", "pdf"),
 #         method = "savR")
-
+#
+# tablR
+#
+# tab <-
+#   iteratR(split(analysis_df, ~ X1),
+#           group = "X2",
+#           vars = c("X6", "X7"),
+#           method = "tablR",
+#           labels = c("G1", "G2", "G3"))
+#
+# tab
 
 iteratR <- function(data,
-                    names,
+                    labels,
                     method,
                     multivariable = F,
                     ...) {
 
   cat("\niteratR initialized: ", tickR(), "\n")
 
-  method_choices <- c("extractR", "plotR", "estimatR", "incidencR", "inferencR", "clustR", "savR")
+  method_choices <- c("tablR", "extractR", "plotR", "estimatR", "incidencR", "inferencR", "clustR", "savR")
 
   if(method %nin% method_choices) {
     return(cat(paste0("Error: Invalid choice of method. Choose between:\n", paste0(method_choices, collapse="\n"))))
@@ -98,9 +111,25 @@ iteratR <- function(data,
 
   start <- tickR.start
 
-    if(method == "extractR") {
+  if(method == "tablRt") {
 
-      names <- NULL
+    arg.list <- list(...)
+    if(any(class(data) %nin% "list")) {
+      arg.list[["data"]] <- list(data)
+    } else {
+      arg.list[["data"]] <- data
+    }
+
+    #return(arg.list)
+
+    out <- pmap(arg.list,
+         function(...) {
+           tablR(...)
+         })
+
+  } else if(method == "extractR") {
+
+      labels <- NULL
 
       out <- bind_rows(lapply(seq_along(data), function(x) {
 
@@ -123,7 +152,7 @@ iteratR <- function(data,
 
   } else if(method == "savR") {
 
-    names <- NULL
+    labels <- NULL
 
     cat(paste0("Exporting: ", length(data), " objects"))
 
@@ -139,21 +168,25 @@ iteratR <- function(data,
 
   arg.list <- list(...)
 
-  if(missing(names)) {
+  if(missing(labels)) {
 
     if("group" %nin% names(arg.list)) {
 
-      names <- arg.list[["event"]]
+      labels <- arg.list[["event"]]
 
 
     } else {
-      names <- paste0(arg.list[["event"]], "_", arg.list[["group"]])
+
+      labels <- paste0(arg.list[["event"]], "_", arg.list[["group"]])
     }
   }
 
 
+
   if(any(class(data) %nin% "list")) {
   arg.list[["data"]] <- list(data)
+  } else {
+    arg.list[["data"]] <- data
   }
 
 if("vars" %in% names(arg.list)) {
@@ -180,11 +213,12 @@ if("vars" %in% names(arg.list)) {
 
   }
 
-  if("timevar" %nin% names(arg.list)) {
+
+
+  if("timevar" %nin% names(arg.list) & method != "tablR") {
 
       arg.list[["timevar"]] <- paste("t_", arg.list[["event"]], sep="")
     }
-
 
   out <- pmap(arg.list,
        function(...) {
@@ -197,13 +231,15 @@ if("vars" %in% names(arg.list)) {
            clustR(...)
          } else if(method == "inferencR") {
            inferencR(...)
+         } else if(method == "tablR") {
+           tablR(...)
          }
 
-       })  %>% set_names(names)
+       })  %>% set_names(labels)
 
   class(out) <- "iteratR"
 
-  }
+   }
 
 
   cat(paste0("\nTotal runtime: \n"))
@@ -211,5 +247,3 @@ if("vars" %in% names(arg.list)) {
 
   return(out)
 }
-
-

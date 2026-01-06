@@ -2,7 +2,7 @@
 % Please edit documentation in R/tablR.R
 \name{tablR}
 \alias{tablR}
-\title{Create baseline table}
+\title{Create frequency tables}
 \usage{
 tablR(
   data,
@@ -11,7 +11,7 @@ tablR(
   num.vars,
   test = FALSE,
   total = FALSE,
-  numeric = c("median", "q1q3", "range"),
+  numeric = c("medianq1q3", "range"),
   direction = "colwise",
   reference = list(),
   levels = list(),
@@ -22,8 +22,10 @@ tablR(
   test.stats = c("kwt", "chisq"),
   show.na = FALSE,
   censur = F,
+  weights,
   digits = 1,
   simplify = list(),
+  simplify.remove = c("no", "0"),
   print = F,
   flextable = F
 )
@@ -41,7 +43,8 @@ tablR(
 
 \item{total}{Whether a total column should be included (default = FALSE)}
 
-\item{numeric}{Selection of the type of stats for numerical variables (e.g. median, q1q3, range, mean, sd)}
+\item{numeric}{Selection of the type of stats for numerical variables.
+Options include: median, q1q3, medianq1q3 (default), iqr, range, mean, sd, meansd, min, max)}
 
 \item{direction}{Direction for percentages (colwise or rowwise)}
 
@@ -57,7 +60,18 @@ tablR(
 
 \item{censur}{whether counts <= 3 should be censored}
 
+\item{weights}{optional name of the column containing weights for weighted summaries}
+
 \item{digits}{number of digits}
+
+\item{simplify}{a list of column names that should be simplified by dropping specified levels (e.g. 0 or "no") for simple output.
+Groups of size > 1 should be named such as: list("IHC" = c("cd10", "sox10", "ck"), "necrosis", "margins")}
+
+\item{simplify.remove}{vector of labels that should be removed from the columns assigned in the "simplify" argument. Default = c("no", "0")}
+
+\item{print}{whether the table should be printed in the console}
+
+\item{flextable}{whether the table should be returned as a flextable}
 
 \item{labels}{List specifying labels of the specific labels for each variable}
 }

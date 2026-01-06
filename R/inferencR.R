@@ -43,16 +43,18 @@
 #   drop_na(X2) %>%
 #   mutate(X2 = fct_drop(X2))
 #
+#
 # t1 <- inferencR(analysis_df,
 #                 treatment = X2,
 #                 timevar = ttt,
 #                 event = event2,
 #                 vars = c(X1, X3, X6, X7),
 #                 outcome.vars = X10,
-#                 estimator = "AIPTW",
-#                 plot=T)
-#
-# plotR(t1)
+#                 estimator = "GFORMULA",
+#                 plot=F)
+
+
+#plotR(t1)
 #
 # # Binary outcome
 # t2 <- inferencR(analysis_df,
@@ -126,16 +128,42 @@ inferencR <- function(data,
 
   treat.model <- glm(as.formula(treat.form), data=dat,family=binomial(link="logit"))
 
-  weights <- dat %>% mutate(ps = predict(treat.model, newdata=dat, type="response"),
-                            w = ifelse(!!sym(treat_c) %in% levels[2], 1/ps, 1/(1-ps))) %>%
-    select({{treatment}}, ps, w)
+  dat_w <- dat %>% mutate(ps = predict(treat.model, newdata=dat, type="response"),
+                          w = ifelse(!!sym(treat_c) %in% levels[2], 1/ps, 1/(1-ps))) %>%
+    cutR(w, seq(0,max(.$w),0.5), digits = 5,
+              name.list = "wgroup")
 
-  plot_weights <- summarisR(weights,
+  plot_weights <- summarisR(dat_w,
                             vars = c(ps, w),
                             group = !!sym(treat_c),
                             headings = list("w" = "Weights",
                                             "ps" = "Propensity Scores"),
                             bins = bins)
+
+  tab_w <- cbind(tablR(dat_w,
+                           group = treat_c,
+                           vars = c(vars_c, ovars_c),
+                           ),
+                     tablR(dat_w,
+                 group = treat_c,
+                 vars = c(vars_c, ovars_c),
+                 weights = w)[,-1])
+
+  strat_w <-
+    iteratR(split(dat_w, ~ X2),
+            group = "wgroup",
+            vars = c(vars_c, ovars_c),
+            method = "tablR",
+            labels = levels)
+
+  print(strat_w)
+
+
+  out.list[["weights"]] <- list(data = dat_w,
+                                table_iptw = tab_w,
+                                table_strat = strat_w,
+                                plot = plot_weights)
+
 
   if(method == "tte") {
 
@@ -256,8 +284,6 @@ inferencR <- function(data,
                                "censoring" = censor.model,
                                "formulas" = data.frame(model = c("treatment", "event", "censoring"),
                                                        formula = c(treat.form, event.form, censor.form)))
-
-  out.list[["weights"]] <- list(weights, plot_weights)
 
 
   ate.frame <- ate(event = event.model,

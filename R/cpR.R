@@ -42,7 +42,7 @@ cpR <- function(data, cpr=cpr,extract=F, remove.cpr = F, return.cpr = F) {
 
      if(remove.cpr) {
        warning(paste0(nrow(errors), " invalid CPR", rep("s", nrow(errors)>1), " detected and removed"))
-     data <- data %>% filter(!!sym(cpr_c) != errors[[cpr_c]])
+     data <- data %>% filter(!!sym(cpr_c) %nin% errors[[cpr_c]])
      } else {
        warning(paste0(nrow(errors), " invalid CPR", rep("s", nrow(errors)>1), " detected"))
      }
