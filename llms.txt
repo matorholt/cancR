@@ -43,7 +43,7 @@ development phase.
 The package developer wishes to thank the developers of prodlim,
 riskRegression, heaven, mets, rrapply and tidyverse for their incredible
 work. This package is merely just highlighting the qualities of those
-packages. Also thank you to LG for design of the logo.
+packages. Thank you to Linda Gudjonsdottir for design of the logo.
 
 #### 
 
@@ -104,7 +104,7 @@ Functions that perform statistical analysis
 
 Functions for producing and formatting tables and figures
 
-- [`tablR()`](tablR.md) : Create baseline table
+- [`tablR()`](tablR.md) : Create frequency tables
 - [`plotR()`](plotR.md) : Autoplot for estimatR, incidencR, inferencR
   and clustR
 - [`collectR()`](collectR.md) : Collect multiple plots into one

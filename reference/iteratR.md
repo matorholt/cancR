@@ -5,7 +5,7 @@ Perform multiple estimatR analyses
 ## Usage
 
 ``` r
-iteratR(data, names, method, multivariable = F, ...)
+iteratR(data, labels, method, multivariable = F, ...)
 ```
 
 ## Arguments
@@ -14,7 +14,7 @@ iteratR(data, names, method, multivariable = F, ...)
 
   data frame, list of data frames or object of class "iteratR"
 
-- names:
+- labels:
 
   vector of names for the returned list of models. If missing the
   "events" names or names in the iteratR object are used.
@@ -24,6 +24,10 @@ iteratR(data, names, method, multivariable = F, ...)
   which cancR function to use. Choose between "estimatR", "incidencR",
   "clustR" and "inferencR". The previous can be passed to "extractR" and
   "plotR"
+
+- multivariable:
+
+  multivariable analysis for estimatR
 
 - ...:
 

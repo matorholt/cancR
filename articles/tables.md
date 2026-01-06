@@ -22,17 +22,16 @@ tablR(redcap_df,
       vars = c(age, sex, type))
 ```
 
-             Overall (N=500)
+                       Overall (N=500)
 
 1 Age  
-2 Median 49.7  
-3 Q1, Q3 34.1, 64.5 4 Range 10.8 - 88.8 5 Sex  
-6 Median 1.0  
-7 Q1, Q3 1.0, 2.0  
-8 Range 1.0 - 2.0 9 Type  
-10 Median 1.0  
-11 Q1, Q3 1.0, 2.0  
-12 Range 0.0 - 2.0
+2 Median (Q1, Q3) 49.7 (34.1, 64.5) 3 Range 10.8 - 88.8  
+4 Sex  
+5 Median (Q1, Q3) 1.0 (1.0, 2.0)  
+6 Range 1.0 - 2.0  
+7 Type  
+8 Median (Q1, Q3) 1.0 (1.0, 2.0)  
+9 Range 0.0 - 2.0
 
 We instantly conclude that sex and type is incorrectly formatted, as we
 wish to see percentages and not a median as if the 0/1 structure was
@@ -47,13 +46,17 @@ redcap_df %>%
   tablR(vars = c(age, sex, type))
 ```
 
-             Overall (N=500)
+                        Overall (N=500)
 
 1 Age  
-2 Median 49.7  
-3 Q1, Q3 34.1, 64.5 4 Range 10.8 - 88.8 5 Sex  
-6 1 256 (51.2%) 7 2 244 (48.8%) 8 Type  
-9 1 254 (50.8%) 10 2 133 (26.6%) 11 0 113 (22.6%)
+2 Median (Q1, Q3) 49.7 (34.1, 64.5) 3 Range 10.8 - 88.8  
+4 Sex  
+5 1 256 (51.2%)  
+6 2 244 (48.8%)  
+7 Type  
+8 1 254 (50.8%)  
+9 2 133 (26.6%)  
+10 0 113 (22.6%)
 
 ### Tables with multiple groups
 
@@ -67,14 +70,14 @@ redcap_df %>%
         vars = c(age, sex))
 ```
 
-              1 (N=254)   2 (N=133)   0 (N=113)
+                             1 (N=254)         2 (N=133)         0 (N=113)
 
 1 Age  
-2 Median 49.6 50.4 48.3  
-3 Q1, Q3 34.9, 66.0 34.8, 63.4 31.8, 64.2 4 Range 10.8 - 88.8 11.2 -
-86.3 12.0 - 84.6 5 Sex  
-6 1 131 (51.6%) 59 (44.4%) 66 (58.4%) 7 2 123 (48.4%) 74 (55.6%) 47
-(41.6%)
+2 Median (Q1, Q3) 49.6 (34.9, 66.0) 50.4 (34.8, 63.4) 48.3 (31.8, 64.2)
+3 Range 10.8 - 88.8 11.2 - 86.3 12.0 - 84.6  
+4 Sex  
+5 1 131 (51.6%) 59 (44.4%) 66 (58.4%)  
+6 2 123 (48.4%) 74 (55.6%) 47 (41.6%)
 
 We can also add a `total`column and also test the differences in
 distributions
@@ -89,13 +92,18 @@ redcap_df %>%
         total = TRUE)
 ```
 
-              1 (N=254)   2 (N=133)   0 (N=113) Total (N=500)  P-value
+                             1 (N=254)         2 (N=133)         0 (N=113)
 
-1 Age p = 0.94 2 Median 49.6 50.4 48.3 49.7  
-3 Q1, Q3 34.9, 66.0 34.8, 63.4 31.8, 64.2 34.1, 64.5  
-4 Range 10.8 - 88.8 11.2 - 86.3 12.0 - 84.6 10.8 - 88.8  
-5 Sex p = 0.09 6 1 131 (51.6%) 59 (44.4%) 66 (58.4%) 256 (51.2%)  
-7 2 123 (48.4%) 74 (55.6%) 47 (41.6%) 244 (48.8%)
+1 Age  
+2 Median (Q1, Q3) 49.6 (34.9, 66.0) 50.4 (34.8, 63.4) 48.3 (31.8, 64.2)
+3 Range 10.8 - 88.8 11.2 - 86.3 12.0 - 84.6  
+4 Sex  
+5 1 131 (51.6%) 59 (44.4%) 66 (58.4%)  
+6 2 123 (48.4%) 74 (55.6%) 47 (41.6%)  
+Total (N=500) P-value 1 p = 0.94 2 49.7 (34.1, 64.5)  
+3 10.8 - 88.8  
+4 p = 0.09 5 256 (51.2%)  
+6 244 (48.8%)
 
 ### Customizing tables
 
@@ -120,14 +128,13 @@ redcap_df %>%
     labs.headings = list("Age at Debut" = "age"),
     labs.subheadings = list("sex" = list("Female" = "2",
                                          "Male" = "1")))
-#>                benign (N=113) in situ (N=254) malignant (N=133)
-#> 1 Age at Debut                                                 
-#> 2    Median          48.3            49.6              50.4    
-#> 3    Q1, Q3       31.8, 64.2      34.9, 66.0        34.8, 63.4 
-#> 4    Range        12.0 - 84.6     10.8 - 88.8       11.2 - 86.3
-#> 5 Sex                                                          
-#> 6    Female       47 (41.6%)      123 (48.4%)       74 (55.6%) 
-#> 7    Male         66 (58.4%)      131 (51.6%)       59 (44.4%)
+#>                         benign (N=113)   in situ (N=254) malignant (N=133)
+#> 1 Age at Debut                                                            
+#> 2    Median (Q1, Q3) 48.3 (31.8, 64.2) 49.6 (34.9, 66.0) 50.4 (34.8, 63.4)
+#> 3    Range              12.0 - 84.6       10.8 - 88.8       11.2 - 86.3   
+#> 4 Sex                                                                     
+#> 5    Female             47 (41.6%)        123 (48.4%)       74 (55.6%)    
+#> 6    Male               66 (58.4%)        131 (51.6%)       59 (44.4%)
 ```
 
 #### Changing orders
@@ -155,21 +162,20 @@ redcap_df %>%
                                                   "Lower Extremity" = "4",
                                                   "Unspecified" = "5")),
     reference = list("sex" = c("Female")))
-#>                       benign (N=113) in situ (N=254) malignant (N=133)
-#> 1  Age at Debut                                                       
-#> 2     Median                48.3            49.6              50.4    
-#> 3     Q1, Q3             31.8, 64.2      34.9, 66.0        34.8, 63.4 
-#> 4     Range              12.0 - 84.6     10.8 - 88.8       11.2 - 86.3
-#> 5  Sex                                                                
-#> 6     Female             47 (41.6%)      123 (48.4%)       74 (55.6%) 
-#> 7     Male               66 (58.4%)      131 (51.6%)       59 (44.4%) 
-#> 8  Localisation                                                       
-#> 9     Neck                6 (5.3%)        8 (3.1%)          1 (0.8%)  
-#> 10    Head                9 (8.0%)       31 (12.2%)        24 (18.0%) 
-#> 11    Trunk              47 (41.6%)      74 (29.1%)        46 (34.6%) 
-#> 12    Upper Extremity    30 (26.5%)      94 (37.0%)        35 (26.3%) 
-#> 13    Lower Extremity    20 (17.7%)      45 (17.7%)        23 (17.3%) 
-#> 14    Unspecified         1 (0.9%)        2 (0.8%)          4 (3.0%)
+#>                          benign (N=113)   in situ (N=254) malignant (N=133)
+#> 1  Age at Debut                                                            
+#> 2     Median (Q1, Q3) 48.3 (31.8, 64.2) 49.6 (34.9, 66.0) 50.4 (34.8, 63.4)
+#> 3     Range              12.0 - 84.6       10.8 - 88.8       11.2 - 86.3   
+#> 4  Sex                                                                     
+#> 5     Female             47 (41.6%)        123 (48.4%)       74 (55.6%)    
+#> 6     Male               66 (58.4%)        131 (51.6%)       59 (44.4%)    
+#> 7  Localisation                                                            
+#> 8     Neck                6 (5.3%)          8 (3.1%)          1 (0.8%)     
+#> 9     Head                9 (8.0%)         31 (12.2%)        24 (18.0%)    
+#> 10    Trunk              47 (41.6%)        74 (29.1%)        46 (34.6%)    
+#> 11    Upper Extremity    30 (26.5%)        94 (37.0%)        35 (26.3%)    
+#> 12    Lower Extremity    20 (17.7%)        45 (17.7%)        23 (17.3%)    
+#> 13    Unspecified         1 (0.9%)          2 (0.8%)          4 (3.0%)
 ```
 
 #### Changing summary measures

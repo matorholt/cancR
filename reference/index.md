@@ -46,7 +46,7 @@ Functions that perform statistical analysis
 
 Functions for producing and formatting tables and figures
 
-- [`tablR()`](tablR.md) : Create baseline table
+- [`tablR()`](tablR.md) : Create frequency tables
 - [`plotR()`](plotR.md) : Autoplot for estimatR, incidencR, inferencR
   and clustR
 - [`collectR()`](collectR.md) : Collect multiple plots into one

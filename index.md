@@ -43,7 +43,7 @@ development phase.
 The package developer wishes to thank the developers of prodlim,
 riskRegression, heaven, mets, rrapply and tidyverse for their incredible
 work. This package is merely just highlighting the qualities of those
-packages. Also thank you to LG for design of the logo.
+packages. Thank you to Linda Gudjonsdottir for design of the logo.
 
 #### 
 
