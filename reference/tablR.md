@@ -136,6 +136,7 @@ Returns a table as a dataframe or flextable
 tablR(population_denmark,
      group = sex,
      vars = c(age_group, population))
+#> Warning: NAs introduced by coercion
 #>                                           M (N=648)
 #> 1  Age Group                                       
 #> 2     0-5                       36 (5.6%)          
