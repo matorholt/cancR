@@ -52,7 +52,6 @@
 #                 estimator = "GFORMULA",
 #                 plot=F)
 
-
 #plotR(t1)
 #
 # # Binary outcome

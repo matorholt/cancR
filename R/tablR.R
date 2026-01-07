@@ -142,8 +142,13 @@ tablR <- function(data,
 
     #Group name inserted if omitted from argument
     if(length(labs.groups) == 0) {
+     # return(data[[group_c]])
+      if(is.factor(data[[group_c]])) {
+        labs.groups <- as.list(levels(data[[group_c]])) %>% set_names(levels(data[[group_c]]))
+      } else {
+        labs.groups <- as.list(as.character(na.omit(unique(data[[group_c]])))) %>% set_names(str_to_title(na.omit(unique(data[[group_c]]))))
+      }
 
-      labs.groups <- as.list(as.character(na.omit(unique(data[[group_c]])))) %>% set_names(str_to_title(na.omit(unique(data[[group_c]]))))
     }
 
 
@@ -156,7 +161,7 @@ tablR <- function(data,
        }
 
     data <- data %>%
-      factR(num.vars=group_c,
+      factR(vars=group_c,
             labels = labs.groups,
             lab_to_lev = T,
             reverse = reverse)
@@ -213,8 +218,6 @@ tablR <- function(data,
   } else {
     headings_reverse <- labs.headings
   }
-
-
 
   tab <- summary(table,
                  text=T,
@@ -291,11 +294,12 @@ tablR <- function(data,
 
   if(test) {
 
-
+    print(tab)
     tab <- tab %>%
     rename("P-value" = `p value`) %>%
       mutate(`P-value` = pvertR(`P-value`, na= " "))
   }
+
 
   #Formatting
   tab <- tab %>%
@@ -336,4 +340,3 @@ tablR <- function(data,
 
 
 }
-
