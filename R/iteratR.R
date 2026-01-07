@@ -218,7 +218,9 @@ if("vars" %in% names(arg.list)) {
   if("timevar" %nin% names(arg.list) & method != "tablR") {
 
       arg.list[["timevar"]] <- paste("t_", arg.list[["event"]], sep="")
-    }
+  }
+
+  #return(arg.list)
 
   out <- pmap(arg.list,
        function(...) {

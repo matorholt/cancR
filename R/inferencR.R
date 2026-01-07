@@ -1,7 +1,7 @@
 #' Causal inference of time-to-event data
 #'
 #' @description
-#' Average treatment effect of point intervention. Wrapper for the ATE function in riskRegression
+#' Average treatment effect of point intervention with either IPTW, GFORMULA or AIPTW. Wrapper for the ATE function in riskRegression.
 #'
 #'
 #' @param data dataframe
@@ -42,7 +42,6 @@
 # tdf <- analysis_df %>%
 #   drop_na(X2) %>%
 #   mutate(X2 = fct_drop(X2))
-#
 #
 # t1 <- inferencR(analysis_df,
 #                 treatment = X2,
@@ -130,7 +129,7 @@ inferencR <- function(data,
 
   dat_w <- dat %>% mutate(ps = predict(treat.model, newdata=dat, type="response"),
                           w = ifelse(!!sym(treat_c) %in% levels[2], 1/ps, 1/(1-ps))) %>%
-    cutR(w, seq(0,max(.$w),0.5), digits = 5,
+    cutR(w, seq(0,round(max(.$w)),0.5), digits = 5,
               name.list = "wgroup")
 
   plot_weights <- summarisR(dat_w,
@@ -149,15 +148,17 @@ inferencR <- function(data,
                  vars = c(vars_c, ovars_c),
                  weights = w)[,-1])
 
+  dat_w <- dat_w %>%
+    factR(num.vars = "wgroup")
+
   strat_w <-
     iteratR(split(dat_w, ~ X2),
             group = "wgroup",
             vars = c(vars_c, ovars_c),
             method = "tablR",
+            total=T,
+            test=F,
             labels = levels)
-
-  print(strat_w)
-
 
   out.list[["weights"]] <- list(data = dat_w,
                                 table_iptw = tab_w,
@@ -425,3 +426,4 @@ inferencR <- function(data,
 
 
 }
+

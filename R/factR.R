@@ -189,7 +189,8 @@ factR <- function(data, vars, num.vars, reference = list(), levels = list(), lab
       else if(str_detect(x, "\\>")) y <- 1000000
       else y <- 0
 
-      as.numeric(paste0(unlist(str_extract_all(x, "\\d")), collapse=""))+y
+      #Take first value Including decimal
+      as.numeric(str_extract(x, "\\d+\\.?(\\d+)?"))+y
 
     })
 
@@ -201,8 +202,6 @@ factR <- function(data, vars, num.vars, reference = list(), levels = list(), lab
       levels[[v]] <- unlist(val_list)
 
     }
-
-
 
     data[, substitute(v) := fct_relevel(get(v), levels[[v]])]
 
@@ -216,4 +215,3 @@ factR <- function(data, vars, num.vars, reference = list(), levels = list(), lab
   as.data.frame(data)
 
 }
-

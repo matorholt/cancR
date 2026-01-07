@@ -156,12 +156,10 @@ tablR <- function(data,
        }
 
     data <- data %>%
-      factR(group_c,
+      factR(num.vars=group_c,
             labels = labs.groups,
             lab_to_lev = T,
             reverse = reverse)
-
-
 
   }
 
@@ -188,7 +186,7 @@ tablR <- function(data,
                        numeric.simplify = T,
                        stats.labels=list(median="Median",
                                          medianq1q3 = "Median (Q1, Q3)",
-                                         #meansd = "Mean (SD)",
+                                         meansd = "Mean (SD)",
                                          q1q3="Q1, Q3",
                                          iqr = "IQR",
                                          mean = "Mean",
@@ -289,8 +287,6 @@ tablR <- function(data,
 
   }
 
-  # headings <- c(vars_c[vars_c %nin% unlist(simplify)], names(simplify), unlist(labs.headings), unlist(headings_reverse))
-  # headings_index <- which(tab[, 1] %nin% headings)
   headings_index <- which(str_detect(tab[, "var"], "-"))
 
   if(test) {
@@ -340,3 +336,4 @@ tablR <- function(data,
 
 
 }
+
