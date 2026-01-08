@@ -4,10 +4,10 @@
 \alias{listR}
 \title{Routine modifications of lists}
 \usage{
-listR(list, type, ...)
+listR(input, type, ...)
 }
 \arguments{
-\item{list}{the list to modify}
+\item{input}{the list or vector}
 
 \item{type}{type of modification of the list. See details}
 
@@ -22,4 +22,12 @@ The functions is also a wrapper for the rrapply and map_depth functions with the
 }
 \details{
 "reverse" reverses the values and names of a list which is used as inputs in functions such as str_replace.
+"vec2list" converts a vector to a list with names corresponding to the vector elements
+}
+\examples{
+
+reverse_list <- list("first" = "a1",
+                     "second" = "b2")
+
+listR(reverse_list, type = "reverse")
 }

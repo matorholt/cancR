@@ -144,7 +144,7 @@ tablR <- function(data,
     if(length(labs.groups) == 0) {
      # return(data[[group_c]])
       if(is.factor(data[[group_c]])) {
-        labs.groups <- as.list(levels(data[[group_c]])) %>% set_names(levels(data[[group_c]]))
+        labs.groups <- listR(levels(data[[group_c]]), type = "vec2list")
       } else {
         labs.groups <- as.list(as.character(na.omit(unique(data[[group_c]])))) %>% set_names(str_to_title(na.omit(unique(data[[group_c]]))))
       }
