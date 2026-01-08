@@ -1,7 +1,7 @@
 # Causal inference of time-to-event data
 
-Average treatment effect of point intervention. Wrapper for the ATE
-function in riskRegression
+Average treatment effect of point intervention with either IPTW,
+GFORMULA or AIPTW. Wrapper for the ATE function in riskRegression.
 
 ## Usage
 
@@ -26,7 +26,9 @@ inferencR(
   survscale = "AM",
   bins = 0.5,
   digits = 4,
-  event.digits = 2
+  event.digits = 2,
+  weights.digits = 1,
+  weights.breaks = 1
 )
 ```
 
@@ -120,15 +122,30 @@ inferencR(
   whether eventtimes should be rounded. Default is 2 to preserve exact
   times
 
+- weights.digits:
+
+  the number of digits for categorization of weights
+
+- weights.breaks:
+
+  breaks for categorization of weights
+
 ## Value
 
-time_to_event: Median survival time  
 table: Event table  
+time_to_event: Median survival time  
 plot_data: Data for plotting CIF curves  
-models: Model objects (cause1 and cause2)  
-diag: Diagnostics for assessing proportionality  
 risks: Absolute risk estimates at the specified time points  
 differences: Absolute risk difference at the specified time horizons  
 ratios: Absolute risk ratios at the the specified time horizon  
 counts: Event and group counts in the contrasted groups  
+weights: Object containing:  
+data: the raw dataset with propensity scores (ps), weights (w) and
+categorized weighting groups (wgroup)  
+table_iptw: a table of the crude and iptw adjusted covariates  
+table_strat: a table of the weigthing groups stratified on treatment
+groups  
+plot: plot of the propensity scores and weights for each group models:
+Model objects (cause1 and cause2)  
+diagnostics: Diagnostics for assessing proportionality  
 info: information on arguments for extraction
