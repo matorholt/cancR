@@ -24,17 +24,24 @@
 #' @param bins bins for the weights plot, default = 0.5
 #' @param digits for rounding of eventtimes
 #' @param event.digits whether eventtimes should be rounded. Default is 2 to preserve exact times
+#' @param weights.digits the number of digits for categorization of weights
+#' @param weights.breaks breaks for categorization of weights
 #'
 #' @return
-#' time_to_event: Median survival time \cr
 #' table: Event table \cr
+#' time_to_event: Median survival time \cr
 #' plot_data: Data for plotting CIF curves \cr
-#' models: Model objects (cause1 and cause2) \cr
-#' diag: Diagnostics for assessing proportionality \cr
 #' risks: Absolute risk estimates at the specified time points \cr
 #' differences: Absolute risk difference at the specified time horizons \cr
 #' ratios: Absolute risk ratios at the the specified time horizon \cr
 #' counts: Event and group counts in the contrasted groups \cr
+#' weights: Object containing: \cr
+#' data: the raw dataset with propensity scores (ps), weights (w) and categorized weighting groups (wgroup) \cr
+#' table_iptw: a table of the crude and iptw adjusted covariates \cr
+#' table_strat: a table of the weigthing groups stratified on treatment groups \cr
+#' plot: plot of the propensity scores and weights for each group
+#' models: Model objects (cause1 and cause2) \cr
+#' diagnostics: Diagnostics for assessing proportionality \cr
 #' info: information on arguments for extraction
 #' @export
 #'
@@ -93,7 +100,9 @@ inferencR <- function(data,
                       survscale = "AM",
                       bins = 0.5,
                       digits = 4,
-                      event.digits = 2) {
+                      event.digits = 2,
+                      weights.digits = 1,
+                      weights.breaks = 1) {
 
 
   cat("\ninferencR initialized: ", tickR(), "\n")
@@ -101,34 +110,55 @@ inferencR <- function(data,
   dat <- data %>%
     drop_na({{treatment}})
 
+  for(i in c("data",
+             "treatment",
+             "timevar",
+             "event")) {
+
+    if(i %nin% names(match.call())) {
+
+      if(i == "timevar" & method != "tte") next
+
+      return(cat(paste0("Error: Argument ", i, " is not specified")))
+    }
+
+  }
+
   treat_c <- data %>% select({{treatment}}) %>% names()
   event_c <- data %>% select({{event}}) %>% names()
-  vars_c <- data %>% select({{vars}}) %>% names()
-  ovars_c <- data %>% select({{outcome.vars}}) %>% names()
 
+  #Vars extracted from custom forms if specified
+  if(missing(vars)) {
+    vars_c <- unique(c(unlist(str_extract_all(str_remove_all(c(treat.form, cens.form, event.form), "\\+|\\*|\\:|\\(|\\)"), "\\w+"))))
+  } else {
+    vars_c <- data %>% select({{vars}}) %>% names()
+  }
+
+  #Outcome vars extracted from custom form if specified
+  if(missing(outcome.vars)) {
+    ovars_c <- unique(c(unlist(str_extract_all(str_remove_all(c(event.form), "\\+|\\*|\\:|\\(|\\)"), "\\w+"))))
+  } else {
+    ovars_c <- data %>% select({{outcome.vars}}) %>% names()
+  }
 
   levels <- levels(data[[treat_c]])
 
   #Outputs
   out.list <- list()
 
-   #MODELS
-  tvars <- paste0(vars_c, collapse = " + ")
-  ovars <- paste0(c(treat_c, vars_c, ovars_c), collapse = " + ")
-
-
-  #Treatment
+  #Treatment model
   if(is.null(treat.form)) {
-    treat.form <- paste0(treat_c, " == '", levels[2], "' ~ ", tvars)
+    treat.form <- paste0(treat_c, " == '", levels[2], "' ~ ", paste0(vars_c, collapse = " + "))
   } else {
     treat.form <- paste0(treat_c, " == '", levels[2], "' ~ ", treat.form)
   }
 
   treat.model <- glm(as.formula(treat.form), data=dat,family=binomial(link="logit"))
 
+  #Weighting diagnostics
   dat_w <- dat %>% mutate(ps = predict(treat.model, newdata=dat, type="response"),
                           w = ifelse(!!sym(treat_c) %in% levels[2], 1/ps, 1/(1-ps))) %>%
-    cutR(w, seq(0,round(max(.$w)),0.5), digits = 5,
+    cutR(w, seq(0,round(max(.$w)),weights.breaks), digits = weights.digits,
               name.list = "wgroup")
 
   plot_weights <- summarisR(dat_w,
@@ -218,7 +248,7 @@ inferencR <- function(data,
   if(surv) {
 
     if(is.null(event.form)) {
-      event.form <- paste0("Surv(", timevar_c, ", ", event_c, ") ~ ", ovars)
+      event.form <- paste0("Surv(", timevar_c, ", ", event_c, ") ~ ", paste0(c(treat_c, vars_c, ovars_c), collapse = " + "))
     } else {
       event.form <- paste0("Surv(", timevar_c, ", ", event_c, "==0) ~ ", event.form)
     }
@@ -234,7 +264,7 @@ inferencR <- function(data,
   } else {
 
     if(is.null(event.form)) {
-      event.form <- paste0("Hist(", timevar_c, ", ", event_c, ") ~ ", ovars)
+      event.form <- paste0("Hist(", timevar_c, ", ", event_c, ") ~ ", paste0(c(treat_c, vars_c, ovars_c), collapse = " + "))
     } else {
       event.form <- paste0("Hist(", timevar_c, ", ", event_c, ") ~ ", event.form)
     }
@@ -261,7 +291,7 @@ inferencR <- function(data,
 
     #GLM
     if(is.null(event.form)) {
-      event.form <- paste0(event_c, " == '", 1, "' ~ ", ovars)
+      event.form <- paste0(event_c, " == '", 1, "' ~ ", paste0(c(treat_c, vars_c, ovars_c), collapse = " + "))
     } else {
       event.form <- paste0(event_c, " == '", 1, "' ~ ", event.form)
     }
@@ -425,4 +455,7 @@ inferencR <- function(data,
 
 
 }
+
+
+
 

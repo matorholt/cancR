@@ -24,7 +24,9 @@ inferencR(
   survscale = "AM",
   bins = 0.5,
   digits = 4,
-  event.digits = 2
+  event.digits = 2,
+  weights.digits = 1,
+  weights.breaks = 1
 )
 }
 \arguments{
@@ -67,19 +69,28 @@ inferencR(
 \item{digits}{for rounding of eventtimes}
 
 \item{event.digits}{whether eventtimes should be rounded. Default is 2 to preserve exact times}
+
+\item{weights.digits}{the number of digits for categorization of weights}
+
+\item{weights.breaks}{breaks for categorization of weights}
 }
 \value{
-time_to_event: Median survival time \cr
 table: Event table \cr
+time_to_event: Median survival time \cr
 plot_data: Data for plotting CIF curves \cr
-models: Model objects (cause1 and cause2) \cr
-diag: Diagnostics for assessing proportionality \cr
 risks: Absolute risk estimates at the specified time points \cr
 differences: Absolute risk difference at the specified time horizons \cr
 ratios: Absolute risk ratios at the the specified time horizon \cr
 counts: Event and group counts in the contrasted groups \cr
+weights: Object containing: \cr
+data: the raw dataset with propensity scores (ps), weights (w) and categorized weighting groups (wgroup) \cr
+table_iptw: a table of the crude and iptw adjusted covariates \cr
+table_strat: a table of the weigthing groups stratified on treatment groups \cr
+plot: plot of the propensity scores and weights for each group
+models: Model objects (cause1 and cause2) \cr
+diagnostics: Diagnostics for assessing proportionality \cr
 info: information on arguments for extraction
 }
 \description{
-Average treatment effect of point intervention. Wrapper for the ATE function in riskRegression
+Average treatment effect of point intervention with either IPTW, GFORMULA or AIPTW. Wrapper for the ATE function in riskRegression.
 }
