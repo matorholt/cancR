@@ -8,15 +8,20 @@ dagR(
   treatment,
   outcome,
   path.list,
-  label.fill = "White",
-  label.color = "White",
+  label.fill = "#C4C4C4",
+  label.color = "Black",
+  label.positions = NULL,
+  treatment.fill = "#AB5CB8",
+  outcome.fill = "#97AFCC",
   arrow.fill = "Black",
   arrow.color = "Black",
-  arrow.width = 0.7,
+  arrow.linewidth = 0.7,
+  arrow.size = 5,
   arrow.distance = 0.2,
-  curvature = 0,
+  curvature = NULL,
   label.size = 6,
-  dagitty = NULL
+  dagitty = NULL,
+  seed = 1
 )
 }
 \arguments{
@@ -24,25 +29,53 @@ dagR(
 
 \item{outcome}{name of outcome variable}
 
-\item{path.list}{named list of paths to draw in the format list("treatment" = list("to" = "outcome"), "confounder" = list("to" = c("treatment", "outcome")))}
+\item{path.list}{named list of paths to draw in the format list("treatment" = "outcome", "confounder" = c("treatment", "outcome"))}
 
-\item{arrow.fill}{color of the arrow heads}
+\item{label.fill}{fill color for labels}
+
+\item{label.color}{border.color for labels}
+
+\item{label.positions}{manual adjustment of label positions (x,y) in the format list("treatment" = c(0,0))}
+
+\item{treatment.fill}{fill color for the treatment label}
+
+\item{outcome.fill}{fill color for the outcome label}
+
+\item{arrow.fill}{fill color of the arrow heads}
 
 \item{arrow.color}{color of the arrows}
 
-\item{arrow.width}{linewidth of the arrows}
+\item{arrow.linewidth}{linewidth of the arrows}
 
-\item{arrow.distance}{percentage reduction in arrow length}
+\item{arrow.size}{size of the arrow head in mm}
 
-\item{curvature}{curvature of the arrows}
+\item{arrow.distance}{distance from label center to arrowhead as a fraction of the euclidian distance}
 
-\item{label.size}{text size of the variable nodes}
+\item{curvature}{named list of segments that should be curved in the format list(c("treatment", "outcome", 0.2))}
+
+\item{label.size}{text size of the labels}
 
 \item{dagitty}{output from dagitty.net inserted in single quotation marks.}
+
+\item{seed}{for reproducibility}
 }
 \value{
 plot of the specified dag
 }
 \description{
 Function for drawing DAGs. Compatible with dagitty.net via the "dagitty" argument.
+}
+\examples{
+dagR(treatment = "treatment",
+outcome = "outcome",
+list("treatment" = "outcome",
+     "conf" = c("treatment", "outcome"),
+     "x1" = "outcome",
+     "x2" = c("treatment", "outcome")),
+arrow.distance = 0.25,
+arrow.linewidth = 0.7,
+label.positions = list("treatment" = c(5,5)),
+seed = 3,
+curvature = list(c("conf", "outcome", 0.2)))
+
 }
