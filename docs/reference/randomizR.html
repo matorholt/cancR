@@ -135,7 +135,186 @@
 <span class="r-in"><span>            seed <span class="op">=</span> <span class="fl">2</span>,</span></span>
 <span class="r-in"><span>            report <span class="op">=</span> <span class="cn">T</span>,</span></span>
 <span class="r-in"><span>            print<span class="op">=</span><span class="cn">T</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in randomizR(strata = c("age_group_depth", "gender_depth", "ana_site_depth",     "immuno_depth", "seq_width_depth", "seq_slnb_depth"), block.size = c(2,     4), block.probabilities = c(0.9, 0.1), replications = 50,     block.delay = 10, token = "859A8159EB61A5AD6ABB8DE0BC78E67F",     seed = 2, report = T, print = T):</span> unused argument (report = T)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Stratified block randomization complete</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Stratified on 6 strata with the levels:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $age_group_depth</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "1" "2"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $gender_depth</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "1" "2"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ana_site_depth</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "1" "2"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $immuno_depth</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "1" "2"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $seq_width_depth</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "1" "2" "3"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $seq_slnb_depth</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "1" "2" "3"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Number of unique strata: 144</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Strata balances:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 5 × 2</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   `2(%)` `4(%)`</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>   75      4.2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>   86.4    4.2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>   91.3    8.7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span>   95.8   13.6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span>   95.8   25  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 144 × 9</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     Stratum    Replications Allocation.ratio Block.Count Block.Sizes   `2`   `4`</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">  1</span> 1 1 1 1 1…           50 25/25                     24 2,4            23     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">  2</span> 2 1 1 1 1…           50 25/25                     21 2,4            17     4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">  3</span> 1 2 1 1 1…           50 25/25                     22 2,4            19     3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">  4</span> 2 2 1 1 1…           50 25/25                     21 2,4            17     4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">  5</span> 1 1 2 1 1…           50 25/25                     23 2,4            21     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">  6</span> 2 1 2 1 1…           50 25/25                     23 2,4            21     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">  7</span> 1 2 2 1 1…           50 25/25                     22 2,4            19     3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">  8</span> 2 2 2 1 1…           50 25/25                     24 2,4            23     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">  9</span> 1 1 1 2 1…           50 25/25                     23 2,4            21     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 10</span> 2 1 1 2 1…           50 25/25                     23 2,4            21     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 11</span> 1 2 1 2 1…           50 25/25                     24 2,4            23     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 12</span> 2 2 1 2 1…           50 25/25                     22 2,4            19     3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 13</span> 1 1 2 2 1…           50 25/25                     23 2,4            21     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 14</span> 2 1 2 2 1…           50 25/25                     24 2,4            23     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 15</span> 1 2 2 2 1…           50 25/25                     23 2,4            21     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 16</span> 2 2 2 2 1…           50 25/25                     23 2,4            21     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 17</span> 1 1 1 1 2…           50 25/25                     22 2,4            19     3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 18</span> 2 1 1 1 2…           50 25/25                     23 2,4            21     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 19</span> 1 2 1 1 2…           50 25/25                     21 2,4            17     4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 20</span> 2 2 1 1 2…           50 25/25                     23 2,4            21     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 21</span> 1 1 2 1 2…           50 25/25                     22 2,4            19     3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 22</span> 2 1 2 1 2…           50 25/25                     23 2,4            21     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 23</span> 1 2 2 1 2…           50 25/25                     22 2,4            19     3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 24</span> 2 2 2 1 2…           50 25/25                     24 2,4            23     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 25</span> 1 1 1 2 2…           50 25/25                     23 2,4            21     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 26</span> 2 1 1 2 2…           50 25/25                     23 2,4            21     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 27</span> 1 2 1 2 2…           50 25/25                     23 2,4            21     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 28</span> 2 2 1 2 2…           50 25/25                     22 2,4            19     3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 29</span> 1 1 2 2 2…           50 25/25                     23 2,4            21     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 30</span> 2 1 2 2 2…           50 25/25                     23 2,4            21     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 31</span> 1 2 2 2 2…           50 25/25                     23 2,4            21     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 32</span> 2 2 2 2 2…           50 25/25                     24 2,4            23     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 33</span> 1 1 1 1 3…           50 25/25                     21 2,4            17     4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 34</span> 2 1 1 1 3…           50 25/25                     24 2,4            23     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 35</span> 1 2 1 1 3…           50 25/25                     23 2,4            21     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 36</span> 2 2 1 1 3…           50 25/25                     24 2,4            23     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 37</span> 1 1 2 1 3…           50 25/25                     24 2,4            23     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 38</span> 2 1 2 1 3…           50 25/25                     22 2,4            19     3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 39</span> 1 2 2 1 3…           50 25/25                     22 2,4            19     3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 40</span> 2 2 2 1 3…           50 25/25                     22 2,4            19     3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 41</span> 1 1 1 2 3…           50 25/25                     24 2,4            23     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 42</span> 2 1 1 2 3…           50 25/25                     24 2,4            23     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 43</span> 1 2 1 2 3…           50 25/25                     24 2,4            23     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 44</span> 2 2 1 2 3…           50 25/25                     22 2,4            19     3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 45</span> 1 1 2 2 3…           50 25/25                     23 2,4            21     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 46</span> 2 1 2 2 3…           50 25/25                     22 2,4            19     3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 47</span> 1 2 2 2 3…           50 25/25                     23 2,4            21     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 48</span> 2 2 2 2 3…           50 25/25                     24 2,4            23     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 49</span> 1 1 1 1 1…           50 25/25                     23 2,4            21     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 50</span> 2 1 1 1 1…           50 25/25                     23 2,4            21     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 51</span> 1 2 1 1 1…           50 25/25                     23 2,4            21     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 52</span> 2 2 1 1 1…           50 25/25                     22 2,4            19     3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 53</span> 1 1 2 1 1…           50 25/25                     23 2,4            21     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 54</span> 2 1 2 1 1…           50 25/25                     24 2,4            23     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 55</span> 1 2 2 1 1…           50 25/25                     22 2,4            19     3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 56</span> 2 2 2 1 1…           50 25/25                     23 2,4            21     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 57</span> 1 1 1 2 1…           50 25/25                     22 2,4            19     3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 58</span> 2 1 1 2 1…           50 25/25                     24 2,4            23     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 59</span> 1 2 1 2 1…           50 25/25                     23 2,4            21     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 60</span> 2 2 1 2 1…           50 25/25                     23 2,4            21     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 61</span> 1 1 2 2 1…           50 25/25                     24 2,4            23     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 62</span> 2 1 2 2 1…           50 25/25                     22 2,4            19     3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 63</span> 1 2 2 2 1…           50 25/25                     23 2,4            21     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 64</span> 2 2 2 2 1…           50 25/25                     23 2,4            21     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 65</span> 1 1 1 1 2…           50 25/25                     23 2,4            21     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 66</span> 2 1 1 1 2…           50 25/25                     24 2,4            23     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 67</span> 1 2 1 1 2…           50 25/25                     24 2,4            23     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 68</span> 2 2 1 1 2…           50 25/25                     22 2,4            19     3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 69</span> 1 1 2 1 2…           50 25/25                     24 2,4            23     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 70</span> 2 1 2 1 2…           50 25/25                     23 2,4            21     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 71</span> 1 2 2 1 2…           50 25/25                     21 2,4            17     4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 72</span> 2 2 2 1 2…           50 25/25                     22 2,4            19     3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 73</span> 1 1 1 2 2…           50 25/25                     24 2,4            23     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 74</span> 2 1 1 2 2…           50 25/25                     24 2,4            23     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 75</span> 1 2 1 2 2…           50 25/25                     23 2,4            21     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 76</span> 2 2 1 2 2…           50 25/25                     24 2,4            23     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 77</span> 1 1 2 2 2…           50 25/25                     23 2,4            21     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 78</span> 2 1 2 2 2…           50 25/25                     24 2,4            23     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 79</span> 1 2 2 2 2…           50 25/25                     24 2,4            23     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 80</span> 2 2 2 2 2…           50 25/25                     23 2,4            21     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 81</span> 1 1 1 1 3…           50 25/25                     21 2,4            17     4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 82</span> 2 1 1 1 3…           50 25/25                     23 2,4            21     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 83</span> 1 2 1 1 3…           50 25/25                     22 2,4            19     3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 84</span> 2 2 1 1 3…           50 25/25                     23 2,4            21     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 85</span> 1 1 2 1 3…           50 25/25                     24 2,4            23     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 86</span> 2 1 2 1 3…           50 25/25                     22 2,4            19     3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 87</span> 1 2 2 1 3…           50 25/25                     21 2,4            17     4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 88</span> 2 2 2 1 3…           50 25/25                     24 2,4            23     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 89</span> 1 1 1 2 3…           50 25/25                     21 2,4            17     4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 90</span> 2 1 1 2 3…           50 25/25                     23 2,4            21     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 91</span> 1 2 1 2 3…           50 25/25                     22 2,4            19     3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 92</span> 2 2 1 2 3…           50 25/25                     23 2,4            21     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 93</span> 1 1 2 2 3…           50 25/25                     24 2,4            23     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 94</span> 2 1 2 2 3…           50 25/25                     20 2,4            15     5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 95</span> 1 2 2 2 3…           50 25/25                     22 2,4            19     3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 96</span> 2 2 2 2 3…           50 25/25                     24 2,4            23     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 97</span> 1 1 1 1 1…           50 25/25                     23 2,4            21     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 98</span> 2 1 1 1 1…           50 25/25                     24 2,4            23     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 99</span> 1 2 1 1 1…           50 25/25                     23 2,4            21     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">100</span> 2 2 1 1 1…           50 25/25                     23 2,4            21     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">101</span> 1 1 2 1 1…           50 25/25                     24 2,4            23     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">102</span> 2 1 2 1 1…           50 25/25                     23 2,4            21     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">103</span> 1 2 2 1 1…           50 25/25                     22 2,4            19     3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">104</span> 2 2 2 1 1…           50 25/25                     23 2,4            21     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">105</span> 1 1 1 2 1…           50 25/25                     23 2,4            21     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">106</span> 2 1 1 2 1…           50 25/25                     24 2,4            23     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">107</span> 1 2 1 2 1…           50 25/25                     21 2,4            17     4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">108</span> 2 2 1 2 1…           50 25/25                     21 2,4            17     4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">109</span> 1 1 2 2 1…           50 25/25                     24 2,4            23     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">110</span> 2 1 2 2 1…           50 25/25                     21 2,4            17     4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">111</span> 1 2 2 2 1…           50 25/25                     23 2,4            21     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">112</span> 2 2 2 2 1…           50 25/25                     23 2,4            21     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">113</span> 1 1 1 1 2…           50 25/25                     23 2,4            21     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">114</span> 2 1 1 1 2…           50 25/25                     22 2,4            19     3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">115</span> 1 2 1 1 2…           50 25/25                     24 2,4            23     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">116</span> 2 2 1 1 2…           50 25/25                     22 2,4            19     3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">117</span> 1 1 2 1 2…           50 25/25                     23 2,4            21     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">118</span> 2 1 2 1 2…           50 25/25                     21 2,4            17     4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">119</span> 1 2 2 1 2…           50 25/25                     24 2,4            23     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">120</span> 2 2 2 1 2…           50 25/25                     24 2,4            23     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">121</span> 1 1 1 2 2…           50 25/25                     23 2,4            21     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">122</span> 2 1 1 2 2…           50 25/25                     23 2,4            21     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">123</span> 1 2 1 2 2…           50 25/25                     23 2,4            21     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">124</span> 2 2 1 2 2…           50 25/25                     22 2,4            19     3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">125</span> 1 1 2 2 2…           50 25/25                     24 2,4            23     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">126</span> 2 1 2 2 2…           50 25/25                     22 2,4            19     3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">127</span> 1 2 2 2 2…           50 25/25                     24 2,4            23     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">128</span> 2 2 2 2 2…           50 25/25                     23 2,4            21     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">129</span> 1 1 1 1 3…           50 25/25                     24 2,4            23     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">130</span> 2 1 1 1 3…           50 25/25                     23 2,4            21     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">131</span> 1 2 1 1 3…           50 25/25                     24 2,4            23     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">132</span> 2 2 1 1 3…           50 25/25                     23 2,4            21     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">133</span> 1 1 2 1 3…           50 25/25                     23 2,4            21     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">134</span> 2 1 2 1 3…           50 25/25                     23 2,4            21     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">135</span> 1 2 2 1 3…           50 25/25                     22 2,4            19     3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">136</span> 2 2 2 1 3…           50 25/25                     24 2,4            23     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">137</span> 1 1 1 2 3…           50 25/25                     24 2,4            23     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">138</span> 2 1 1 2 3…           50 25/25                     21 2,4            17     4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">139</span> 1 2 1 2 3…           50 25/25                     24 2,4            23     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">140</span> 2 2 1 2 3…           50 25/25                     23 2,4            21     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">141</span> 1 1 2 2 3…           50 25/25                     21 2,4            17     4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">142</span> 2 1 2 2 3…           50 25/25                     24 2,4            23     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">143</span> 1 2 2 2 3…           50 25/25                     20 2,4            15     5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">144</span> 2 2 2 2 3…           50 25/25                     23 2,4            21     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 2 more variables: `2(%)` &lt;dbl&gt;, `4(%)` &lt;dbl&gt;</span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

@@ -50,7 +50,7 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">iteratR</span><span class="op">(</span><span class="va">data</span>, <span class="va">names</span>, <span class="va">method</span>, multivariable <span class="op">=</span> <span class="cn">F</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">iteratR</span><span class="op">(</span><span class="va">data</span>, <span class="va">labels</span>, <span class="va">method</span>, multivariable <span class="op">=</span> <span class="cn">F</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -61,12 +61,16 @@
 <dd><p>data frame, list of data frames or object of class "iteratR"</p></dd>
 
 
-<dt id="arg-names">names<a class="anchor" aria-label="anchor" href="#arg-names"></a></dt>
+<dt id="arg-labels">labels<a class="anchor" aria-label="anchor" href="#arg-labels"></a></dt>
 <dd><p>vector of names for the returned list of models. If missing the "events" names or names in the iteratR object are used.</p></dd>
 
 
 <dt id="arg-method">method<a class="anchor" aria-label="anchor" href="#arg-method"></a></dt>
 <dd><p>which cancR function to use. Choose between "estimatR", "incidencR", "clustR" and "inferencR". The previous can be passed to "extractR" and "plotR"</p></dd>
+
+
+<dt id="arg-multivariable">multivariable<a class="anchor" aria-label="anchor" href="#arg-multivariable"></a></dt>
+<dd><p>multivariable analysis for estimatR</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>

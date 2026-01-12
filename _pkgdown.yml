@@ -80,10 +80,11 @@ reference:
   desc: >
     Functions for producing and formatting tables and figures
   contents:
-  - tablR
-  - plotR
   - collectR
+  - dagR
+  - plotR
   - savR
+  - tablR
 
 - title: Register-specific functions
   desc: >
