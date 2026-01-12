@@ -5,9 +5,9 @@
 #' @param treatment the main stratum which all covariates should include all levels of (optional)
 #' @param outcome the outcome variable which all covariates should include all levels of (optional)
 #' @param vars the covariates to examine for positivity violations. State multiple variables as c(var1, var2, var3) without quotes.
+#' @param id column indicating unique patient identifier for returning specific NAs
 #' @param levels the number of combinations of covariates. level=1 (default) corresponds to a 2x2 table, whereas level=2 corresponds to 2x2 tables stratified on e.g. treatment
 #' @param quantiles quantiles for binning of continuous covariates
-#' @param id column indicating unique patient identifier for returning specific NAs
 #'
 #' @return prints the variables with positivity violations if present. Otherwise none detected. Also returns as either NULL or character for downstream use.
 #' @export
@@ -38,7 +38,7 @@
 # t2 <- checkR(df, group, vars=c(sex, hospital), levels=2)
 # t3 <- checkR(df, treatment=group, outcome = sex, vars=c(age_group, chemo, hospital), levels = 3)
 
-checkR <- function(data, treatment, outcome, vars, levels=1, quantiles=0.1) {
+checkR <- function(data, treatment, outcome, vars, id, levels=1, quantiles=0.1) {
 
   if(missing(id)) {
 
@@ -120,7 +120,7 @@ checkR <- function(data, treatment, outcome, vars, levels=1, quantiles=0.1) {
   }), fill=T)
 
   if(nrow(zero) == 0) {
-    cat("No positivity violations detected")
+    cat("No positivity violations detected\n")
   }
   if(nrow(zero) > 0) {
     cat("Positivity violations detected in the following combinations:\n")

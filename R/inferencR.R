@@ -158,7 +158,7 @@ inferencR <- function(data,
   #Weighting diagnostics
   dat_w <- dat %>% mutate(ps = predict(treat.model, newdata=dat, type="response"),
                           w = ifelse(!!sym(treat_c) %in% levels[2], 1/ps, 1/(1-ps))) %>%
-    cutR(w, seq(0,round(max(.$w)),weights.breaks), digits = weights.digits,
+    cutR(w, seq(0,100,weights.breaks), digits = weights.digits,
               name.list = "wgroup")
 
   plot_weights <- summarisR(dat_w,
@@ -181,7 +181,7 @@ inferencR <- function(data,
     factR(num.vars = "wgroup")
 
   strat_w <-
-    iteratR(split(dat_w, ~ X2),
+    iteratR(eval(parse(text = paste0("split(dat_w, ~", treat_c, ")"))),
             group = "wgroup",
             vars = c(vars_c, ovars_c),
             method = "tablR",

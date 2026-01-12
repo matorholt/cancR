@@ -4,7 +4,7 @@
 \alias{checkR}
 \title{Detection of positivity violations (empty levels)}
 \usage{
-checkR(data, treatment, outcome, vars, levels = 1, quantiles = 0.1)
+checkR(data, treatment, outcome, vars, id, levels = 1, quantiles = 0.1)
 }
 \arguments{
 \item{data}{data frame to detect positivity violations}
@@ -15,11 +15,11 @@ checkR(data, treatment, outcome, vars, levels = 1, quantiles = 0.1)
 
 \item{vars}{the covariates to examine for positivity violations. State multiple variables as c(var1, var2, var3) without quotes.}
 
+\item{id}{column indicating unique patient identifier for returning specific NAs}
+
 \item{levels}{the number of combinations of covariates. level=1 (default) corresponds to a 2x2 table, whereas level=2 corresponds to 2x2 tables stratified on e.g. treatment}
 
 \item{quantiles}{quantiles for binning of continuous covariates}
-
-\item{id}{column indicating unique patient identifier for returning specific NAs}
 }
 \value{
 prints the variables with positivity violations if present. Otherwise none detected. Also returns as either NULL or character for downstream use.
