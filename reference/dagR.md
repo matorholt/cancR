@@ -1,0 +1,123 @@
+# Draw directed acyclic graphs (DAGS)
+
+Function for drawing DAGs. Compatible with dagitty.net via the "dagitty"
+argument.
+
+## Usage
+
+``` r
+dagR(
+  treatment,
+  outcome,
+  path.list,
+  label.fill = "#C4C4C4",
+  label.color = "Black",
+  label.positions = NULL,
+  treatment.fill = "#AB5CB8",
+  outcome.fill = "#97AFCC",
+  arrow.fill = "Black",
+  arrow.color = "Black",
+  arrow.linewidth = 0.7,
+  arrow.size = 5,
+  arrow.distance = 0.2,
+  curvature = NULL,
+  label.size = 6,
+  dagitty = NULL,
+  seed = 1
+)
+```
+
+## Arguments
+
+- treatment:
+
+  name of treatment variable
+
+- outcome:
+
+  name of outcome variable
+
+- path.list:
+
+  named list of paths to draw in the format list("treatment" =
+  "outcome", "confounder" = c("treatment", "outcome"))
+
+- label.fill:
+
+  fill color for labels
+
+- label.color:
+
+  border.color for labels
+
+- label.positions:
+
+  manual adjustment of label positions (x,y) in the format
+  list("treatment" = c(0,0))
+
+- treatment.fill:
+
+  fill color for the treatment label
+
+- outcome.fill:
+
+  fill color for the outcome label
+
+- arrow.fill:
+
+  fill color of the arrow heads
+
+- arrow.color:
+
+  color of the arrows
+
+- arrow.linewidth:
+
+  linewidth of the arrows
+
+- arrow.size:
+
+  size of the arrow head in mm
+
+- arrow.distance:
+
+  distance from label center to arrowhead as a fraction of the euclidian
+  distance
+
+- curvature:
+
+  named list of segments that should be curved in the format
+  list(c("treatment", "outcome", 0.2))
+
+- label.size:
+
+  text size of the labels
+
+- dagitty:
+
+  output from dagitty.net inserted in single quotation marks.
+
+- seed:
+
+  for reproducibility
+
+## Value
+
+plot of the specified dag
+
+## Examples
+
+``` r
+dagR(treatment = "treatment",
+outcome = "outcome",
+list("treatment" = "outcome",
+     "conf" = c("treatment", "outcome"),
+     "x1" = "outcome",
+     "x2" = c("treatment", "outcome")),
+arrow.distance = 0.25,
+arrow.linewidth = 0.7,
+label.positions = list("treatment" = c(5,5)),
+seed = 3,
+curvature = list(c("conf", "outcome", 0.2)))
+
+```

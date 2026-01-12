@@ -46,11 +46,12 @@ Functions that perform statistical analysis
 
 Functions for producing and formatting tables and figures
 
-- [`tablR()`](tablR.md) : Create frequency tables
+- [`collectR()`](collectR.md) : Collect multiple plots into one
+- [`dagR()`](dagR.md) : Draw directed acyclic graphs (DAGS)
 - [`plotR()`](plotR.md) : Autoplot for estimatR, incidencR, inferencR
   and clustR
-- [`collectR()`](collectR.md) : Collect multiple plots into one
 - [`savR()`](savR.md) : Save plots and tables
+- [`tablR()`](tablR.md) : Create frequency tables
 
 ## Register-specific functions
 

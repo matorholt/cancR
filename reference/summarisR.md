@@ -87,19 +87,19 @@ df <- analysis_df %>%
 mutate(event_date = sample(c(seq(as.Date("1980-01-01"), as.Date("2000-01-01"), by = "years"), NA), size = n(), replace = TRUE))
 
 summarisR(df, vars = c(X6, X7, event_date))
-#> Warning: Removed 83 rows containing non-finite outside the scale range
+#> Warning: Removed 96 rows containing non-finite outside the scale range
 #> (`stat_boxplot()`).
-#> Warning: Removed 83 rows containing non-finite outside the scale range
+#> Warning: Removed 96 rows containing non-finite outside the scale range
 #> (`stat_boxplot()`).
-#> Warning: Removed 83 rows containing non-finite outside the scale range
+#> Warning: Removed 96 rows containing non-finite outside the scale range
 #> (`stat_boxplot()`).
-#> Warning: Removed 83 rows containing non-finite outside the scale range
+#> Warning: Removed 96 rows containing non-finite outside the scale range
 #> (`stat_boxplot()`).
-#> Warning: Removed 83 rows containing non-finite outside the scale range
+#> Warning: Removed 96 rows containing non-finite outside the scale range
 #> (`stat_boxplot()`).
-#> Warning: Removed 83 rows containing non-finite outside the scale range
+#> Warning: Removed 96 rows containing non-finite outside the scale range
 #> (`stat_boxplot()`).
-#> Warning: Removed 83 rows containing non-finite outside the scale range (`stat_bin()`).
+#> Warning: Removed 96 rows containing non-finite outside the scale range (`stat_bin()`).
 
 summarisR(data=df,vars=c(X6, X7, X1, X3), group = X2)
 #> Scale for fill is already present.

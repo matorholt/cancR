@@ -5,7 +5,7 @@ Detection of positivity violations (empty levels)
 ## Usage
 
 ``` r
-checkR(data, treatment, outcome, vars, levels = 1, quantiles = 0.1)
+checkR(data, treatment, outcome, vars, id, levels = 1, quantiles = 0.1)
 ```
 
 ## Arguments
@@ -29,6 +29,10 @@ checkR(data, treatment, outcome, vars, levels = 1, quantiles = 0.1)
   the covariates to examine for positivity violations. State multiple
   variables as c(var1, var2, var3) without quotes.
 
+- id:
+
+  column indicating unique patient identifier for returning specific NAs
+
 - levels:
 
   the number of combinations of covariates. level=1 (default)
@@ -38,10 +42,6 @@ checkR(data, treatment, outcome, vars, levels = 1, quantiles = 0.1)
 - quantiles:
 
   quantiles for binning of continuous covariates
-
-- id:
-
-  column indicating unique patient identifier for returning specific NAs
 
 ## Value
 
