@@ -10,20 +10,27 @@ dagR(
   treatment,
   outcome,
   path.list,
-  label.fill = "#C4C4C4",
+  label.fill = cancR_palette[8],
   label.color = "Black",
   label.positions = NULL,
-  treatment.fill = "#AB5CB8",
-  outcome.fill = "#97AFCC",
-  arrow.fill = "Black",
+  segment.shift = list(),
+  treatment.fill = cancR_palette[1],
+  outcome.fill = cancR_palette[4],
   arrow.color = "Black",
+  arrow.color.main = "Black",
   arrow.linewidth = 0.7,
   arrow.size = 5,
-  arrow.distance = 0.2,
+  arrow.distance = 0.1,
+  distance.method = "rectangle",
+  distance.resolution = 6,
+  distance.ratio = 1,
+  distance.string = 0.12,
   curvature = NULL,
   label.size = 6,
   dagitty = NULL,
-  seed = 1
+  position.digits = 0,
+  seed = 1,
+  margin = c(-0.1, 0.1, -0.1, 0.1)
 )
 ```
 
@@ -55,6 +62,11 @@ dagR(
   manual adjustment of label positions (x,y) in the format
   list("treatment" = c(0,0))
 
+- segment.shift:
+
+  list of vectors of c(from, to, x, y) where x and y are shifts in
+  coordinate, e.g. list("conf", "outcome", 1,0)
+
 - treatment.fill:
 
   fill color for the treatment label
@@ -63,13 +75,13 @@ dagR(
 
   fill color for the outcome label
 
-- arrow.fill:
-
-  fill color of the arrow heads
-
 - arrow.color:
 
   color of the arrows
+
+- arrow.color.main:
+
+  color of the arrow between treatment and outcome
 
 - arrow.linewidth:
 
@@ -81,8 +93,27 @@ dagR(
 
 - arrow.distance:
 
-  distance from label center to arrowhead as a fraction of the euclidian
-  distance
+  distance from label center to arrowhead (unit same as coordinates)
+
+- distance.method:
+
+  how the points should be spread around lables ("rectangle" (default),
+  "midways", "corners", "circle" and "oval")
+
+- distance.resolution:
+
+  the number of subdivisions on the x and y axis of the given shape. For
+  circles it indicates the subdivisions of 360 degrees.
+
+- distance.ratio:
+
+  the ratio between the x.distance and y.distance. Larger values
+  increase the distance width.
+
+- distance.string:
+
+  arbitrary value specifying the amount of spacing caused by the number
+  of characters in the label
 
 - curvature:
 
@@ -97,9 +128,19 @@ dagR(
 
   output from dagitty.net inserted in single quotation marks.
 
+- position.digits:
+
+  rounding of the position cooridinates for dagitty plots for aligment.
+  Default = 0.
+
 - seed:
 
   for reproducibility
+
+- margin:
+
+  vector of length 4 adding space to the limits of the x and y axis in
+  the format c(xmin, xmax, ymin,ymax)
 
 ## Value
 
@@ -109,15 +150,26 @@ plot of the specified dag
 
 ``` r
 dagR(treatment = "treatment",
-outcome = "outcome",
-list("treatment" = "outcome",
-     "conf" = c("treatment", "outcome"),
-     "x1" = "outcome",
-     "x2" = c("treatment", "outcome")),
-arrow.distance = 0.25,
-arrow.linewidth = 0.7,
-label.positions = list("treatment" = c(5,5)),
-seed = 3,
-curvature = list(c("conf", "outcome", 0.2)))
-
+     outcome = "outcome",
+     list("treatment" = "outcome",
+          "conf" = c("treatment", "outcome"),
+          "x1" = "outcome",
+          "x2" = c("treatment", "outcome")),
+     arrow.distance = 0.1,
+     arrow.linewidth = 0.7,
+     arrow.size = 5,
+     distance.ratio = 40,
+     distance.method = "rectangle",
+     distance.resolution = 10,
+     label.positions = list("treatment" = c(5,5)),
+     segment.shift = list(c("conf", "outcome", .2,-0.05)),
+     seed = 3,
+     curvature = list(c("conf", "outcome", 0.2)))
+#>   vars_from x y   vars_to  xend yend curvature  lw  cols
+#> 1 treatment 5 5   outcome 4.856 4.90         0 1.4 Black
+#> 2      conf 6 4 treatment 6.264 4.90         0 0.7 Black
+#> 3      conf 6 4   outcome 6.128 4.85       0.2 0.7 Black
+#> 4        x1 8 6   outcome 8.072 5.10         0 0.7 Black
+#> 5        x2 4 4 treatment 3.736 4.90         0 0.7 Black
+#> 6        x2 4 4   outcome 3.784 4.90         0 0.7 Black
 ```
