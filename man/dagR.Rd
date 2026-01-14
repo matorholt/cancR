@@ -8,20 +8,27 @@ dagR(
   treatment,
   outcome,
   path.list,
-  label.fill = "#C4C4C4",
+  label.fill = cancR_palette[8],
   label.color = "Black",
   label.positions = NULL,
-  treatment.fill = "#AB5CB8",
-  outcome.fill = "#97AFCC",
-  arrow.fill = "Black",
+  segment.shift = list(),
+  treatment.fill = cancR_palette[1],
+  outcome.fill = cancR_palette[4],
   arrow.color = "Black",
+  arrow.color.main = "Black",
   arrow.linewidth = 0.7,
   arrow.size = 5,
-  arrow.distance = 0.2,
+  arrow.distance = 0.1,
+  distance.method = "rectangle",
+  distance.resolution = 6,
+  distance.ratio = 1,
+  distance.string = 0.12,
   curvature = NULL,
   label.size = 6,
   dagitty = NULL,
-  seed = 1
+  position.digits = 0,
+  seed = 1,
+  margin = c(-0.1, 0.1, -0.1, 0.1)
 )
 }
 \arguments{
@@ -37,19 +44,29 @@ dagR(
 
 \item{label.positions}{manual adjustment of label positions (x,y) in the format list("treatment" = c(0,0))}
 
+\item{segment.shift}{list of vectors of c(from, to, x, y) where x and y are shifts in coordinate, e.g. list("conf", "outcome", 1,0)}
+
 \item{treatment.fill}{fill color for the treatment label}
 
 \item{outcome.fill}{fill color for the outcome label}
 
-\item{arrow.fill}{fill color of the arrow heads}
-
 \item{arrow.color}{color of the arrows}
+
+\item{arrow.color.main}{color of the arrow between treatment and outcome}
 
 \item{arrow.linewidth}{linewidth of the arrows}
 
 \item{arrow.size}{size of the arrow head in mm}
 
-\item{arrow.distance}{distance from label center to arrowhead as a fraction of the euclidian distance}
+\item{arrow.distance}{distance from label center to arrowhead (unit same as coordinates)}
+
+\item{distance.method}{how the points should be spread around lables ("rectangle" (default), "midways", "corners", "circle" and "oval")}
+
+\item{distance.resolution}{the number of subdivisions on the x and y axis of the given shape. For circles it indicates the subdivisions of 360 degrees.}
+
+\item{distance.ratio}{the ratio between the x.distance and y.distance. Larger values increase the distance width.}
+
+\item{distance.string}{arbitrary value specifying the amount of spacing caused by the number of characters in the label}
 
 \item{curvature}{named list of segments that should be curved in the format list(c("treatment", "outcome", 0.2))}
 
@@ -57,7 +74,11 @@ dagR(
 
 \item{dagitty}{output from dagitty.net inserted in single quotation marks.}
 
+\item{position.digits}{rounding of the position cooridinates for dagitty plots for aligment. Default = 0.}
+
 \item{seed}{for reproducibility}
+
+\item{margin}{vector of length 4 adding space to the limits of the x and y axis in the format c(xmin, xmax, ymin,ymax)}
 }
 \value{
 plot of the specified dag
@@ -67,15 +88,19 @@ Function for drawing DAGs. Compatible with dagitty.net via the "dagitty" argumen
 }
 \examples{
 dagR(treatment = "treatment",
-outcome = "outcome",
-list("treatment" = "outcome",
-     "conf" = c("treatment", "outcome"),
-     "x1" = "outcome",
-     "x2" = c("treatment", "outcome")),
-arrow.distance = 0.25,
-arrow.linewidth = 0.7,
-label.positions = list("treatment" = c(5,5)),
-seed = 3,
-curvature = list(c("conf", "outcome", 0.2)))
-
+     outcome = "outcome",
+     list("treatment" = "outcome",
+          "conf" = c("treatment", "outcome"),
+          "x1" = "outcome",
+          "x2" = c("treatment", "outcome")),
+     arrow.distance = 0.1,
+     arrow.linewidth = 0.7,
+     arrow.size = 5,
+     distance.ratio = 40,
+     distance.method = "rectangle",
+     distance.resolution = 10,
+     label.positions = list("treatment" = c(5,5)),
+     segment.shift = list(c("conf", "outcome", .2,-0.05)),
+     seed = 3,
+     curvature = list(c("conf", "outcome", 0.2)))
 }

@@ -140,7 +140,7 @@ plotR <- function(list,
                   censur=F) {
 
   if(class(list) %nin% c("estimatR", "clustR", "incidencR", "inferencR")) {
-    return(cat("Data not generated with the functions estimatR, clustR or incidencR from the cancR package"))
+    return(cat("Data not generated with the functions estimatR, inferencR, clustR or incidencR from the cancR package"))
   }
 
   time.unit <- match.arg(time.unit, c("m2y", "d2m", "d2y", "days", "months", "years"))
@@ -168,59 +168,57 @@ plotR <- function(list,
   if(class(list) == "incidencR" & list$info$group == "grp") contrast <- "none"
 
   if(contrast != "none") {
-  #Contrast labels
-  c_var <- names(list)[str_detect(names(list), paste0(contrast, collapse="|"))]
+    #Contrast labels
+    c_var <- names(list)[str_detect(names(list), paste0(contrast, collapse="|"))]
 
-  switch(contrast,
-         "rd" = c_var <- "difference",
-         "rr" = c_var <- "ratio")
+    switch(contrast,
+           "rd" = c_var <- "difference",
+           "rr" = c_var <- "ratio")
 
-  c_labels <- str_c(str_to_upper(contrast),
-                    " = ",
-                    numbR(list[[c_var]][,which(names(list[[c_var]]) %in% c("hr", "ratio", "diff"))], contrast.digits),
-                    " (95%CI ",
-                    numbR(list[[c_var]][["lower"]], contrast.digits),
-                    "-",
-                    numbR(list[[c_var]][["upper"]], contrast.digits),
-                    "), ",
-                   list[[c_var]][["p.value"]])
+    c_labels <- str_c(str_to_upper(contrast),
+                      " = ",
+                      numbR(list[[c_var]][,which(names(list[[c_var]]) %in% c("hr", "ratio", "diff"))], contrast.digits),
+                      " (95%CI ",
+                      numbR(list[[c_var]][["lower"]], contrast.digits),
+                      "-",
+                      numbR(list[[c_var]][["upper"]], contrast.digits),
+                      "), ",
+                      list[[c_var]][["p.value"]])
 
 
 
-  if(!is.null(style)) {
+    if(!is.null(style)) {
 
-  if(style == "jama") {
-  c_labels <- sapply(c_labels, function(x) {
-    x <- str_replace(x, "RD","ARD")
-    x <- str_split(str_remove(x, "(?<=(p.{3}))0"), "p")
+      if(style == "jama") {
+        c_labels <- sapply(c_labels, function(x) {
+          x <- str_replace(x, "RD","ARD")
+          x <- str_split(str_remove(x, "(?<=(p.{3}))0"), "p")
 
-    bquote(.(x[[1]][[1]])~italic("P")~.(x[[1]][[2]]))
-  })
+          bquote(.(x[[1]][[1]])~italic("P")~.(x[[1]][[2]]))
+        })
+      }
+
+      if(style == "italic") {
+
+        c_labels <- sapply(c_labels, function(x) {
+
+          bquote(italic(.(x)))
+        })
+
+      }
+    }
+
+    if(length(levels) > 2) {
+      c_labels <- c("reference", c_labels[1:(length(levels)-1)])
+    }
+
   }
 
-  if(style == "italic") {
+  if(!p.values) c_labels <- str_remove(c_labels, ",\\sp\\s=.*")
 
-    c_labels <- sapply(c_labels, function(x) {
+  if(!print.est) border <- F
 
-      bquote(italic(.(x)))
-    })
-
-  }
-  }
-
-  if(length(levels) > 2) {
-    c_labels <- c("reference", c_labels[1:(length(levels)-1)])
-  }
-
-  }
-
-  if(!p.values) {
-    c_labels <- str_remove(c_labels, ",\\sp\\s=.*")
-  }
-
-  if(censur) {
-    tab <- tab %>% mutate(across(c(cumsum, n.risk), ~ ifelse(between(., 1, 3), "\u2264 3", .)))
-  }
+  if(censur) tab <- tab %>% mutate(across(c(cumsum, n.risk), ~ ifelse(between(., 1, 3), "\u2264 3", .)))
 
   if(missing(y)) {
     if(list$info$survscale == "AM") {
@@ -318,13 +316,13 @@ plotR <- function(list,
   #Y-breaks/labels
   p <- p + annotate("text", x=-(horizon*0.01), y=seq(0,y,yscale), label = paste(seq(0,y*100,yscale*100), "%", sep=""), size = y.text.size*tscale, hjust="right") +
 
-  #Title
+    #Title
     annotate("text", x=0+title.shift[1], y=y*1.09+title.shift[2], label=title, size = title.size*tscale, hjust="left")
 
- #Risk table
+  #Risk table
   if(any(table %nin% "none")) {
     tablabs <- str_replace_all(table, c("risk" = "At Risk",
-                                     "event" = "Cumulative Events"))
+                                        "event" = "Cumulative Events"))
 
     #Grid
     for(i in 1:length(lines)) {
@@ -399,72 +397,71 @@ plotR <- function(list,
                       hjust="left",
                       size = 5*tscale)
 
- for(i in 1:length(levels)) {
+    for(i in 1:length(levels)) {
 
-   #Segments
-   p <- p +
-     annotate("segment",
-              x=xstart*0.6+res.shift[1],
-              xend=xstart*0.9+res.shift[1],
-              y=rows[i+1],
-              yend=rows[i+1], color = col[i], linewidth = linewidth*1.5)
+      #Segments
+      p <- p +
+        annotate("segment",
+                 x=xstart*0.6+res.shift[1],
+                 xend=xstart*0.9+res.shift[1],
+                 y=rows[i+1],
+                 yend=rows[i+1], color = col[i], linewidth = linewidth*1.5)
 
-   #Groups > 2 with contrasts
-   if(length(levels) > 2 & contrast != "none") {
-     p <- p + annotate("text",
-                      x=xstart+res.shift[1],
-                      y=rows[i+1],
-                      label = paste0(numbR(res$est[i]*100, res.digits),"%, ",c_labels[[i]]),
-                      #label = bquote(.(numbR(res$est[i]*100, res.digits))~"%"~.(c_labels[[i]])), #original bquote
-                      fontface=1,
-                      hjust="left",
-                      size = res.size*tscale)
-
-     #Border settings
-     buttom <- rows[length(rows)]
-     shift <- ifelse(horizon == 60, 4, 12)
-     right <- (xstart*0.2+horizon*0.39)+res.shift[1]+shift+border.shift
-
-
-   }
-
-   #Groups == 2 or >2 without contrasts
-   else{
-     p <- p +
-       annotate("text",
-                x=xstart+res.shift[1],
-                y=rows[i+1],
-                label = paste(c(numbR(res$est[i]*100,res.digits),"% (95%CI ", numbR(res$lower[i]*100, res.digits),"-", numbR(res$upper[i]*100, res.digits),")"), collapse=""),
-                fontface=1,
-                hjust="left",
-                size = res.size*tscale)
+      #Groups > 2 with contrasts
+      if(length(levels) > 2 & contrast != "none") {
+        p <- p + annotate("text",
+                          x=xstart+res.shift[1],
+                          y=rows[i+1],
+                          label = paste0(numbR(res$est[i]*100, res.digits),"%, ",c_labels[[i]]),
+                          #label = bquote(.(numbR(res$est[i]*100, res.digits))~"%"~.(c_labels[[i]])), #original bquote
+                          fontface=1,
+                          hjust="left",
+                          size = res.size*tscale)
+        #Border settings
+        buttom <- rows[length(rows)]
+        shift <- ifelse(horizon == 60, 4, 12)
+        right <- (xstart*0.2+horizon*0.39)+res.shift[1]+shift+border.shift
 
 
+      }
 
-     if(contrast != "none") {
-
-       p <-  p+ annotate("text",
-                         x=xstart+res.shift[1],
-                         y = rows[length(levels)+2],
-                         label = c_labels[[1]],
-                         hjust = "left",
-                         size = res.size*tscale)
-     }
-
-     if(class(list) == "incidencR" & list$info$group == "grp") {
-       #buttom <- buttom - 1
-       rows <- rows[1:length(rows)-1]
-     }
-
-     #Border settings
-     buttom <- rows[length(rows)] - (rows[length(rows)-1]-rows[length(rows)])
-     right <- (xstart*0.3+horizon*0.39)+res.shift[1]+border.shift
+      #Groups == 2 or >2 without contrasts
+      else{
+        p <- p +
+          annotate("text",
+                   x=xstart+res.shift[1],
+                   y=rows[i+1],
+                   label = paste(c(numbR(res$est[i]*100,res.digits),"% (95%CI ", numbR(res$lower[i]*100, res.digits),"-", numbR(res$upper[i]*100, res.digits),")"), collapse=""),
+                   fontface=1,
+                   hjust="left",
+                   size = res.size*tscale)
 
 
 
-   }
+        if(contrast != "none") {
 
- }
+          p <-  p+ annotate("text",
+                            x=xstart+res.shift[1],
+                            y = rows[length(levels)+2],
+                            label = c_labels[[1]],
+                            hjust = "left",
+                            size = res.size*tscale)
+        }
+
+        if(class(list) == "incidencR" & list$info$group == "grp") {
+          #buttom <- buttom - 1
+          rows <- rows[1:length(rows)-1]
+        }
+
+        #Border settings
+        buttom <- rows[length(rows)] - (rows[length(rows)-1]-rows[length(rows)])
+        right <- (xstart*0.3+horizon*0.39)+res.shift[1]+border.shift
+
+
+
+      }
+
+    }
   }
 
   if(border) {
@@ -484,7 +481,7 @@ plotR <- function(list,
 
 
 
-return(p)
+  return(p)
 
 
 }
