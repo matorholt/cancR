@@ -123,7 +123,7 @@ factR <- function(data, vars, num.vars, reference = list(), levels = list(), lab
 
     if(length(labels) > 0) {
 
-    if(names(labels) != vars_c) {
+      if(all(names(labels) %nin% vars_c)) {
 
       labels <- list(as.list(labels)) %>% set_names(vars_c)
 

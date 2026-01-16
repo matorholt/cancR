@@ -28,6 +28,7 @@
 #' @param position.digits rounding of the position cooridinates for dagitty plots for aligment. Default = 0.
 #' @param seed for reproducibility
 #' @param margin vector of length 4 adding space to the limits of the x and y axis in the format c(xmin, xmax, ymin,ymax)
+#' @param draw whether the distance.points should be drawn around label for diagnostical purposes (default = F)
 #'
 #'
 #' @returns plot of the specified dag
@@ -75,7 +76,10 @@
 #      list("treatment" = "outcome",
 #           "conf" = c("treatment", "outcome"),
 #           "x1" = "outcome",
-#           "x2" = c("treatment", "outcome")))
+#           "x2" = c("treatment", "outcome")),
+#      draw = T,
+#      distance.method = "rectangle",
+#      distance.resolution = 6)
 #
 # #Simple example
 # mydag1 <- 'dag {
@@ -153,7 +157,8 @@ dagR <- function(treatment,
                  dagitty = NULL,
                  position.digits = 0,
                  seed=1,
-                 margin = c(-.1,.1,-.1,.1)) {
+                 margin = c(-.1,.1,-.1,.1),
+                 draw = F) {
 
 
 
@@ -242,6 +247,7 @@ dagR <- function(treatment,
   #Apply distance between x/y-ends and label positions
 
   coords <- c()
+  draw.list <- list()
 
     for(n in 1:nrow(segs)) {
 
@@ -299,6 +305,9 @@ dagR <- function(treatment,
 
     }
 
+    draw.list[[segs[n, "vars_to"]]]$x <- xs
+    draw.list[[segs[n, "vars_to"]]]$y <- ys
+
     xsys <- paste(xs,ys,sep=",")
     indices <- which(xsys %in% coords)
 
@@ -314,9 +323,9 @@ dagR <- function(treatment,
     segs[n, "xend"] <- xs[min]
     segs[n, "yend"] <- ys[min]
 
-  }
+    }
 
-  if(!is.null(curvature)) {
+   if(!is.null(curvature)) {
 
     for(i in seq_along(curvature)) {
 
@@ -373,7 +382,18 @@ dagR <- function(treatment,
     theme_void() +
     coord_cartesian(xlim=range(segs$x)+margin[1:2],
                     ylim=range(segs$y)+margin[3:4])
-print(segs)
+
+  if(draw) {
+
+    for(i in seq_along(draw.list)) {
+
+    p <- p +
+      annotate("point", x = draw.list[[i]]$x, y = draw.list[[i]]$y, size = 3)
+
+    }
+
+  }
+
 return(p)
 
 }

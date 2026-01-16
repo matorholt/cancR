@@ -28,7 +28,8 @@ dagR(
   dagitty = NULL,
   position.digits = 0,
   seed = 1,
-  margin = c(-0.1, 0.1, -0.1, 0.1)
+  margin = c(-0.1, 0.1, -0.1, 0.1),
+  draw = F
 )
 }
 \arguments{
@@ -79,6 +80,8 @@ dagR(
 \item{seed}{for reproducibility}
 
 \item{margin}{vector of length 4 adding space to the limits of the x and y axis in the format c(xmin, xmax, ymin,ymax)}
+
+\item{draw}{whether the distance.points should be drawn around label for diagnostical purposes (default = F)}
 }
 \value{
 plot of the specified dag
