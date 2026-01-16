@@ -74,7 +74,8 @@
 <span>  dagitty <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  position.digits <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  seed <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>  margin <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">0.1</span>, <span class="fl">0.1</span>, <span class="op">-</span><span class="fl">0.1</span>, <span class="fl">0.1</span><span class="op">)</span></span>
+<span>  margin <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">0.1</span>, <span class="fl">0.1</span>, <span class="op">-</span><span class="fl">0.1</span>, <span class="fl">0.1</span><span class="op">)</span>,</span>
+<span>  draw <span class="op">=</span> <span class="cn">F</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -177,6 +178,10 @@
 <dt id="arg-margin">margin<a class="anchor" aria-label="anchor" href="#arg-margin"></a></dt>
 <dd><p>vector of length 4 adding space to the limits of the x and y axis in the format c(xmin, xmax, ymin,ymax)</p></dd>
 
+
+<dt id="arg-draw">draw<a class="anchor" aria-label="anchor" href="#arg-draw"></a></dt>
+<dd><p>whether the distance.points should be drawn around label for diagnostical purposes (default = F)</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -201,13 +206,6 @@
 <span class="r-in"><span>     segment.shift <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"conf"</span>, <span class="st">"outcome"</span>, <span class="fl">.2</span>,<span class="op">-</span><span class="fl">0.05</span><span class="op">)</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>     seed <span class="op">=</span> <span class="fl">3</span>,</span></span>
 <span class="r-in"><span>     curvature <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"conf"</span>, <span class="st">"outcome"</span>, <span class="fl">0.2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   vars_from x y   vars_to  xend yend curvature  lw  cols</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 treatment 5 5   outcome 4.856 4.90         0 1.4 Black</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2      conf 6 4 treatment 6.264 4.90         0 0.7 Black</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3      conf 6 4   outcome 6.128 4.85       0.2 0.7 Black</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4        x1 8 6   outcome 8.072 5.10         0 0.7 Black</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5        x2 4 4 treatment 3.736 4.90         0 0.7 Black</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6        x2 4 4   outcome 3.784 4.90         0 0.7 Black</span>
 <span class="r-plt img"><img src="dagR-1.png" alt="" width="700" height="433"></span>
 </code></pre></div>
     </div>

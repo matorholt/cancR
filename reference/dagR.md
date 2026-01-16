@@ -30,7 +30,8 @@ dagR(
   dagitty = NULL,
   position.digits = 0,
   seed = 1,
-  margin = c(-0.1, 0.1, -0.1, 0.1)
+  margin = c(-0.1, 0.1, -0.1, 0.1),
+  draw = F
 )
 ```
 
@@ -142,6 +143,11 @@ dagR(
   vector of length 4 adding space to the limits of the x and y axis in
   the format c(xmin, xmax, ymin,ymax)
 
+- draw:
+
+  whether the distance.points should be drawn around label for
+  diagnostical purposes (default = F)
+
 ## Value
 
 plot of the specified dag
@@ -165,11 +171,4 @@ dagR(treatment = "treatment",
      segment.shift = list(c("conf", "outcome", .2,-0.05)),
      seed = 3,
      curvature = list(c("conf", "outcome", 0.2)))
-#>   vars_from x y   vars_to  xend yend curvature  lw  cols
-#> 1 treatment 5 5   outcome 4.856 4.90         0 1.4 Black
-#> 2      conf 6 4 treatment 6.264 4.90         0 0.7 Black
-#> 3      conf 6 4   outcome 6.128 4.85       0.2 0.7 Black
-#> 4        x1 8 6   outcome 8.072 5.10         0 0.7 Black
-#> 5        x2 4 4 treatment 3.736 4.90         0 0.7 Black
-#> 6        x2 4 4   outcome 3.784 4.90         0 0.7 Black
 ```
