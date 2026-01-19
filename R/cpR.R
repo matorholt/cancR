@@ -27,37 +27,38 @@ cpR <- function(data, cpr=cpr,extract=F, remove.cpr = F, return.cpr = F) {
 
   cpr_c <- data %>% select({{cpr}}) %>% names
 
-    errors <- data %>% filter(str_detect(data[[cpr_c]], "^\\d{9,10}$|^\\d{5,6}-?\\w{4}$", negate=T) |
-                                str_count(data[[cpr_c]]) == 10 & str_sub(data[[cpr_c]], 1,2) %in% c("00", seq(32,99)) |
-                                str_count(data[[cpr_c]]) == 10 & str_sub(data[[cpr_c]], 3,4) %in% c("00", seq(13,99)) |
-                                str_count(data[[cpr_c]]) == 9 & str_sub(data[[cpr_c]], 2,3) %in% c("00", seq(13,99)) |
-                        is.na(data[[cpr_c]]))
+  errors <- data %>% filter(str_detect(data[[cpr_c]], "^\\d{9,10}$|^\\d{5,6}-?\\w{4}$", negate=T) |
+                              str_count(data[[cpr_c]]) == 10 & str_sub(data[[cpr_c]], 1,2) %in% c("00", seq(32,99)) |
+                              str_count(data[[cpr_c]]) == 10 & str_sub(data[[cpr_c]], 3,4) %in% c("00", seq(13,99)) |
+                              str_count(data[[cpr_c]]) == 9 & str_sub(data[[cpr_c]], 2,3) %in% c("00", seq(13,99)) |
+                              is.na(data[[cpr_c]]))
 
-    if(nrow(errors) > 0) {
+  if(nrow(errors) > 0) {
 
-   if(return.cpr) {
-     warning(paste0(nrow(errors), " invalid CPR", rep("s", nrow(errors)>1), " detected and returned as vector"))
-   return(errors[[cpr_c]])
-   } else {
+    if(return.cpr) {
+      warning(paste0(nrow(errors), " invalid CPR", rep("s", nrow(errors)>1), " detected and returned as vector"))
+      return(errors[[cpr_c]])
+    } else {
 
-     if(remove.cpr) {
-       warning(paste0(nrow(errors), " invalid CPR", rep("s", nrow(errors)>1), " detected and removed"))
-     data <- data %>% filter(!!sym(cpr_c) %nin% errors[[cpr_c]])
-     } else {
-       warning(paste0(nrow(errors), " invalid CPR", rep("s", nrow(errors)>1), " detected"))
-     }
-   }
-   }
+      if(remove.cpr) {
+        warning(paste0(nrow(errors), " invalid CPR", rep("s", nrow(errors)>1), " detected and removed"))
+        data <- data %>% filter(!!sym(cpr_c) %nin% errors[[cpr_c]])
+      } else {
+        warning(paste0(nrow(errors), " invalid CPR", rep("s", nrow(errors)>1), " detected"))
+      }
+    }
+  }
+
 
   data <- data %>%
-    mutate({{cpr}} := str_pad(str_remove_all({{cpr}}, "-"), width=10, pad="0"))
+    mutate(!!sym(cpr_c) := str_pad(str_remove_all(!!sym(cpr_c), "-"), width=10, pad="0"))
 
   if(extract) {
     data <- data %>%
       mutate(sex = case_when(str_sub({{cpr}}, 10) %in% seq(0,8,2) ~ "F",
                              str_sub({{cpr}}, 10) %in% seq(1,9,2) ~ "M"),
              birth = case_when(str_sub({{cpr}}, 5,6) %in% str_pad(seq(0,36), 2, pad="0") &
-                                  str_sub({{cpr}}, 7,7) %in% c(4, 9) ~ as.Date(str_c("20", str_replace_all({{cpr}}, "(\\d{2})(\\d{2})(\\d{2})(\\w{4})", "\\3-\\2-\\1"), sep="")),
+                                 str_sub({{cpr}}, 7,7) %in% c(4, 9) ~ as.Date(str_c("20", str_replace_all({{cpr}}, "(\\d{2})(\\d{2})(\\d{2})(\\w{4})", "\\3-\\2-\\1"), sep="")),
                                str_sub({{cpr}}, 5,6) %in% str_pad(seq(0,57), 2, pad="0") &
                                  str_sub({{cpr}}, 7,7) %in% seq(5,8) ~ as.Date(str_c("20", str_replace_all({{cpr}}, "(\\d{2})(\\d{2})(\\d{2})(\\w{4})", "\\3-\\2-\\1"), sep="")),
                                str_sub({{cpr}}, 5,6) %in% str_pad(seq(58,99), 2, pad="0") &

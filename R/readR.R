@@ -13,7 +13,7 @@
 #'
 
 
-readR <- function(path, leading.zeros = T, na = "", ...) {
+readR <- function(path, extension, leading.zeros = T, na = "", ...) {
 
   if(str_detect(path, ".csv|.txt")) {
 
@@ -24,13 +24,13 @@ readR <- function(path, leading.zeros = T, na = "", ...) {
 
   }
 
-  if(str_detect(path, "rds")) {
+  if(any(str_detect(path, "rds") | extension == "rds")) {
 
     return(readRDS(path, ...))
 
   }
 
-  if(str_detect(path, ".xlsx")) {
+  if(any(str_detect(path, ".xlsx") | extension == "xlsx")) {
 
     return(as.data.frame(readxl::read_xlsx(path,
                                            na = na,
@@ -38,13 +38,22 @@ readR <- function(path, leading.zeros = T, na = "", ...) {
 
   }
 
-  if(str_detect(path, ".xls")) {
+  if(any(str_detect(path, ".xls") | extension == "xls")) {
 
     return(as.data.frame(readxl::read_xls(path,
                                           na = na,
                                           ...)))
 
   }
+
+  if(any(str_detect(path, ".parquet") | extension == "parquet")) {
+
+    return(as.data.frame(read_parquet(path,
+                                      as_data_frame = T,
+                                      ...)))
+
+  }
+
 
 }
 

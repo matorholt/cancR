@@ -4,7 +4,7 @@
 \alias{readR}
 \title{Load csv, excel and rds files}
 \usage{
-readR(path, leading.zeros = T, na = "", ...)
+readR(path, extension, leading.zeros = T, na = "", ...)
 }
 \arguments{
 \item{path}{path for the file to load}

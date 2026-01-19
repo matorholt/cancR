@@ -13,7 +13,7 @@
 #' @param dpi resolution
 #' @param device cairo for special occasions
 #' @param compression for tiff
-#' @param formats choose between pdf, svg, tiff, jpg and png
+#' @param format choose between pdf, svg, tiff, jpg and png
 #'
 #' @return Saves object automatically in current project folder
 #' @export
@@ -82,14 +82,14 @@ savR <- function(object,
                  dpi=900,
                  device= NULL,
                  compression="lzw",
-                 formats = c("pdf"),
+                 format = c("pdf"),
                  size = 9,
                  table.width = 1,
                  folder = "Tables and Figures",
                  sep = ";") {
 
-  if(any(formats %nin% c("pdf", "svg", "tiff", "jpg", "png", "rds", "csv"))) {
-    return(cat("Error: Unvalid format. Supported formats are pdf, svg, tiff, jpg, png, rds and csv"))
+  if(any(format %nin% c("pdf", "svg", "tiff", "jpg", "png", "rds", "csv", "parquet"))) {
+    return(cat("Error: Unvalid format. Supported formats are pdf, svg, tiff, jpg, png, rds, csv and parquet"))
   }
 
 
@@ -104,7 +104,7 @@ savR <- function(object,
 
   if(all("data.frame" %in% class(object) & "extractR" %nin% class(object))) {
 
-    if("csv" %in% formats) {
+    if("csv" %in% format) {
       fwrite(object,
              paste0(name, ".csv", collapse=""),
              sep = sep,
@@ -116,10 +116,25 @@ savR <- function(object,
 
     }
 
-    if("rds" %in% formats) {
+    if("rds" %in% format) {
 
       saveRDS(object,
               paste0(name, ".rds", collapse=""))
+
+      opt <- options(show.error.messages = FALSE)
+      on.exit(options(opt))
+      stop()
+
+    }
+
+    if("parquet" %in% format) {
+
+      write_parquet(
+        object,
+        name,
+        compression = "zstd",
+        compression_level = 19
+      )
 
       opt <- options(show.error.messages = FALSE)
       on.exit(options(opt))
@@ -177,10 +192,10 @@ savR <- function(object,
 
     }
 
-    formats <- formats[formats %nin% c("csv", "rds")]
+    format <- format[format %nin% c("csv", "rds")]
 
     cat(paste0("\n\nExporting: ", name))
-    for(p in formats) {
+    for(p in format) {
 
       cat(paste0("\n", p, ": "))
 

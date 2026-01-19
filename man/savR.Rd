@@ -14,7 +14,7 @@ savR(
   dpi = 900,
   device = NULL,
   compression = "lzw",
-  formats = c("pdf"),
+  format = c("pdf"),
   size = 9,
   table.width = 1,
   folder = "Tables and Figures",
@@ -40,7 +40,7 @@ savR(
 
 \item{compression}{for tiff}
 
-\item{formats}{choose between pdf, svg, tiff, jpg and png}
+\item{format}{choose between pdf, svg, tiff, jpg and png}
 }
 \value{
 Saves object automatically in current project folder

@@ -178,14 +178,16 @@ loadR <- function(regs,
 
 
     } else if(i == "lmdb") {
+      cl <- parallel::makeCluster(4)
 
-      reglist[[i]] <- as.data.frame(rbindlist(lapply(seq(lmdb.start,lmdb.stop), function(year) {
-        importSAS(paste0("X:/Data/Rawdata_Hurtig/709545/Grunddata/medication/lmdb", year, "12.sas7bdat", sep=""),
+      reglist[[i]] <- as.data.frame(rbindlist(parLapply(cl, seq(lmdb.start,lmdb.stop), function(year) {
+        heaven::importSAS(paste0("X:/Data/Rawdata_Hurtig/709545/Grunddata/medication/lmdb", year, "12.sas7bdat", sep=""),
                   obs = n,
                   keep = keep.vars[[i]],
                   filter = id.filter,
                   where = pattern)
       })))
+      parallel::stopCluster(cl)
 
     } else {
 
