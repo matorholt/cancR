@@ -7,17 +7,18 @@
 matchR(
   data,
   td.frame,
-  index,
-  case,
-  fu,
-  td.date,
-  fixed.vars,
+  index = index,
+  case = case,
+  fu = fu,
+  td.date = from,
+  fixed.vars = c(byear, sex),
   td.vars,
   exclude,
+  exclude.length = 365.25 * 100,
   n.controls = 4,
   replace = T,
   seed = 1,
-  cores = NULL,
+  cores = 4,
   pnr = pnr,
   interval = NULL
 )
@@ -41,6 +42,8 @@ matchR(
 
 \item{exclude}{Vector of parameters that are not allowed to occur before index}
 
+\item{exclude.length}{Number of days before index where exclusions must not have occured. Default: 50 years (=never)}
+
 \item{n.controls}{Number of desired controls per case}
 
 \item{replace}{whether controls should be sampled with replacement (default = T)}
@@ -57,5 +60,5 @@ matchR(
 Returns the same dataframe as the original but with n_control matches and pairs indicated with a "set" column.
 }
 \description{
-Perform exposure-density matching for multilevel data
+Function for performing time-dependent exact matching (exposure density sampling). For each case, n controls will be matched at index with exact covariate values.
 }

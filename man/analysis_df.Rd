@@ -3,7 +3,7 @@
 \docType{data}
 \name{analysis_df}
 \alias{analysis_df}
-\title{analysis_df}
+\title{Simulated dataset for model testing}
 \format{
 A data frame with 2000 rows and 14 columns:
 \describe{

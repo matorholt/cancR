@@ -3,7 +3,7 @@
 \docType{data}
 \name{population_denmark}
 \alias{population_denmark}
-\title{population_denmark}
+\title{Population table, Denmark}
 \format{
 A data frame with 1296 rows and 4 columns:
 \describe{

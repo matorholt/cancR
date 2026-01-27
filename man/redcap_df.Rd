@@ -3,7 +3,7 @@
 \docType{data}
 \name{redcap_df}
 \alias{redcap_df}
-\title{redcap_df}
+\title{Simulated Redcap dataset}
 \format{
 A data frame with 500 rows and 15 columns:
 \describe{

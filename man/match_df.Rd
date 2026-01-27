@@ -3,7 +3,7 @@
 \docType{data}
 \name{match_df}
 \alias{match_df}
-\title{match_df}
+\title{Simulated dataset for the matchR algorithm}
 \format{
 A data frame with 40,100 rows and 11 columns:
 \describe{

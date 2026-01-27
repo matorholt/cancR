@@ -3,12 +3,13 @@
 \docType{data}
 \name{covariates_df}
 \alias{covariates_df}
-\title{covariates_df}
+\title{Simulated time-dependent covariates dataset.}
 \format{
-A data frame with 355883 rows and 21 columns:
+A data frame with 84858 rows and 22 columns:
 \describe{
 \item{pnr}{unique patient pnr}
-\item{date}{date for the covariate values}
+\item{from}{start of the covariate window}
+\item{to}{end of the covariate window}
 \item{cci}{Charlson Comorbidity Index binned into the groups: 0, 1, 2-3, 4-5 and 6+}
 \item{education}{Educational level according to ISCED groups: low, medium and high}
 \item{income}{Quantile of the equivalated disposable income: q1, q2, q3 and q4}
@@ -23,6 +24,6 @@ A data frame with 355883 rows and 21 columns:
 covariates_df
 }
 \description{
-Simulation of a time-dependent data frame of covariates for the matchR function
+Simulation of a time-dependent data frame with covariates from 4000 patients for the matchR function
 }
 \keyword{datasets}

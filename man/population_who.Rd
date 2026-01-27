@@ -3,7 +3,7 @@
 \docType{data}
 \name{population_who}
 \alias{population_who}
-\title{population_who}
+\title{Population table, WHO}
 \format{
 A data frame with 36 rows and 3 columns:
 \describe{
