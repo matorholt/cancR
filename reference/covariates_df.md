@@ -1,7 +1,7 @@
-# covariates_df
+# Simulated time-dependent covariates dataset.
 
-Simulation of a time-dependent data frame of covariates for the matchR
-function
+Simulation of a time-dependent data frame with covariates from 4000
+patients for the matchR function
 
 ## Usage
 
@@ -11,15 +11,19 @@ covariates_df
 
 ## Format
 
-A data frame with 355883 rows and 21 columns:
+A data frame with 84858 rows and 22 columns:
 
 - pnr:
 
   unique patient pnr
 
-- date:
+- from:
 
-  date for the covariate values
+  start of the covariate window
+
+- to:
+
+  end of the covariate window
 
 - cci:
 

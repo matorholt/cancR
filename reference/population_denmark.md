@@ -1,4 +1,4 @@
-# population_denmark
+# Population table, Denmark
 
 Population tables for Denmark stratified on 5-year age groups and sex in
 the period 1990-2025

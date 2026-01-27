@@ -1,4 +1,4 @@
-# match_df
+# Simulated dataset for the matchR algorithm
 
 Simulation of a population data frame before using the matchR function
 

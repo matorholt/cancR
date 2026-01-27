@@ -1,4 +1,4 @@
-# population_who
+# Population table, WHO
 
 WHO standard population in 5-year age groups and sex
 

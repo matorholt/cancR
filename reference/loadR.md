@@ -17,6 +17,7 @@ loadR(
   lmdb.start = 1995,
   lmdb.stop = 2023,
   simulation = F,
+  cores = 4,
   ...
 )
 ```

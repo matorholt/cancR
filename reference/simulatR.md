@@ -18,10 +18,11 @@ simulatR(
   pop.max.age = 100,
   pop.sex = 0.5,
   pop.mortality = 0.1,
-  match.cases,
+  match.cases = n * 0.1,
   match.birth = "1960-01-01",
   match.index = c("1990-01-01", "2010-01-01"),
   covariates.period = c("1980-01-01", "2025-01-01"),
+  format = "wide",
   seed = 1
 )
 ```

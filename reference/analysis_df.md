@@ -1,4 +1,4 @@
-# analysis_df
+# Simulated dataset for model testing
 
 Simulation of a time-to-event data for the estimatR function
 

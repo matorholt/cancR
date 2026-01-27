@@ -78,12 +78,14 @@ Functions customized for the danish registers
 
 Datasets for testing functions
 
-- [`analysis_df`](analysis_df.md) : analysis_df
-- [`match_df`](match_df.md) : match_df
-- [`redcap_df`](redcap_df.md) : redcap_df
-- [`covariates_df`](covariates_df.md) : covariates_df
-- [`population_denmark`](population_denmark.md) : population_denmark
-- [`population_who`](population_who.md) : population_who
+- [`analysis_df`](analysis_df.md) : Simulated dataset for model testing
+- [`match_df`](match_df.md) : Simulated dataset for the matchR algorithm
+- [`redcap_df`](redcap_df.md) : Simulated Redcap dataset
+- [`covariates_df`](covariates_df.md) : Simulated time-dependent
+  covariates dataset.
+- [`population_denmark`](population_denmark.md) : Population table,
+  Denmark
+- [`population_who`](population_who.md) : Population table, WHO
 
 ## Miscellaneous functions
 
