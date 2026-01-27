@@ -1,4 +1,4 @@
-#' @title match_df
+#' @title Simulated dataset for the matchR algorithm
 #'
 #' @description Simulation of a population data frame before using the matchR function
 #'
@@ -20,7 +20,7 @@
 "match_df"
 
 
-#' @title redcap_df
+#' @title Simulated Redcap dataset
 #'
 #' @description Simulation of a redcap data frame for basic data management
 #'
@@ -46,7 +46,7 @@
 #' }
 "redcap_df"
 
-#' @title analysis_df
+#' @title Simulated dataset for model testing
 #'
 #' @description Simulation of a time-to-event data for the estimatR function
 #'
@@ -68,15 +68,16 @@
 #' }
 "analysis_df"
 
-#' @title covariates_df
+#' @title Simulated time-dependent covariates dataset.
 #'
-#' @description Simulation of a time-dependent data frame of covariates for the matchR function
+#' @description Simulation of a time-dependent data frame with covariates from 4000 patients for the matchR function
 #'
 #'
-#' @format A data frame with 355883 rows and 21 columns:
+#' @format A data frame with 84858 rows and 22 columns:
 #' \describe{
 #'   \item{pnr}{unique patient pnr}
-#'   \item{date}{date for the covariate values}
+#'   \item{from}{start of the covariate window}
+#'   \item{to}{end of the covariate window}
 #'   \item{cci}{Charlson Comorbidity Index binned into the groups: 0, 1, 2-3, 4-5 and 6+}
 #'   \item{education}{Educational level according to ISCED groups: low, medium and high}
 #'   \item{income}{Quantile of the equivalated disposable income: q1, q2, q3 and q4}
@@ -88,7 +89,7 @@
 #' }
 "covariates_df"
 
-#' @title population_denmark
+#' @title Population table, Denmark
 #'
 #' @description Population tables for Denmark stratified on 5-year age groups and sex in the period 1990-2025
 #'
@@ -104,7 +105,7 @@
 #' }
 "population_denmark"
 
-#' @title population_who
+#' @title Population table, WHO
 #'
 #' @description WHO standard population in 5-year age groups and sex
 #'

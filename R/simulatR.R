@@ -50,10 +50,11 @@ simulatR <- function(register,
                       pop.max.age = 100,
                       pop.sex = 0.5,
                       pop.mortality = 0.1,
-                      match.cases,
+                      match.cases = n * 0.1,
                       match.birth = "1960-01-01",
                       match.index = c("1990-01-01", "2010-01-01"),
                       covariates.period = c("1980-01-01", "2025-01-01"),
+                     format = "wide",
                       seed = 1) {
 
 
@@ -229,7 +230,7 @@ simulatR <- function(register,
 
   }
 
-  if(register == "match") {
+  if("match" %in% register) {
 
 
     (c <- data.frame(pnr = seq(1,match.cases),
@@ -260,7 +261,7 @@ simulatR <- function(register,
 
   }
 
-  if(register == "covariates") {
+  if("covariates" %in% register) {
 
     intervals <- seq(as.Date(covariates.period[1]), as.Date(covariates.period[2]), by=365.25/2)
 
@@ -298,7 +299,9 @@ simulatR <- function(register,
                 "congenital")
 
 
-    dat <- as.data.table(expand.grid(pnr = c(1:10),
+    if(format == "wide") {
+
+    dat <- as.data.table(expand.grid(pnr = c(1:n),
                                      date = intervals))
 
     for(v in seq_along(vars)) {
@@ -323,6 +326,69 @@ simulatR <- function(register,
     reglist[["covariates"]] <- as.data.frame(dat[sort(sample(1:nrow(dat), size = nrow(dat)*0.9, replace=FALSE)),])
 
 
+    }
+
+    if(format == "long") {
+
+      intervals <- seq(as.Date(covariates.period[1]), as.Date(covariates.period[2]), by="day")
+      index <- sample(c(sample(seq(as.Date(match.index[1]), as.Date(match.index[2]), by="day"))), size = n, replace=TRUE)
+
+      dat <- bind_rows(
+        lapply(seq_len(n), function(i) {
+
+          if(i %in% seq(0,n,500)) print(i)
+
+        vframe <- rbindlist(
+          lapply(seq_along(vars), function(v) {
+
+            m <- rbinom(1, length(vars[[v]]), 1)
+
+            data.frame(pnr = rep(i, m),
+                       date = sort(sample(intervals, m)),
+                       value = sample(1:m, m),
+                       var = rep(names(vars)[[v]], m)) %>%
+              filter(value >= cummax(value)) %>%
+              mutate(value = unlist(sapply(value, function(s) {vars[[v]][[s]]})))
+
+          })
+        , fill=TRUE) %>% as.data.frame()
+
+        m <- rbinom(1, length(comorb), 0.7)
+
+        cframe <- data.frame(pnr=rep(i, m),
+                             date = sort(sample(intervals, m)),
+                             value = as.character(1),
+                             var = sample(comorb, m))
+
+        bind_rows(vframe, cframe) %>%
+        arrange(date) %>%
+        pivot_wider(values_from = value, names_from = var) %>%
+        mutate(across(matches(paste0("\\b",comorb)), ~ ifelse(row_number()==1, "0", .)),
+               income = ifelse(row_number() == 1, "q1", income),
+               marital = ifelse(row_number() == 1, "unmarried", marital),
+               cci = ifelse(row_number() == 1, "cci_0", cci),
+               education = ifelse(row_number() == 1, "low", education)) %>%
+        fill(everything(), .direction="downup") %>%
+        filter(
+          row_number() %in% c(1, n()) |
+            if_any(c(2:ncol(.)), ~ . != lead(.))) %>%
+        mutate(to = lead(date),
+               to = if_else(row_number()==n(), as.Date("2026-01-01"), to),
+               date = if_else(row_number()==1, as.Date("1900-01-01"), date)) %>%
+        rename(from = date) %>%
+        select(pnr, from, to, everything())
+
+
+
+      })
+      ) %>%
+        mutate(across(matches(paste0("\\b",comorb)), ~ ifelse(is.na(.), "0", .)))
+
+
+
+
+      reglist[["covariates"]] <- dat
+    }
   }
 
 
@@ -336,5 +402,4 @@ simulatR <- function(register,
   }
 
 }
-
 

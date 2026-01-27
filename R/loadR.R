@@ -37,6 +37,7 @@ loadR <- function(regs,
                   lmdb.start = 1995,
                   lmdb.stop = 2023,
                   simulation = F,
+                  cores = 4,
                   ...) {
 
 
@@ -46,7 +47,7 @@ loadR <- function(regs,
 
   cat(paste0("\nInitializing loadR algorithm: ", tockR("time"), "\n\n"))
 
-  regs <- match.arg(regs, c("lpr", "lmdb", "pop", "pato", "cancer", "opr", "sc", "meta", "dsd", "ses"), several.ok = T)
+  regs <- match.arg(regs, c("lpr", "lmdb", "pop", "pato", "cancer", "opr", "sc", "meta", "dsd", "ses", "covariates"), several.ok = T)
 
   if(!is.null(keep.list) & class(keep.list) != "list") {
     stop('Format the argument "keep" as a list with the structure list("lpr" = c("vars"), "lmdb" = c("vars"))')
@@ -105,17 +106,16 @@ loadR <- function(regs,
   else {
 
   pathlist <-
-    list("rds" = list("lpr" = "V:/Data/Workdata/709545/Mathias Oerholt/DATASETS/LPR.rds",
-                      "lmdb" = "V:/Data/Workdata/709545/Mathias Oerholt/DATASETS/LMDB.rds",
+    list("parquet" = list("lpr" = "V:/Data/Workdata/709545/Mathias Oerholt/DATASETS/LPR.parquet",
                       "pop" = "V:/Data/Workdata/709545/Mathias Oerholt/DATASETS/POPULATION.rds",
-                      "pato" = "V:/Data/Workdata/709545/Mathias Oerholt/DATASETS/PATOBANK.rds",
-                      "cancer" = "V:/Data/Workdata/709545/Mathias Oerholt/DATASETS/CANCER.rds",
-                      "opr" = "V:/Data/Workdata/709545/Mathias Oerholt/DATASETS/OPR.rds",
+                      "pato" = "V:/Data/Workdata/709545/Mathias Oerholt/DATASETS/PATOBANK.parquet",
+                      "cancer" = "V:/Data/Workdata/709545/Mathias Oerholt/DATASETS/CANCER.parquet",
+                      "opr" = "V:/Data/Workdata/709545/Mathias Oerholt/DATASETS/OPR.parquet",
                       "sc" = "V:/Data/Workdata/709545/Mathias Oerholt/DATASETS/SKIN_CANCER.rds",
                       "meta" = "V:/Data/Workdata/709545/Mathias Oerholt/DATASETS/SKIN_METASTASIS.rds",
                       "dsd" = "V:/Data/Workdata/709545/Mathias Oerholt/DATASETS/SKIN_DEATH.rds",
                       "ses" = "V:/Data/Workdata/709545/Mathias Oerholt/DATASETS/SES_wide.rds",
-                      "covariates" = "V:/Data/Workdata/709545/Mathias Oerholt/DATASETS/TIME_COVARIATES.rds"),
+                      "covariates" = "V:/Data/Workdata/709545/Mathias Oerholt/DATASETS/TIME_COVARIATES.parquet"),
          "sas" = list("lpr" = "X:/Data/Rawdata_Hurtig/709545/Grunddata/LPR/diag_indl.sas7bdat",
                       "cancer" = "X:/Data/Rawdata_Hurtig/709545/Grunddata/Cancer/t_tumor.sas7bdat",
                       "opr" = "X:/Data/Rawdata_Hurtig/709545/Grunddata/LPR/opr.sas7bdat"))
@@ -166,11 +166,11 @@ loadR <- function(regs,
 
     if((is.null(n) & is.null(id.filter) & !(i %in% names(keep.list)) & !(i %in% names(pattern.list))) | i %in% c("pop", "sc", "meta", "dsd", "ses")) {
 
-      reglist[[i]] <- readRDS(pathlist[["rds"]][[i]])
+      reglist[[i]] <- readRDS(pathlist[["parquet"]][[i]])
 
     } else if(i == "pato") {
 
-      dat <- readRDS(pathlist[["rds"]][[i]])
+      dat <- readRDS(pathlist[["parquet"]][[i]])
 
       setDT(dat)
 
@@ -178,7 +178,8 @@ loadR <- function(regs,
 
 
     } else if(i == "lmdb") {
-      cl <- parallel::makeCluster(4)
+      cl <- parallel::makeCluster(cores)
+      registerDoParallel(cl)
 
       reglist[[i]] <- as.data.frame(rbindlist(parLapply(cl, seq(lmdb.start,lmdb.stop), function(year) {
         heaven::importSAS(paste0("X:/Data/Rawdata_Hurtig/709545/Grunddata/medication/lmdb", year, "12.sas7bdat", sep=""),
