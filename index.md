@@ -6,7 +6,7 @@ The cancR package is developed for conducting registry-based
 epidemiological cancer research with R. The package functions span
 across the entire project workflow, from data management to plotting the
 results. Many of the functions can also be applied in a non-registry
-setting common data management tasks.
+setting as they are useful for common data management tasks.
 
 ## Installation
 
@@ -33,10 +33,9 @@ articles with thorough examples of all functions.
 
 ## Maintenance
 
-The package is regularly maintained and updated. Bugs and suggestions
-are very welcome and should be sent to the package developer. It is
-recommended to update the cancR package often as it is still in the
-development phase.
+The package is regularly maintained and updated. Issues and suggestions
+should be sent to the package developer. It is recommended to update the
+cancR package often as it is still in the development phase.
 
 ## Acknowledgements
 

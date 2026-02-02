@@ -1,6 +1,6 @@
-# Installing the cancR package
+# Install and UpdatR the cancR package
 
-## Quick start
+## Update cancR
 
 If the cancR package has previously been installed on the computer and
 needs to be updated, use the pak-package with the command
