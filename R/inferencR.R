@@ -17,6 +17,7 @@
 #' @param cens.form custom formula for the RHS of the censoring model
 #' @param time Time horizon of interest. Defaults to 60 (e.g. 5-years)
 #' @param breaks Interim time points of interest. Defaults to 12 months (1-year gaps)
+#' @param cause cause of interest, default = 1
 #' @param estimator whether the estimator should be "IPTW", "GFORMULA" or "AIPTW" (default)
 #' @param plot whether plot data should be estimated for time optimization (default = T)
 #' @param survtime Whether median time to event should be calculated (default = F)
@@ -24,6 +25,7 @@
 #' @param bins bins for the weights plot, default = 0.5
 #' @param digits for rounding of eventtimes
 #' @param event.digits whether eventtimes should be rounded. Default is 2 to preserve exact times
+#' @param alpha alpha level for the estimation of confidence intervals and p-values. Default = 0.05
 #' @param weights.digits the number of digits for categorization of weights
 #' @param weights.breaks breaks for categorization of weights
 #'
@@ -94,6 +96,7 @@ inferencR <- function(data,
                       cens.form = NULL,
                       time = 120,
                       breaks = 12,
+                      cause = 1,
                       estimator = "AIPTW",
                       plot = T,
                       survtime = T,
@@ -101,6 +104,7 @@ inferencR <- function(data,
                       bins = 0.5,
                       digits = 4,
                       event.digits = 2,
+                      alpha = 0.05,
                       weights.digits = 1,
                       weights.breaks = 1) {
 
@@ -126,6 +130,8 @@ inferencR <- function(data,
 
   treat_c <- data %>% select({{treatment}}) %>% names()
   event_c <- data %>% select({{event}}) %>% names()
+
+
 
   #Vars extracted from custom forms if specified
   if(missing(vars)) {
@@ -156,10 +162,17 @@ inferencR <- function(data,
   treat.model <- glm(as.formula(treat.form), data=dat,family=binomial(link="logit"))
 
   #Weighting diagnostics
-  dat_w <- dat %>% mutate(ps = predict(treat.model, newdata=dat, type="response"),
-                          w = ifelse(!!sym(treat_c) %in% levels[2], 1/ps, 1/(1-ps))) %>%
-    cutR(w, seq(0,100,weights.breaks), digits = weights.digits,
+  w_object <-  WeightIt::weightit(as.formula(treat.form),
+                                                    data = dat,
+                                                    estimand = "ATE",
+                                                    method = "glm")
+
+  dat_w <- dat %>% mutate(ps = w_object$ps,
+                          w = w_object$weights) %>%
+        cutR(w, seq(0,100,weights.breaks), digits = weights.digits,
               name.list = "wgroup")
+
+
 
   plot_weights <- summarisR(dat_w,
                             vars = c(ps, w),
@@ -167,6 +180,13 @@ inferencR <- function(data,
                             headings = list("w" = "Weights",
                                             "ps" = "Propensity Scores"),
                             bins = bins)
+
+  balance_plot <- cobalt::love.plot(w_object)
+
+  bal_tab <-  cobalt::bal.tab(w_object,
+                              disp = "means",
+                              un=T)
+
 
   tab_w <- cbind(tablR(dat_w,
                            group = treat_c,
@@ -176,6 +196,8 @@ inferencR <- function(data,
                  group = treat_c,
                  vars = c(vars_c, ovars_c),
                  weights = w)[,-1])
+
+
 
   dat_w <- dat_w %>%
     factR(num.vars = "wgroup")
@@ -192,7 +214,9 @@ inferencR <- function(data,
   out.list[["weights"]] <- list(data = dat_w,
                                 table_iptw = tab_w,
                                 table_strat = strat_w,
-                                plot = plot_weights)
+                                plot = plot_weights,
+                                bal_plot = balance_plot,
+                                bal_tab = bal_tab)
 
 
   if(method == "tte") {
@@ -206,15 +230,16 @@ inferencR <- function(data,
       dat[,event_c] <- as.numeric(dat[,event_c]) - 1
     }
 
-    if(length(unique(dat[, event_c])) == 2) {
-      surv = TRUE
-    } else {
-      surv = FALSE
-    }
+    #Survival outcome
+    surv <- length(unique(dat[, event_c])) == 2
+
+    #Rounding of event times
+    dat <- dat %>%
+      mutate(!!sym(timevar_c) := round(!!sym(timevar_c), event.digits))
 
     #RISK TABLE
     prod <- prodlim(as.formula(paste0("Hist(", timevar_c, ", ", event_c, ") ~", treat_c, collapse = "")), data=dat)
-    tab <- summary(prod, times = seq(0,horizon,1), intervals = TRUE, cause=1) %>%
+    tab <- summary(prod, times = seq(0,horizon,1), intervals = TRUE, cause=cause) %>%
       group_by(!!sym(treat_c)) %>%
       mutate(cumsum = cumsum(n.event)) %>%
       ungroup() %>%
@@ -272,16 +297,11 @@ inferencR <- function(data,
     event.model <- CSC(as.formula(event.form), data=dat)
 
     #Diagnostics
-    c1 <- event.model$models$`Cause 1`
-    c2 <- event.model$models$`Cause 2`
-    ct1 <- cox.zph(c1)
-    ct2 <- cox.zph(c2)
-    pct1 <- survminer::ggcoxzph(ct1)
-    pct2 <- survminer::ggcoxzph(ct2)
-    diaglist <- list(ct1,pct1,ct2,pct2)
-    names(diaglist)<- c("Cause1_tests", "Cause1_plots", "Cause2_tests", "Cause2_plots")
-
-    out.list[["diagnostics"]] <- diaglist
+    out.list[["diagnostics"]] <- list(cox.zph(event.model$models$`Cause 1`),
+                                      survminer::ggcoxzph(cox.zph(event.model$models$`Cause 1`)),
+                                      cox.zph(event.model$models$`Cause 2`),
+                                      survminer::ggcoxzph(cox.zph(event.model$models$`Cause 2`))) %>%
+      set_names(c("Cause1_tests", "Cause1_plots", "Cause2_tests", "Cause2_plots"))
 
   }
 
@@ -322,7 +342,11 @@ inferencR <- function(data,
                 estimator = estimator,
                 data = dat,
                 times = horizon,
-                cause=1)
+                cause=cause)
+
+  est <-
+    as.data.frame(confint(ate.frame, level = 1-alpha)$meanRisk)
+
 
   if(plot) {
 
@@ -331,11 +355,11 @@ inferencR <- function(data,
                       censor = censor.model,
                       estimator = estimator,
                       data = dat,
-                      times = unique(round(sort(c(0,dat[dat[, event_c] == 1 & dat[,timevar_c] < horizon, timevar_c],horizon)),event.digits)),
-                      cause=1)
+                      times = unique(sort(c(0,dat[dat[, event_c] == 1 & dat[,timevar_c] < horizon, timevar_c],horizon))),
+                      cause=cause)
 
-    plot <-
-      as.data.frame(summary(plot.frame, short=TRUE, type = "meanRisk")$meanRisk)
+    plot_data <-
+      as.data.frame(confint(plot.frame, level = 1-alpha)$meanRisk)
 
     if(surv & survscale == "OS") {
       plot <- plot %>% mutate(across(c(estimate, lower, upper), ~1 - .))%>%
@@ -379,11 +403,6 @@ inferencR <- function(data,
 
   }
 
-
-
-  est <-
-    as.data.frame(summary(ate.frame, short=T, type = "meanRisk")$meanRisk)
-
   if(surv & survscale == "OS") {
 
 
@@ -404,23 +423,23 @@ inferencR <- function(data,
   out.list[["risks"]] <- est
 
   rd <-
-    as.data.frame(summary(ate.frame, short=T, type = "diffRisk")$diffRisk) %>%
-    rename(diff = estimate) %>%
-    select(time, A, B,diff:p.value) %>%
-    mutate(across(c(diff:upper), ~.*100),
-           across(c(diff:upper), ~round(.,digits-2)),
-           p.exact = p.value,
-           p.value = sapply(p.value, pvertR))
+    as.data.frame(confint(ate.frame, level = 1-alpha)$diffRisk) %>%
+      rename(diff = estimate) %>%
+      select(time, A, B,diff:p.value) %>%
+      mutate(across(c(diff:upper), ~.*100),
+             across(c(diff:upper), ~round(.,digits-2)),
+             p.exact = pmin(1, p.value * 0.05/alpha),
+             p.value = sapply(p.value * 0.05/alpha, pvertR))
 
+  out.list[["difference"]] <- rd
 
-  out.list[["difference"]] = rd
-
-  rr <- as.data.frame(summary(ate.frame, short=T, type = "ratioRisk")$ratioRisk) %>%
+  rr <-
+    as.data.frame(confint(ate.frame, level = 1-alpha)$ratioRisk) %>%
     rename(ratio = estimate) %>%
     select(time,A, B, ratio:p.value)%>%
     mutate(across(c(ratio:upper), ~round(.,digits-2)),
-           p.exact = p.value,
-           p.value = sapply(p.value, pvertR))
+           p.exact = pmin(1, p.value * 0.05/alpha),
+           p.value = sapply(p.value * 0.05/alpha, pvertR))
 
   out.list[["ratio"]] <- rr
 
@@ -436,16 +455,16 @@ inferencR <- function(data,
   out.list[["counts"]] <- counts
 
 
-  out.list[["info"]] <- list("method" = method,
-                             "timevar" = timevar_c,
-                             "event" = event_c,
-                             "group" = treat_c,
-                             "group_levels" = levels,
-                             "surv" = surv,
-                             "survscale" = survscale,
-                             "time" = horizon,
-                             "breaks" = breaks,
-                             "event.digits" = event.digits)
+  out.list[["info"]] <- list(method = method,
+                             timevar = timevar_c,
+                             event = event_c,
+                             group = treat_c,
+                             group_levels = levels,
+                             surv = surv,
+                             survscale = survscale,
+                             time = horizon,
+                             breaks = breaks,
+                             event.digits = event.digits)
 
   cat(paste0("\nTotal runtime: \n"))
   cat(tockR("diff"))
@@ -455,7 +474,4 @@ inferencR <- function(data,
 
 
 }
-
-
-
 

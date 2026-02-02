@@ -20,7 +20,7 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><h6 class="dropdown-header" data-toc-skip>Get started</h6></li>
     <li><a class="dropdown-item" href="../articles/install.html">Install and Update R</a></li>
-    <li><a class="dropdown-item" href="../articles/cancR.html">Install cancR</a></li>
+    <li><a class="dropdown-item" href="../articles/cancR.html">Install and Update cancR</a></li>
     <li><a class="dropdown-item" href="../articles/setup.html">R setup</a></li>
     <li><a class="dropdown-item" href="../articles/redcap.html">Redcap and R</a></li>
     <li><h6 class="dropdown-header" data-toc-skip>R guides</h6></li>
@@ -54,20 +54,28 @@
 <span>  <span class="va">treatment</span>,</span>
 <span>  <span class="va">outcome</span>,</span>
 <span>  <span class="va">path.list</span>,</span>
-<span>  label.fill <span class="op">=</span> <span class="st">"#C4C4C4"</span>,</span>
+<span>  label.fill <span class="op">=</span> <span class="va">cancR_palette</span><span class="op">[</span><span class="fl">8</span><span class="op">]</span>,</span>
 <span>  label.color <span class="op">=</span> <span class="st">"Black"</span>,</span>
 <span>  label.positions <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  treatment.fill <span class="op">=</span> <span class="st">"#AB5CB8"</span>,</span>
-<span>  outcome.fill <span class="op">=</span> <span class="st">"#97AFCC"</span>,</span>
-<span>  arrow.fill <span class="op">=</span> <span class="st">"Black"</span>,</span>
+<span>  segment.shift <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  treatment.fill <span class="op">=</span> <span class="va">cancR_palette</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>,</span>
+<span>  outcome.fill <span class="op">=</span> <span class="va">cancR_palette</span><span class="op">[</span><span class="fl">4</span><span class="op">]</span>,</span>
 <span>  arrow.color <span class="op">=</span> <span class="st">"Black"</span>,</span>
+<span>  arrow.color.main <span class="op">=</span> <span class="st">"Black"</span>,</span>
 <span>  arrow.linewidth <span class="op">=</span> <span class="fl">0.7</span>,</span>
 <span>  arrow.size <span class="op">=</span> <span class="fl">5</span>,</span>
-<span>  arrow.distance <span class="op">=</span> <span class="fl">0.2</span>,</span>
+<span>  arrow.distance <span class="op">=</span> <span class="fl">0.1</span>,</span>
+<span>  distance.method <span class="op">=</span> <span class="st">"rectangle"</span>,</span>
+<span>  distance.resolution <span class="op">=</span> <span class="fl">6</span>,</span>
+<span>  distance.ratio <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  distance.string <span class="op">=</span> <span class="fl">0.12</span>,</span>
 <span>  curvature <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  label.size <span class="op">=</span> <span class="fl">6</span>,</span>
 <span>  dagitty <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  seed <span class="op">=</span> <span class="fl">1</span></span>
+<span>  position.digits <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  seed <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  margin <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">0.1</span>, <span class="fl">0.1</span>, <span class="op">-</span><span class="fl">0.1</span>, <span class="fl">0.1</span><span class="op">)</span>,</span>
+<span>  draw <span class="op">=</span> <span class="cn">F</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -99,6 +107,10 @@
 <dd><p>manual adjustment of label positions (x,y) in the format list("treatment" = c(0,0))</p></dd>
 
 
+<dt id="arg-segment-shift">segment.shift<a class="anchor" aria-label="anchor" href="#arg-segment-shift"></a></dt>
+<dd><p>list of vectors of c(from, to, x, y) where x and y are shifts in coordinate, e.g. list("conf", "outcome", 1,0)</p></dd>
+
+
 <dt id="arg-treatment-fill">treatment.fill<a class="anchor" aria-label="anchor" href="#arg-treatment-fill"></a></dt>
 <dd><p>fill color for the treatment label</p></dd>
 
@@ -107,12 +119,12 @@
 <dd><p>fill color for the outcome label</p></dd>
 
 
-<dt id="arg-arrow-fill">arrow.fill<a class="anchor" aria-label="anchor" href="#arg-arrow-fill"></a></dt>
-<dd><p>fill color of the arrow heads</p></dd>
-
-
 <dt id="arg-arrow-color">arrow.color<a class="anchor" aria-label="anchor" href="#arg-arrow-color"></a></dt>
 <dd><p>color of the arrows</p></dd>
+
+
+<dt id="arg-arrow-color-main">arrow.color.main<a class="anchor" aria-label="anchor" href="#arg-arrow-color-main"></a></dt>
+<dd><p>color of the arrow between treatment and outcome</p></dd>
 
 
 <dt id="arg-arrow-linewidth">arrow.linewidth<a class="anchor" aria-label="anchor" href="#arg-arrow-linewidth"></a></dt>
@@ -124,7 +136,23 @@
 
 
 <dt id="arg-arrow-distance">arrow.distance<a class="anchor" aria-label="anchor" href="#arg-arrow-distance"></a></dt>
-<dd><p>distance from label center to arrowhead as a fraction of the euclidian distance</p></dd>
+<dd><p>distance from label center to arrowhead (unit same as coordinates)</p></dd>
+
+
+<dt id="arg-distance-method">distance.method<a class="anchor" aria-label="anchor" href="#arg-distance-method"></a></dt>
+<dd><p>how the points should be spread around lables ("rectangle" (default), "midways", "corners", "circle" and "oval")</p></dd>
+
+
+<dt id="arg-distance-resolution">distance.resolution<a class="anchor" aria-label="anchor" href="#arg-distance-resolution"></a></dt>
+<dd><p>the number of subdivisions on the x and y axis of the given shape. For circles it indicates the subdivisions of 360 degrees.</p></dd>
+
+
+<dt id="arg-distance-ratio">distance.ratio<a class="anchor" aria-label="anchor" href="#arg-distance-ratio"></a></dt>
+<dd><p>the ratio between the x.distance and y.distance. Larger values increase the distance width.</p></dd>
+
+
+<dt id="arg-distance-string">distance.string<a class="anchor" aria-label="anchor" href="#arg-distance-string"></a></dt>
+<dd><p>arbitrary value specifying the amount of spacing caused by the number of characters in the label</p></dd>
 
 
 <dt id="arg-curvature">curvature<a class="anchor" aria-label="anchor" href="#arg-curvature"></a></dt>
@@ -139,8 +167,20 @@
 <dd><p>output from dagitty.net inserted in single quotation marks.</p></dd>
 
 
+<dt id="arg-position-digits">position.digits<a class="anchor" aria-label="anchor" href="#arg-position-digits"></a></dt>
+<dd><p>rounding of the position cooridinates for dagitty plots for aligment. Default = 0.</p></dd>
+
+
 <dt id="arg-seed">seed<a class="anchor" aria-label="anchor" href="#arg-seed"></a></dt>
 <dd><p>for reproducibility</p></dd>
+
+
+<dt id="arg-margin">margin<a class="anchor" aria-label="anchor" href="#arg-margin"></a></dt>
+<dd><p>vector of length 4 adding space to the limits of the x and y axis in the format c(xmin, xmax, ymin,ymax)</p></dd>
+
+
+<dt id="arg-draw">draw<a class="anchor" aria-label="anchor" href="#arg-draw"></a></dt>
+<dd><p>whether the distance.points should be drawn around label for diagnostical purposes (default = F)</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -151,18 +191,22 @@
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">dagR</span><span class="op">(</span>treatment <span class="op">=</span> <span class="st">"treatment"</span>,</span></span>
-<span class="r-in"><span>outcome <span class="op">=</span> <span class="st">"outcome"</span>,</span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"treatment"</span> <span class="op">=</span> <span class="st">"outcome"</span>,</span></span>
-<span class="r-in"><span>     <span class="st">"conf"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"treatment"</span>, <span class="st">"outcome"</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>     <span class="st">"x1"</span> <span class="op">=</span> <span class="st">"outcome"</span>,</span></span>
-<span class="r-in"><span>     <span class="st">"x2"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"treatment"</span>, <span class="st">"outcome"</span><span class="op">)</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>arrow.distance <span class="op">=</span> <span class="fl">0.25</span>,</span></span>
-<span class="r-in"><span>arrow.linewidth <span class="op">=</span> <span class="fl">0.7</span>,</span></span>
-<span class="r-in"><span>label.positions <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"treatment"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">5</span>,<span class="fl">5</span><span class="op">)</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>seed <span class="op">=</span> <span class="fl">3</span>,</span></span>
-<span class="r-in"><span>curvature <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"conf"</span>, <span class="st">"outcome"</span>, <span class="fl">0.2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in dagR(treatment = "treatment", outcome = "outcome", list(treatment = "outcome",     conf = c("treatment", "outcome"), x1 = "outcome", x2 = c("treatment",         "outcome")), arrow.distance = 0.25, arrow.linewidth = 0.7,     label.positions = list(treatment = c(5, 5)), seed = 3, curvature = list(c("conf",         "outcome", 0.2))):</span> could not find function "dagR"</span>
-<span class="r-in"><span></span></span>
+<span class="r-in"><span>     outcome <span class="op">=</span> <span class="st">"outcome"</span>,</span></span>
+<span class="r-in"><span>     <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"treatment"</span> <span class="op">=</span> <span class="st">"outcome"</span>,</span></span>
+<span class="r-in"><span>          <span class="st">"conf"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"treatment"</span>, <span class="st">"outcome"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>          <span class="st">"x1"</span> <span class="op">=</span> <span class="st">"outcome"</span>,</span></span>
+<span class="r-in"><span>          <span class="st">"x2"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"treatment"</span>, <span class="st">"outcome"</span><span class="op">)</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>     arrow.distance <span class="op">=</span> <span class="fl">0.1</span>,</span></span>
+<span class="r-in"><span>     arrow.linewidth <span class="op">=</span> <span class="fl">0.7</span>,</span></span>
+<span class="r-in"><span>     arrow.size <span class="op">=</span> <span class="fl">5</span>,</span></span>
+<span class="r-in"><span>     distance.ratio <span class="op">=</span> <span class="fl">40</span>,</span></span>
+<span class="r-in"><span>     distance.method <span class="op">=</span> <span class="st">"rectangle"</span>,</span></span>
+<span class="r-in"><span>     distance.resolution <span class="op">=</span> <span class="fl">10</span>,</span></span>
+<span class="r-in"><span>     label.positions <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"treatment"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">5</span>,<span class="fl">5</span><span class="op">)</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>     segment.shift <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"conf"</span>, <span class="st">"outcome"</span>, <span class="fl">.2</span>,<span class="op">-</span><span class="fl">0.05</span><span class="op">)</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>     seed <span class="op">=</span> <span class="fl">3</span>,</span></span>
+<span class="r-in"><span>     curvature <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"conf"</span>, <span class="st">"outcome"</span>, <span class="fl">0.2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="dagR-1.png" alt="" width="700" height="433"></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

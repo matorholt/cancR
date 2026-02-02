@@ -47,7 +47,7 @@ loadR <- function(regs,
 
   cat(paste0("\nInitializing loadR algorithm: ", tockR("time"), "\n\n"))
 
-  regs <- match.arg(regs, c("lpr", "lmdb", "pop", "pato", "cancer", "opr", "sc", "meta", "dsd", "ses", "covariates"), several.ok = T)
+  regs <- match.arg(regs, c("lpr", "lmdb", "pop", "pato", "cancer", "opr", "sc", "meta", "dsd", "ses", "covariates", "dcr"), several.ok = T)
 
   if(!is.null(keep.list) & class(keep.list) != "list") {
     stop('Format the argument "keep" as a list with the structure list("lpr" = c("vars"), "lmdb" = c("vars"))')
@@ -107,15 +107,16 @@ loadR <- function(regs,
 
   pathlist <-
     list("parquet" = list("lpr" = "V:/Data/Workdata/709545/Mathias Oerholt/DATASETS/LPR.parquet",
-                      "pop" = "V:/Data/Workdata/709545/Mathias Oerholt/DATASETS/POPULATION.rds",
+                      "pop" = "V:/Data/Workdata/709545/Mathias Oerholt/DATASETS/POPULATION.parquet",
                       "pato" = "V:/Data/Workdata/709545/Mathias Oerholt/DATASETS/PATOBANK.parquet",
                       "cancer" = "V:/Data/Workdata/709545/Mathias Oerholt/DATASETS/CANCER.parquet",
                       "opr" = "V:/Data/Workdata/709545/Mathias Oerholt/DATASETS/OPR.parquet",
-                      "sc" = "V:/Data/Workdata/709545/Mathias Oerholt/DATASETS/SKIN_CANCER.rds",
-                      "meta" = "V:/Data/Workdata/709545/Mathias Oerholt/DATASETS/SKIN_METASTASIS.rds",
-                      "dsd" = "V:/Data/Workdata/709545/Mathias Oerholt/DATASETS/SKIN_DEATH.rds",
-                      "ses" = "V:/Data/Workdata/709545/Mathias Oerholt/DATASETS/SES_wide.rds",
-                      "covariates" = "V:/Data/Workdata/709545/Mathias Oerholt/DATASETS/TIME_COVARIATES.parquet"),
+                      "sc" = "V:/Data/Workdata/709545/Mathias Oerholt/DATASETS/SKIN_CANCER.parquet",
+                      "meta" = "V:/Data/Workdata/709545/Mathias Oerholt/DATASETS/SKIN_METASTASIS.parquet",
+                      "dsd" = "V:/Data/Workdata/709545/Mathias Oerholt/DATASETS/SKIN_DEATH.parquet",
+                      "ses" = "V:/Data/Workdata/709545/Mathias Oerholt/DATASETS/SES_wide.parquet",
+                      "covariates" = "V:/Data/Workdata/709545/Mathias Oerholt/DATASETS/TIME_COVARIATES.parquet",
+                      "dcr" = "V:/Data/Workdata/709545/Mathias Oerholt/DATASETS/DCR.parquet"),
          "sas" = list("lpr" = "X:/Data/Rawdata_Hurtig/709545/Grunddata/LPR/diag_indl.sas7bdat",
                       "cancer" = "X:/Data/Rawdata_Hurtig/709545/Grunddata/Cancer/t_tumor.sas7bdat",
                       "opr" = "X:/Data/Rawdata_Hurtig/709545/Grunddata/LPR/opr.sas7bdat"))
@@ -164,13 +165,13 @@ loadR <- function(regs,
       pattern <- NULL
     }
 
-    if((is.null(n) & is.null(id.filter) & !(i %in% names(keep.list)) & !(i %in% names(pattern.list))) | i %in% c("pop", "sc", "meta", "dsd", "ses")) {
+    if((is.null(n) & is.null(id.filter) & !(i %in% names(keep.list)) & !(i %in% names(pattern.list))) | i %in% c("pop", "sc", "meta", "dsd", "ses", "dcr")) {
 
-      reglist[[i]] <- readRDS(pathlist[["parquet"]][[i]])
+      reglist[[i]] <- as.data.frame(arrow::read_parquet(pathlist[["parquet"]][[i]]))
 
     } else if(i == "pato") {
 
-      dat <- readRDS(pathlist[["parquet"]][[i]])
+      dat <- arrow::read_parquet(pathlist[["parquet"]][[i]])
 
       setDT(dat)
 

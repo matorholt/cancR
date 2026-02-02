@@ -21,6 +21,7 @@
 #' @param censur whether counts <= 3 should be censored
 #' @param weights optional name of the column containing weights for weighted summaries
 #' @param digits number of digits
+#' @param ama whether percentages >10 should be without digits per AMA journal of style. Default = T.
 #' @param simplify a list of column names that should be simplified by dropping specified levels (e.g. 0 or "no") for simple output.
 #' Groups of size > 1 should be named such as: list("IHC" = c("cd10", "sox10", "ck"), "necrosis", "margins")
 #' @param simplify.remove vector of labels that should be removed from the columns assigned in the "simplify" argument. Default = c("no", "0")
@@ -89,6 +90,7 @@ tablR <- function(data,
                   censur=F,
                   weights,
                   digits = 1,
+                  ama = T,
                   simplify = list(),
                   simplify.remove = c("no", "0"),
                   print = F,
@@ -229,6 +231,17 @@ tablR <- function(data,
   if(censur) {
 
     tab <- tab %>% mutate(across(everything(), ~ ifelse(str_detect(., "^(1|2|3)\\s\\("), "<=3", .)))
+
+  }
+
+  if(ama) {
+
+    tab <- tab %>% mutate(across(everything(), ~ ifelse(str_detect(., "%"),
+                                                        ifelse(as.numeric(str_extract(., "\\d+\\.\\d+(?=(%))")) > 10,
+                                                               str_replace(., "\\d{2,}\\.\\d*(?=(%))", as.character(round(as.numeric(str_extract(., "\\d{2,}\\.\\d*(?=(%))")),0))),
+                                                               .)
+
+                                                        , .)))
 
   }
 

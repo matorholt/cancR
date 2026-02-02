@@ -7,7 +7,7 @@
 #' @param data data set containing age, sex and index date and group
 #' @param group optional if incidence rates should be provided per group
 #' @param strata list of vectors for which strata the incidence rates should be reported (e.g. per age-group and sex)
-#' @param pyears the unit of the incidence rate. Default is per million person years
+#' @param pyears the unit of the incidence rate. Default is 100.000 person years
 #' @param ci.method the method for derivation of confidence intervals. Default is "normal". If negative CIs are reported, use "lognormal"
 #' @param index variable name of the index data
 #' @param age name of the age variable
@@ -57,9 +57,9 @@ aggregate_df <-
     data %>%
     mutate(year = str_extract(!!sym(index_c), "\\d{4}"),
            !!sym(sex_c) := str_to_lower(str_extract(!!sym(sex_c), "\\w"))) %>%
-    cutR(age_c,
+    cutR(!!sym(age_c),
          c(seq(0,85,5), 150),
-         name.list = list("age" = "age_group")) %>%
+         name.list = list("age_group") %>% set_names(age_c)) %>%
     mutate(age_group = ifelse(age_group == "85-150", "85+", as.character(age_group))) %>%
     select(year, age_group, matches(paste0("\\b", c(group_c, sex_c), "\\b", collapse="|"))) %>%
     group_by(!!sym(group_c), year, age_group, sex) %>%

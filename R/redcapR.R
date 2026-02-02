@@ -66,7 +66,7 @@ redcapR <- function (data, dictionary, namelist = list(), date.vars = NULL,
       varlist[[d[["var"]][v]]] <- as.list(values) %>% set_names(labels)
     }
   }
-  raw <- raw %>% recodR(varlist, match = "boundary", replace = T) %>%
+  raw <- data %>% recodR(varlist, match = "boundary", replace = T) %>%
     rename(id = 1) %>% mutate(across(everything(), ~if_else(. %in%
                                                               c("", "NA", " "), NA, .)))
   date_c <- unique(c(dict$var[which(str_detect(dict$format,

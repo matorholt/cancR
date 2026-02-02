@@ -1,5 +1,5 @@
 ---
-title: "Installing the cancR package"
+title: "Install and UpdatR the cancR package"
 author: "Mathias Ørholt"
 output:
   html_document:
@@ -13,7 +13,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-## Quick start
+## Update cancR
 
 If the cancR package has previously been installed on the computer and needs to be updated, use the pak-package with the command `pak::pak("matorholt/cancR")`. R needs to be restarted after installing/updating cancR.
 

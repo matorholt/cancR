@@ -26,7 +26,7 @@ navbar:
       - text: Get started
       - text: Install and Update R
         href: articles/install.html
-      - text: Install cancR
+      - text: Install and Update cancR
         href: articles/cancR.html
       - text: R setup
         href: articles/setup.html

@@ -1,10 +1,10 @@
-#' Load csv, excel and rds files
+#' Load csv, excel, rds and parquet files
 #'
 #' @description
-#' Wrapper for the fread, readxl and readRDS functions with automatic detection of file extension
+#' Wrapper for the fread, readxl, readRDS and read_parquet functions with automatic detection of file extension.
 #'
 #'
-#' @param path path for the file to load
+#' @param path path for the file to load.
 #' @param ... arguments passes to subfunctions
 #'
 #' @returns the given path imported as a data frame
@@ -14,6 +14,23 @@
 
 
 readR <- function(path, extension, leading.zeros = T, na = "", ...) {
+
+  if(str_detect(path, ".(csv|txt|rds|xls|parquet)", negate=T)) {
+
+    path <- fs::dir_ls("../", recurse=2)[str_detect(fs::dir_ls("../", recurse=2), path)]
+
+    #return(path)
+
+    if(length(path) > 1) {
+      cat(paste0("Error: Multiple files detected, please provide the file name with an extension such as myfile.csv\n\n"))
+      return(cat("Detected files:\n", paste0(path, sep="\n")))
+
+    }
+
+    cat(paste0("No extension provided. Guessing at file: ", path, "\n\n"))
+
+
+  }
 
   if(str_detect(path, ".csv|.txt")) {
 
