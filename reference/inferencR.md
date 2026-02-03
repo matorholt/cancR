@@ -20,6 +20,7 @@ inferencR(
   cens.form = NULL,
   time = 120,
   breaks = 12,
+  cause = 1,
   estimator = "AIPTW",
   plot = T,
   survtime = T,
@@ -27,6 +28,7 @@ inferencR(
   bins = 0.5,
   digits = 4,
   event.digits = 2,
+  alpha = 0.05,
   weights.digits = 1,
   weights.breaks = 1
 )
@@ -90,6 +92,10 @@ inferencR(
 
   Interim time points of interest. Defaults to 12 months (1-year gaps)
 
+- cause:
+
+  cause of interest, default = 1
+
 - estimator:
 
   whether the estimator should be "IPTW", "GFORMULA" or "AIPTW"
@@ -121,6 +127,11 @@ inferencR(
 
   whether eventtimes should be rounded. Default is 2 to preserve exact
   times
+
+- alpha:
+
+  alpha level for the estimation of confidence intervals and p-values.
+  Default = 0.05
 
 - weights.digits:
 

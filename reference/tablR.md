@@ -25,6 +25,7 @@ tablR(
   censur = F,
   weights,
   digits = 1,
+  ama = T,
   simplify = list(),
   simplify.remove = c("no", "0"),
   print = F,
@@ -101,6 +102,11 @@ tablR(
 - digits:
 
   number of digits
+
+- ama:
+
+  whether percentages \>10 should be without digits per AMA journal of
+  style. Default = T.
 
 - simplify:
 

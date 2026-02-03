@@ -59,18 +59,19 @@ Wrapper for the prodlim and ate-functions in riskRegression.</p>
 <span>  <span class="va">event</span>,</span>
 <span>  <span class="va">group</span>,</span>
 <span>  survscale <span class="op">=</span> <span class="st">"AM"</span>,</span>
-<span>  type <span class="op">=</span> <span class="st">"uni"</span>,</span>
+<span>  method <span class="op">=</span> <span class="st">"cox"</span>,</span>
 <span>  <span class="va">vars</span>,</span>
-<span>  <span class="va">form</span>,</span>
+<span>  event.form <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  time <span class="op">=</span> <span class="fl">120</span>,</span>
 <span>  breaks <span class="op">=</span> <span class="fl">12</span>,</span>
 <span>  cause <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>  survtime <span class="op">=</span> <span class="cn">T</span>,</span>
-<span>  proportions <span class="op">=</span> <span class="cn">F</span>,</span>
-<span>  conditional <span class="op">=</span> <span class="cn">F</span>,</span>
 <span>  pl <span class="op">=</span> <span class="cn">T</span>,</span>
 <span>  digits <span class="op">=</span> <span class="fl">4</span>,</span>
 <span>  event.digits <span class="op">=</span> <span class="fl">2</span>,</span>
+<span>  alpha <span class="op">=</span> <span class="fl">0.05</span>,</span>
+<span>  survtime <span class="op">=</span> <span class="cn">T</span>,</span>
+<span>  proportions <span class="op">=</span> <span class="cn">F</span>,</span>
+<span>  conditional <span class="op">=</span> <span class="cn">F</span>,</span>
 <span>  diagnostics <span class="op">=</span> <span class="cn">F</span>,</span>
 <span>  plot <span class="op">=</span> <span class="cn">T</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -100,16 +101,8 @@ Wrapper for the prodlim and ate-functions in riskRegression.</p>
 <dd><p>Whether overall survial should be estimated as survival or all-cause mortality (1-survival)</p></dd>
 
 
-<dt id="arg-type">type<a class="anchor" aria-label="anchor" href="#arg-type"></a></dt>
-<dd><p>Model specification, Can be univariate ("uni"), Age- and sex standardized ("age-sex"), Multivariate with variable selection ("select"). In this case vars should be a vector of the covariates. "custom" allows for free modelling where the form-argument contains the formula.</p></dd>
-
-
 <dt id="arg-vars">vars<a class="anchor" aria-label="anchor" href="#arg-vars"></a></dt>
 <dd><p>Only applicable when "select" is chosen as type. The variables are added to the model as an additive model</p></dd>
-
-
-<dt id="arg-form">form<a class="anchor" aria-label="anchor" href="#arg-form"></a></dt>
-<dd><p>Only applicable when "custom" is chosen as type. Free specification of the model as the right-hand side of the formula.</p></dd>
 
 
 <dt id="arg-time">time<a class="anchor" aria-label="anchor" href="#arg-time"></a></dt>
@@ -124,8 +117,24 @@ Wrapper for the prodlim and ate-functions in riskRegression.</p>
 <dd><p>cause of interest, default = 1</p></dd>
 
 
+<dt id="arg-pl">pl<a class="anchor" aria-label="anchor" href="#arg-pl"></a></dt>
+<dd><p>Whether product.limit in ATE shoulde be T or F (default = T)</p></dd>
+
+
+<dt id="arg-digits">digits<a class="anchor" aria-label="anchor" href="#arg-digits"></a></dt>
+<dd><p>number of digits risk estimates in the returned results</p></dd>
+
+
+<dt id="arg-event-digits">event.digits<a class="anchor" aria-label="anchor" href="#arg-event-digits"></a></dt>
+<dd><p>Rounding of event times. Default is 2 to preserve exact times</p></dd>
+
+
+<dt id="arg-alpha">alpha<a class="anchor" aria-label="anchor" href="#arg-alpha"></a></dt>
+<dd><p>alpha level for the estimation of confidence intervals and p-values. Default = 0.05</p></dd>
+
+
 <dt id="arg-survtime">survtime<a class="anchor" aria-label="anchor" href="#arg-survtime"></a></dt>
-<dd><p>Whether median time to event should be calculated (default = F)</p></dd>
+<dd><p>Whether median time to event should be calculated (default = T)</p></dd>
 
 
 <dt id="arg-proportions">proportions<a class="anchor" aria-label="anchor" href="#arg-proportions"></a></dt>
@@ -136,38 +145,52 @@ Wrapper for the prodlim and ate-functions in riskRegression.</p>
 <dd><p>Whether conditional risk at the time horizon should be calculated (default = F)</p></dd>
 
 
-<dt id="arg-pl">pl<a class="anchor" aria-label="anchor" href="#arg-pl"></a></dt>
-<dd><p>Whether product.limit in ATE shoulde be T or F (default = T)</p></dd>
+<dt id="arg-diagnostics">diagnostics<a class="anchor" aria-label="anchor" href="#arg-diagnostics"></a></dt>
+<dd><p>whether Scaled Schoenfield residuals should be visualized (default = F)</p></dd>
 
 
-<dt id="arg-digits">digits<a class="anchor" aria-label="anchor" href="#arg-digits"></a></dt>
-<dd><p>for rounding of eventtimes</p></dd>
+<dt id="arg-plot">plot<a class="anchor" aria-label="anchor" href="#arg-plot"></a></dt>
+<dd><p>whether estimates for plotR should be performed (default = T)</p></dd>
 
 
-<dt id="arg-event-digits">event.digits<a class="anchor" aria-label="anchor" href="#arg-event-digits"></a></dt>
-<dd><p>whether eventtimes should be rounded. Default is 2 to preserve exact times</p></dd>
+<dt id="arg-type">type<a class="anchor" aria-label="anchor" href="#arg-type"></a></dt>
+<dd><p>Model specification, Can be univariate ("uni"), Age- and sex standardized ("age-sex"), Multivariate with variable selection ("select"). In this case vars should be a vector of the covariates. "custom" allows for free modelling where the form-argument contains the formula.</p></dd>
+
+
+<dt id="arg-form">form<a class="anchor" aria-label="anchor" href="#arg-form"></a></dt>
+<dd><p>Only applicable when "custom" is chosen as type. Free specification of the model as the right-hand side of the formula.</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>time_to_event: Median survival time <br>
+    <p>List of class "estimatR" containing the following:
 table: Event table <br>
-plot_data: Data for plotting CIF curves <br>
-hr: Hazard ratio between the groups <br>
 models: Model objects (cause1 and cause2) <br>
-diag: Diagnostics for assessing proportionality <br>
 risks: Absolute risk estimates at the specified time points <br>
-differences: Absolute risk difference at the specified time horizons <br>
-ratios: Absolute risk ratios at the the specified time horizon <br>
+plot_data: Data for plotting CIF curves <br>
+time_to_event: Median survival time <br>
+hr: Hazard ratio between the groups <br>
+difference: Absolute risk difference at the specified time horizons <br>
+ratio: Absolute risk ratios at the the specified time horizon <br>
 counts: Event and group counts in the contrasted groups <br>
+info: information on arguments for extraction
+Optional:
+diag: Diagnostics for assessing proportionality <br>
 proportions: <br>
 "Before" estimates the risk of event within a certain timepoint (e.g. x% of the events occurred within). <br>
 "After" estimates the risk of residual events between timepoint x and ten years. <br>
 "Window" estimates the percentage of events within six month windows (e.g. x% of the events occurred between t1 and t2) <br>
-conditional: Conditional risk estimates <br>
-info: information on arguments for extraction</p>
+conditional: Conditional risk estimates <br></p>
     </div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">estimatR</span><span class="op">(</span><span class="va">analysis_df</span>, <span class="va">ttt</span>, <span class="va">event</span>, <span class="va">X1</span>, type <span class="op">=</span> <span class="st">"select"</span>, vars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">X6</span>,<span class="va">X7</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in estimatR(analysis_df, ttt, event, X1, type = "select", vars = c(X6,     X7)):</span> unused argument (type = "select")</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span></span></span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
 

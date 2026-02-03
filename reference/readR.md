@@ -1,7 +1,7 @@
-# Load csv, excel and rds files
+# Load csv, excel, rds and parquet files
 
-Wrapper for the fread, readxl and readRDS functions with automatic
-detection of file extension
+Wrapper for the fread, readxl, readRDS and read_parquet functions with
+automatic detection of file extension.
 
 ## Usage
 
@@ -13,7 +13,7 @@ readR(path, extension, leading.zeros = T, na = "", ...)
 
 - path:
 
-  path for the file to load
+  path for the file to load.
 
 - ...:
 

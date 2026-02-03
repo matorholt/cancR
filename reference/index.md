@@ -16,7 +16,7 @@ Functions for typical data management tasks
 - [`pvertR()`](pvertR.md) : Format p-values to AMA manual of style
 - [`structR()`](structR.md) : Convert dates to status indicator and
   time-to-event
-- [`readR()`](readR.md) : Load csv, excel and rds files
+- [`readR()`](readR.md) : Load csv, excel, rds and parquet files
 - [`recodR()`](recodR.md) : Recode multiple variables
 - [`redcapR()`](redcapR.md) : Autoformatting of redcap exports
 - [`rowR()`](rowR.md) : Perform rowwise operations
@@ -27,8 +27,8 @@ Functions for typical data management tasks
 
 Functions that perform statistical analysis
 
-- [`incidencR()`](incidencR.md) : Estimate absolute risks in a single
-  group with competing risks
+- [`incidencR()`](incidencR.md) : Directly standardized incidence rates
+  using the WHO standard population
 - [`estimatR()`](estimatR.md) : Absolute risk estimation of
   time-to-event data with competing risks
 - [`iteratR()`](iteratR.md) : Perform multiple estimatR analyses
@@ -39,8 +39,6 @@ Functions that perform statistical analysis
   clustering and competing risks
 - [`followR()`](followR.md) : Calculate median follow-up time using the
   inverse Kaplan-Meier method
-- [`ratR()`](ratR.md) : Directly standardized incidence rates using the
-  WHO standard population
 
 ## Tables and figures
 
@@ -48,8 +46,7 @@ Functions for producing and formatting tables and figures
 
 - [`collectR()`](collectR.md) : Collect multiple plots into one
 - [`dagR()`](dagR.md) : Draw directed acyclic graphs (DAGS)
-- [`plotR()`](plotR.md) : Autoplot for estimatR, incidencR, inferencR
-  and clustR
+- [`plotR()`](plotR.md) : Autoplot for estimatR, inferencR and clustR
 - [`savR()`](savR.md) : Save plots and tables
 - [`tablR()`](tablR.md) : Create frequency tables
 

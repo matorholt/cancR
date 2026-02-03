@@ -50,7 +50,7 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">numbR</span><span class="op">(</span><span class="va">numbers</span>, digits <span class="op">=</span> <span class="fl">1</span>, <span class="va">nsmall</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">numbR</span><span class="op">(</span><span class="va">numbers</span>, digits <span class="op">=</span> <span class="fl">1</span>, <span class="va">nsmall</span>, ama <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -68,12 +68,25 @@
 <dt id="arg-nsmall">nsmall<a class="anchor" aria-label="anchor" href="#arg-nsmall"></a></dt>
 <dd><p>number of zero-digits</p></dd>
 
+
+<dt id="arg-ama">ama<a class="anchor" aria-label="anchor" href="#arg-ama"></a></dt>
+<dd><p>whether the numbers should be printed according to AMA guidelines (no digits on values &gt;= 10). Default = F.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>returns a vector of same lentgh with formatted digits</p>
     </div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">numbR</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">5</span>,<span class="fl">2</span>,<span class="fl">4</span>,<span class="fl">10</span>,<span class="fl">100</span>, <span class="fl">41.2</span><span class="op">)</span>, ama<span class="op">=</span><span class="cn">F</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "  5.0" "  2.0" "  4.0" " 10.0" "100.0" " 41.2"</span>
+<span class="r-in"><span><span class="fu">numbR</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">5</span>,<span class="fl">2</span>,<span class="fl">4</span>,<span class="fl">10</span>,<span class="fl">100</span>, <span class="fl">41.2</span><span class="op">)</span>, ama<span class="op">=</span><span class="cn">T</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "  5.0" "  2.0" "  4.0" " 10"   "100"   " 41"  </span>
+<span class="r-in"><span></span></span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
 

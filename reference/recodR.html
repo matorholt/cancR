@@ -78,6 +78,130 @@
     <p>the input data frame with recoded variables</p>
     </div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">df</span> <span class="op">&lt;-</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>diag <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"DX123"</span>, <span class="st">"DC123"</span>, <span class="st">"DC234"</span>, <span class="st">"DG123"</span>, <span class="st">"DG234"</span><span class="op">)</span>, <span class="fl">20</span>, replace<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>           type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"DY"</span>, <span class="st">"DY234"</span>, <span class="st">"DY123"</span><span class="op">)</span>, <span class="fl">20</span>, replace<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>           type2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"DC123"</span>, <span class="st">"DC234"</span>, <span class="st">"DG123"</span><span class="op">)</span>, <span class="fl">20</span>, replace<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>           split <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"1,11"</span>, <span class="st">"2,10"</span>, <span class="st">"2,4"</span>, <span class="st">"2,15"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span>            <span class="va">df</span> <span class="op">%&gt;%</span></span></span>
+<span class="r-in"><span>  <span class="fu">recodR</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"diag"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"KOL"</span> <span class="op">=</span> <span class="st">"DX123"</span>,</span></span>
+<span class="r-in"><span>                            <span class="st">"Astma"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"DC123"</span>, <span class="st">"DC2"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                            <span class="st">"AMI"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"DG123"</span>, <span class="st">"DG234"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>         match <span class="op">=</span> <span class="st">"exact"</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     diag  type type2 split</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1    KOL    DY DC234  1,11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2    AMI DY234 DC234  2,10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3    KOL DY234 DG123   2,4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4  Astma DY234 DG123  2,15</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5    AMI    DY DC234  1,11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6  DC234 DY123 DC234  2,10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7  Astma    DY DC234   2,4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8  DC234 DY123 DC234  2,15</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9  DC234 DY234 DC123  1,11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10   KOL DY234 DC234  2,10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11   AMI DY234 DC234   2,4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12   AMI DY234 DC234  2,15</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13 Astma DY123 DC234  1,11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 14 Astma DY234 DC123  2,10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 15   KOL    DY DG123   2,4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 16   AMI DY123 DG123  2,15</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 17   AMI DY234 DC234  1,11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 18   KOL    DY DG123  2,10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 19   KOL    DY DG123   2,4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 20   AMI DY123 DC234  2,15</span>
+<span class="r-in"><span><span class="va">df</span> <span class="op">%&gt;%</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="factR.html">factR</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">diag</span>, <span class="va">type</span>, <span class="va">type2</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span></span></span>
+<span class="r-in"><span>  <span class="fu">recodR</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"diag"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"KOL"</span> <span class="op">=</span> <span class="st">"DX123"</span>,</span></span>
+<span class="r-in"><span>                            <span class="st">"Astma"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"DC123"</span>, <span class="st">"DC234"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                            <span class="st">"AMI"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"DG123"</span>, <span class="st">"DG234"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>         match <span class="op">=</span> <span class="st">"exact"</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     diag  type type2 split</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1    KOL    DY DC234  1,11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2    AMI DY234 DC234  2,10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3    KOL DY234 DG123   2,4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4  Astma DY234 DG123  2,15</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5    AMI    DY DC234  1,11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6  Astma DY123 DC234  2,10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7  Astma    DY DC234   2,4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8  Astma DY123 DC234  2,15</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9  Astma DY234 DC123  1,11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10   KOL DY234 DC234  2,10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11   AMI DY234 DC234   2,4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12   AMI DY234 DC234  2,15</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13 Astma DY123 DC234  1,11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 14 Astma DY234 DC123  2,10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 15   KOL    DY DG123   2,4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 16   AMI DY123 DG123  2,15</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 17   AMI DY234 DC234  1,11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 18   KOL    DY DG123  2,10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 19   KOL    DY DG123   2,4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 20   AMI DY123 DC234  2,15</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">df</span> <span class="op">%&gt;%</span></span></span>
+<span class="r-in"><span>  <span class="fu">recodR</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"split"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"one"</span> <span class="op">=</span> <span class="st">"1"</span>,</span></span>
+<span class="r-in"><span>                             <span class="st">"four"</span> <span class="op">=</span> <span class="st">"4"</span>,</span></span>
+<span class="r-in"><span>                             <span class="st">"ten"</span> <span class="op">=</span> <span class="st">"10"</span>,</span></span>
+<span class="r-in"><span>                             <span class="st">"fifteen"</span> <span class="op">=</span> <span class="st">"15"</span><span class="op">)</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>         match <span class="op">=</span> <span class="st">"boundary"</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     diag  type type2   split</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  DX123    DY DC234     one</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2  DG123 DY234 DC234     ten</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3  DX123 DY234 DG123    four</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4  DC123 DY234 DG123 fifteen</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5  DG234    DY DC234     one</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6  DC234 DY123 DC234     ten</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7  DC123    DY DC234    four</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8  DC234 DY123 DC234 fifteen</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9  DC234 DY234 DC123     one</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10 DX123 DY234 DC234     ten</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11 DG234 DY234 DC234    four</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12 DG234 DY234 DC234 fifteen</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13 DC123 DY123 DC234     one</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 14 DC123 DY234 DC123     ten</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 15 DX123    DY DG123    four</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 16 DG234 DY123 DG123 fifteen</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 17 DG234 DY234 DC234     one</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 18 DX123    DY DG123     ten</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 19 DX123    DY DG123    four</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 20 DG234 DY123 DC234 fifteen</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">df</span> <span class="op">%&gt;%</span></span></span>
+<span class="r-in"><span>  <span class="fu">recodR</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"split"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"one"</span> <span class="op">=</span> <span class="st">"1"</span>,</span></span>
+<span class="r-in"><span>                             <span class="st">"two"</span> <span class="op">=</span> <span class="st">"2"</span>,</span></span>
+<span class="r-in"><span>                            <span class="st">"eleven"</span> <span class="op">=</span> <span class="st">"11"</span>,</span></span>
+<span class="r-in"><span>                             <span class="st">"four"</span> <span class="op">=</span> <span class="st">"4"</span>,</span></span>
+<span class="r-in"><span>                             <span class="st">"ten"</span> <span class="op">=</span> <span class="st">"10"</span>,</span></span>
+<span class="r-in"><span>                             <span class="st">"fifteen"</span> <span class="op">=</span> <span class="st">"15"</span><span class="op">)</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>         match <span class="op">=</span> <span class="st">"boundary"</span>,</span></span>
+<span class="r-in"><span>         replace<span class="op">=</span><span class="cn">T</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     diag  type type2       split</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  DX123    DY DC234  one,eleven</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2  DG123 DY234 DC234     two,ten</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3  DX123 DY234 DG123    two,four</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4  DC123 DY234 DG123 two,fifteen</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5  DG234    DY DC234  one,eleven</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6  DC234 DY123 DC234     two,ten</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7  DC123    DY DC234    two,four</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8  DC234 DY123 DC234 two,fifteen</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9  DC234 DY234 DC123  one,eleven</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10 DX123 DY234 DC234     two,ten</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11 DG234 DY234 DC234    two,four</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12 DG234 DY234 DC234 two,fifteen</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13 DC123 DY123 DC234  one,eleven</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 14 DC123 DY234 DC123     two,ten</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 15 DX123    DY DG123    two,four</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 16 DG234 DY123 DG123 two,fifteen</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 17 DG234 DY234 DC234  one,eleven</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 18 DX123    DY DG123     two,ten</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 19 DX123    DY DG123    two,four</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 20 DG234 DY123 DC234 two,fifteen</span>
+<span class="r-in"><span></span></span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
 

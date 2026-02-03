@@ -13,18 +13,19 @@ estimatR(
   event,
   group,
   survscale = "AM",
-  type = "uni",
+  method = "cox",
   vars,
-  form,
+  event.form = NULL,
   time = 120,
   breaks = 12,
   cause = 1,
-  survtime = T,
-  proportions = F,
-  conditional = F,
   pl = T,
   digits = 4,
   event.digits = 2,
+  alpha = 0.05,
+  survtime = T,
+  proportions = F,
+  conditional = F,
   diagnostics = F,
   plot = T
 )
@@ -53,23 +54,10 @@ estimatR(
   Whether overall survial should be estimated as survival or all-cause
   mortality (1-survival)
 
-- type:
-
-  Model specification, Can be univariate ("uni"), Age- and sex
-  standardized ("age-sex"), Multivariate with variable selection
-  ("select"). In this case vars should be a vector of the covariates.
-  "custom" allows for free modelling where the form-argument contains
-  the formula.
-
 - vars:
 
   Only applicable when "select" is chosen as type. The variables are
   added to the model as an additive model
-
-- form:
-
-  Only applicable when "custom" is chosen as type. Free specification of
-  the model as the right-hand side of the formula.
 
 - time:
 
@@ -83,9 +71,26 @@ estimatR(
 
   cause of interest, default = 1
 
+- pl:
+
+  Whether product.limit in ATE shoulde be T or F (default = T)
+
+- digits:
+
+  number of digits risk estimates in the returned results
+
+- event.digits:
+
+  Rounding of event times. Default is 2 to preserve exact times
+
+- alpha:
+
+  alpha level for the estimation of confidence intervals and p-values.
+  Default = 0.05
+
 - survtime:
 
-  Whether median time to event should be calculated (default = F)
+  Whether median time to event should be calculated (default = T)
 
 - proportions:
 
@@ -97,31 +102,41 @@ estimatR(
   Whether conditional risk at the time horizon should be calculated
   (default = F)
 
-- pl:
+- diagnostics:
 
-  Whether product.limit in ATE shoulde be T or F (default = T)
+  whether Scaled Schoenfield residuals should be visualized (default =
+  F)
 
-- digits:
+- plot:
 
-  for rounding of eventtimes
+  whether estimates for plotR should be performed (default = T)
 
-- event.digits:
+- type:
 
-  whether eventtimes should be rounded. Default is 2 to preserve exact
-  times
+  Model specification, Can be univariate ("uni"), Age- and sex
+  standardized ("age-sex"), Multivariate with variable selection
+  ("select"). In this case vars should be a vector of the covariates.
+  "custom" allows for free modelling where the form-argument contains
+  the formula.
+
+- form:
+
+  Only applicable when "custom" is chosen as type. Free specification of
+  the model as the right-hand side of the formula.
 
 ## Value
 
-time_to_event: Median survival time  
-table: Event table  
-plot_data: Data for plotting CIF curves  
-hr: Hazard ratio between the groups  
+List of class "estimatR" containing the following: table: Event table  
 models: Model objects (cause1 and cause2)  
-diag: Diagnostics for assessing proportionality  
 risks: Absolute risk estimates at the specified time points  
-differences: Absolute risk difference at the specified time horizons  
-ratios: Absolute risk ratios at the the specified time horizon  
+plot_data: Data for plotting CIF curves  
+time_to_event: Median survival time  
+hr: Hazard ratio between the groups  
+difference: Absolute risk difference at the specified time horizons  
+ratio: Absolute risk ratios at the the specified time horizon  
 counts: Event and group counts in the contrasted groups  
+info: information on arguments for extraction Optional: diag:
+Diagnostics for assessing proportionality  
 proportions:  
 "Before" estimates the risk of event within a certain timepoint (e.g. x%
 of the events occurred within).  
@@ -130,4 +145,11 @@ ten years.
 "Window" estimates the percentage of events within six month windows
 (e.g. x% of the events occurred between t1 and t2)  
 conditional: Conditional risk estimates  
-info: information on arguments for extraction
+
+## Examples
+
+``` r
+estimatR(analysis_df, ttt, event, X1, type = "select", vars = c(X6,X7))
+#> Error in estimatR(analysis_df, ttt, event, X1, type = "select", vars = c(X6,     X7)): unused argument (type = "select")
+
+```

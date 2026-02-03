@@ -64,6 +64,7 @@
 <span>  cens.form <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  time <span class="op">=</span> <span class="fl">120</span>,</span>
 <span>  breaks <span class="op">=</span> <span class="fl">12</span>,</span>
+<span>  cause <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  estimator <span class="op">=</span> <span class="st">"AIPTW"</span>,</span>
 <span>  plot <span class="op">=</span> <span class="cn">T</span>,</span>
 <span>  survtime <span class="op">=</span> <span class="cn">T</span>,</span>
@@ -71,6 +72,7 @@
 <span>  bins <span class="op">=</span> <span class="fl">0.5</span>,</span>
 <span>  digits <span class="op">=</span> <span class="fl">4</span>,</span>
 <span>  event.digits <span class="op">=</span> <span class="fl">2</span>,</span>
+<span>  alpha <span class="op">=</span> <span class="fl">0.05</span>,</span>
 <span>  weights.digits <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  weights.breaks <span class="op">=</span> <span class="fl">1</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -132,6 +134,10 @@
 <dd><p>Interim time points of interest. Defaults to 12 months (1-year gaps)</p></dd>
 
 
+<dt id="arg-cause">cause<a class="anchor" aria-label="anchor" href="#arg-cause"></a></dt>
+<dd><p>cause of interest, default = 1</p></dd>
+
+
 <dt id="arg-estimator">estimator<a class="anchor" aria-label="anchor" href="#arg-estimator"></a></dt>
 <dd><p>whether the estimator should be "IPTW", "GFORMULA" or "AIPTW" (default)</p></dd>
 
@@ -158,6 +164,10 @@
 
 <dt id="arg-event-digits">event.digits<a class="anchor" aria-label="anchor" href="#arg-event-digits"></a></dt>
 <dd><p>whether eventtimes should be rounded. Default is 2 to preserve exact times</p></dd>
+
+
+<dt id="arg-alpha">alpha<a class="anchor" aria-label="anchor" href="#arg-alpha"></a></dt>
+<dd><p>alpha level for the estimation of confidence intervals and p-values. Default = 0.05</p></dd>
 
 
 <dt id="arg-weights-digits">weights.digits<a class="anchor" aria-label="anchor" href="#arg-weights-digits"></a></dt>
