@@ -75,9 +75,9 @@ estimatR <- function(data,
                      event,
                      group,
                      survscale = "AM",
-                     type = "uni",
+                     method = "cox",
                      vars,
-                     form,
+                     event.form = NULL,
                      time=120,
                      breaks = 12,
                      cause = 1,
@@ -93,8 +93,10 @@ estimatR <- function(data,
 
   cat("\nestimatR initialized: ", tickR(), "\n")
 
+  dat <- data
+
+
   for(i in c("data",
-             "treatment",
              "timevar",
              "event")) {
 
@@ -105,30 +107,74 @@ estimatR <- function(data,
 
   }
 
-  suppressWarnings(timevar_c <- data %>% select({{timevar}}) %>% names())
-  suppressWarnings(event_c <- data %>% select({{event}}) %>% names())
-  suppressWarnings(group_c <- data %>% select({{group}}) %>% names())
+  if(method %nin% c("cox", "aalen")) {
+
+    cat("Error: Invalid choice of method. Choose between cox and aalen")
+
+  }
+
+  if(!missing(vars)) method <- "cox"
+  if(missing(group)) method <- "aalen"
+
+
+  suppressWarnings(timevar_c <- dat %>% select({{timevar}}) %>% names())
+  suppressWarnings(event_c <- dat %>% select({{event}}) %>% names())
+  if(!missing(group)) {
+
+    group_c <- dat %>% select({{group}}) %>% names
+
+    #Remove NAs in group
+    dat <-
+      dat %>% drop_na(!!sym(group_c))%>%
+      as.data.frame()
+
+    if(!is.factor(data[[group_c]])) {
+
+      return(cat("Error:", group_c, "is not a factor. Convert using the factR() function"))
+
+    }
+
+  } else {
+
+    #Artificial group for Aalen
+    group <- sym("grp")
+    group_c <- "grp"
+    dat <-
+      dat %>% mutate(grp = as.factor(" "))
+
+  }
+
+  #Unique group levels
+  group_levels <- levels(dat[,group_c])
+
+  if(length(group_levels) > 10) {
+    cat("Error: Number of levels in group exceeding 10, wrong specification of the grouping variable?")
+  }
+
+
+  if(!missing(vars)) {
+
+    vars_c <- data %>% select({{vars}}) %>% names()
+
+    if(!is.null(event.form)) {
+      rhs <- paste(c(form), collapse = "")
+    } else {
+      rhs <- paste(c(group_c, vars_c), collapse = " + ")
+      dat <- dat %>% drop_na(!!!syms(vars_c))
+    }
+
+  } else {
+    rhs <- group_c
+  }
+
+  rhs_strat <- str_replace(rhs, group_c, paste0("strata(", group_c, ")"))
+
+
+
   horizon <- time
 
   out.list <- list()
 
-  type <- match.arg(type, c("uni", "age-sex", "select", "custom"))
-
-  if(!is.factor(data[[group_c]])) {
-
-    return(cat("Error:", group_c, "is not a factor. Convert using the factR() function"))
-
-  }
-
-  dat <-
-    data %>% drop_na(!!sym(group_c))%>%
-    as.data.frame()
-
-  group_levels <- levels(dat[,group_c])
-
-  if(group_levels > 10) {
-    cat("Error: Number of levels in group exceeding 10, wrong specification of the grouping variable?")
-  }
 
   if(length(levels(dat[,event_c])) == 2) {
     dat[,event_c] <- as.numeric(dat[,event_c]) - 1
@@ -144,122 +190,136 @@ estimatR <- function(data,
   dat <- dat %>%
     mutate(!!sym(timevar_c) := round(!!sym(timevar_c), event.digits))
 
-  if(type %in%"uni"){
-    rhs <- group_c
-
-  }
-  if(type %in%"age-sex"){
-    rhs <- paste0(group_c, " + age + sex", collapse="")
-  }
-  if(type %in%"select"){
-    suppressWarnings(vars_c <- data %>% select({{vars}}) %>% names())
-    rhs <- paste(c(group_c, vars_c), collapse = " + ")
-    dat <- dat %>% drop_na(!!!syms(vars_c))
-  }
-  if(type %in%"custom"){
-    rhs <- paste(c(form), collapse = "")
-  }
-
-  rhs_strat <- str_replace(rhs, group_c, paste0("strata(", group_c, ")"))
-
-
-  #Formula generation
-  form_h <- as.formula(paste(c(paste0("Hist(", timevar_c, ", ", event_c, ") ~", collapse = ""), rhs_strat), collapse = ""))
-  form_hhr <- as.formula(paste(c(paste0("Hist(", timevar_c, ", ", event_c, ") ~", collapse = ""), rhs), collapse = ""))
-  form_s <- as.formula(paste(c(paste0("Surv(", timevar_c, ", ", event_c, ") ~", collapse = ""), rhs_strat), collapse = ""))
-  form_shr <- as.formula(paste(c(paste0("Surv(", timevar_c, ", ", event_c, ") ~", collapse = ""), rhs), collapse = ""))
-
   #Life-table
   prod <- prodlim(as.formula(paste0("Hist(", timevar_c, ", ", event_c, ") ~", group_c, collapse = "")), data=dat)
+
   tab <- summary(prod, times = seq(0,horizon,1), intervals = TRUE, cause=cause) %>%
     group_by(!!sym(group_c)) %>%
     mutate(cumsum = cumsum(n.event)) %>%
     ungroup() %>%
     rename(time = time1) %>%
-    select(-time0, -n.lost, -contains("se.")) %>%
+    rename_with(~ paste0(str_replace(.x, "cuminc|surv", "est")), matches("cuminc|surv")) %>%
+    select(-time0, -n.lost) %>%
     as.data.frame()
 
   out.list[["table"]] <- tab
 
-  #Model specification and diagnostics
-  if(surv){
+  if(method == "cox") {
 
-    hr <-
-      coxph(form_shr, data=dat, x=TRUE, y=TRUE)
+    #Formula generation
+    form_h <- as.formula(paste(c(paste0("Hist(", timevar_c, ", ", event_c, ") ~", collapse = ""), rhs_strat), collapse = ""))
+    form_hhr <- as.formula(paste(c(paste0("Hist(", timevar_c, ", ", event_c, ") ~", collapse = ""), rhs), collapse = ""))
+    form_s <- as.formula(paste(c(paste0("Surv(", timevar_c, ", ", event_c, ") ~", collapse = ""), rhs_strat), collapse = ""))
+    form_shr <- as.formula(paste(c(paste0("Surv(", timevar_c, ", ", event_c, ") ~", collapse = ""), rhs), collapse = ""))
 
-    cr <-
-      coxph(form_s, data=dat, x=TRUE, y=TRUE)
-    cr$call$formula <- form_s
+    #Model specification and diagnostics
+    if(surv){
 
-    hres <- data.frame(level = rownames(summary(hr)$coefficients),
-                       hr =   summary(hr)$coefficients[,2],
-                       lower = summary(hr)$conf.int[,3],
-                       upper = summary(hr)$conf.int[,4],
-                       pval_ex = summary(hr)$coefficients[,5])
-    if(diagnostics) {
-      out.list[["diagnostics"]] <-
-        list(cox.zph(hr),
-             survminer::ggcoxzph(cox.zph(hr))) %>% set_names(c("Cox_tests", "Cox_plots"))
+      hr <-
+        coxph(form_shr, data=dat, x=TRUE, y=TRUE)
 
+      cr <-
+        coxph(form_s, data=dat, x=TRUE, y=TRUE)
+      cr$call$formula <- form_s
+
+      hres <- data.frame(level = rownames(summary(hr)$coefficients),
+                         hr =   summary(hr)$coefficients[,2],
+                         lower = summary(hr)$conf.int[,3],
+                         upper = summary(hr)$conf.int[,4],
+                         pval_ex = summary(hr)$coefficients[,5])
+      if(diagnostics) {
+        out.list[["diagnostics"]] <-
+          list(cox.zph(hr),
+               survminer::ggcoxzph(cox.zph(hr))) %>% set_names(c("Cox_tests", "Cox_plots"))
+
+
+      }
+
+    } else {
+
+      hr <- CSC(form_hhr, data = dat)
+      cr <- CSC(as.formula(form_h), data = dat)
+      cr$call$formula <- form_h
+
+      hres <- data.frame(level = rownames(summary(hr$models$`Cause 1`)$coefficients),
+                         hr =   summary(hr$models$`Cause 1`)$coefficients[,2],
+                         lower = summary(hr$models$`Cause 1`)$conf.int[,3],
+                         upper = summary(hr$models$`Cause 1`)$conf.int[,4],
+                         pval_ex =   summary(hr$models$`Cause 1`)$coefficients[,5])
+
+      if(diagnostics) {
+
+        out.list[["diagnostics"]] <-
+          list(cox.zph(hr$models$`Cause 1`),
+               survminer::ggcoxzph(cox.zph(hr$models$`Cause 1`)),
+               cox.zph(hr$models$`Cause 2`),
+               survminer::ggcoxzph(hr$models$`Cause 2`)) %>%
+          set_names(c("Cause1_tests", "Cause1_plots", "Cause2_tests", "Cause2_plots"))
+
+
+      }
 
     }
 
-  } else {
+    out.list[["models"]] <- cr
 
-    hr <- CSC(form_hhr, data = dat)
-    cr <- CSC(as.formula(form_h), data = dat)
-    cr$call$formula <- form_h
+    hres <- hres %>% filter(str_detect(level, group_c)) %>% mutate(level = str_remove_all(level, group_c),
+                                                                   p.value = pvertR(pval_ex * 0.05/alpha),
+                                                                   across(c(hr:upper), ~ as.numeric(format(round(.,2), nsmall=1)))) %>%
+      rename(!!sym(group_c) := level) %>%
+      tibble::remove_rownames()
 
-    hres <- data.frame(level = rownames(summary(hr$models$`Cause 1`)$coefficients),
-                       hr =   summary(hr$models$`Cause 1`)$coefficients[,2],
-                       lower = summary(hr$models$`Cause 1`)$conf.int[,3],
-                       upper = summary(hr$models$`Cause 1`)$conf.int[,4],
-                       pval_ex =   summary(hr$models$`Cause 1`)$coefficients[,5])
+    out.list[["hr"]] <- hres
 
-     if(diagnostics) {
-
-    out.list[["diagnostics"]] <-
-      list(cox.zph(hr$models$`Cause 1`),
-           survminer::ggcoxzph(cox.zph(hr$models$`Cause 1`)),
-           cox.zph(hr$models$`Cause 2`),
-           survminer::ggcoxzph(hr$models$`Cause 2`)) %>%
-      set_names(c("Cause1_tests", "Cause1_plots", "Cause2_tests", "Cause2_plots"))
-
-
-    }
-
-  }
-
-  out.list[["models"]] <- cr
-
-  CRest <-
-    invisible(ate(cr,
-                  treatment = group_c,
-                  data=dat,
-                  times = seq(0,horizon,breaks),
-                  product.limit = pl,
-                  cause = cause))
-
-  est <-
-    as.data.frame(confint(CRest, level = 1-alpha)$meanRisk)
-
-  if(plot) {
-
-    CRplot <-
-      invisible(ate(cr,
+    #ATE object
+    CRest <-
+      confint(ate(cr,
                     treatment = group_c,
                     data=dat,
-                    times = unique(sort(c(0,dat[dat[, event_c] == 1 & dat[,timevar_c] < horizon, timevar_c],horizon))),
+                    times = seq(0,horizon,breaks),
                     product.limit = pl,
-                    cause = cause))
+                    cause = cause), level = 1-alpha)
 
-    plot_data <-
-      as.data.frame(confint(CRplot, level = 1-alpha)$meanRisk)
+    est <-
+      as.data.frame(CRest$meanRisk)
+
+
+
+    if(plot) {
+
+      plot_data <-
+        as.data.frame(confint(ate(cr,
+                      treatment = group_c,
+                      data=dat,
+                      times = unique(sort(c(0,dat[dat[, event_c] == 1 & dat[,timevar_c] < horizon, timevar_c],horizon))),
+                      product.limit = pl,
+                      cause = cause), level = 1-alpha)$meanRisk)
+
+    }
+
 
   }
 
+  if(method == "aalen") {
 
-  if(surv & survscale == "OS") {
+      est <- tab %>%
+      filter(time %in% seq(0,horizon,breaks)) %>%
+      select(time, !!sym(group_c), est:upper) %>%
+      rename(se = se.est) %>%
+      rename(treatment = !!sym(group_c), estimate = est)
+
+      plot_data <-
+        summary(prod, times = unique(sort(c(0,dat[dat[, event_c] == 1 & dat[,timevar_c] < horizon, timevar_c],horizon))), intervals = TRUE, cause=cause) %>%
+        select(-time0, -n.lost) %>%
+        rename_with(~ paste0(str_replace(.x, "cuminc|surv", "estimate")), matches("cuminc|surv")) %>%
+        rename(time = time1,
+               treatment = !!sym(group_c),
+               se = se.estimate) %>%
+        as.data.frame()
+
+  }
+
+  if(surv & ((method == "cox" & survscale == "OS") | method == "aalen" & survscale == "AM"))  {
     est <- est %>% mutate(across(c(estimate, lower, upper), ~1 - .)) %>%
       rename(upr = lower,
              lwr = upper) %>%
@@ -281,15 +341,18 @@ estimatR <- function(data,
       rename(!!sym(group_c) := treatment, est=estimate)
     }
   }
+
   est <- est %>%
     select(time:se, lower, upper) %>%
     mutate(across(c(est:upper), ~round(.,digits)))
 
   out.list[["risks"]] <- est
 
+
+
   if(plot) {
   plot_data <- plot_data %>%
-    select(time:se, lower, upper) %>%
+    select(time, !!sym(group_c), est, se, lower, upper) %>%
     group_by(!!sym(group_c)) %>%
     slice(1:n(),n()) %>%
     mutate(time = ifelse(row_number() == n(), time+0.6, time)) %>%
@@ -308,40 +371,6 @@ estimatR <- function(data,
 
   }
 
-  hres <- hres %>% filter(str_detect(level, group_c)) %>% mutate(level = str_remove_all(level, group_c),
-                                                                 p.value = pvertR(pval_ex * 0.05/alpha),
-                                                                 across(c(hr:upper), ~ as.numeric(format(round(.,2), nsmall=1)))) %>%
-    rename(!!sym(group_c) := level) %>%
-    tibble::remove_rownames()
-
-  out.list[["hr"]] <- hres
-
-
-  rd <-
-    as.data.frame(confint(CRest, level = 1-alpha)$diffRisk) %>%
-    filter(time == horizon) %>%
-    rename(diff = estimate) %>%
-    select(time, A, B,diff:p.value) %>%
-    mutate(across(c(diff:upper), ~.*100),
-           across(c(diff:upper), ~round(.,digits-2)),
-           p.exact = pmin(1, p.value * 0.05/alpha),
-           p.value = sapply(p.value * 0.05/alpha, pvertR))
-
-
-
-  out.list[["difference"]] <- rd
-
-  rr <-
-    as.data.frame(confint(CRest, level = 1-alpha)$ratioRisk) %>%
-    filter(time == horizon) %>%
-    rename(ratio = estimate) %>%
-    select(time,A, B, ratio:p.value)%>%
-    mutate(across(c(ratio:upper), ~round(.,digits-2)),
-           p.exact = pmin(1, p.value * 0.05/alpha),
-           p.value = sapply(p.value * 0.05/alpha, pvertR))
-
-  out.list[["ratio"]] <- rr
-
   counts <-
     bind_cols(
       dat %>% group_by(!!sym(group_c), .drop=FALSE) %>%
@@ -353,6 +382,76 @@ estimatR <- function(data,
         select(-!!sym(group_c)))
 
   out.list[["counts"]] <- counts
+
+  #Risks
+  if(length(group_levels) > 1) {
+
+  if(method == "cox") {
+  rd <-
+    as.data.frame(CRest$diffRisk) %>%
+    filter(time == horizon) %>%
+    rename(diff = estimate) %>%
+    select(time, A, B,diff:p.value)
+  }
+
+  if(method == "aalen") {
+
+    #Risks
+    if(length(group_levels) > 1) {
+      est_horizon <- est[est$time == horizon,]
+      combos <- combn(seq_along(group_levels), 2)
+
+      rd <- bind_rows(
+        lapply(c(1:ncol(combos)), function(g) {
+
+          r <- est_horizon[as.vector(combos[, c(g)]),]
+
+          diff <- r$est[2] - r$est[1]
+          diffse <- sqrt(r$se[2]^2 + r$se[1]^2)
+          pval <- 2*pnorm(abs(diff/diffse), lower=FALSE)
+
+          data.frame(time = horizon,
+                     A = r[[group_c]][1],
+                     B = r[[group_c]][2],
+                     diff = diff,
+                     se = diffse,
+                     lower = diff - (stats::qnorm(1-(alpha/2)) * diffse),
+                     upper = diff + (stats::qnorm(1-(alpha/2)) * diffse),
+                     p.value = pval)
+
+        })
+      )
+
+    }
+  }
+
+  rd <-
+    rd %>%
+    mutate(across(c(diff:upper), ~.*100),
+           across(c(diff:upper), ~round(.,digits-2)),
+           p.exact = pmin(1, p.value * 0.05/alpha),
+           p.value = sapply(p.value * 0.05/alpha, pvertR))
+
+  out.list[["difference"]] <- rd
+
+
+  #Risk ratios
+  if(method == "cox") {
+  rr <-
+    as.data.frame(CRest$ratioRisk) %>%
+    filter(time == horizon) %>%
+    rename(ratio = estimate) %>%
+    select(time,A, B, ratio:p.value)%>%
+    mutate(across(c(ratio:upper), ~round(.,digits-2)),
+           p.exact = pmin(1, p.value * 0.05/alpha),
+           p.value = sapply(p.value * 0.05/alpha, pvertR))
+
+  out.list[["ratio"]] <- rr
+  }
+
+  }
+
+
 
   if(proportions) {
   prop <- est %>%group_by(!!sym(group_c))%>%
@@ -367,17 +466,23 @@ estimatR <- function(data,
            resciu = (pmin((residual +(stats::qnorm(1-(alpha/2))*rse)),100)),
            across(c(residual, rescil, resciu), ~. * 100))%>%
     select(time, !!sym(group_c), before, after, window, residual, rescil, resciu)%>%
-    filter(time < horizon)
+    filter(time < horizon) %>%
+    ungroup
 
-  out.list[["event_proportions"]] <- prop
+  out.list[["proportions"]] <- prop
 
   }
+
+
+
 
   if(conditional) {
   conditional <- rbindlist(lapply(group_levels, function(x){
     tab2 <- tab %>%filter(!!sym(group_c) %in% x)
     risk2 <- est %>%filter(!!sym(group_c) %in% x)
     condi <- rbindlist(lapply(seq(breaks,horizon,breaks), function(t1){
+
+
 
       if(surv & survscale == "OS") {
         cs <- ((risk2$est[risk2$time %in% horizon])/ (risk2$est[risk2$time %in%t1]))
@@ -394,10 +499,14 @@ estimatR <- function(data,
       r <- temp$n.risk[temp$time >= t1 &
                          temp$time <= horizon &
                          temp$n.event > 0]
+
       dr <- d / (r * (r - d))
       var.cs <- 1 / (log(cs)^2)* sum(dr)
       ci.cs <- round(cs^(exp(c(1, -1)* stats::qnorm(1-(alpha/2))* sqrt(var.cs))),3)
-      if(surv & survscale == "OS") {
+
+
+
+       if(surv & survscale == "OS") {
         cond <- data.frame(est = round(cs,3),
                            upper = ci.cs[1],
                            lower = ci.cs[2])
@@ -407,6 +516,7 @@ estimatR <- function(data,
                            lower = 1-ci.cs[2])
 
       }
+
       return(cond)
     })) %>% rbind(risk2[risk2$time %in% horizon ,c("est","lower","upper")], .)%>%
       mutate(grp = x,
@@ -423,7 +533,8 @@ estimatR <- function(data,
 
   }
 
-  out.list[["info"]] <- list(timevar = timevar_c,
+  out.list[["info"]] <- list(method = method,
+                             timevar = timevar_c,
                              event = event_c,
                              group = group_c,
                              group_levels = group_levels,
@@ -436,10 +547,32 @@ estimatR <- function(data,
                              multi = multi,
                              cause = cause)
 
+  #Remove empty group cols
+  if(length(group_levels) == 1) {
+
+    elements <- names(out.list)[names(out.list) %in% c("conditional",
+                                                       "proportions",
+                                                       "table",
+                                                       "risks",
+                                                       "time_to_event",
+                                                       "counts",
+                                                       "plot_data"
+                                                       )]
+
+
+    for(i in elements) {
+      out.list[[i]] <- out.list[[i]] %>%
+        select(-grp)
+
+    }
+  }
+
   cat(paste0("\nTotal runtime: \n"))
   cat(tockR("diff"))
 
-  class(out.list)<- "estimatR"
+  class(out.list) <- "estimatR"
+
   return(out.list)
 
 }
+

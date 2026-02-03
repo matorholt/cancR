@@ -4,7 +4,7 @@
 \alias{numbR}
 \title{Format numeric vectors}
 \usage{
-numbR(numbers, digits = 1, nsmall)
+numbR(numbers, digits = 1, nsmall, ama = F)
 }
 \arguments{
 \item{numbers}{numeric value or vector for formatting}
@@ -12,10 +12,17 @@ numbR(numbers, digits = 1, nsmall)
 \item{digits}{number of digits}
 
 \item{nsmall}{number of zero-digits}
+
+\item{ama}{whether the numbers should be printed according to AMA guidelines (no digits on values >= 10). Default = F.}
 }
 \value{
 returns a vector of same lentgh with formatted digits
 }
 \description{
 Format numeric vectors
+}
+\examples{
+numbR(c(5,2,4,10,100, 41.2), ama=F)
+numbR(c(5,2,4,10,100, 41.2), ama=T)
+
 }

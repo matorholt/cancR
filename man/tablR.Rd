@@ -24,6 +24,7 @@ tablR(
   censur = F,
   weights,
   digits = 1,
+  ama = T,
   simplify = list(),
   simplify.remove = c("no", "0"),
   print = F,
@@ -63,6 +64,8 @@ Options include: median, q1q3, medianq1q3 (default), iqr, range, mean, sd, means
 \item{weights}{optional name of the column containing weights for weighted summaries}
 
 \item{digits}{number of digits}
+
+\item{ama}{whether percentages >10 should be without digits per AMA journal of style. Default = T.}
 
 \item{simplify}{a list of column names that should be simplified by dropping specified levels (e.g. 0 or "no") for simple output.
 Groups of size > 1 should be named such as: list("IHC" = c("cd10", "sox10", "ck"), "necrosis", "margins")}

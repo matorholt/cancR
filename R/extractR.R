@@ -60,53 +60,60 @@ extractR <- function(list,
 
   outcome <- match.arg(outcome, c("counts", "risks", "diff", "ratio"), several.ok=TRUE)
 
-  if(class(list) %in% c("incidencR", "clustR")) outcome <- c("counts", "risks")
-
   grps <- list$info$group_levels
+
+  if(class(list) %in% c("clustR") | length(grps) == 1) outcome <- c("counts", "risks")
+  if("ratio" %in% outcome & list$info$method == "aalen") cat("Error: Risk ratios not implemented for method = aalen")
 
   if(censur) {
     list$counts <- list$counts %>%
       mutate(n.events = ifelse(n.events <= 3, "<=3", n.events))
   }
 
-  counts <-
+  out.list <- list()
+
+  if("counts" %in% outcome) {
+
+  out.list[["counts"]] <-
     list$counts %>%
     rowwise() %>%
     mutate(counts = ifelse(total.count, str_c(n.events, nsep, total), n.events)) %>%
     select(counts) %>%
     as.data.frame()
 
+  }
 
+  if("risks" %in% outcome) {
 
-  risks <-
-    list$risks %>% filter(time %in% list$info$time) %>% mutate(across(c(est, lower, upper), ~ numbR(.*100, risk.digits)),
+    out.list[["risks"]] <-
+    list$risks %>% filter(time %in% list$info$time) %>% mutate(across(c(est, lower, upper), ~ numbR(.*100, risk.digits, ama=T)),
                                                     risks = str_c(est, "%x(", ci, lower, sep, upper, ")")) %>%
     select(risks)
 
-  if(class(list) == "incidencR") {
-    diff <- data.frame(diff = rep("NA", length(grps)))
-  } else {
-   diff <-
+  }
+
+  if("diff" %in% outcome) {
+
+    out.list[["diff"]] <-
     list$difference %>%
      tibble::remove_rownames() %>%
      slice(1,1:(length(grps)-1)) %>%
-    mutate(diff = ifelse(row_number() > 1, str_c(numbR(diff, diff.digits), "%x(", ci, numbR(lower, diff.digits), sep, numbR(upper, diff.digits), ")xz", p.value), "reference")) %>%
+    mutate(diff = ifelse(row_number() > 1, str_c(numbR(diff, diff.digits, ama=T), "%x(", ci, numbR(lower, diff.digits, ama=T), sep, numbR(upper, diff.digits, ama=T), ")xz", p.value), "reference")) %>%
     select(diff)
+
   }
 
-   if(class(list) %in% c("incidencR", "clustR")) {
-     ratio <- data.frame(ratio = rep("NA", length(grps)))
-   } else {
-  ratio <-
+  if("ratio" %in% outcome) {
+
+    out.list[["ratio"]] <-
     list$ratio %>% slice(1,1:(length(grps)-1)) %>%
     rename(rr = ratio) %>%
     mutate(ratio = ifelse(row_number() > 1, str_c(rr, "x(", ci, numbR(lower, ratio.digits), sep, numbR(upper, ratio.digits), ")xz", p.value), "reference")) %>%
     select(ratio)
 
-   }
+  }
 
-  total <- bind_cols(counts, risks, diff, ratio)
-
+ total <- bind_cols(out.list)
 
   if(format == "long") {
     tab <- total %>%
@@ -146,7 +153,7 @@ for(i in names(tab)[str_detect(names(tab), "(risks|diff|ratio)(?!(_))")]) {
 
     tab <- tab %>% mutate(across(everything(), ~ ifelse(is.na(.), "reference", .)))
 
-
+print(tab)
 
   }
 

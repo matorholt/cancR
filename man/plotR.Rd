@@ -2,7 +2,7 @@
 % Please edit documentation in R/plotR.R
 \name{plotR}
 \alias{plotR}
-\title{Autoplot for estimatR, incidencR, inferencR and clustR}
+\title{Autoplot for estimatR, inferencR and clustR}
 \usage{
 plotR(
   list,
@@ -49,7 +49,7 @@ plotR(
 )
 }
 \arguments{
-\item{list}{an object of class estimatR, incidencR or clustR}
+\item{list}{an object of class estimatR, inferencR or clustR}
 
 \item{y}{Upper limit for y-axis}
 
@@ -135,5 +135,20 @@ plotR(
 Plot of the adjusted cumulative incidence or Kaplan-Meier curve
 }
 \description{
-Autoplot for estimatR, incidencR, inferencR and clustR
+Autoplot for estimatR, inferencR and clustR
+}
+\examples{
+#Risk in one group
+
+estimatR(analysis_df,
+timevar = ttt,
+event = event)
+
+#Risks in multiple groups
+estimatR(analysis_df,
+timevar = ttt,
+event = event,
+group = X2)
+
+
 }

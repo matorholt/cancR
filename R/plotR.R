@@ -1,8 +1,8 @@
-#' Autoplot for estimatR, incidencR, inferencR and clustR
+#' Autoplot for estimatR, inferencR and clustR
 #'
 #'
 #'
-#' @param list an object of class estimatR, incidencR or clustR
+#' @param list an object of class estimatR, inferencR or clustR
 #' @param y Upper limit for y-axis
 #' @param col Vector of colors
 #' @param table.col Grid color
@@ -47,7 +47,21 @@
 #' @return Plot of the adjusted cumulative incidence or Kaplan-Meier curve
 #' @export
 #'
+#' @examples
+#' #Risk in one group
 #'
+#' estimatR(analysis_df,
+#' timevar = ttt,
+#' event = event)
+#'
+#' #Risks in multiple groups
+#' estimatR(analysis_df,
+#' timevar = ttt,
+#' event = event,
+#' group = X2)
+#'
+#'
+
 # n <- 500
 # set.seed(1)
 # df <- riskRegression::sampleData(n, outcome="survival")
@@ -85,17 +99,12 @@
 #
 # plotR(t2)
 
-# i <- incidencR(analysis_df,
+# i <- estimatR(analysis_df,
 #                timevar = ttt,
-#                event = event2,
-#                group=X3)
+#                event = event2)
 #
 # plotR(i,
 #       p.values=F)
-
-
-
-
 
 plotR <- function(list,
                   y=100,
@@ -139,8 +148,8 @@ plotR <- function(list,
                   tscale = 1,
                   censur=F) {
 
-  if(class(list) %nin% c("estimatR", "clustR", "incidencR", "inferencR")) {
-    return(cat("Data not generated with the functions estimatR, inferencR, clustR or incidencR from the cancR package"))
+  if(class(list) %nin% c("estimatR", "clustR", "inferencR")) {
+    return(cat("Data not generated with the functions estimatR, inferencR or clustR from the cancR package"))
   }
 
   time.unit <- match.arg(time.unit, c("m2y", "d2m", "d2y", "days", "months", "years"))
@@ -159,13 +168,20 @@ plotR <- function(list,
   res <- est %>% filter(time %in% horizon)
   event.digits <- list$info$event.digits
 
-  if(class(list) == "incidencR") {
+
+
+  if(list$info$method == "aalen") {
 
     list[["ratio"]] <- list[["difference"]]
 
   }
 
-  if(class(list) == "incidencR" & list$info$group == "grp") contrast <- "none"
+  if(length(levels) == 1) {
+    contrast <- "none"
+    tab <- tab %>% mutate(grp = " ")
+    plot <- plot %>% mutate(grp = " ")
+
+  }
 
   if(contrast != "none") {
     #Contrast labels
@@ -212,9 +228,10 @@ plotR <- function(list,
       c_labels <- c("reference", c_labels[1:(length(levels)-1)])
     }
 
+    if(!p.values) c_labels <- str_remove(c_labels, ",\\sp\\s=.*")
   }
 
-  if(!p.values) c_labels <- str_remove(c_labels, ",\\sp\\s=.*")
+
 
   if(!print.est) border <- F
 
@@ -345,9 +362,12 @@ plotR <- function(list,
 
     }
 
+
+
     #Numbers
     tcols <- str_replace_all(table, c("risk" = "n.risk",
                                       "event" = "cumsum"))
+
 
     if(risk.col) {
 
@@ -448,7 +468,7 @@ plotR <- function(list,
                             size = res.size*tscale)
         }
 
-        if(class(list) == "incidencR" & list$info$group == "grp") {
+        if(length(levels) == 1) {
           #buttom <- buttom - 1
           rows <- rows[1:length(rows)-1]
         }

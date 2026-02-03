@@ -237,8 +237,8 @@ tablR <- function(data,
   if(ama) {
 
     tab <- tab %>% mutate(across(everything(), ~ ifelse(str_detect(., "%"),
-                                                        ifelse(as.numeric(str_extract(., "\\d+\\.\\d+(?=(%))")) > 10,
-                                                               str_replace(., "\\d{2,}\\.\\d*(?=(%))", as.character(round(as.numeric(str_extract(., "\\d{2,}\\.\\d*(?=(%))")),0))),
+                                                        ifelse(as.numeric(str_extract(., "\\d+\\.\\d*(?=(%))")) >= 10,
+                                                               str_replace(., "\\d+\\.\\d*(?=(%))", as.character(round(as.numeric(str_extract(., "\\d+\\.\\d*(?=(%))")),0))),
                                                                .)
 
                                                         , .)))

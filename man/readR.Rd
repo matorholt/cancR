@@ -2,12 +2,12 @@
 % Please edit documentation in R/readR.R
 \name{readR}
 \alias{readR}
-\title{Load csv, excel and rds files}
+\title{Load csv, excel, rds and parquet files}
 \usage{
 readR(path, extension, leading.zeros = T, na = "", ...)
 }
 \arguments{
-\item{path}{path for the file to load}
+\item{path}{path for the file to load.}
 
 \item{...}{arguments passes to subfunctions}
 }
@@ -15,5 +15,5 @@ readR(path, extension, leading.zeros = T, na = "", ...)
 the given path imported as a data frame
 }
 \description{
-Wrapper for the fread, readxl and readRDS functions with automatic detection of file extension
+Wrapper for the fread, readxl, readRDS and read_parquet functions with automatic detection of file extension.
 }
