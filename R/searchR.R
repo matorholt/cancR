@@ -5,6 +5,7 @@
 #' @param search.list list with list(label = diagnosis code) structure.
 #' @param sub.list list of variables where the diagnosis code should be kept (e.g. list("KOL" = "subtype"))
 #' @param sub.labels list of labels for the diagnosis code colum (e.g. list("subtype" = list("a" = c("DC1", "DC2"))))
+#' @param name.list list of labels for the main columns (e.g. list("case" = "diabetes))
 #' @param exclusion vector of diagnosis codes for exclusion
 #' @param slice which rows should be selected (first(default)/last/all)
 #' @param format whether selected rows should contain date or 1
@@ -18,11 +19,21 @@
 #'
 #
 # set.seed(1)
-# dfs <- list(lpr = simAdmissionData(n=100, m=10),
-#             opr = simAdmissionData(n=100, m=10) %>% rename(opr = diag),
-#             lmdb = simPrescriptionData(n=100))
 #
-# dfs <- lapply(dfs, as.data.frame)
+# n=500
+#
+# reglist <- list(lpr = simulatR("lpr", n=n,lpr.diag.count = 10),
+#                 opr = simulatR("opr", n=n, opr.diag.count = 10),
+#                 lmdb = simulatR("lmdb", n = n),
+#                 pop = simulatR("pop", n=n*10),
+#                 sc = data.frame(pnr = sample(seq(1,n*10), n*10*0.1, replace=F),
+#                                 sc_date = sample(c(sample(seq(as.Date('1990/01/01'), as.Date('2020/01/01'), by="day"))), n*10*0.1, replace=TRUE),
+#                                 meta_date = sample(c(sample(seq(as.Date('1990/01/01'), as.Date('2020/01/01'), by="day"))), n*10*0.1, replace=TRUE),
+#                                 pato_supp = sample(c(sample(seq(as.Date('1990/01/01'), as.Date('2020/01/01'), by="day"))), n*10*0.1, replace=TRUE)))
+#
+
+#
+# reglist <- lapply(reglist, as.data.frame)
 #
 # clist <- decodR(list("lpr_case" =
 #                        list(supergroup_a =
@@ -81,6 +92,7 @@
 
 searchR <- function(reglist,
                     search.list,
+                    name.list = NULL,
                     sub.list = list(),
                     sub.labels = NULL,
                     exclusion = "NULL",
@@ -89,7 +101,8 @@ searchR <- function(reglist,
                     date.filter = NULL,
                     match = "start",
                     casename = "index",
-                    pnr = pnr) {
+                    pnr = "pnr",
+                    cores = 4) {
 
   tickR()
 
@@ -101,17 +114,22 @@ searchR <- function(reglist,
   format <- match.arg(format, c("categorical", "date", "code"))
   slice <- match.arg(slice, c("first", "last", "all"))
 
-  if(any(class(reglist) %in% "data.frame")) {
-    reglist <- lst("dframe" = reglist)
+
+
+  if(class(reglist) %in% "data.frame") {
+
+    reglist <- lst(" " = reglist)
+    names(search.list) <- " "
+  } else {
+
+    reglist <- reglist[names(search.list)]
+
+
   }
 
-  if(sum(str_detect(names(search.list), "case")) > 1) {
+  pnr_c <- reglist[[1]] %>% select({{pnr}}) %>% names
 
-    return(cat("Only one list can be named case. Change to other suffix, e.g. pato_supp"))
 
-  }
-
-  pnr_c <- reglist[[1]] %>% select(pnr) %>% names()
 
   reglist <- lapply(reglist, function(d) {
     colnames(d)[which(str_detect(colnames(d), "eksd|inddto"))] <- "date"
@@ -119,93 +137,108 @@ searchR <- function(reglist,
     d
   })
 
-  slist <- list()
 
-  for(k in seq_along(names(search.list))) {
+    cl <- makeCluster(cores)
+    doSNOW::registerDoSNOW(cl)
 
-    i <- names(search.list)[k]
+    #Loop through reglist
+  joined_data <-
+    Reduce(function(x,y)
+    merge(x, y, all = TRUE),
+    foreach(x = seq_along(reglist)) %do% {
 
-    tickR()
+    cat(paste0("\n\nLoading ", str_to_upper(names(reglist)[x]), ": \n\n"))
 
-    if(any(str_detect(i, "\\blpr|\\blmdb|\\bopr|\\bpato"))) {
-    reg <- str_extract(i, "lpr|lmdb|opr|pato")
+    varlist <- search.list[[names(reglist)[[x]]]]
+    reg <- names(reglist)[x]
 
-
-    cat(paste0(reg," - ", i, ": "))
-
+    if(names(reglist)[[x]] == "pato") {
+      regex <- c("\\b(", ")")
     } else {
-      reg <- names(reglist)
 
-      cat(paste0(i, ": "))
+      switch(match,
+             "start" = {regex <- c("^(", ")")},
+             "end" = {regex <- c("(", ")$")},
+             "exact" = {regex <- c("^(", ")$")},
+             "contains" = {regex <- c("(", ")")}
+      )
     }
 
+    pb <- txtProgressBar(max = length(varlist), style = 3, width = getOption("width") - 6)
+    progress <- function(n) {
 
-
-
-
-    switch(match,
-           "start" = {regex <- c("^(", ")")},
-           "end" = {regex <- c("(", ")$")},
-           "exact" = {regex <- c("^(", ")$")},
-           "contains" = {regex <- c("(", ")")}
-    )
-
-    pattern <- paste0(regex[1], paste0(search.list[[i]], collapse="|"), regex[2])
-
-    exclude <- paste0(regex[1], paste0(exclusion, collapse="|"), regex[2])
-
-
-    data <- as.data.table(reglist[[reg]])[str_detect(code, pattern) & str_detect(code, exclude, negate=T)]
-
-    if(!is.null(date.filter)) {
-
-      data <- data[date <= as.Date(date.filter), ]
+      setTxtProgressBar(pb, n)
+      cat(paste0(" Completed: ",names(varlist)[n], " - Time: ", tockR("time"), " - runtime: ", tockR("diff"), "   "))
 
     }
+    opts <- list(progress = progress)
+
+    #Loop through variables
+    Reduce(function(x,y) #Running full-join merge
+      merge(x, y, by = pnr_c, all = TRUE),
+     foreach(k = seq_along(varlist),
+              .packages = c("tidyverse", "data.table"),
+             .options.snow = opts) %dopar% {
+
+      i <- names(varlist)[k]
 
 
-    if(format == "categorical") {
-      data <- data[, c(i) := 1]
-    } else if(format == "code") {
-      data <- data[, c(i) := code]
-    } else {
-      data <- data[, c(i) := date]
-    }
 
+      pattern <- paste0(regex[1], paste0(varlist[[i]], collapse="|"), regex[2])
 
-    if(i %in% names(sub.list)) {
+      exclude <- paste0(regex[1], paste0(exclusion, collapse="|"), regex[2])
 
-      for(j in sub.list[[i]]) {
+      data <- as.data.table(reglist[[reg]])[str_detect(code, pattern) & str_detect(code, exclude, negate=T)]
 
-        data <- data[, c(j) := code]
+      if(!is.null(date.filter)) {
+
+        data <- data[date <= as.Date(date.filter), ]
+
       }
-    }
 
-    switch(slice,
-           "first" = {range <- 1},
-           "last" = {range <- ".N"},
-           "all" = {range <- "1:.N"})
+      if(format == "categorical") {
+        data <- data[, c(i) := 1]
+      } else if(format == "code") {
+        data <- data[, c(i) := code]
+      } else {
+        data <- data[, c(i) := date]
+      }
 
-    data <- data[, .SD[eval(parse(text=range))], by=c(pnr_c), .SDcols = c(i, sub.list[[i]])]
+      if(i %in% names(sub.list)) {
 
-    slist[[i]] <- data
+        for(j in sub.list[[i]]) {
 
-    cat(paste0("Completed - ", tockR("time"), ", runtime: ", tockR("diff"), "\n"))
+          data <- data[, c(j) := code]
+        }
+      }
 
-  }
+      switch(slice,
+             "first" = {range <- 1},
+             "last" = {range <- ".N"},
+             "all" = {range <- "1:.N"})
 
-  joined_data <- plyr::join_all(slist, by = "pnr", type = "full") %>%
-    arrange(pnr)
+      data <- data[, .SD[eval(parse(text=range))], by=c(pnr_c), .SDcols = c(i, sub.list[[i]])]
 
-  if(any(str_detect(colnames(joined_data), "case"))) {
-    joined_data <- joined_data %>%
-      rename_with(~ paste0(casename), contains("case"))
+      setkeyv(data, pnr_c)
+      data
+
+
+    })
+
+  })[order(get(pnr_c))]
+
+  stopCluster(cl)
+
+  if(!is.null(name.list)) {
+  setnames(joined_data,
+           unlist(name.list),
+           names(name.list))
+
   }
 
   if(!is.null(sub.labels)) {
 
-    joined_data <- joined_data %>%
-      recodR(sub.labels)
+    joined_data <- recodR(joined_data, sub.labels)
 
   }
 

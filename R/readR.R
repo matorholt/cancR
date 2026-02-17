@@ -13,18 +13,23 @@
 #'
 
 
-readR <- function(path, extension, leading.zeros = T, na = "", ...) {
+readR <- function(path, extension = "", leading.zeros = T, na = "", ...) {
 
   if(str_detect(path, ".(csv|txt|rds|xls|parquet)", negate=T)) {
 
-    path <- fs::dir_ls("../", recurse=2)[str_detect(fs::dir_ls("../", recurse=2), path)]
 
-    #return(path)
+    path <- fs::dir_ls("../", recurse=2)[str_detect(fs::dir_ls("../", recurse=2), paste0("\\b", path, "\\."))]
+
+
 
     if(length(path) > 1) {
       cat(paste0("Error: Multiple files detected, please provide the file name with an extension such as myfile.csv\n\n"))
       return(cat("Detected files:\n", paste0(path, sep="\n")))
 
+    }
+
+    if(length(path) == 0) {
+      return(cat("No file detected"))
     }
 
     cat(paste0("No extension provided. Guessing at file: ", path, "\n\n"))
@@ -73,4 +78,3 @@ readR <- function(path, extension, leading.zeros = T, na = "", ...) {
 
 
 }
-

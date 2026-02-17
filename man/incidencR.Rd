@@ -9,7 +9,8 @@ incidencR(
   group,
   strata = list(c("year")),
   unit = 1e+05,
-  ci.method = "normal",
+  ci.method = "lognormal",
+  reference = "full",
   index,
   age = age,
   sex = sex
@@ -24,6 +25,8 @@ incidencR(
 
 \item{ci.method}{the method for derivation of confidence intervals. Default is "normal". If negative CIs are reported, use "lognormal"}
 
+\item{reference}{whether the reference population should include all possible age-sex-groups ("full" (default)) or only the age-groups present in data ("partial")}
+
 \item{index}{variable name of the index data}
 
 \item{age}{name of the age variable}
@@ -37,4 +40,28 @@ a standardized incidence rate of the overall population and, if specified in the
 }
 \description{
 Directly standardized incidence rates inspired by the dsr package by Matt Kumar. The incidence rates are standardized on 5-year age intervals and sex for each year in the period 1990-2025 based on population tables of the Danish population. Lastly the incidence rates are weighted based on the WHO world population.
+}
+\examples{
+(rates <-
+incidencR(redcap_df \%>\%
+           recodR(list("sex" = list("Female" = 1,
+                                     "Male" = 2))),
+          index = date_of_surgery,
+          group = type,
+          unit = 100000,
+          strata = list(c("year"),
+                        c("age", "sex"),
+                        c("year", "type"),
+                        c("year", "type", "age"),
+                        c("type", "age"),
+                        c("year", "age", "sex", "type"))))
+
+ggplot(rates$year_type, aes(x=year, y=weighted_rate, color = type, fill = type)) +
+  geom_point() +
+  geom_line() +
+  #geom_ribbon(aes(ymin = weighted_lower, ymax = weighted_upper), alpha = 0.2, color = NA) +
+  geom_smooth(se=F) +
+  theme_classic()
+
+
 }

@@ -4,7 +4,7 @@
 \alias{readR}
 \title{Load csv, excel, rds and parquet files}
 \usage{
-readR(path, extension, leading.zeros = T, na = "", ...)
+readR(path, extension = "", leading.zeros = T, na = "", ...)
 }
 \arguments{
 \item{path}{path for the file to load.}

@@ -7,6 +7,7 @@
 searchR(
   reglist,
   search.list,
+  name.list = NULL,
   sub.list = list(),
   sub.labels = NULL,
   exclusion = "NULL",
@@ -15,13 +16,16 @@ searchR(
   date.filter = NULL,
   match = "start",
   casename = "index",
-  pnr = pnr
+  pnr = "pnr",
+  cores = 4
 )
 }
 \arguments{
 \item{reglist}{list of dataframe(s)}
 
 \item{search.list}{list with list(label = diagnosis code) structure.}
+
+\item{name.list}{list of labels for the main columns (e.g. list("case" = "diabetes))}
 
 \item{sub.list}{list of variables where the diagnosis code should be kept (e.g. list("KOL" = "subtype"))}
 

@@ -14,16 +14,85 @@
 #' @return A data frame with filtered cases and all controls + an rds file for flow chart
 #' @export
 #'
-
+# set.seed(1)
+#
+# n=500
+#
+# reglist <- list(lpr = simulatR("lpr", n=n,lpr.diag.count = 10),
+#                 opr = simulatR("opr", n=n, opr.diag.count = 10),
+#                 lmdb = simulatR("lmdb", n = n),
+#                 pop = simulatR("pop", n=n*10),
+#                 pato = simulatR("pato", n=n),
+#                 sc = data.frame(pnr = sample(seq(1,n*10), n*10*0.1, replace=F),
+#                                 sc_date = sample(c(sample(seq(as.Date('1990/01/01'), as.Date('2020/01/01'), by="day"))), n*10*0.1, replace=TRUE),
+#                                 meta_date = sample(c(sample(seq(as.Date('1990/01/01'), as.Date('2020/01/01'), by="day"))), n*10*0.1, replace=TRUE),
+#                                 pato_supp = sample(c(sample(seq(as.Date('1990/01/01'), as.Date('2020/01/01'), by="day"))), n*10*0.1, replace=TRUE)))
+#
+# table(reglist$lpr$diag)
+# table(reglist$pato$snomed)
+# table(reglist$lmdb$atc)
+# table(reglist$opr$opr)
+#
+# codelist_matching <- list(
+#   case = list("lpr" = c("DA", "DB"),
+#               "pato" = "M(83)"),
+#   lpr = list("immun_lpr" = c("DC", "DD", "DE"),
+#              "leukemia" = c("DF", "DG")),
+#   lmdb = list("immun_atc" = c("A","B"),
+#               "chemo" = "G"),
+#   opr = list("immun_opr" = c("KA","KB")),
+#   design = list(age.limit = 18,
+#                 period = c("2000-01-01", "2022-12-31"),
+#                 exclusion = c("sc_date"))
+#
+# )
+#
+# codelist_rtmle <- list(
+#   exposure = list(simvastatin = list(atc = "C10AA01",
+#                                      maxdepot = 100*80*3,
+#                                      prescriptionwindow = 2,
+#                                      doses = list(
+#                                        value = c(10,20,40),
+#                                        min = c(5,10,20),
+#                                        max = c(20,40,80),
+#                                        def = c(10,20,40)))),
+#   design = list(age.limit = 40,
+#                 period = c("2005-01-01", "2022-12-31"),
+#                 exclusion = c("gi", "breast", "leukemia", "immun_lpr")),
+#   lpr = list(immun_lpr = c("DC", "DD", "DE"),
+#              leukemia = c("DF", "DG")),
+#   lmdb = list(immun_atc = c("A","B"),
+#               chemo = "G"),
+#   opr = list(immun_opr = c("KA","KB")),
+#   cancer = list(gi = c("DH", "DI", "DJ"),
+#                 breast = c("DK", "DL"))
+# )
+#
+# c.list <- decodR(codelist_matching)
+#
+# c.list
+#
+# reglist <- rlang::exec(loadR, !!!c.list$loadR)
+# indices <- rlang::exec(searchR, reglist, !!!c.list$searchR)
+#
+# pre_join <- plyr::join_all(list(reglist$pop,
+#                                 indices,
+#                                 reglist$sc))
+#
+# c.list
+#
+#
+# includR(pre_join,
+#         exclusion.ex = )
 
 # set.seed(1)
 #
 # n=500
 #
-# reglist <- list(lpr = simAdmissionData(n=n, m=10),
-#             opr = simAdmissionData(n=n, m=10) %>% rename(opr = diag),
-#             lmdb = simPrescriptionData(n=n),
-#             pop = simPop(n*10),
+# reglist <- list(lpr = simulatR("lpr", n=n,lpr.diag.count = 10),
+#            opr = simulatR("opr", n=n, opr.diag.count = 10),
+#             lmdb = simulatR("lmdb", n = n),
+#             pop = simulatR("pop", n=n*10),
 #             sc = data.frame(pnr = sample(seq(1,n*10), n*10*0.1, replace=F),
 #                             sc_date = sample(c(sample(seq(as.Date('1990/01/01'), as.Date('2020/01/01'), by="day"))), n*10*0.1, replace=TRUE),
 #                             meta_date = sample(c(sample(seq(as.Date('1990/01/01'), as.Date('2020/01/01'), by="day"))), n*10*0.1, replace=TRUE),
@@ -52,7 +121,9 @@
 #                      "opr_ex" = list("sotr" = c("DT", "DG", "DK")),
 #                      "labels" = list("lpr_case" = c("sg_level", "g_level", "sub_level"),
 #                                      "lpr_ex" = "immsup"),
-#                      "exclusion" = c("DQ","ZZ2")))
+#                      "exclusion" = c("DQ","ZZ2"),
+#                      "inclusion" = list("age.limit" = 18,
+#                                         "period" = c("2000-01-01","2024-01-01"))))
 #
 #
 # indices <- searchR(reglist,

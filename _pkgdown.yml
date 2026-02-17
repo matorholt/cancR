@@ -54,6 +54,7 @@ reference:
   - distributR
   - factR
   - groupR
+  - joinR
   - missR
   - pvertR
   - structR

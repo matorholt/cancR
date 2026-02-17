@@ -39,12 +39,18 @@
 #               index = datesurg)
 
 redcapR <- function (data, dictionary, namelist = list(), date.vars = NULL,
-                     autoformat = T, formatlist = NULL, cprlist = NULL, index)
+                     autoformat = T, formatlist = NULL, cprlist = NULL, index,
+                     id = study_id)
 {
+
+  id_c <- data %>% select({{id}}) %>% names
+
   dict <- dictionary %>% rename(var = "Variable / Field Name",
                                 type = "Field Type", labels = "Choices, Calculations, OR Slider Labels",
                                 format = "Text Validation Type OR Show Slider Number") %>%
     select(var, type, labels, format)
+
+
   d <- dict %>% filter(type %in% c("radio", "checkbox"))
   varlist <- list()
   for (v in seq_along(d[["var"]])) {
@@ -66,36 +72,39 @@ redcapR <- function (data, dictionary, namelist = list(), date.vars = NULL,
       varlist[[d[["var"]][v]]] <- as.list(values) %>% set_names(labels)
     }
   }
+
+
   raw <- data %>% recodR(varlist, match = "boundary", replace = T) %>%
     rename(id = 1) %>% mutate(across(everything(), ~if_else(. %in%
                                                               c("", "NA", " "), NA, .)))
+
+
   date_c <- unique(c(dict$var[which(str_detect(dict$format,
                                                "date"))], date.vars, dict$var[which(str_detect(dict$var,
                                                                                                "date"))]))
+
   if (length(date_c) > 0) {
     raw <- raw %>% datR(date_c)
   }
-
-  if(any(!is.null(cprlist) | str_detect(colnames(raw), "\\bcpr\\b"))) {
-
+  print(names(raw))
+  if (any(!is.null(cprlist) | str_detect(colnames(raw), "\\bcpr\\b"))) {
     if (!is.null(cprlist)) {
-      raw <- left_join(raw, cprlist, by = "id")
-
+      raw <- left_join(raw, cprlist %>%
+                         distinct(cpr, .keep_all = T) %>%
+                         select(id, cpr) %>%
+                         rename(!!sym(id_c) := id), by = c(id_c))
     }
-
     raw <- raw %>% cpR(extract = T)
-
   }
-
-  if(any(str_detect(colnames(raw), "\\bbirth\\b")) & !missing(index)) {
-
-    index_c <- data %>% select({{index}}) %>% names()
-
+  if (any(str_detect(colnames(raw), "\\bbirth\\b")) & !missing(index)) {
+    index_c <- data %>% select({
+      {
+        index
+      }
+    }) %>% names()
     raw <- raw %>% mutate(age = round((as.numeric(!!sym(index_c) -
                                                     birth))/365.25, 1))
-
   }
-
   return(raw)
 }
 

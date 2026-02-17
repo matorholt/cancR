@@ -4,10 +4,14 @@
 \alias{decodR}
 \title{Decoding of the main codelist for loading and searching in registries}
 \usage{
-decodR(codelist, regs = c("pop", "sc", "meta", "dsd"))
+decodR(codelist, regs = c("pop", "sc", "meta", "dsd"), type = "matching")
 }
 \arguments{
 \item{codelist}{List of lists with registries, diagnosis codes and labels. See example.}
+
+\item{regs}{additional registries for loading}
+
+\item{type}{matching or rtmle, depending on the restructurering of the codelist (deafault = "matching")}
 }
 \value{
 codes: Original codelist without modification \cr

@@ -62,25 +62,11 @@
 #'
 #'
 
-# n <- 500
-# set.seed(1)
-# df <- riskRegression::sampleData(n, outcome="survival")
-# df$time <- round(df$time,1)*12
-# df$time2 <- df$time + rnorm(n)
-# df$X1 <- factor(rbinom(n, prob = c(0.3,0.4) , size = 2), labels = paste0("T",0:2))
-# df$X3 <- factor(rbinom(n, prob = c(0.3,0.4,0.3) , size = 3), labels = paste0("T",0:3))
-# df$event2 <- rbinom(n, 2, prob=.3)
-# df <- as.data.frame(df)
-#
-# df2 <- df %>% mutate(X2 = ifelse(row_number()==1, NA, X2),
-#                      event = as.factor(event)) %>%
-#   rename(ttt = time)
-#
-#t1 <- estimatR(analysis_df, ttt, event2, X2, time = 120, type = "select", vars = c(X6,X7), pl=T)
-#t2 <- estimatR(df2, ttt, event2, X1, time = 120, type = "select", vars = c(X6,X7), pl=T)
+#t1 <- estimatR(analysis_df, ttt, event2, X2, time = 120, vars = c(X6,X7))
+# t2 <- estimatR(df2, ttt, event2, X1, time = 120, type = "select", vars = c(X6,X7), pl=T)
 # t3 <- estimatR(df2, ttt, event2, X3, time = 60, type = "select", vars = c(X6,X7), pl=T)
 #
-# plotR(t1, style = "jama")
+#plotR(t1)
 
 # t1 <- inferencR(df,
 #                 treatment = X2,
@@ -338,7 +324,7 @@ plotR <- function(list,
 
   #Risk table
   if(any(table %nin% "none")) {
-    tablabs <- str_replace_all(table, c("risk" = "At Risk",
+    tablabs <- str_replace_all(table, c("risk" = "No. at Risk",
                                         "event" = "Cumulative Events"))
 
     #Grid
@@ -385,7 +371,7 @@ plotR <- function(list,
         if(!risk.col) {
 
           p <- p +
-            annotate("segment", x=-(horizon*0.065), xend =-(horizon*0.04), y = rev(rows[[j]])[i], yend = rev(rows[[j]])[i], color=col[i], linewidth = linewidth*1.5)
+            annotate("segment", x=-(horizon*0.075), xend =-(horizon*0.045), y = rev(rows[[j]])[i], yend = rev(rows[[j]])[i], color=col[i], linewidth = linewidth*1.5)
 
         }
 
@@ -498,6 +484,15 @@ plotR <- function(list,
 
   p$y <- y*100
   p$grps <- length(levels)
+  p$coords <- list(table.rows = list(z1,z2),
+                   table.lines.x = lengths,
+                   table.lines.y = lines,
+                   table.segments = c(-(horizon*0.075), -(horizon*0.045)),
+                   results.rows = rows,
+                   axis = list(x = c(0,horizon*1.04),
+                               y = c(-(y*0.02), y)),
+                   dimensions = list(x = c(horizon*-0.1-y.title.shift,horizon),
+                                     y = c(zmin,1.2*y+pmax(res.shift[2],0))))
 
 
 
@@ -505,3 +500,4 @@ plotR <- function(list,
 
 
 }
+
