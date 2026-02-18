@@ -45,7 +45,7 @@ jobs:
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          extra-packages: any::pkgdown, github::tagteam/heaven$eb4a937, local::.
+          extra-packages: any::pkgdown, github::tagteam/heaven@eb4a937, local::.
           needs: website
 
       - name: Build site
