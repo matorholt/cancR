@@ -12,6 +12,7 @@ Functions for typical data management tasks
   test
 - [`factR()`](factR.md) : Factorize variables
 - [`groupR()`](groupR.md) : Extract first n groups in data frame
+- [`joinR()`](joinR.md) : Join two or more dataframes
 - [`missR()`](missR.md) : Overview of NAs in a dataframe
 - [`pvertR()`](pvertR.md) : Format p-values to AMA manual of style
 - [`structR()`](structR.md) : Convert dates to status indicator and

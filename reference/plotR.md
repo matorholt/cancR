@@ -235,7 +235,7 @@ estimatR(analysis_df,
 timevar = ttt,
 event = event)
 #> 
-#> estimatR initialized:  2026-02-03 15:03:21
+#> estimatR initialized:  2026-02-18 21:51:44
 #>  
 #> 
 #> Total runtime: 
@@ -542,7 +542,7 @@ timevar = ttt,
 event = event,
 group = X2)
 #> 
-#> estimatR initialized:  2026-02-03 15:03:21
+#> estimatR initialized:  2026-02-18 21:51:44
 #>  
 #>  Input variables 
 #>  - Treatment            : X2 (2 levels: "1" "2")
@@ -600,7 +600,7 @@ group = X2)
 #>  - Confidence intervals: done
 #> 
 #> Total runtime: 
-#> 1.03 secs
+#> 0.75 secs
 #> $table
 #>     X2 time n.risk n.event       est       se.est     lower     upper cumsum
 #> 1    1    0   1595       0 1.0000000 0.0000000000 1.0000000 1.0000000      0

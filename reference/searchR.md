@@ -8,6 +8,7 @@ Find covariates or outcomes from the registers
 searchR(
   reglist,
   search.list,
+  name.list = NULL,
   sub.list = list(),
   sub.labels = NULL,
   exclusion = "NULL",
@@ -16,7 +17,8 @@ searchR(
   date.filter = NULL,
   match = "start",
   casename = "index",
-  pnr = pnr
+  pnr = "pnr",
+  cores = 4
 )
 ```
 
@@ -29,6 +31,10 @@ searchR(
 - search.list:
 
   list with list(label = diagnosis code) structure.
+
+- name.list:
+
+  list of labels for the main columns (e.g. list("case" = "diabetes))
 
 - sub.list:
 

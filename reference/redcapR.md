@@ -16,7 +16,8 @@ redcapR(
   autoformat = T,
   formatlist = NULL,
   cprlist = NULL,
-  index
+  index,
+  id = study_id
 )
 ```
 

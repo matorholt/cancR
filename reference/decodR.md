@@ -5,7 +5,7 @@ Decoding of the main codelist for loading and searching in registries
 ## Usage
 
 ``` r
-decodR(codelist, regs = c("pop", "sc", "meta", "dsd"))
+decodR(codelist, regs = c("pop", "sc", "meta", "dsd"), type = "matching")
 ```
 
 ## Arguments
@@ -14,6 +14,15 @@ decodR(codelist, regs = c("pop", "sc", "meta", "dsd"))
 
   List of lists with registries, diagnosis codes and labels. See
   example.
+
+- regs:
+
+  additional registries for loading
+
+- type:
+
+  matching or rtmle, depending on the restructurering of the codelist
+  (deafault = "matching")
 
 ## Value
 
