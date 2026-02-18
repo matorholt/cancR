@@ -10,12 +10,12 @@
 #' @export
 #'
 #' @examples
-#' set.seed(1)
-#' df <-
-#' data.frame(diag = sample(c("DX123", "DC123", "DC234", "DG123", "DG234"), 20, replace=TRUE),
-#'            type = sample(c("DY", "DY234", "DY123"), 20, replace=TRUE),
-#'            type2 = sample(c("DC123", "DC234", "DG123"), 20, replace=TRUE),
-#'            split = c("1,11", "2,10", "2,4", "2,15"))
+# set.seed(1)
+# df <-
+# data.frame(diag = sample(c("DX123", "DC123", "DC234", "DG123", "DG234"), 20, replace=TRUE),
+#            type = sample(c("DY", "DY234", "DY123"), 20, replace=TRUE),
+#            type2 = sample(c("DC123", "DC234", "DG123"), 20, replace=TRUE),
+#            split = c("1,11", "2,10", "2,4", "2,15"))
 #'
 #'             df %>%
 #'   recodR(list("diag" = list("KOL" = "DX123",
@@ -101,7 +101,8 @@ recodR <- function(data, namelist, match = "exact", replace=F) {
          "boundary" = {regex <- c("\\b", "\\b")}
   )
 
-  data <- copy(data)
+  #data <- copy(data)
+  setDT(data)
 
   #Paste diagnosis codes
   reglist <- modify_depth(namelist, 2, function(x) paste0(regex[1], paste0(x, collapse="|"), regex[2]))
@@ -112,30 +113,26 @@ recodR <- function(data, namelist, match = "exact", replace=F) {
     #Seq through names (2nd order in namelist)
     for(j in seq_along(names(reglist[[i]]))) {
 
-      if(is.factor(data %>% select(i) %>% pull)) {
-
-        data <- as.data.frame(data)
+      if(is.factor(data[, get(i)])) {
 
         #Looping through all indiviual diag codes
         for(k in seq_along(namelist[[i]][[j]])) {
 
+       data <- as.data.table(factR(data,
+                     vars = i,
+                     labels = unlist(c(namelist[[i]][[j]][k])) %>% set_names(names(namelist[[i]])[[j]])))
 
-
-       data <- data %>%
-       factR(i, labels = unlist(c(namelist[[i]][[j]][k])) %>% set_names(names(namelist[[i]])[[j]]))
 
         }
 
 
       } else {
 
-      setDT(data)
-
        if(replace) {
        data[, substitute(i) := str_replace_all(get(i), names(reglist[[i]])[j] %>% set_names(reglist[[i]][[j]]))]
         } else {
 
-       data[, substitute(i) := ifelse(str_detect(get(i), reglist[[i]][[j]]), names(reglist[[i]])[j], get(i))]
+       data[, substitute(i) := ifelse(get(i) %like% reglist[[i]][[j]], names(reglist[[i]])[j], get(i))]
 
         }
 
@@ -147,5 +144,3 @@ recodR <- function(data, namelist, match = "exact", replace=F) {
 as.data.frame(data)
 
 }
-
-
