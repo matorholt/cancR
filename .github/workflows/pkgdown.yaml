@@ -40,12 +40,12 @@ jobs:
         shell: Rscript {0}
 
       - name: Install package from GitHub
-        run: remotes::install_github('tagteam/heaven')
+        run: remotes::install_github('tagteam/heaven@eb4a937')
         shell: Rscript {0}
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          extra-packages: any::pkgdown, github::tagteam/heaven, local::.
+          extra-packages: any::pkgdown, github::tagteam/heaven$eb4a937, local::.
           needs: website
 
       - name: Build site
