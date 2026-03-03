@@ -18,7 +18,8 @@ searchR(
   match = "start",
   casename = "index",
   pnr = "pnr",
-  cores = 4
+  cores = 4,
+  dt = F
 )
 ```
 

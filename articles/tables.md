@@ -6,11 +6,6 @@ Tables are essential for presenting the study population and the
 distribution of important covariates. The tablR function in the cancR
 package is useful for this task.  
   
-First we load the cancR package
-
-``` r
-library(cancR)
-```
 
 ### Tables with only on group
 
@@ -20,18 +15,17 @@ the whole population and present the covariates age, sex and tumor type
 ``` r
 tablR(redcap_df,
       vars = c(age, sex, type))
+#>                        Overall (N=500)
+#> 1 Age                                 
+#> 2    Median (Q1, Q3) 49.7 (34.1, 64.5)
+#> 3    Range              10.8 - 88.8   
+#> 4 Sex                                 
+#> 5    Median (Q1, Q3)  1.0 (1.0, 2.0)  
+#> 6    Range               1.0 - 2.0    
+#> 7 Type                                
+#> 8    Median (Q1, Q3)  1.0 (1.0, 2.0)  
+#> 9    Range               0.0 - 2.0
 ```
-
-                       Overall (N=500)
-
-1 Age  
-2 Median (Q1, Q3) 49.7 (34.1, 64.5) 3 Range 10.8 - 88.8  
-4 Sex  
-5 Median (Q1, Q3) 1.0 (1.0, 2.0)  
-6 Range 1.0 - 2.0  
-7 Type  
-8 Median (Q1, Q3) 1.0 (1.0, 2.0)  
-9 Range 0.0 - 2.0
 
 We instantly conclude that sex and type is incorrectly formatted, as we
 wish to see percentages and not a median as if the 0/1 structure was
@@ -44,19 +38,18 @@ need to specify the data frame in [`tablR()`](../reference/tablR.md)
 redcap_df %>% 
   factR(c(sex, type)) %>% 
   tablR(vars = c(age, sex, type))
+#>                         Overall (N=500)
+#> 1  Age                                 
+#> 2     Median (Q1, Q3) 49.7 (34.1, 64.5)
+#> 3     Range              10.8 - 88.8   
+#> 4  Sex                                 
+#> 5     1                   256 (51%)    
+#> 6     2                   244 (49%)    
+#> 7  Type                                
+#> 8     1                   254 (51%)    
+#> 9     2                   133 (27%)    
+#> 10    0                   113 (23%)
 ```
-
-                        Overall (N=500)
-
-1 Age  
-2 Median (Q1, Q3) 49.7 (34.1, 64.5) 3 Range 10.8 - 88.8  
-4 Sex  
-5 1 256 (51%)  
-6 2 244 (49%)  
-7 Type  
-8 1 254 (51%)  
-9 2 133 (27%)  
-10 0 113 (23%)
 
 ### Tables with multiple groups
 
@@ -68,16 +61,14 @@ redcap_df %>%
   factR(c(sex, type)) %>% 
   tablR(group = type,
         vars = c(age, sex))
+#>                              1 (N=254)         2 (N=133)         0 (N=113)
+#> 1 Age                                                                     
+#> 2    Median (Q1, Q3) 49.6 (34.9, 66.0) 50.4 (34.8, 63.4) 48.3 (31.8, 64.2)
+#> 3    Range              10.8 - 88.8       11.2 - 86.3       12.0 - 84.6   
+#> 4 Sex                                                                     
+#> 5    1                   131 (52%)         59 (44%)          66 (58%)     
+#> 6    2                   123 (48%)         74 (56%)          47 (42%)
 ```
-
-                             1 (N=254)         2 (N=133)         0 (N=113)
-
-1 Age  
-2 Median (Q1, Q3) 49.6 (34.9, 66.0) 50.4 (34.8, 63.4) 48.3 (31.8, 64.2)
-3 Range 10.8 - 88.8 11.2 - 86.3 12.0 - 84.6  
-4 Sex  
-5 1 131 (52%) 59 (44%) 66 (58%)  
-6 2 123 (48%) 74 (56%) 47 (42%)
 
 We can also add a `total`column and also test the differences in
 distributions
@@ -90,28 +81,21 @@ redcap_df %>%
         vars = c(age, sex),
         test = TRUE,
         total = TRUE)
+#>                              0 (N=113)         1 (N=254)         2 (N=133)
+#> 1 Age                                                                     
+#> 2    Median (Q1, Q3) 48.3 (31.8, 64.2) 49.6 (34.9, 66.0) 50.4 (34.8, 63.4)
+#> 3    Range              12.0 - 84.6       10.8 - 88.8       11.2 - 86.3   
+#> 4 Sex                                                                     
+#> 5    1                   66 (58%)          131 (52%)         59 (44%)     
+#> 6    2                   47 (42%)          123 (48%)         74 (56%)     
+#>       Total (N=500)  P-value
+#> 1                   p = 0.94
+#> 2 49.7 (34.1, 64.5)         
+#> 3    10.8 - 88.8            
+#> 4                   p = 0.09
+#> 5     256 (51%)             
+#> 6     244 (49%)
 ```
-
-                 var         0 (N=113)         1 (N=254)         2 (N=133)
-
-1 age  
-2 - Median (Q1, Q3) 48.3 (31.8, 64.2) 49.6 (34.9, 66.0) 50.4 (34.8,
-63.4) 3 - Range 12.0 - 84.6 10.8 - 88.8 11.2 - 86.3 4 sex  
-5 - 1 66 (58%) 131 (52%) 59 (44%) 6 - 2 47 (42%) 123 (48%) 74 (56%)
-Total (N=500) p value 1 0.938 2 49.7 (34.1, 64.5)  
-3 10.8 - 88.8  
-4 0.088 5 256 (51%)  
-6 244 (49%)  
-0 (N=113) 1 (N=254) 2 (N=133) 1 Age  
-2 Median (Q1, Q3) 48.3 (31.8, 64.2) 49.6 (34.9, 66.0) 50.4 (34.8, 63.4)
-3 Range 12.0 - 84.6 10.8 - 88.8 11.2 - 86.3  
-4 Sex  
-5 1 66 (58%) 131 (52%) 59 (44%)  
-6 2 47 (42%) 123 (48%) 74 (56%)  
-Total (N=500) P-value 1 p = 0.94 2 49.7 (34.1, 64.5)  
-3 10.8 - 88.8  
-4 p = 0.09 5 256 (51%)  
-6 244 (49%)
 
 ### Customizing tables
 
@@ -121,8 +105,9 @@ Most of the content of the table can be customized in
 #### Changing labels
 
 It is possible to rename three types of labels:  
-- Group names: `labs.groups` - Variable names: `labs.headings` -
-Variable labels/levels: `labs.subheadings`
+- Group names: `labs.groups`  
+- Variable names: `labs.headings`  
+- Variable labels/levels: `labs.subheadings`  
 
 ``` r
 redcap_df %>%
@@ -228,7 +213,7 @@ redcap_df %>%
 #> 13    Unspecified           1 (0.9%)       2 (0.8%)           4 (3.0%)
 ```
 
-\### Customizing tables
+#### Customizing tables
 
 All levels and labels can be set manually. Furthermore, the table can be
 exported as a flextable object for nicer layout. For this example we

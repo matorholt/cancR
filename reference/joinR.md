@@ -17,7 +17,9 @@ joinR(..., by, type = "left", dt = F)
 
 - by:
 
-  variable to join on
+  variable to join on. This can either be a vector of one or multiple
+  keys (e.g. by = c("id", "group")) or a list of vectors containing key
+  columns.
 
 - type:
 

@@ -36,8 +36,5 @@ groupwise
 
 ``` r
 followR(analysis_df, time2, event, group = X2)
-#>     group    years    lower    upper
-#> 1 Overall 8.355165 5.263687 11.87811
-#> 2       1 8.421084 5.305933 11.87811
-#> 3       2 8.272921 5.212956 11.94247
+#> Error in FUN(X[[i]], ...): object 'X2' not found
 ```

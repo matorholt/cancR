@@ -87,51 +87,33 @@ df <- analysis_df %>%
 mutate(event_date = sample(c(seq(as.Date("1980-01-01"), as.Date("2000-01-01"), by = "years"), NA), size = n(), replace = TRUE))
 
 summarisR(df, vars = c(X6, X7, event_date))
-#> Warning: Removed 95 rows containing non-finite outside the scale range
+#> Registered S3 method overwritten by 'broom':
+#>   method        from          
+#>   nobs.multinom riskRegression
+#> Warning: Removed 96 rows containing non-finite outside the scale range
 #> (`stat_boxplot()`).
-#> Warning: Removed 95 rows containing non-finite outside the scale range
+#> Warning: Removed 96 rows containing non-finite outside the scale range
 #> (`stat_boxplot()`).
-#> Warning: Removed 95 rows containing non-finite outside the scale range
+#> Warning: Removed 96 rows containing non-finite outside the scale range
 #> (`stat_boxplot()`).
-#> Warning: Removed 95 rows containing non-finite outside the scale range
+#> Warning: Removed 96 rows containing non-finite outside the scale range
 #> (`stat_boxplot()`).
-#> Warning: Removed 95 rows containing non-finite outside the scale range
+#> Warning: Removed 96 rows containing non-finite outside the scale range
 #> (`stat_boxplot()`).
-#> Warning: Removed 95 rows containing non-finite outside the scale range
+#> Warning: Removed 96 rows containing non-finite outside the scale range
 #> (`stat_boxplot()`).
-#> Warning: Removed 95 rows containing non-finite outside the scale range (`stat_bin()`).
+#> Warning: Removed 96 rows containing non-finite outside the scale range (`stat_bin()`).
 
 summarisR(data=df,vars=c(X6, X7, X1, X3), group = X2)
-#> Scale for fill is already present.
-#> Adding another scale for fill, which will replace the existing scale.
-#> Scale for fill is already present.
-#> Adding another scale for fill, which will replace the existing scale.
-
+#> Error in select(., {    {        vars    }}): Can't select columns that don't exist.
+#> ✖ Column `X1` doesn't exist.
 summarisR(df, exclude = "time|event|t_", group = X2)
-#> Scale for fill is already present.
-#> Adding another scale for fill, which will replace the existing scale.
-#> Scale for fill is already present.
-#> Adding another scale for fill, which will replace the existing scale.
-#> Scale for fill is already present.
-#> Adding another scale for fill, which will replace the existing scale.
-#> Scale for fill is already present.
-#> Adding another scale for fill, which will replace the existing scale.
-#> Scale for fill is already present.
-#> Adding another scale for fill, which will replace the existing scale.
-#> Scale for fill is already present.
-#> Adding another scale for fill, which will replace the existing scale.
-#> Scale for fill is already present.
-#> Adding another scale for fill, which will replace the existing scale.
-#> Scale for fill is already present.
-#> Adding another scale for fill, which will replace the existing scale.
-#> Scale for fill is already present.
-#> Adding another scale for fill, which will replace the existing scale.
-
+#> Error in select(., {    {        group    }}): Can't select columns that don't exist.
+#> ✖ Column `X2` doesn't exist.
 summarisR(df, c(X3,X1), group=X2, layout = "vertical")
-
+#> Error in select(., {    {        vars    }}): Can't select columns that don't exist.
+#> ✖ Column `X3` doesn't exist.
 summarisR(df, c(X3,X1), group=X2, layout = "horizontal", label.size = 3)
-#> Scale for fill is already present.
-#> Adding another scale for fill, which will replace the existing scale.
-#> Scale for fill is already present.
-#> Adding another scale for fill, which will replace the existing scale.
+#> Error in select(., {    {        vars    }}): Can't select columns that don't exist.
+#> ✖ Column `X3` doesn't exist.
 ```
