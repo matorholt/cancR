@@ -3,6 +3,7 @@
 <url><loc>/articles/basic.html</loc></url>
 <url><loc>/articles/cancR.html</loc></url>
 <url><loc>/articles/data_management.html</loc></url>
+<url><loc>/articles/estimatR.html</loc></url>
 <url><loc>/articles/import.html</loc></url>
 <url><loc>/articles/index.html</loc></url>
 <url><loc>/articles/install.html</loc></url>
@@ -40,6 +41,7 @@
 <url><loc>/reference/index.html</loc></url>
 <url><loc>/reference/inferencR.html</loc></url>
 <url><loc>/reference/iteratR.html</loc></url>
+<url><loc>/reference/joinR.html</loc></url>
 <url><loc>/reference/listR.html</loc></url>
 <url><loc>/reference/loadR.html</loc></url>
 <url><loc>/reference/matchR.html</loc></url>

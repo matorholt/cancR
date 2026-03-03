@@ -181,7 +181,7 @@ summarisR <- function(data,
 
 
 
-        ggarrange(plotlist = list(p1,p2), ncol = 1, nrow=2, heights = c(1,gheight), common.legend=F)
+        ggpubr::ggarrange(plotlist = list(p1,p2), ncol = 1, nrow=2, heights = c(1,gheight), common.legend=F)
 
 
       } else{
@@ -260,7 +260,7 @@ summarisR <- function(data,
       }
     })
 
-  ggarrange(plotlist=plist, common.legend = ifelse(layout == "horizontal", T,F))
+  ggpubr::ggarrange(plotlist=plist, common.legend = ifelse(layout == "horizontal", T,F))
 
 }
 

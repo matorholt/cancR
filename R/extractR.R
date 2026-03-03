@@ -153,8 +153,6 @@ for(i in names(tab)[str_detect(names(tab), "(risks|diff|ratio)(?!(_))")]) {
 
     tab <- tab %>% mutate(across(everything(), ~ ifelse(is.na(.), "reference", .)))
 
-print(tab)
-
   }
 
 

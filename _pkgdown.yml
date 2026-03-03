@@ -41,7 +41,8 @@ navbar:
         href: articles/data_management.html
       - text: Tables
         href: articles/tables.html
-      - text: cancR examples
+      - text: Time-to-event analysis
+        href: articles/estimatR.html
 
 reference:
 - title: Data management functions

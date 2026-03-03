@@ -8,18 +8,16 @@ Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3
 Depends: 
-    plyr,
     arsenal,
     data.table,
     dplyr,
-    dtplyr,
     flextable,
     forcats,
+    furrr,
+    future,
     ggplot2,
     heaven,
     magrittr,
-    mets,
-    parallel,
     patchwork,
     prodlim,
     purrr,
@@ -28,11 +26,12 @@ Depends:
     rrapply,
     stringr,
     survival,
-    survminer,
     tidyr
 Imports: 
     arrow,
     ggpubr,
+    mets,
+    survminer,
     tibble,
     WeightIt
 LazyData: true

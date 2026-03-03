@@ -70,7 +70,7 @@ rowR <- function(data, vars, type, new, na.rm = T, filter = NULL, match = "conta
   vars_c <- data %>% select({{vars}}) %>% names()
 
   if(!missing(new)) {
-  new <- substitute(new)
+  new <- as.character(new)
   } else {
     new <- type
   }

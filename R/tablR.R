@@ -226,7 +226,7 @@ tablR <- function(data,
                  labelTranslations = headings_reverse,
                  digits = digits) %>%
     as.data.frame() %>%
-    rename("var" = 1)
+    dplyr::rename("var" = 1)
 
   if(censur) {
 
@@ -306,10 +306,8 @@ tablR <- function(data,
   headings_index <- which(str_detect(tab[, "var"], "-"))
 
   if(test) {
-
-    print(tab)
     tab <- tab %>%
-    rename("P-value" = `p value`) %>%
+    dplyr::rename("P-value" = `p value`) %>%
       mutate(`P-value` = pvertR(`P-value`, na= " "))
   }
 
@@ -329,7 +327,9 @@ tablR <- function(data,
            var = ifelse(row_number() %in% headings_index, paste0("xzx", var), var),
            var = str_pad(str_trim(var), width = max(str_count(str_trim(var))), side = "right"),
            var = str_remove(var, "xzx")) %>%
-    rename(" " = 1)
+    dplyr::rename(" " = 1)
+
+
 
   if(print) {
     print(tab)
@@ -353,3 +353,4 @@ tablR <- function(data,
 
 
 }
+

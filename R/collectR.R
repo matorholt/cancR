@@ -41,7 +41,7 @@
 
 collectR <- function(plots, collect=T, nrow=1, ncol=3, ...) {
 
-  ggarrange(plotlist = plots, common.legend=collect, nrow=nrow, ncol=ncol, ...)
+  ggpubr::ggarrange(plotlist = plots, common.legend=collect, nrow=nrow, ncol=ncol, ...)
 }
 
 

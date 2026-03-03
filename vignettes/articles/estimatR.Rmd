@@ -1,0 +1,225 @@
+---
+title: "Analysis of time-to-event data"
+output:
+  html_document:
+    toc: true
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r, message = FALSE, warning = FALSE, include = FALSE}
+library(cancR)
+```
+
+
+The prerequisites for analysing time-to-event data are two columns: a status indicator and a numeric time-to column for the current status. 
+
+```{r, echo = F}
+data.frame(status = c(0,1,2),
+           time = c(5,1,3))
+```
+
+The status indicator indicates whether an event has occured and which type of event.\
+- 0 indicates that the patient was event free and the time column indicates for how long the patient was followed (aka. censoring). This can be at the end of the database or last clinical visit.\
+- 1 indicates the main event of interest such has recurrence, metastasis or death.\
+- Values above 1 indicates competing events, which are events that prevents the main event from occuring or events that makes the patient irrelevant for further follow-up.\
+
+In this example, the first patient was followed for 5 years with no event occuring, the second patient had the event of interest after 1 year and the third patient had the competing event at 3 years.
+
+### Conversion of dates to event/time columns
+
+Often the events of interest are collected as dates as this automatically includes both status (blank = 0, and present = 1) and the time point. The `structR` function helps with converting dates to status/time columns for multiple events. First, we simulate a dataframe with 10 patients:
+
+```{r}
+n=10
+df <-
+  data.frame(
+    id = seq(1,n),
+    opdate = c(rep("2000-01-01", n-1), "1990-01-01"),
+           follow = rep("2025-01-01", n),
+           recurrence_date = c(NA, "2005-01-01", NA, NA, NA, "2005-01-01", "2005-01-01", NA, "2005-01-01", "2005-01-01"),
+           metastasis_date = c(NA, NA, "2007-01-01", NA, NA, "2006-01-01", "2005-01-01", NA, NA, NA),
+           dsd_date = c(NA,NA, "2008-01-01", "2009-01-01", NA, NA, NA, NA, NA, NA),
+           death_date = c(NA, NA, "2008-01-01", "2009-01-01", NA, "2010-01-01", "2010-01-01", "2024-01-01", "2019-01-01", "1999-01-01"),
+           second_date = c(NA, NA, NA, NA, "2008-01-01", NA, "2001-01-01", NA, NA, NA)) %>%
+  datR(c(opdate:second_date))
+```
+
+```{r, echo = F}
+df
+```
+
+In the `structR` function we specify `index` as the time = 0 (date of surgery, index date of disease etc.) and `fu` as the date where the patient status was last known (last visit, end of database etc.). `outcomes` specifies our events of interest and `competing` specifies our competing events. If this includes death, a specific column for death + time-to-death will also be generated for evaluation.
+
+```{r}
+structR(df,
+        index = opdate,
+        fu = follow,
+        outcomes=c(recurrence_date, metastasis_date, dsd_date),
+        competing = c(death_date, second_date)) %>% head
+```
+
+Notice that for each specified outcome, we split the variable into two columns: the variable prefix (status) and a t_variable (time). As we specified two competing risks, the status for each event of interest can have the values 2 and 3 for each competing risk.
+
+If we want to specify a composite outcome, we use the argument `composite` which is a named list of outcomes each specifying the events of interest and the competing risks.
+
+```{r}
+structR(df,
+        index = opdate,
+        fu = follow,
+        outcomes=c(recurrence_date, metastasis_date),
+        competing = c(death_date, second_date),
+        composite = list("pfs" = list("outcomes" = c("recurrence_date", "metastasis_date", "death_date")),
+                         "relapse" = list("outcomes" = c("recurrence_date", "metastasis_date", "dsd_date"),
+                                          "competing" = c("death_date")),
+                         "metastasis2" = list("outcomes" = c("metastasis_date"),
+                                       "competing" = c("recurrence_date", "death_date")))) %>% head
+```
+
+## Time-to-event analysis
+
+Time-to-event analysis is mainly performed with the `estimatR` function which can handle different scenarios regarding number of groups and adjustments. The following sections are:
+
+- Analysis of one group
+- Analysis of two groups
+- Analysis of two groups with adjustment
+- Analysis of two groups with multiple outcomes.
+
+The `estimatR` function also comes with natural extension such as the `extractR` function for extraction of results, `plotR` for visualizing the survival/incidence curves, `savR` for saving the plots and `followR` for estimating the median follow-up time
+
+We use the built-in dataset `analysis_df` for all examples:
+
+```{r, echo = F}
+df <- analysis_df %>% select(g2, g3, g4, event, event2, event3, ttt, X6,X7,X8_bin)
+df %>% head
+```
+
+`event2` is our event of interest and `ttt` is our time-to variable. `g2` to `g4` are different groups with 2,3 and 4 levels resp. `X6` to `X8_bin` are covariates for later adjustment.
+
+### Analysis of one group
+
+For the analysis of a single group, we only need to specify the arguments `data`, `timevar` and `event`:
+
+```{r}
+g1_res <- estimatR(
+  data = df,
+  timevar = ttt,
+  event = event2)
+```
+
+We extract the main results with `extractR`
+
+```{r}
+extractR(g1_res)
+```
+
+We can plot the corresponding cumulative incidence curve with `plotR`:
+
+```{r, out.width = "80%"}
+plotR(g1_res)
+```
+
+For customization of the plot write `?plotR` in the console. The plot can be saved using `savR` such as `savR(myplot, "plot_1", format = "pdf")`
+
+The g1_res object also includes information regarding the median time to event:
+
+```{r}
+g1_res$time_to_event
+```
+
+### Analysis of two groups
+
+For the analysis of two groups we need to specify the `group` argument. This will automatically detect the number of groups. 
+
+```{r, results = "hide"}
+g2_res <- estimatR(
+  df,
+  timevar = ttt,
+  event = event2,
+  group = g2
+)
+```
+
+Again, we extract the main results with `extractR`. Now we also see a risk difference and a p-value as we can compare the two groups.
+
+```{r}
+extractR(g2_res)
+```
+
+And we can plot the curves.
+
+```{r}
+plotR(g2_res)
+```
+
+### Analysis of two groups with adjustment
+
+If we need to adjust for potential confounders we specify the `vars` argument
+
+```{r, results = "hide"}
+g2_res <- estimatR(
+  df,
+  timevar = ttt,
+  event = event2,
+  group = g2,
+  vars = c(X6,X7,X8_bin)
+)
+```
+
+We can see that all estimates are slightly different as these are now standardized
+
+```{r}
+plotR(g2_res)
+```
+
+### Analysis of two groups with multiple outcomes
+
+When evaluating multiple outcomes, we want to avoid repeating the same code for each outcome. `iteratR` makes this more easier. The arguments are the same as in `estimatR`, although they need to be quoted.
+
+Here we evalute the outcomes event, event2 and event3 with the same group
+
+```{r, results = "hide"}
+
+g2_multires <- iteratR(
+  data=df,
+  timevar = "ttt",
+  event = c("event", "event2", "event3"),
+  group = "g2",
+  method = "estimatR",
+  labels = c("model1", "model2", "model3"))
+  
+
+
+```
+
+`g2_multires` is now a named list containing three `estimatR` objects (model 1 to 3) which can be called separately
+
+```{r}
+g2_multires$model1$time_to_event
+```
+
+We can also use `iteratR` to apply `extractR` on all models to extract the main estimates
+
+```{r}
+iteratR(
+  g2_multires,
+  method = "extractR"
+)
+```
+
+We can also plot all three models by changing method to `"plotR"`
+
+```{r, results = "hide"}
+iteratR(
+  g2_multires,
+  title = c("m1", "m2", "m3"),
+  method = "plotR"
+)
+```
+
+

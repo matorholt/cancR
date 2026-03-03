@@ -9,7 +9,7 @@ joinR(..., by, type = "left", dt = F)
 \arguments{
 \item{...}{dataframes or list of dataframes to be joined}
 
-\item{by}{variable to join on}
+\item{by}{variable to join on. This can either be a vector of one or multiple keys (e.g. by = c("id", "group")) or a list of vectors containing key columns.}
 
 \item{type}{type of join (e.g. left (default), right, full and inner)}
 

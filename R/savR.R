@@ -177,16 +177,20 @@ savR <- function(object,
   }
 
   if("ggplot" %in% class(object)) {
-  #Autoscale
+    #Autoscale
     if (missing(height)) {
 
       if("ggarrange" %in% class(object)) {
 
         height <- 154
 
-      } else {
+      } else if("plotR" %in% class(object)) {
 
         height <- sum(abs(object$coordinates$limits$y))/object$y * 100 * 47
+
+      } else {
+
+        height <- 80
 
       }
 
@@ -199,30 +203,30 @@ savR <- function(object,
 
       cat(paste0("\n", p, ": "))
 
-        if(p == "tiff") {
-          ggsave(filename=paste0(name, ".", p, collapse=""),
-                 plot=object,
-                 path=folder,
-                 width = width,
-                 height = height,
-                 unit = unit,
-                 scale = scale,
-                 dpi=dpi,
-                 device= grDevices::tiff,
-                 compression=compression)
-        } else {
+      if(p == "tiff") {
+        ggsave(filename=paste0(name, ".", p, collapse=""),
+               plot=object,
+               path=folder,
+               width = width,
+               height = height,
+               unit = unit,
+               scale = scale,
+               dpi=dpi,
+               device= grDevices::tiff,
+               compression=compression)
+      } else {
 
-            ggsave(filename=paste0(name, ".", p, collapse=""),
-                   plot=object,
-                   path=folder,
-                   width = width,
-                   height = height,
-                   unit = unit,
-                   dpi = dpi,
-                   scale = scale,
-                   device=device)
+        ggsave(filename=paste0(name, ".", p, collapse=""),
+               plot=object,
+               path=folder,
+               width = width,
+               height = height,
+               unit = unit,
+               dpi = dpi,
+               scale = scale,
+               device=device)
 
-        }
+      }
 
       cat("Done")
 

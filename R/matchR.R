@@ -165,24 +165,24 @@ matchR <- function(data,
 
   cat(paste0("\nPartitioning of age-sex cohorts: completed - ",  tockR("time"), "\n\n"))
 
-  #Progress bar
-  pb_out <- c()
-  t_start <- 0
-  ncase <- 0
-  tcase <- nrow(full_df[full_df$case == 1,])
-
-  for(i in seq_along(split_df)) {
-
-    coh <- names(split_df)[i]
-
-    cases <- split_df[[i]][case == 1]
-
-    ncase <- ncase + nrow(cases)
-
-    pb_out <- c(pb_out, paste0(" - Cohort: ", coh," - Current: ", nrow(cases), " Cases / ", nrow(split_df[[i]]), " - Total Status: ", ncase, " / ", tcase, " Cases       "))
-
-
-  }
+  # #Progress bar
+  # pb_out <- c()
+  # t_start <- 0
+  # ncase <- 0
+  # tcase <- nrow(full_df[full_df$case == 1,])
+  #
+  # for(i in seq_along(split_df)) {
+  #
+  #   coh <- names(split_df)[i]
+  #
+  #   cases <- split_df[[i]][case == 1]
+  #
+  #   ncase <- ncase + nrow(cases)
+  #
+  #   pb_out <- c(pb_out, paste0(" - Cohort: ", coh," - Current: ", nrow(cases), " Cases / ", nrow(split_df[[i]]), " - Total Status: ", ncase, " / ", tcase, " Cases       "))
+  #
+  #
+  # }
 
 
   if(str_detect(names(split_df)[1], "-")) {

@@ -22,12 +22,6 @@ the input data frame with recoded variables
 Recode multiple variables
 }
 \examples{
-set.seed(1)
-df <-
-data.frame(diag = sample(c("DX123", "DC123", "DC234", "DG123", "DG234"), 20, replace=TRUE),
-           type = sample(c("DY", "DY234", "DY123"), 20, replace=TRUE),
-           type2 = sample(c("DC123", "DC234", "DG123"), 20, replace=TRUE),
-           split = c("1,11", "2,10", "2,4", "2,15"))
 
             df \%>\%
   recodR(list("diag" = list("KOL" = "DX123",

@@ -66,10 +66,10 @@ distributR <- function(data, vars, bins = 1, test = "shapiro") {
       }
 
       plotlist[[v]] <-
-        ggarrange(p1, p2)
+        ggpubr::ggarrange(p1, p2)
 
   }
 
-  ggarrange(plotlist = plotlist, ncol = 1, nrow = length(vars_c))
+  ggpubr::ggarrange(plotlist = plotlist, ncol = 1, nrow = length(vars_c))
 
 }

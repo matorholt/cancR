@@ -24,6 +24,20 @@
 #' For patients without an event the function returns the time to last follow-up if status = 0 and time to death if status = 2
 #' @export
 #'
+#' @examples
+#' n=10
+#' df <-
+#'  data.frame(
+#'    id = seq(1,n),
+#'    opdate = c(rep("2000-01-01", n-1), "1990-01-01"),
+#'    follow = rep("2025-01-01", n),
+#'    recurrence_date = c(NA, "2005-01-01", NA, NA, NA, "2005-01-01", "2005-01-01", NA, "2005-01-01", "2005-01-01"),
+#'    metastasis_date = c(NA, NA, "2007-01-01", NA, NA, "2006-01-01", "2005-01-01", NA, NA, NA),
+#'    dsd_date = c(NA,NA, "2008-01-01", "2009-01-01", NA, NA, NA, NA, NA, NA),
+#'    death_date = c(NA, NA, "2008-01-01", "2009-01-01", NA, "2010-01-01", "2010-01-01", "2024-01-01", "2019-01-01", "1999-01-01"),
+#'    second_date = c(NA, NA, NA, NA, "2008-01-01", NA, "2001-01-01", NA, NA, NA)) %>%
+#'  datR(c(opdate:second_date))
+#'
 
 # n=10
 # df <-

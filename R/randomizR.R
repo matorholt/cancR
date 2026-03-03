@@ -146,53 +146,61 @@ randomizR <- function(strata,
     mutate(redcap_randomization_number = NA) %>%
     rename(!!sym(allocation.name) := allocation)
 
+
   if(report) {
 
-  #Strata report
-  strata_report <- lapply(unique(allocations$stratum), function(s) {
-    df <- allocations %>% filter(stratum == s)
+    #Strata report
+    strata_report <- lapply(unique(allocations$stratum), function(s) {
+      df <- allocations %>% filter(stratum == s)
 
-    data.frame(
-      "Stratum" = s,
-      "Replications" = nrow(df),
-      "Allocation ratio" = paste0(df %>% group_by(!!sym(allocation.name)) %>% count %>% pull(n), collapse="/"),
-      "Block.Count" = max(df$block),
-      "Block.Sizes" = paste0(unique(df$block.size), collapse= ",")) %>%
-      bind_cols(.,
-                df %>%
-                  distinct(block, block.size) %>%
-                  group_by(block.size) %>%
-                  count %>%
-                  pivot_wider(names_from=block.size, values_from=n) %>%
-                  mutate(across(c(everything()), ~ round(./n_distinct(df$block)*100,1), .names = "{.col}(%)")))
+      data.frame(
+        "Stratum" = s,
+        "Replications" = nrow(df),
+        "Allocation ratio" = paste0(df %>% group_by(!!sym(allocation.name)) %>% count %>% pull(n), collapse="/"),
+        "Block.Count" = max(df$block),
+        "Block.Sizes" = paste0(unique(df$block.size), collapse= ",")) %>%
+        bind_cols(.,
+                  df %>%
+                    distinct(block, block.size) %>%
+                    group_by(block.size) %>%
+                    count %>%
+                    pivot_wider(names_from=block.size, values_from=n) %>%
+                    mutate(across(c(everything()), ~ round(./n_distinct(df$block)*100,1), .names = "{.col}(%)")))
 
-  }) %>% bind_rows %>%
-    tibble
+    }) %>% bind_rows %>%
+      tibble
 
-  cat("Stratified block randomization complete\n\n")
+    cat("Stratified block randomization complete\n\n")
 
-  cat(paste0("Stratified on ", length(levels), " strata with the levels:\n"))
-  print(levels)
-  cat(paste0("Number of unique strata: ", n_distinct(allocations$stratum), "\n\n"))
-  cat("Strata balances:\n")
+    cat(paste0("Stratified on ", length(levels), " strata with the levels:\n"))
+    print(levels)
+    cat(paste0("Number of unique strata: ", n_distinct(allocations$stratum), "\n\n"))
+    cat("Strata balances:\n")
 
-  suppressWarnings(strata_report %>% ungroup() %>% summarise(across(c((ncol(.)-(length(block.size)-1)):ncol(.)), ~ list(
-    min(.),
-    quantile(., 0.25),
-    median(.),
-    quantile(., 0.75),
-    max(.)))) %>%
-    unnest(everything()) %>% print)
+    print(strata_report)
 
-  if(print) {
-    print(strata_report, n=Inf)
-  }
+    rbindlist(map(which(str_detect(names(strata_report), "%")), function(i) {
+
+      label <- names(strata_report)[i]
+      vec <- report_strata[[label]]
+
+      data.frame(
+        block = label,
+        min = min(vec),
+        q1 = quantile(vec, 0.25),
+        median = median(vec),
+        q3 = quantile(vec,0.75),
+        max = max(vec))
+
+
+    })) %>% print
+
+    if(print) {
+      print(strata_report, n=Inf)
+    }
 
   }
 
   return(allocations %>% select(redcap_randomization_number, !!sym(allocation.name), !!!syms(names(levels))))
 
 }
-
-
-

@@ -163,14 +163,14 @@ inferencR <- function(data,
 
   #Weighting diagnostics
   w_object <-  WeightIt::weightit(as.formula(treat.form),
-                                                    data = dat,
-                                                    estimand = "ATE",
-                                                    method = "glm")
+                                  data = dat,
+                                  estimand = "ATE",
+                                  method = "glm")
 
   dat_w <- dat %>% mutate(ps = w_object$ps,
                           w = w_object$weights) %>%
-        cutR(w, seq(0,100,weights.breaks), digits = weights.digits,
-              name.list = "wgroup")
+    cutR(w, seq(0,100,weights.breaks), digits = weights.digits,
+         name.list = "wgroup")
 
 
 
@@ -189,13 +189,13 @@ inferencR <- function(data,
 
 
   tab_w <- cbind(tablR(dat_w,
-                           group = treat_c,
-                           vars = c(vars_c, ovars_c),
-                           ),
-                     tablR(dat_w,
-                 group = treat_c,
-                 vars = c(vars_c, ovars_c),
-                 weights = w)[,-1])
+                       group = treat_c,
+                       vars = c(vars_c, ovars_c),
+  ),
+  tablR(dat_w,
+        group = treat_c,
+        vars = c(vars_c, ovars_c),
+        weights = w)[,-1])
 
 
 
@@ -257,55 +257,57 @@ inferencR <- function(data,
 
     }
 
-  #Censoring
-  cvars <- paste0(c(treat_c, vars_c, cvars_c), collapse = " + ")
+    #Censoring
+    cvars <- paste0(c(treat_c, vars_c, cvars_c), collapse = " + ")
 
-  if(is.null(cens.form)) {
-    censor.form <- paste0("Surv(", timevar_c, ", ", event_c, "==0) ~ ", cvars)
-  } else {
-    censor.form <- paste0("Surv(", timevar_c, ", ", event_c, "==0) ~ ", cens.form)
-  }
-
-  censor.model <- coxph(as.formula(censor.form), data=dat,  x=TRUE)
-  censor.model$call$formula <- censor.form
-
-  #Event
-  if(surv) {
-
-    if(is.null(event.form)) {
-      event.form <- paste0("Surv(", timevar_c, ", ", event_c, ") ~ ", paste0(c(treat_c, vars_c, ovars_c), collapse = " + "))
+    if(is.null(cens.form)) {
+      censor.form <- paste0("Surv(", timevar_c, ", ", event_c, "==0) ~ ", cvars)
     } else {
-      event.form <- paste0("Surv(", timevar_c, ", ", event_c, "==0) ~ ", event.form)
+      censor.form <- paste0("Surv(", timevar_c, ", ", event_c, "==0) ~ ", cens.form)
     }
 
-    event.model <- coxph(as.formula(event.form), data=dat, x=TRUE)
+    censor.model <- coxph(as.formula(censor.form), data=dat,  x=TRUE)
+    censor.model$call$formula <- censor.form
 
-    #Diagnostics
-    c <- cox.zph(event.model)
-    pc <- survminer::ggcoxzph(c)
-    diaglist <- list(c,pc)
-    names(diaglist)<- c("Cox_tests", "Cox_plots")
+    #Event
+    if(surv) {
 
-  } else {
+      if(is.null(event.form)) {
+        event.form <- paste0("Surv(", timevar_c, ", ", event_c, ") ~ ", paste0(c(treat_c, vars_c, ovars_c), collapse = " + "))
+      } else {
+        event.form <- paste0("Surv(", timevar_c, ", ", event_c, "==0) ~ ", event.form)
+      }
 
-    if(is.null(event.form)) {
-      event.form <- paste0("Hist(", timevar_c, ", ", event_c, ") ~ ", paste0(c(treat_c, vars_c, ovars_c), collapse = " + "))
+      event.model <- coxph(as.formula(event.form), data=dat, x=TRUE)
+
+      #Diagnostics
+      c <- cox.zph(event.model)
+      pc <- survminer::ggcoxzph(c)
+      diaglist <- list(c,pc)
+      names(diaglist)<- c("Cox_tests", "Cox_plots")
+
     } else {
-      event.form <- paste0("Hist(", timevar_c, ", ", event_c, ") ~ ", event.form)
+
+      if(is.null(event.form)) {
+        event.form <- paste0("Hist(", timevar_c, ", ", event_c, ") ~ ", paste0(c(treat_c, vars_c, ovars_c), collapse = " + "))
+      } else {
+        event.form <- paste0("Hist(", timevar_c, ", ", event_c, ") ~ ", event.form)
+      }
+
+      event.model <- CSC(as.formula(event.form), data=dat)
+
+      #Diagnostics
+      out.list[["diagnostics"]] <- list(cox.zph(event.model$models$`Cause 1`),
+                                        survminer::ggcoxzph(cox.zph(event.model$models$`Cause 1`)),
+                                        cox.zph(event.model$models$`Cause 2`),
+                                        survminer::ggcoxzph(cox.zph(event.model$models$`Cause 2`))) %>%
+        set_names(c("Cause1_tests", "Cause1_plots", "Cause2_tests", "Cause2_plots"))
+
     }
 
-    event.model <- CSC(as.formula(event.form), data=dat)
+    event.model$call$formula <- as.formula(event.form)
 
-    #Diagnostics
-    out.list[["diagnostics"]] <- list(cox.zph(event.model$models$`Cause 1`),
-                                      survminer::ggcoxzph(cox.zph(event.model$models$`Cause 1`)),
-                                      cox.zph(event.model$models$`Cause 2`),
-                                      survminer::ggcoxzph(cox.zph(event.model$models$`Cause 2`))) %>%
-      set_names(c("Cause1_tests", "Cause1_plots", "Cause2_tests", "Cause2_plots"))
 
-  }
-
-  event.model$call$formula <- as.formula(event.form)
 
   } else if(method == "binary") {
 
@@ -337,12 +339,12 @@ inferencR <- function(data,
 
 
   ate.frame <- ate(event = event.model,
-                treatment = treat.model,
-                censor = censor.model,
-                estimator = estimator,
-                data = dat,
-                times = horizon,
-                cause=cause)
+                   treatment = treat.model,
+                   censor = censor.model,
+                   estimator = estimator,
+                   data = dat,
+                   times = horizon,
+                   cause=cause)
 
   est <-
     as.data.frame(confint(ate.frame, level = 1-alpha)$meanRisk)
@@ -362,18 +364,18 @@ inferencR <- function(data,
       as.data.frame(confint(plot.frame, level = 1-alpha)$meanRisk)
 
     if(surv & survscale == "OS") {
-      plot <- plot %>% mutate(across(c(estimate, lower, upper), ~1 - .))%>%
+      plot_data <- plot_data %>% mutate(across(c(estimate, lower, upper), ~1 - .))%>%
         rename(upr = lower,
                lwr = upper) %>%
         rename(!!sym(treat_c) := treatment, est=estimate, upper = upr, lower = lwr)
 
     } else {
 
-      plot <- plot %>%
+      plot_data <- plot_data %>%
         rename(!!sym(treat_c) := treatment, est=estimate)
     }
 
-    plot <- plot %>%
+    plot_data <- plot_data %>%
       select(time:se, lower, upper) %>%
       group_by(!!sym(treat_c)) %>%
       slice(1:n(),n()) %>%
@@ -381,7 +383,7 @@ inferencR <- function(data,
       as.data.frame()
 
     if(survscale == "OS") {
-      plot <- plot %>%
+      plot_data <- plot_data %>%
         group_by(!!sym(treat_c)) %>%
         #Fix drops in risk but retain CI width
         mutate(across(c(lower, upper), ~ . + (cummin(est) - est)),
@@ -391,7 +393,7 @@ inferencR <- function(data,
         as.data.frame()
 
     } else {
-      plot <- plot %>%
+      plot_data <- plot_data %>%
         group_by(!!sym(treat_c)) %>%
         mutate(across(c(lower, upper), ~ . + (cummax(est) - est)),
                est = cummax(est)) %>%
@@ -399,9 +401,11 @@ inferencR <- function(data,
         as.data.frame()
     }
 
-    out.list[["plot_data"]] <- plot
+    out.list[["plot_data"]] <- plot_data
 
   }
+
+
 
   if(surv & survscale == "OS") {
 
@@ -424,12 +428,12 @@ inferencR <- function(data,
 
   rd <-
     as.data.frame(confint(ate.frame, level = 1-alpha)$diffRisk) %>%
-      rename(diff = estimate) %>%
-      select(time, A, B,diff:p.value) %>%
-      mutate(across(c(diff:upper), ~.*100),
-             across(c(diff:upper), ~round(.,digits-2)),
-             p.exact = pmin(1, p.value * 0.05/alpha),
-             p.value = sapply(p.value * 0.05/alpha, pvertR))
+    rename(diff = estimate) %>%
+    select(time, A, B,diff:p.value) %>%
+    mutate(across(c(diff:upper), ~.*100),
+           across(c(diff:upper), ~round(.,digits-2)),
+           p.exact = pmin(1, p.value * 0.05/alpha),
+           p.value = sapply(p.value * 0.05/alpha, pvertR))
 
   out.list[["difference"]] <- rd
 
@@ -474,4 +478,3 @@ inferencR <- function(data,
 
 
 }
-

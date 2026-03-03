@@ -16,9 +16,9 @@ knitr::opts_chunk$set(
 
 Tables are essential for presenting the study population and the distribution of important covariates. The tablR function in the cancR package is useful for this task.\
 \
-First we load the cancR package
 
-```{r, message = FALSE, warning = FALSE}
+
+```{r, message = FALSE, warning = FALSE, include = FALSE}
 library(cancR)
 ```
 
@@ -26,14 +26,14 @@ library(cancR)
 
 We use our `redcap_df` as an example. Let us create a simple table of the whole population and present the covariates age, sex and tumor type
 
-```{r, results = "asis"}
+```{r}
 tablR(redcap_df,
       vars = c(age, sex, type))
 ```
 
 We instantly conclude that sex and type is incorrectly formatted, as we wish to see percentages and not a median as if the 0/1 structure was numeric. We convert the variables using `factR()` and pipe into the `tablR()`. Notice that when we pipe we do not need to specify the data frame in `tablR()`
 
-```{r, results = "asis"}
+```{r}
 redcap_df %>% 
   factR(c(sex, type)) %>% 
   tablR(vars = c(age, sex, type))
@@ -43,7 +43,7 @@ redcap_df %>%
 
 If we want to compare multiple groups, we use the `group` argument. Let us compare tumor types
 
-```{r, results = "asis"}
+```{r}
 redcap_df %>% 
   factR(c(sex, type)) %>% 
   tablR(group = type,
@@ -52,7 +52,7 @@ redcap_df %>%
 
 We can also add a `total`column and also test the differences in distributions
 
-```{r, results = "asis"}
+```{r}
 redcap_df %>% 
   factR(c(sex, type),
         levels = list("type" = c("0", "1", "2"))) %>% 
@@ -69,9 +69,9 @@ Most of the content of the table can be customized in `tablR()`
 ### Changing labels
 
 It is possible to rename three types of labels:\
-- Group names: `labs.groups`
-- Variable names: `labs.headings`
-- Variable labels/levels: `labs.subheadings`
+- Group names: `labs.groups` \
+- Variable names: `labs.headings` \
+- Variable labels/levels: `labs.subheadings` \
 
 
 ```{r}
@@ -139,7 +139,7 @@ redcap_df %>%
     numeric = c("mean", "sd"))
 ```
  
- ### Customizing tables
+### Customizing tables
  
  All levels and labels can be set manually. Furthermore, the table can be exported as a flextable object for nicer layout. For this example we also collapse variables of similar kind for simplicity with the `simplify` argument. This is preferred in a lot of variables with yes/no, 1/0, positive/negative syntax.
  
