@@ -36,7 +36,7 @@ listR <- function(input, type, ...) {
 
   if(type == "reverse") {
 
-   return(names(input) %>% set_names(input))
+   return(as.list(names(input)) %>% set_names(input))
 
   }
 

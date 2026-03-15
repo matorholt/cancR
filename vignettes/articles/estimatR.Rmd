@@ -24,6 +24,8 @@ data.frame(status = c(0,1,2),
            time = c(5,1,3))
 ```
 
+An alternative is to provide only dates for when the events occured which is more simple (see `structR` below).
+
 The status indicator indicates whether an event has occured and which type of event.\
 - 0 indicates that the patient was event free and the time column indicates for how long the patient was followed (aka. censoring). This can be at the end of the database or last clinical visit.\
 - 1 indicates the main event of interest such has recurrence, metastasis or death.\
@@ -76,9 +78,7 @@ structR(df,
         competing = c(death_date, second_date),
         composite = list("pfs" = list("outcomes" = c("recurrence_date", "metastasis_date", "death_date")),
                          "relapse" = list("outcomes" = c("recurrence_date", "metastasis_date", "dsd_date"),
-                                          "competing" = c("death_date")),
-                         "metastasis2" = list("outcomes" = c("metastasis_date"),
-                                       "competing" = c("recurrence_date", "death_date")))) %>% head
+                                          "competing" = c("death_date"))))
 ```
 
 ## Time-to-event analysis

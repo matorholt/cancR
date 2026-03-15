@@ -18,6 +18,7 @@
 #' @param keep_dates Whether the original event dates should be kept.
 #' @param digits number of digits on event times
 #' @param id name of the id column. If missing, autodetection is attempted
+#' @param check whether data check should be performed (default = T). Checks if dates are in the future and event times are zero or negative.
 #'
 #' @return For each outcome, a status indicator of 0/1/2 and a time-to-event column are returned. If competing is missing, the levels are 0/1
 #' For the competing event, a status indicator of 0/1 and a time-to-event is returned.
@@ -38,7 +39,7 @@
 #'    second_date = c(NA, NA, NA, NA, "2008-01-01", NA, "2001-01-01", NA, NA, NA)) %>%
 #'  datR(c(opdate:second_date))
 #'
-
+#
 # n=10
 # df <-
 #   data.frame(
@@ -80,12 +81,12 @@ structR <- function(data,
                     unit = "months",
                     keep.dates=F,
                     digits = 2,
-                    id){
+                    id,
+                    check = F){
 
-  if("data.table" %in% class(data)) {
-
-    return(cat("Error: dataframe is in the format data.table - convert to data frame using as.data.frame(data)"))
-
+  #Convert to data.frame
+  if(any(c("data.table", "tbl") %in% class(data))) {
+    data <- as.data.frame(data)
   }
 
   if(unit %nin% c("months", "years", "days")) {
@@ -108,37 +109,35 @@ structR <- function(data,
   com_c <- data %>% select({{competing}}) %>% names()
   fu_c <- data %>% select({{fu}}) %>% names()
   index_c <- data %>% select({{index}}) %>% names()
+  all_out <- c(out_c, com_c, names(composite))
 
-
-  if(any(str_detect(c(out_c, com_c), pattern, negate=T))) {
-    return(cat("Wrong naming pattern for outcome columns (e.g. index_ or _date)"))
+  if(!all(str_detect(c(out_c, com_c), pattern))) {
+    return(cat(paste0("Wrong name pattern. All outcomes should include the pattern: ", pattern)))
   }
 
-  if(any(str_detect(c(out_c, com_c), "index_")) &
-     any(str_detect(c(out_c, com_c), "_date"))) {
-    return(cat("Outcome variables are both named index_ and _date - they should be uniform"))
-  }
+  if(check) {
 
-  errors <- c()
+    errors <- c()
 
-  #Date check
-  for(i in c(out_c, com_c, fu_c, index_c)) {
+    #Date check
+    for(i in c(out_c, com_c, fu_c, index_c)) {
 
-    if(sum(data[[i]] > Sys.Date(), na.rm=T) > 0) {
+      if(sum(data[[i]] > Sys.Date(), na.rm=T) > 0) {
 
-      errors <- c(errors, data[which(replace_na(data[["opdate"]], as.Date(0)) > Sys.Date()), id_c])
+        errors <- c(errors, data[which(replace_na(data[["opdate"]], as.Date(0)) > Sys.Date()), id_c])
+      }
+
+    }
+
+    if(length(errors) > 0) {
+
+      cat(paste0("Error: Dates in the future found for ", length(errors), " individual(s). Vector of IDs returned"))
+
+      return(errors)
+
     }
 
   }
-
-  if(length(errors) > 0) {
-
-    cat(paste0("Error: Dates in the future found for ", length(errors), " individual(s). Vector of IDs returned"))
-
-  return(errors)
-
-  }
-
 
   if(unit == "months"){
     t = 30.4375
@@ -148,102 +147,76 @@ structR <- function(data,
     t <- 1
   }
 
-  out_names <-
-    str_remove(out_c, pattern)
-  out_time <-
-    paste0("t_", out_names)
+  event_map <- map(all_out, function(v) {
 
-  #event + t_event
-  for(v in seq_along(out_c)) {
+    map_list <- list()
 
-    event_cols <- c(out_c[[v]], com_c, fu_c)
+    if(v %in% c(out_c, com_c)) {
 
-    #Event
-    data[[out_names[[v]]]] <- ifelse((vec <- apply(data[, event_cols], 1, function(x) which(x == min(x, na.rm=T))[1])) == length(event_cols), 0, vec)
+      map_list[["name"]] <- str_remove(v, pattern)
+      map_list[["time"]] <- paste0("t_", map_list[["name"]])
 
-    #Time
-    data[[out_time[[v]]]] <-round(as.numeric(as.Date(apply(data[, event_cols], 1, function(x) min(x, na.rm=T))) - data[, index_c])/t, digits)
-
-
-
-  }
-
-  #Death + t_death
-
-  if(any(str_detect(event_cols, "death"))) {
-
-    #Death
-    data[["death"]] <- ifelse(!is.na(data[["death_date"]]), 1, 0)
-    #Time
-    data[["t_death"]] <- round(as.numeric(as.Date(apply(data[, c("death_date", fu_c)], 1, function(x) min(x, na.rm=T))) - data[, index_c])/t, digits)
-
-  }
-
-  #Custom composite outcomes
-
-  for(c in seq_along(composite)) {
-
-    outs <- data %>% select(composite[[c]][["outcomes"]]) %>% names()
-
-    #Collapse competing risks to first date
-    if("competing" %in% names(composite[[c]])) {
-
-      comps <- data %>% select(composite[[c]][["competing"]]) %>% names()
-
-      if(length(comps) == 1) {
-        c_collapse <- data[,comps]
-
-      } else {
-        c_collapse <- suppressWarnings(apply(data[, comps], 1, function(x) min(x, na.rm=T)[1]))
-      }
     } else {
-      c_collapse <- NULL
+      map_list[["name"]] <- v
+      map_list[["time"]] <- paste0("t_", v)
     }
 
-    #Collapse outcomes to first date
-    if(length(outs) == 1) {
-      o_collapse <- data[,outs]
-    } else{
-    o_collapse <- suppressWarnings(apply(data[, outs], 1, function(x) min(x, na.rm=T)[1]))
-
+    if(v %nin% com_c) {
+      map_list[["event_cols"]] <- c(v, com_c, fu_c)
+    } else {
+      map_list[["event_cols"]] <- c(v, fu_c)
     }
 
-    #New frame with collapsed outcomes, competing risks and follow_up
-    frame <- bind_cols("outs" = o_collapse, "comps" = c_collapse, "follow" = data[, fu_c])
+    map_list
+
+  }) %>% set_names(all_out)
+
+  if(length(composite) > 0) {
+    #Find minima in composite columns
+    for(v in seq_along(composite)) {
+      data[[names(composite)[[v]]]] <- suppressWarnings(pmap_vec(data[, composite[[v]]$outcomes], ~ if(all(is.na(c(...)))) NA else min(c(...), na.rm=TRUE)))
+    }
+  }
+
+  #return(data %>% str)
+  #EVENT + TIME STRUCTURING
+  for(v in seq_along(event_map)) {
+
+    #Time
+    data[[event_map[[v]][["time"]]]] <- round(as.numeric(pmap_vec(data[, event_map[[v]][["event_cols"]]], ~ min(c(...), na.rm = TRUE)) - data[, index_c])/t, digits)
 
     #Event
-    data[[names(composite)[c]]] <- ifelse((vec <- apply(frame, 1, function(x) which(x == min(x, na.rm=T))[1])) == length(names(frame)), 0, vec)
-    #Time
-    data[[paste0("t_", names(composite)[c])]] <- round(as.numeric(as.Date(apply(frame, 1, function(x) min(x, na.rm=T))) - data[, index_c])/t, digits)
+    data[[event_map[[v]][["name"]]]] <- ifelse((vec <- pmap_int(data[, event_map[[v]][["event_cols"]]], ~ which(c(...) == min(c(...), na.rm = TRUE))[1])) == length(event_map[[v]][["event_cols"]]), 0, vec)
+
+
 
   }
 
-  check_names <- data %>% select(matches("\\bt_")) %>%
-    names()
+  if(check) {
 
-  #If any event times are negative, zero or NA
-  if(any(min(data %>% select(matches(check_names)) %>% unlist, na.rm=T) <= 0 | sum(is.na(data %>% select(matches(check_names)) %>% unlist))>0)) {
+    check_names <- map_chr(event_map, ~ .x$time)
+
+    #If any event times are negative, zero or NA
+    if(any(min(data %>% select(matches(check_names)) %>% unlist, na.rm=T) <= 0 | sum(is.na(data %>% select(matches(check_names)) %>% unlist))>0)) {
 
 
-    checklist <- list()
+      checklist <- list()
 
-    for(i in check_names) {
+      for(i in check_names) {
 
-      checklist[[i]] <- data[which(data[[i]] <= 0 | is.na(data[[i]])), c(i, "id")]
+        checklist[[i]] <- data[which(data[[i]] <= 0 | is.na(data[[i]])), c(i, "id")]
+
+      }
+
+      frame <- joinR(checklist, by = "id", type = "full")
+
+      cat(paste0("Error: ", nrow(frame), " ID(s) with blank, negative or zero times to event. Dataframe with errors returned:\n\n"))
+
+      return(frame %>% select(!!sym(id_c), everything()))
 
     }
 
-    checklist
-
-    frame <- plyr::join_all(checklist, by = "id", type = "full")
-
-    cat(paste0("Error: ", nrow(frame), " ID(s) with blank, negative or zero times to event. Dataframe with errors returned:\n\n"))
-
-    return(frame %>% select(!!sym(id_c), everything()))
-
   }
-
-
 
   if(!keep.dates) {
 
@@ -252,4 +225,3 @@ structR <- function(data,
 
   return(data)
 }
-

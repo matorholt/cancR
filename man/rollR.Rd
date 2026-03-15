@@ -4,14 +4,14 @@
 \alias{rollR}
 \title{Assign rolling ID.}
 \usage{
-rollR(data, id = id, lab = order)
+rollR(data, vars = id, label = order)
 }
 \arguments{
 \item{data}{dataset}
 
-\item{id}{column which unique ids should be based on}
+\item{vars}{column(s) which unique ids should be based on}
 
-\item{lab}{label for new unique id column}
+\item{label}{label for new unique id column}
 }
 \value{
 adds a new column to the dataset with unique ids based on original id conditional on a sorting

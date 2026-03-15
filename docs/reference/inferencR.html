@@ -29,6 +29,7 @@
     <li><a class="dropdown-item" href="../articles/data_management.html">Data Management</a></li>
     <li><a class="dropdown-item" href="../articles/tables.html">Tables</a></li>
     <li><a class="dropdown-item" href="../articles/estimatR.html">Time-to-event analysis</a></li>
+    <li><a class="dropdown-item" href="../articles/sap.html">Statistical Analysis Plan</a></li>
   </ul></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
@@ -58,7 +59,8 @@
 <span>  <span class="va">vars</span>,</span>
 <span>  <span class="va">outcome.vars</span>,</span>
 <span>  <span class="va">censoring.vars</span>,</span>
-<span>  method <span class="op">=</span> <span class="st">"tte"</span>,</span>
+<span>  <span class="va">cluster</span>,</span>
+<span>  method <span class="op">=</span> <span class="st">"cox"</span>,</span>
 <span>  treat.form <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  event.form <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  cens.form <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -73,8 +75,10 @@
 <span>  digits <span class="op">=</span> <span class="fl">4</span>,</span>
 <span>  event.digits <span class="op">=</span> <span class="fl">2</span>,</span>
 <span>  alpha <span class="op">=</span> <span class="fl">0.05</span>,</span>
+<span>  weights <span class="op">=</span> <span class="cn">T</span>,</span>
 <span>  weights.digits <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>  weights.breaks <span class="op">=</span> <span class="fl">1</span></span>
+<span>  weights.breaks <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -108,6 +112,10 @@
 
 <dt id="arg-censoring-vars">censoring.vars<a class="anchor" aria-label="anchor" href="#arg-censoring-vars"></a></dt>
 <dd><p>vector of variables that should only be included in the censoring model</p></dd>
+
+
+<dt id="arg-cluster">cluster<a class="anchor" aria-label="anchor" href="#arg-cluster"></a></dt>
+<dd><p>variable name for clusters, if chosen binomial regression with robust sandwich variance estimation</p></dd>
 
 
 <dt id="arg-method">method<a class="anchor" aria-label="anchor" href="#arg-method"></a></dt>
@@ -170,12 +178,20 @@
 <dd><p>alpha level for the estimation of confidence intervals and p-values. Default = 0.05</p></dd>
 
 
+<dt id="arg-weights">weights<a class="anchor" aria-label="anchor" href="#arg-weights"></a></dt>
+<dd><p>whether weighting diagnostics for the IPTW should be returned</p></dd>
+
+
 <dt id="arg-weights-digits">weights.digits<a class="anchor" aria-label="anchor" href="#arg-weights-digits"></a></dt>
 <dd><p>the number of digits for categorization of weights</p></dd>
 
 
 <dt id="arg-weights-breaks">weights.breaks<a class="anchor" aria-label="anchor" href="#arg-weights-breaks"></a></dt>
 <dd><p>breaks for categorization of weights</p></dd>
+
+
+<dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
+<dd><p>arguments passed to weightR</p></dd>
 
 </dl></div>
     <div class="section level2">

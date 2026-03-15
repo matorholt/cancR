@@ -16,20 +16,39 @@
 #'
 
 # Matching codelist
-# codelist <- list("lpr_case" = list("abdomen" = list("kidney" = c("tx1a","tx1b","tx1c"),
+# nlist <- list(case = list(lpr = list("abdomen" = list("kidney" = c("tx1a","tx1b","tx1c"),
 #                                                    "liver" = c("tx2a", "tx2b", "tx2c")),
 #                                    "thorax" = list("heart" = c("tx3a", "tx3b", "tx3c"),
 #                                                    "lung" = c("tx4a", "tx4b", "tx3c"))),
-#                  "lpr_ex" = list("immune_diag" = "a3",
-#                                  "cll" = c("a4", "b4")),
-#                  "lmdb_ex" = list("immune_drugs" = "a5"),
-#                  "opr_ex" = list("trans" = "t5"),
-#                  "pato_supp" = list("PCC" = "M80"),
-#                  "labels" = list("lpr_case" = c("SOTR", "region"),
+#                            pato = list(pcc = "M80")),
+#               lpr = list(immune_diag = "a3",
+#                           cll = c("a4", "b4")),
+#               lmdb = list(immune_drugs = "a5"),
+#               opr = list(trans = "t5"),
+#               labels = list("lpr_case" = c("SOTR", "region"),
 #                                  "lpr_ex" = "immsup"),
-#                  "exclusion" = c("z1","z2"))
+#               design = list(age.limit = 18,
+#                             period = c("2000-01-01", "2022-12-31"),
+#                             exclusion = c("sc_date")))
 #
-# clist <- decodR(codelist, type = "matching")
+# codelist_matching <- list(
+#   case = list("lpr" = c("DA", "DB"),
+#               "pato" = "M(83)"),
+#   lpr = list("immun_lpr" = c("DC", "DD", "DE"),
+#              "leukemia" = c("DF", "DG")),
+#   lmdb = list("immun_atc" = c("A","B"),
+#               "chemo" = "G"),
+#   opr = list("immun_opr" = c("KA","KB")),
+#   design = list(age.limit = 18,
+#                 period = c("2000-01-01", "2022-12-31"),
+#                 exclusion = c("sc_date"))
+#
+# )
+
+
+
+#
+# clist <- decodR(mlist1, type = "matching")
 #
 #
 # #RTMLE
@@ -166,6 +185,22 @@
 #
 # codelist
 
+# codelist_matching <- list(
+#   case = list("lpr" = c("DA", "DB"),
+#               "pato" = "M(83)"),
+#   lpr = list("immun_lpr" = c("DC", "DD", "DE"),
+#              "leukemia" = c("DF", "DG")),
+#   lmdb = list("immun_atc" = c("A","B"),
+#               "chemo" = "G"),
+#   opr = list("immun_opr" = c("KA","KB")),
+#   design = list(age.limit = 18,
+#                 period = c("2000-01-01", "2022-12-31"),
+#                 exclusion = c("sc_date"))
+#
+# )
+
+#decodR(codelist_matching)
+
 
 
 decodR <- function(codelist,
@@ -188,11 +223,49 @@ decodR <- function(codelist,
    for(i in regs.names) {
 
      out.list[["loadR"]][["pattern.list"]][[i]] <- unlist(main[i], use.names = F)
+
      out.list[["searchR"]][["search.list"]][[i]] <- main[[i]]
 
    }
 
-  out.list[["design"]] <- main$design
+
+  if("labels" %in% names(main)) {
+  out.list[["searchR"]][["sub.list"]] <- main$labels
+
+  dframe <- rrapply(main, how = "melt") %>%
+    filter(L1 != "labels") %>%
+    mutate(L1 = ifelse(str_detect(L1, "case"), paste0(L1,"_",L2), L2))
+
+slist <- main$labels
+
+label_list <- list()
+
+for(i in seq_along(slist)) {
+
+  split <- dframe %>%
+    filter(L1 %in% names(slist)[[i]])
+
+  for(x in seq_along(slist[[i]])) {
+
+    if(str_detect(names(slist[i]), "case")) {
+      shift <- 0
+    } else {
+      shift <- length(slist[[i]])+1
+    }
+
+    label_list[[slist[[i]][x]]] <-
+
+      split %>%
+      select(ncol(.)-(x+shift), ncol(.)) %>%
+      rrapply(how = "unmelt")
+  }
+
+}
+
+out.list[["searchR"]][["sub.labels"]] <- label_list
+
+  }
+
 
   #Design specific decoding
   if(type == "matching") {
@@ -204,24 +277,30 @@ decodR <- function(codelist,
       out.list[["loadR"]][["pattern.list"]][[i]] <- c(out.list[["loadR"]][["pattern.list"]][[i]], unlist(main$case[[i]], use.names=F))
 
       if(length(names(main$case)) > 1) {
-      out.list[["searchR"]][["search.list"]][[i]][[paste0("case_",i)]] <- main$case[[i]]
+
+        out.list[["searchR"]][["search.list"]][[i]][[paste0("case_",i)]] <- unlist(main$case[[i]], use.names=F)
+
       } else {
-        out.list[["searchR"]][["search.list"]][[i]][["case"]] <- main$case[[i]]
+        out.list[["searchR"]][["search.list"]][[i]][["case"]] <- unlist(main$case[[i]], use.names = F)
       }
 
     }
 
-    out.list[["design"]]$exclusion.ex <- unlist(lapply(main[regs.names], function(i) {
+    out.list[["includR"]][["exclusion.ex"]] <- unlist(lapply(main[regs.names], function(i) {
                                           names(i)
                                         }), use.names = F)
 
-    names(out.list[["design"]][["exclusion"]]) <- "exclusion.out"
+    out.list[["includR"]][["exclusion.out"]] <- main$design$exclusion
 
     if(length(names(main$case)) > 1) {
-      out.list[["design"]]$case <-  paste0("case_", names(main$case))
+      out.list[["includR"]]$case <-  paste0("case_", names(main$case))
     } else {
-      out.list[["design"]]$case <-  "case"
+      out.list[["includR"]]$case <-  "case"
     }
+
+    out.list[["includR"]][["age.limit"]] <- main$design$age.limit
+    out.list[["includR"]][["period"]] <- main$design$period
+
 
 
   }
@@ -242,172 +321,20 @@ decodR <- function(codelist,
 
  return(out.list)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  if(type == "matching") {
-  c_lab <- str_detect(names(codelist), "case")
-
-  #Flatten list
-  cl_melt <- rrapply::rrapply(codelist, how = "melt")
-
-  #Fill
-  codelist <-
-    bind_cols(cl_melt[, 1:ncol(cl_melt)-1] %>%
-                rowR(type = "fill", direction = "right"),
-              cl_melt[ncol(cl_melt)]) %>%
-    select(1, (ncol(.)-1), ncol(.)) %>%
-    rrapply::rrapply(how = "unmelt")
-
-  #Registies
-  registries <- unique(str_extract(names(codelist)[str_detect(names(codelist), "lpr|opr|lmdb|cancer|pato")], "lpr|opr|lmdb|cancer|pato"))
-
-  #LoadR + searchR
-  loadlist <- list()
-  searchlist <- list()
-
-  for(i in registries) {
-
-    loadlist[[i]] <- c(unlist(codelist[str_detect(names(codelist), i)]), use.names=F)
-
-    for(j in names(codelist)[str_detect(names(codelist), i)]) {
-
-      searchlist[[j]] <-c(unlist(codelist[[j]]), use.names=F)
-
-    }
-
-  }
-
-  #Exclusions
-  ex_list <- unique(str_extract(names(codelist)[str_detect(names(codelist), "_ex")], ".*_ex"))
-
-  list <- list(
-    main = main,
-    loadR.regs = c(registries, regs),
-    loadR.list = loadlist,
-    searchR.list = searchlist,
-    includR.exclude = ex_list
-  )
-
-  if("labels" %in% names(codelist)) {
-
-    list <- append(list, list(searchR.keep = codelist[["labels"]]))
-
-    lab_list <- list()
-
-    for(n in names(codelist[["labels"]])) {
-
-      lab_df <- cl_melt[cl_melt[[1]] == n,]
-
-      levels <- codelist[["labels"]][[n]]
-
-      for(l in seq_along(levels)) {
-
-        sub_df <- lab_df[, c(l+1,ncol(lab_df))]
-
-        lab_list[[levels[l]]] <-
-          rrapply::rrapply(sub_df %>%
-                             unnest(value) %>%
-                             group_by(!!sym(colnames(sub_df)[1])) %>%
-                             summarise(value = list(value)),
-                           how = "unmelt")
-
-      }
-
-    }
-
-    list <- append(list, list(recodR.labels = lab_list))
-
-  }
-
-  if("exclusion" %in% names(codelist)) {
-
-    list <- append(list, list(searchR.exclusion = codelist[["exclusion"]]))
-  }
-
-  if("lpr_case" %in% names(codelist)) {
-
-    if(any(unlist(codelist[["lpr_case"]]) %in% unlist(charlson.codes))) {
-
-      cat("Cases have diagnoses codes as a part of the Charlson Comorbidity Index - remember to use the updatR() function")
-
-
-      list <- append(list, list(updatR.exclusion = unlist(codelist[str_detect(names(codelist), "lpr_case")], use.names = F)))
-
-    }
-
-  }
-
- # print(viewR(main))
-
-  return(list)
-
-  }
-
-  if(type == "rtmle") {
-
-    out.list <- list()
-
-    reg.list <- na.omit(unique(str_extract(names(main), "lpr|opr|lmdb|cancer|pato")))
-
-    out.list[["loadR.regs"]] <- c(reg.list, regs)
-
-    print(reg.list)
-
-    #loadR pattern.list
-    out.list[["loadR.list"]] <- lapply(reg.list, function(i) {
-
-      unlist(main[[i]], use.names = F)
-
-    }) %>% set_names(reg.list)
-
-    out.list[["searchR.list"]] <-
-      lapply(reg.list, function(i) {
-
-        main[[i]]
-
-    }) %>% set_names(reg.list)
-
-    #Allocate study period to
-    for(i in seq_along(main$exposure)) {
-
-      main$exposure[[i]]$period <- main$setup$period
-
-      out.list[["exposure_atc"]] <- c(out.list[["exposure_atc"]], main$exposure[[i]]$atc)
-
-    }
-
-    out.list[["exposure"]] <- main$exposure
-    out.list[["exclusion"]] <- main$exclusion
-    out.list[["setup"]] <- main$setup
-
-
-    return(out.list)
-  }
-
-
-
 }
 
-# c.list <- decodR(codelist_matching)
+# multilist <- list(case = list(lpr = list("abdomen" = list("kidney" = c("DA","DB","DC"),
+#                                                           "liver" = c("DD", "DE", "DF")),
+#                                          "thorax" = list("heart" = c("DG", "DH", "DI"))),
+#                               pato = list(pcc = "M80")),
+#                   lpr = list(immune_diag = "DJ",
+#                              cll = c("DK4", "DL")),
+#                   lmdb = list(immune_drugs = "A"),
+#                   opr = list(trans = "KA"),
+#                   labels = list("case_lpr" = c("region", "organ"),
+#                                 "immune_drugs" = "immsup"),
+#                   design = list(age.limit = 18,
+#                                 period = c("2000-01-01", "2022-12-31"),
+#                                 exclusion = c("sc_date")))
 #
-# str(c.list)
-#decodR(codelist_rtmle, type = "rtmle")
-
-
+# m.list <- decodR(multilist)

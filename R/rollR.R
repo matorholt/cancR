@@ -5,8 +5,8 @@
 #'
 #'
 #' @param data dataset
-#' @param id column which unique ids should be based on
-#' @param lab label for new unique id column
+#' @param vars column(s) which unique ids should be based on
+#' @param label label for new unique id column
 #'
 #' @return adds a new column to the dataset with unique ids based on original id conditional on a sorting
 #' @export
@@ -18,9 +18,14 @@
 #   rollR()
 
 
-rollR <- function(data, id = id, lab = order) {
+rollR <- function(data, vars = id, label = order) {
 
-  data %>% mutate({{lab}} := match({{id}}, unique({{id}})))
+  vars <- names(dplyr::select(data, {{ vars }}))
+  label_name <- deparse(substitute(label))
+
+  as.data.table(data)[, (label_name) := data.table::rleidv(.SD), .SDcols = vars] %>% as.data.frame
 }
+
+
 
 

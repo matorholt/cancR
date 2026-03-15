@@ -12,7 +12,8 @@ inferencR(
   vars,
   outcome.vars,
   censoring.vars,
-  method = "tte",
+  cluster,
+  method = "cox",
   treat.form = NULL,
   event.form = NULL,
   cens.form = NULL,
@@ -27,8 +28,10 @@ inferencR(
   digits = 4,
   event.digits = 2,
   alpha = 0.05,
+  weights = T,
   weights.digits = 1,
-  weights.breaks = 1
+  weights.breaks = 1,
+  ...
 )
 }
 \arguments{
@@ -45,6 +48,8 @@ inferencR(
 \item{outcome.vars}{vector of variables that should only be included in the outcome model}
 
 \item{censoring.vars}{vector of variables that should only be included in the censoring model}
+
+\item{cluster}{variable name for clusters, if chosen binomial regression with robust sandwich variance estimation}
 
 \item{method}{whether the outcome is "tte" (time-to-event) or "binary" (default = "tte")}
 
@@ -76,9 +81,13 @@ inferencR(
 
 \item{alpha}{alpha level for the estimation of confidence intervals and p-values. Default = 0.05}
 
+\item{weights}{whether weighting diagnostics for the IPTW should be returned}
+
 \item{weights.digits}{the number of digits for categorization of weights}
 
 \item{weights.breaks}{breaks for categorization of weights}
+
+\item{...}{arguments passed to weightR}
 }
 \value{
 table: Event table \cr

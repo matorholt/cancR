@@ -38,6 +38,7 @@ loadR <- function(regs,
                   lmdb.stop = 2023,
                   simulation = F,
                   cores = 4,
+                  dt = F,
                   ...) {
 
 
@@ -50,11 +51,11 @@ loadR <- function(regs,
   regs <- match.arg(regs, c("lpr", "lmdb", "pop", "pato", "cancer", "opr", "sc", "meta", "dsd", "ses", "covariates", "dcr"), several.ok = T)
 
   if(!is.null(keep.list) & class(keep.list) != "list") {
-    stop('Format the argument "keep" as a list with the structure list("lpr" = c("vars"), "lmdb" = c("vars"))')
+    stop("Format the argument \'keep\' as a list with the structure list(\'lpr\' = c(\'vars\'), \'lmdb\' = c(\'vars\'))")
   }
 
   if(!is.null(pattern.list) & class(pattern.list) != "list") {
-    stop('Format the argument "pattern.list" as a list with the structure list("lpr" = c("DC92", "DC239"), "lmdb" = c("L04", "L01"))')
+    stop("Format the argument \'pattern.list\' as a list with the structure list(\'lpr\' = c(\'DC92\', \'DC239\'), \'lmdb\' = c(\'L04\', \'L01\'))")
   }
 
   if(class(id.filter) %in% c("character", "numeric", "integer")) {
@@ -158,16 +159,20 @@ loadR <- function(regs,
     cat(paste0(i,": "))
 
     if(i %in% names(pattern.list2)) {
-      pattern <- paste0("prxmatch('/", paste0(pattern.list[[i]], collapse="|"), "/', ", vars.select$cancer[1], ") OR prxmatch('/", paste0(pattern.list2[[i]], collapse="|"), "/', ", vars.select[[i]][2], ")")
+      pattern <- paste0("prxmatch(\'/", paste0(pattern.list[[i]], collapse="|"), "/\', ", vars.select$cancer[1], ") OR prxmatch(\'/", paste0(pattern.list2[[i]], collapse="|"), "/\', ", vars.select[[i]][2], ")")
     } else if(i %in% names(pattern.list)) {
-      pattern <- paste0("prxmatch('/", paste0(pattern.list[[i]], collapse="|"), "/', ", vars.select[[i]][1], ")")
+      pattern <- paste0("prxmatch(\'/", paste0(pattern.list[[i]], collapse="|"), "/\', ", vars.select[[i]][1], ")")
     } else {
       pattern <- NULL
     }
 
     if((is.null(n) & is.null(id.filter) & !(i %in% names(keep.list)) & !(i %in% names(pattern.list))) | i %in% c("pop", "sc", "meta", "dsd", "ses", "dcr")) {
 
-      reglist[[i]] <- as.data.frame(arrow::read_parquet(pathlist[["parquet"]][[i]]))
+      if(dt) {
+        reglist[[i]] <- as.data.table(arrow::read_parquet(pathlist[["parquet"]][[i]]))
+      } else {
+        reglist[[i]] <- as.data.frame(arrow::read_parquet(pathlist[["parquet"]][[i]]))
+      }
 
     } else if(i == "pato") {
 
@@ -175,31 +180,53 @@ loadR <- function(regs,
 
       setDT(dat)
 
+      if(dt) {
+        reglist[[i]] <- dat[str_detect(snomed, paste0(pattern.list[[i]], collapse="|")),]
+
+      } else {
       reglist[[i]] <- as.data.frame(dat[str_detect(snomed, paste0(pattern.list[[i]], collapse="|")),])
+      }
 
 
     } else if(i == "lmdb") {
-      cl <- parallel::makeCluster(cores)
-      registerDoParallel(cl)
 
-      reglist[[i]] <- as.data.frame(rbindlist(parLapply(cl, seq(lmdb.start,lmdb.stop), function(year) {
-        heaven::importSAS(paste0("X:/Data/Rawdata_Hurtig/709545/Grunddata/medication/lmdb", year, "12.sas7bdat", sep=""),
+      with(plan(multisession, workers = cores), local = TRUE)
+
+      lmdb_frame <- rbindlist(future_map(seq(lmdb.start,lmdb.stop), function(year) {
+
+        importSAS(paste0("X:/Data/Rawdata_Hurtig/709545/Grunddata/medication/lmdb", year, "12.sas7bdat", sep=""),
                   obs = n,
                   keep = keep.vars[[i]],
                   filter = id.filter,
                   where = pattern)
-      })))
-      parallel::stopCluster(cl)
+
+      }))
+
+      if(dt) {
+        reglist[[i]] <- lmdb_frame
+      } else {
+
+        reglist[[i]] <- as.data.frame(lmdb_frame)
+      }
+
 
     } else {
 
-      reglist[[i]] <-
-        as.data.frame(
-        importSAS(pathlist[["sas"]][[i]],
-                  obs = n,
-                  keep = keep.vars[[i]],
-                  filter = id.filter,
-                  where = pattern))
+      i_frame <- importSAS(pathlist[["sas"]][[i]],
+                           obs = n,
+                           keep = keep.vars[[i]],
+                           filter = id.filter,
+                           where = pattern)
+
+      if(dt) {
+
+        reglist[[i]] <- i_frame
+
+      } else {
+
+        reglist[[i]] <- as.data.frame(i_frame)
+
+      }
 
     }
 
@@ -212,7 +239,13 @@ loadR <- function(regs,
 
   if(length(reglist) == 1) {
 
-    return(as.data.frame(reglist[[1]]))
+    if(dt) {
+      return(as.data.table(reglist[[1]]))
+    } else {
+      return(as.data.frame(reglist[[1]]))
+    }
+
+
   } else {
 
     return(reglist)

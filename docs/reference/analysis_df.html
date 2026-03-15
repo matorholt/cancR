@@ -29,6 +29,7 @@
     <li><a class="dropdown-item" href="../articles/data_management.html">Data Management</a></li>
     <li><a class="dropdown-item" href="../articles/tables.html">Tables</a></li>
     <li><a class="dropdown-item" href="../articles/estimatR.html">Time-to-event analysis</a></li>
+    <li><a class="dropdown-item" href="../articles/sap.html">Statistical Analysis Plan</a></li>
   </ul></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
@@ -55,13 +56,16 @@
 
     <div class="section level2">
     <h2 id="format">Format<a class="anchor" aria-label="anchor" href="#format"></a></h2>
-    <p>A data frame with 2000 rows and 14 columns:</p><dl><dt>X1</dt>
-<dd><p>group variable with three levels (T0, T1 and T2)</p></dd>
+    <p>A data frame with 2000 rows and 21 columns:</p><dl><dt>id</dt>
+<dd><p>patient id</p></dd>
 
-<dt>X2</dt>
+<dt>g2</dt>
 <dd><p>group variable with two levels 0/1</p></dd>
 
-<dt>X3</dt>
+<dt>g3</dt>
+<dd><p>group variable with three levels (T0, T1 and T2)</p></dd>
+
+<dt>g4</dt>
 <dd><p>group variable with three levels (T0, T1, T2 and T3)</p></dd>
 
 <dt>X4, X5</dt>
@@ -81,9 +85,6 @@
 
 <dt>event3</dt>
 <dd><p>status indicator with multiple competing risks. 0=censorm, 1=event, 2=death, 3=competing event</p></dd>
-
-<dt>id</dt>
-<dd><p>patient id</p></dd>
 
 <dt>X6_bin, X7_bin, X8_bin, X9_bin, X10_bin</dt>
 <dd><p>X6-X10 binned based on quintiles</p></dd>

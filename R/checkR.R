@@ -38,7 +38,7 @@
 # t2 <- checkR(df, group, vars=c(sex, hospital), levels=2)
 # t3 <- checkR(df, treatment=group, outcome = sex, vars=c(age_group, chemo, hospital), levels = 3)
 
-checkR <- function(data, treatment, outcome, vars, id, levels=1, quantiles=0.1) {
+checkR <- function(data, treatment, outcome, vars, id, levels=NULL, quantiles=0.1) {
 
   if(missing(id)) {
 
@@ -55,6 +55,10 @@ checkR <- function(data, treatment, outcome, vars, id, levels=1, quantiles=0.1) 
   vars_c <- data %>% select({{vars}}) %>% names()
   treat_c <- data %>% select({{treatment}}) %>% names()
   out_c <- data %>% select({{outcome}}) %>% names()
+
+  if(is.null(levels)) {
+    levels <- length(vars_c)
+  }
 
   if(levels > length(c(vars_c))) {
     return(cat(paste0("ERROR: Levels exceeding number of variables. Levels can maximally be: ", length(c(vars_c)))))
@@ -123,8 +127,7 @@ checkR <- function(data, treatment, outcome, vars, id, levels=1, quantiles=0.1) 
     cat("No positivity violations detected\n")
   }
   if(nrow(zero) > 0) {
-    cat("Positivity violations detected in the following combinations:\n")
+    cat(paste0("Positivity violations detected in ", nrow(zero), " combinations:\n"))
     print(as_tibble(zero), n=300)
   }
 }
-

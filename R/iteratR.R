@@ -111,7 +111,7 @@ iteratR <- function(data,
 
   start <- tickR.start
 
-  if(method == "tablRt") {
+  if(method == "tablR") {
 
     arg.list <- list(...)
     if(any(class(data) %nin% "list")) {
@@ -123,20 +123,20 @@ iteratR <- function(data,
     #return(arg.list)
 
     out <- pmap(arg.list,
-         function(...) {
-           tablR(...)
-         })
+                function(...) {
+                  tablR(...)
+                })
 
   } else if(method == "extractR") {
 
-      labels <- NULL
+    labels <- NULL
 
-      out <- bind_rows(lapply(seq_along(data), function(x) {
+    out <- bind_rows(lapply(seq_along(data), function(x) {
 
-        extractR(data[[x]], ...) %>%
+      extractR(data[[x]], ...) %>%
         mutate(model = names(data)[[x]])
 
-      }))
+    }))
 
   } else if(method == "plotR") {
 
@@ -166,86 +166,84 @@ iteratR <- function(data,
 
   } else {
 
-  arg.list <- list(...)
+    arg.list <- list(...)
 
-  if(missing(labels)) {
+    if(missing(labels)) {
 
-    if("group" %nin% names(arg.list)) {
+      if("group" %nin% names(arg.list)) {
 
-      labels <- arg.list[["event"]]
+        labels <- arg.list[["event"]]
 
 
+      } else {
+
+        labels <- paste0(arg.list[["event"]], "_", arg.list[["group"]])
+      }
+    }
+
+
+
+    if(any(class(data) %nin% "list")) {
+      arg.list[["data"]] <- list(data)
     } else {
-
-      labels <- paste0(arg.list[["event"]], "_", arg.list[["group"]])
+      arg.list[["data"]] <- data
     }
-  }
 
+    if("vars" %in% names(arg.list)) {
 
+      if(class(arg.list[["vars"]]) != "list") {
 
-  if(any(class(data) %nin% "list")) {
-  arg.list[["data"]] <- list(data)
-  } else {
-    arg.list[["data"]] <- data
-  }
-
-if("vars" %in% names(arg.list)) {
-
-    if(class(arg.list[["vars"]]) != "list") {
-
-  arg.list$vars <- list(arg.list$vars)
+        arg.list$vars <- list(arg.list$vars)
+      }
     }
-}
 
-  if(multivariable) {
+    if(multivariable) {
 
-    arg.list$type <- "select"
+      arg.list$type <- "select"
 
-    multi_list <- list()
+      multi_list <- list()
 
-    for(i in seq_along(arg.list$group)) {
+      for(i in seq_along(arg.list$group)) {
 
-      multi_list[[i]] <- arg.list$group[arg.list$group != arg.list$group[i]]
+        multi_list[[i]] <- arg.list$group[arg.list$group != arg.list$group[i]]
+
+      }
+
+      arg.list$vars <- multi_list
 
     }
 
-    arg.list$vars <- multi_list
-
-  }
 
 
-
-  if("timevar" %nin% names(arg.list) & method != "tablR") {
+    if("timevar" %nin% names(arg.list) & method != "tablR") {
 
       arg.list[["timevar"]] <- paste("t_", arg.list[["event"]], sep="")
+    }
+
+    #return(arg.list)
+
+    out <- pmap(arg.list,
+                function(...) {
+
+                  if(method == "estimatR") {
+                    estimatR(...)
+                  } else if(method == "incidencR") {
+                    incidencR(...)
+                  } else if(method == "inferencR") {
+                    inferencR(...)
+                  } else if(method == "tablR") {
+                    tablR(...)
+                  }
+
+                })  %>% set_names(labels)
+
+    class(out) <- "iteratR"
+
   }
-
-  #return(arg.list)
-
-  out <- pmap(arg.list,
-       function(...) {
-
-         if(method == "estimatR") {
-           estimatR(...)
-         } else if(method == "incidencR") {
-           incidencR(...)
-         } else if(method == "clustR") {
-           clustR(...)
-         } else if(method == "inferencR") {
-           inferencR(...)
-         } else if(method == "tablR") {
-           tablR(...)
-         }
-
-       })  %>% set_names(labels)
-
-  class(out) <- "iteratR"
-
-   }
 
 
   cat(paste0("\nTotal runtime: \n"))
-  cat(tockR("diff", start))
+  cat(tockR("diff", start), "\n")
 
   return(out)
 }

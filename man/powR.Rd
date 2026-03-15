@@ -2,16 +2,36 @@
 % Please edit documentation in R/powR.R
 \name{powR}
 \alias{powR}
-\title{Converter from Rscript to powershell format}
+\title{Automated keyboard strokes}
 \usage{
-powR(text)
+powR(
+  text,
+  write.sleep = 0.02,
+  mouse.sleep = 0.25,
+  special.sleep = 0.05,
+  where = "pc",
+  server.language = T,
+  server.automate = T
+)
 }
 \arguments{
-\item{text}{R script that needs to be converted to powershell format}
+\item{text}{single-quote enclosed text to automate}
+
+\item{write.sleep}{delay between text chunks (default = 0.025 secs)}
+
+\item{mouse.sleep}{delay between mouse actions (default = 0.15 secs)}
+
+\item{special.sleep}{delay betweem alt-hold and alt code (default = 0.1)}
+
+\item{where}{enviroment, pc, laptop or iw containing customised coordinates}
+
+\item{server.language}{whether the language on the server should be changed (default = T)}
+
+\item{server.automate}{whether automatic parenthesis and quotes should be disabled (default = T)}
 }
 \value{
-Printed text compatible with powershell
+a keyboard and mouse automation that transfers the assigned text
 }
 \description{
-Converter from Rscript to powershell format
+Automated keyboard strokes
 }

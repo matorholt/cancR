@@ -35,6 +35,7 @@
 #
 # reglist <- lapply(reglist, as.data.frame)
 #
+# #Multilevel codelist
 # clist <- decodR(list("lpr_case" =
 #                        list(supergroup_a =
 #                               list(group_a1 = list("sg1" = c("DB6", "DB7"),
@@ -136,9 +137,8 @@ searchR <- function(reglist,
     d
   })
 
+if(!is.null(cores)) with(future::plan(multisession, workers = cores), local=TRUE)
 
-
-  with(future::plan(multisession, workers = cores), local=TRUE)
 
   progressr::handlers(global = TRUE)
   handlers(list(
@@ -172,8 +172,7 @@ searchR <- function(reglist,
           )
         }
 
-        p <- progressr::progressor(along = seq_along(varlist))
-
+       p <- progressr::progressor(along = seq_along(varlist))
 
         #Loop through variables
         out <- joinR(
@@ -233,18 +232,16 @@ searchR <- function(reglist,
 
       }), by = pnr_c, type = "full", dt=T)[order(get(pnr_c))]
 
-#})
+  if(!is.null(sub.labels)) {
+
+    joined_data <- recodR(joined_data, sub.labels, match = "start")
+
+  }
 
   if(!is.null(name.list)) {
     setnames(joined_data,
              unlist(name.list),
              names(name.list))
-
-  }
-
-  if(!is.null(sub.labels)) {
-
-    joined_data <- recodR(joined_data, sub.labels)
 
   }
 
@@ -258,3 +255,8 @@ searchR <- function(reglist,
 }
 
 #rlang::exec(searchR, reglist, !!!c.list$searchR)
+
+# searchR(testlist,
+#         search.list = list(lpr = c("DF", "DO", "DN", "DT"),
+#                            lmdb = c("A", "B", "C", "D")),
+#         cores = NULL)

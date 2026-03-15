@@ -5,18 +5,18 @@
 \alias{analysis_df}
 \title{Simulated dataset for model testing}
 \format{
-A data frame with 2000 rows and 14 columns:
+A data frame with 2000 rows and 21 columns:
 \describe{
-\item{X1}{group variable with three levels (T0, T1 and T2)}
-\item{X2}{group variable with two levels 0/1}
-\item{X3}{group variable with three levels (T0, T1, T2 and T3)}
+\item{id}{patient id}
+\item{g2}{group variable with two levels 0/1}
+\item{g3}{group variable with three levels (T0, T1 and T2)}
+\item{g4}{group variable with three levels (T0, T1, T2 and T3)}
 \item{X4, X5}{binary random covariates}
 \item{X6, X7, X8, X9, X10}{continuous random covariates}
 \item{ttt, time2}{event times}
 \item{event}{binary status indicator (e.g. alive/death)}
 \item{event2}{status indicator where 0 is censoring, 1 is event of interest and 2 is death as a competing risk}
 \item{event3}{status indicator with multiple competing risks. 0=censorm, 1=event, 2=death, 3=competing event}
-\item{id}{patient id}
 \item{X6_bin, X7_bin, X8_bin, X9_bin, X10_bin}{X6-X10 binned based on quintiles}
 ...
 }

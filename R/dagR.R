@@ -170,9 +170,8 @@ dagR <- function(treatment,
 
   if(!is.null(dagitty)) {
 
-    #Cleaning
-    dagitty <- str_remove(dagitty, 'bb=\\"0,0,1,1\\"') %>%
-      str_remove_all(., '\\"')
+    #Cleaning - fix bblist
+
 
     treatment <- str_extract(dagitty, ".+(?=(\\s\\[exposure))")
     outcome <- str_extract(dagitty, ".+(?=(\\s\\[outcome))")

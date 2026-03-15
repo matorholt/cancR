@@ -4,18 +4,34 @@
 \alias{cutR}
 \title{Cut numeric variables into intervals}
 \usage{
-cutR(data, vars, seqlist, name.list = list(), name.pattern = NULL, digits = 0)
+cutR(
+  data,
+  vars,
+  seq.list,
+  name.list = list(),
+  name.pattern = NULL,
+  simplify = T,
+  digits = 0,
+  dt = F
+)
 }
 \arguments{
 \item{data}{dataframe. Works with piping.}
 
 \item{vars}{Vector of vars which should be cut}
 
-\item{seqlist}{List of the split patterns for each var. E.g. list("v1" = seq(0,10), "v2" = round(quantile(df \%>\% pull(age), seq(0,1,0.1)),0))}
+\item{seq.list}{List of the split patterns for each var. E.g. list("v1" = seq(0,10), "v2" = round(quantile(df \%>\% pull(age), seq(0,1,0.1)),0)).\
+Can be specified using only "median", "quantile", "quartile" etc which will be applied to all vars}
 
-\item{name.list}{Whether the split should overwrite or as a new variable}
+\item{name.list}{list of names for new variables in the format: list("new" = "old")}
 
-\item{name.pattern}{Optional naming pattern that should automatically be pasted on the end of the variable name.}
+\item{name.pattern}{naming pattern that should automatically be pasted on the end of all the specified variable names in "vars".}
+
+\item{simplify}{whether date intervals should be simplified}
+
+\item{digits}{number of digits for label formatting}
+
+\item{dt}{whether a data.table should be returned (default = F)}
 }
 \value{
 The inputted dataframe with the cut variables
@@ -25,7 +41,11 @@ Wrapper for cut() with simplified labels and automatic conversion to factor base
 }
 \examples{
 redcap_df \%>\%
-  cutR(size, seq(0,100,10)) \%>\%
-  str
-
+  datR(c(birth, date_of_surgery)) \%>\%
+  cutR(vars = c(age, birth, size, type, date_of_surgery),
+       seq.list = list(age = "10y",
+                       birth = "year",
+                       size = "quartile",
+                       type = c(0,2,10),
+                       date_of_surgery = "quarter"))
 }

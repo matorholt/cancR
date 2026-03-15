@@ -5,6 +5,7 @@
 #' @param namelist list og variables with named vector(s) containing diagnosis codes (e.g. list(var1 = list(name = diagnosis codes)))
 #' @param match Whether the provided diagnosis codes should be matched exactly, start with/end with, be bounded by or contain (default)
 #' @param replace whether multiple matches should be replaced directly (such as 1,4 to head, arm)
+#' @param dt whether the dataframe should be returned as data.table (default = F)
 #'
 #' @return the input data frame with recoded variables
 #' @export
@@ -85,7 +86,7 @@
 #          replace=T)
 
 
-recodR <- function(data, namelist, match = "exact", replace=F) {
+recodR <- function(data, namelist, match = "exact", replace=F, dt=F) {
 
   match <- match.arg(match, c("start", "end", "exact", "contains", "boundary"))
 
@@ -118,9 +119,9 @@ recodR <- function(data, namelist, match = "exact", replace=F) {
         #Looping through all indiviual diag codes
         for(k in seq_along(namelist[[i]][[j]])) {
 
-       data <- as.data.table(factR(data,
-                     vars = i,
-                     labels = unlist(c(namelist[[i]][[j]][k])) %>% set_names(names(namelist[[i]])[[j]])))
+          data <- as.data.table(factR(data,
+                                      vars = i,
+                                      labels = unlist(c(namelist[[i]][[j]][k])) %>% set_names(names(namelist[[i]])[[j]])))
 
 
         }
@@ -128,11 +129,11 @@ recodR <- function(data, namelist, match = "exact", replace=F) {
 
       } else {
 
-       if(replace) {
-       data[, substitute(i) := str_replace_all(get(i), names(reglist[[i]])[j] %>% set_names(reglist[[i]][[j]]))]
+        if(replace) {
+          data[, substitute(i) := str_replace_all(get(i), names(reglist[[i]])[j] %>% set_names(reglist[[i]][[j]]))]
         } else {
 
-       data[, substitute(i) := ifelse(get(i) %like% reglist[[i]][[j]], names(reglist[[i]])[j], get(i))]
+          data[, substitute(i) := ifelse(get(i) %like% reglist[[i]][[j]], names(reglist[[i]])[j], get(i))]
 
         }
 
@@ -141,6 +142,7 @@ recodR <- function(data, namelist, match = "exact", replace=F) {
 
   }
 
-as.data.frame(data)
+  if(dt) return(data) else return(as.data.frame(data))
+
 
 }

@@ -99,6 +99,10 @@
 
 factR <- function(data, vars, num.vars, reference = list(), levels = list(), labels = list(), lab_to_lev = FALSE, reverse = F) {
 
+  if(any("data.table" %in% class(data))) {
+    data <- as.data.frame(data)
+  }
+
   num_c <-
     data %>% select({{num.vars}}) %>% names()
 

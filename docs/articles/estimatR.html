@@ -49,6 +49,7 @@
     <li><a class="dropdown-item" href="../articles/data_management.html">Data Management</a></li>
     <li><a class="dropdown-item" href="../articles/tables.html">Tables</a></li>
     <li><a class="dropdown-item" href="../articles/estimatR.html">Time-to-event analysis</a></li>
+    <li><a class="dropdown-item" href="../articles/sap.html">Statistical Analysis Plan</a></li>
   </ul>
 </li>
       </ul>
@@ -84,6 +85,8 @@ status.</p>
 <span><span class="co">#&gt; 1      0    5</span></span>
 <span><span class="co">#&gt; 2      1    1</span></span>
 <span><span class="co">#&gt; 3      2    3</span></span></code></pre>
+<p>An alternative is to provide only dates for when the events occured
+which is more simple (see <code>structR</code> below).</p>
 <p>The status indicator indicates whether an event has occured and which
 type of event.<br>
 - 0 indicates that the patient was event free and the time column
@@ -153,20 +156,20 @@ time-to-death will also be generated for evaluation.</p>
 <span>        fu <span class="op">=</span> <span class="va">follow</span>,</span>
 <span>        outcomes<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">recurrence_date</span>, <span class="va">metastasis_date</span>, <span class="va">dsd_date</span><span class="op">)</span>,</span>
 <span>        competing <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">death_date</span>, <span class="va">second_date</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="va">head</span></span>
-<span><span class="co">#&gt;   id     opdate     follow recurrence t_recurrence metastasis t_metastasis dsd</span></span>
-<span><span class="co">#&gt; 1  1 2000-01-01 2025-01-01          0       300.02          0       300.02   0</span></span>
-<span><span class="co">#&gt; 2  2 2000-01-01 2025-01-01          1        60.02          0       300.02   0</span></span>
-<span><span class="co">#&gt; 3  3 2000-01-01 2025-01-01          2        96.00          1        84.01   1</span></span>
-<span><span class="co">#&gt; 4  4 2000-01-01 2025-01-01          2       108.02          2       108.02   1</span></span>
-<span><span class="co">#&gt; 5  5 2000-01-01 2025-01-01          3        96.00          3        96.00   3</span></span>
-<span><span class="co">#&gt; 6  6 2000-01-01 2025-01-01          1        60.02          1        72.02   2</span></span>
-<span><span class="co">#&gt;    t_dsd death t_death</span></span>
-<span><span class="co">#&gt; 1 300.02     0  300.02</span></span>
-<span><span class="co">#&gt; 2 300.02     0  300.02</span></span>
-<span><span class="co">#&gt; 3  96.00     1   96.00</span></span>
-<span><span class="co">#&gt; 4 108.02     1  108.02</span></span>
-<span><span class="co">#&gt; 5  96.00     0  300.02</span></span>
-<span><span class="co">#&gt; 6 120.02     1  120.02</span></span></code></pre></div>
+<span><span class="co">#&gt;   id     opdate     follow t_recurrence recurrence t_metastasis metastasis</span></span>
+<span><span class="co">#&gt; 1  1 2000-01-01 2025-01-01       300.02          0       300.02          0</span></span>
+<span><span class="co">#&gt; 2  2 2000-01-01 2025-01-01        60.02          1       300.02          0</span></span>
+<span><span class="co">#&gt; 3  3 2000-01-01 2025-01-01        96.00          2        84.01          1</span></span>
+<span><span class="co">#&gt; 4  4 2000-01-01 2025-01-01       108.02          2       108.02          2</span></span>
+<span><span class="co">#&gt; 5  5 2000-01-01 2025-01-01        96.00          3        96.00          3</span></span>
+<span><span class="co">#&gt; 6  6 2000-01-01 2025-01-01        60.02          1        72.02          1</span></span>
+<span><span class="co">#&gt;    t_dsd dsd t_death death t_second second</span></span>
+<span><span class="co">#&gt; 1 300.02   0  300.02     0   300.02      0</span></span>
+<span><span class="co">#&gt; 2 300.02   0  300.02     0   300.02      0</span></span>
+<span><span class="co">#&gt; 3  96.00   1   96.00     1   300.02      0</span></span>
+<span><span class="co">#&gt; 4 108.02   1  108.02     1   300.02      0</span></span>
+<span><span class="co">#&gt; 5  96.00   3  300.02     0    96.00      1</span></span>
+<span><span class="co">#&gt; 6 120.02   2  120.02     1   300.02      0</span></span></code></pre></div>
 <p>Notice that for each specified outcome, we split the variable into
 two columns: the variable prefix (status) and a t_variable (time). As we
 specified two competing risks, the status for each event of interest can
@@ -182,23 +185,29 @@ the events of interest and the competing risks.</p>
 <span>        competing <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">death_date</span>, <span class="va">second_date</span><span class="op">)</span>,</span>
 <span>        composite <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"pfs"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"outcomes"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"recurrence_date"</span>, <span class="st">"metastasis_date"</span>, <span class="st">"death_date"</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>                         <span class="st">"relapse"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"outcomes"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"recurrence_date"</span>, <span class="st">"metastasis_date"</span>, <span class="st">"dsd_date"</span><span class="op">)</span>,</span>
-<span>                                          <span class="st">"competing"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"death_date"</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>                         <span class="st">"metastasis2"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"outcomes"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"metastasis_date"</span><span class="op">)</span>,</span>
-<span>                                       <span class="st">"competing"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"recurrence_date"</span>, <span class="st">"death_date"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="va">head</span></span>
-<span><span class="co">#&gt;   id     opdate     follow recurrence t_recurrence metastasis t_metastasis</span></span>
-<span><span class="co">#&gt; 1  1 2000-01-01 2025-01-01          0       300.02          0       300.02</span></span>
-<span><span class="co">#&gt; 2  2 2000-01-01 2025-01-01          1        60.02          0       300.02</span></span>
-<span><span class="co">#&gt; 3  3 2000-01-01 2025-01-01          2        96.00          1        84.01</span></span>
-<span><span class="co">#&gt; 4  4 2000-01-01 2025-01-01          2       108.02          2       108.02</span></span>
-<span><span class="co">#&gt; 5  5 2000-01-01 2025-01-01          3        96.00          3        96.00</span></span>
-<span><span class="co">#&gt; 6  6 2000-01-01 2025-01-01          1        60.02          1        72.02</span></span>
-<span><span class="co">#&gt;   death t_death pfs  t_pfs relapse t_relapse metastasis2 t_metastasis2</span></span>
-<span><span class="co">#&gt; 1     0  300.02   0 300.02       0    300.02           0        300.02</span></span>
-<span><span class="co">#&gt; 2     0  300.02   1  60.02       1     60.02           2         60.02</span></span>
-<span><span class="co">#&gt; 3     1   96.00   1  84.01       1     84.01           1         84.01</span></span>
-<span><span class="co">#&gt; 4     1  108.02   1 108.02       1    108.02           2        108.02</span></span>
-<span><span class="co">#&gt; 5     0  300.02   0 300.02       0    300.02           0        300.02</span></span>
-<span><span class="co">#&gt; 6     1  120.02   1  60.02       1     60.02           2         60.02</span></span></code></pre></div>
+<span>                                          <span class="st">"competing"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"death_date"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt;    id     opdate     follow pfs relapse t_recurrence recurrence t_metastasis</span></span>
+<span><span class="co">#&gt; 1   1 2000-01-01 2025-01-01   0       0       300.02          0       300.02</span></span>
+<span><span class="co">#&gt; 2   2 2000-01-01 2025-01-01   1       1        60.02          1       300.02</span></span>
+<span><span class="co">#&gt; 3   3 2000-01-01 2025-01-01   1       1        96.00          2        84.01</span></span>
+<span><span class="co">#&gt; 4   4 2000-01-01 2025-01-01   1       1       108.02          2       108.02</span></span>
+<span><span class="co">#&gt; 5   5 2000-01-01 2025-01-01   3       3        96.00          3        96.00</span></span>
+<span><span class="co">#&gt; 6   6 2000-01-01 2025-01-01   1       1        60.02          1        72.02</span></span>
+<span><span class="co">#&gt; 7   7 2000-01-01 2025-01-01   3       3        12.02          3        12.02</span></span>
+<span><span class="co">#&gt; 8   8 2000-01-01 2025-01-01   1       2       288.00          2       288.00</span></span>
+<span><span class="co">#&gt; 9   9 2000-01-01 2025-01-01   1       1        60.02          1       228.01</span></span>
+<span><span class="co">#&gt; 10 10 1990-01-01 2025-01-01   1       2       107.99          2       107.99</span></span>
+<span><span class="co">#&gt;    metastasis t_death death t_second second  t_pfs t_relapse</span></span>
+<span><span class="co">#&gt; 1           0  300.02     0   300.02      0 300.02    300.02</span></span>
+<span><span class="co">#&gt; 2           0  300.02     0   300.02      0  60.02     60.02</span></span>
+<span><span class="co">#&gt; 3           1   96.00     1   300.02      0  84.01     84.01</span></span>
+<span><span class="co">#&gt; 4           2  108.02     1   300.02      0 108.02    108.02</span></span>
+<span><span class="co">#&gt; 5           3  300.02     0    96.00      1  96.00     96.00</span></span>
+<span><span class="co">#&gt; 6           1  120.02     1   300.02      0  60.02     60.02</span></span>
+<span><span class="co">#&gt; 7           3  120.02     1    12.02      1  12.02     12.02</span></span>
+<span><span class="co">#&gt; 8           2  288.00     1   300.02      0 288.00    288.00</span></span>
+<span><span class="co">#&gt; 9           2  228.01     1   300.02      0  60.02     60.02</span></span>
+<span><span class="co">#&gt; 10          2  107.99     1   420.01      0 107.99    107.99</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="time-to-event-analysis">Time-to-event analysis<a class="anchor" aria-label="anchor" href="#time-to-event-analysis"></a>
@@ -243,11 +252,11 @@ arguments <code>data</code>, <code>timevar</code> and
 <span>  timevar <span class="op">=</span> <span class="va">ttt</span>,</span>
 <span>  event <span class="op">=</span> <span class="va">event2</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; estimatR initialized:  2026-03-03 15:06:09</span></span>
+<span><span class="co">#&gt; estimatR initialized:  2026-03-15 22:53:24</span></span>
 <span><span class="co">#&gt;  </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Total runtime: </span></span>
-<span><span class="co">#&gt; 0.2 secs</span></span></code></pre></div>
+<span><span class="co">#&gt; 0.21 secs</span></span></code></pre></div>
 <p>We extract the main results with <code>extractR</code></p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/extractR.html">extractR</a></span><span class="op">(</span><span class="va">g1_res</span><span class="op">)</span></span>
@@ -348,11 +357,11 @@ on all models to extract the main estimates</p>
 <span>  method <span class="op">=</span> <span class="st">"extractR"</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; iteratR initialized:  2026-03-03 15:06:16</span></span>
+<span><span class="co">#&gt; iteratR initialized:  2026-03-15 22:53:33</span></span>
 <span><span class="co">#&gt;  </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Total runtime: </span></span>
-<span><span class="co">#&gt; 0.06 secs</span></span>
+<span><span class="co">#&gt; 0.05 secs</span></span>
 <span><span class="co">#&gt;   g2     counts                risks                     diff diff_p.value</span></span>
 <span><span class="co">#&gt; 1 T0 750 / 1595 61% (95%CI 58 to 65)                reference    reference</span></span>
 <span><span class="co">#&gt; 2 T1  186 / 404 65% (95%CI 58 to 72)  3.6% (95%CI -3.8 to 11)     p = 0.34</span></span>

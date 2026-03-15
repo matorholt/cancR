@@ -11,6 +11,7 @@
 #' @param vars vector of variables that should be included in the treatment, censoring and outcome models
 #' @param outcome.vars vector of variables that should only be included in the outcome model
 #' @param censoring.vars vector of variables that should only be included in the censoring model
+#' @param cluster variable name for clusters, if chosen binomial regression with robust sandwich variance estimation
 #' @param method whether the outcome is "tte" (time-to-event) or "binary" (default = "tte")
 #' @param treat.form custom formula for the RHS of the treatment model
 #' @param event.form custom formula for the RHS of the outcome model
@@ -26,8 +27,10 @@
 #' @param digits for rounding of eventtimes
 #' @param event.digits whether eventtimes should be rounded. Default is 2 to preserve exact times
 #' @param alpha alpha level for the estimation of confidence intervals and p-values. Default = 0.05
+#' @param weights whether weighting diagnostics for the IPTW should be returned
 #' @param weights.digits the number of digits for categorization of weights
 #' @param weights.breaks breaks for categorization of weights
+#' @param ... arguments passed to weightR
 #'
 #' @return
 #' table: Event table \cr
@@ -90,7 +93,8 @@ inferencR <- function(data,
                       vars,
                       outcome.vars,
                       censoring.vars,
-                      method = "tte",
+                      cluster,
+                      method = "cox",
                       treat.form = NULL,
                       event.form = NULL,
                       cens.form = NULL,
@@ -105,8 +109,10 @@ inferencR <- function(data,
                       digits = 4,
                       event.digits = 2,
                       alpha = 0.05,
+                      weights = T,
                       weights.digits = 1,
-                      weights.breaks = 1) {
+                      weights.breaks = 1,
+                      ...) {
 
 
   cat("\ninferencR initialized: ", tickR(), "\n")
@@ -121,16 +127,23 @@ inferencR <- function(data,
 
     if(i %nin% names(match.call())) {
 
-      if(i == "timevar" & method != "tte") next
+      if(i == "timevar" & method != "cox") next
 
       return(cat(paste0("Error: Argument ", i, " is not specified")))
     }
 
   }
 
-  treat_c <- data %>% select({{treatment}}) %>% names()
-  event_c <- data %>% select({{event}}) %>% names()
+  if(!missing(cluster)) {
+    method <- "binomial"
+    cluster <- paste0("cluster(", data %>% select({{cluster}}) %>% names, ")", collapse = "")
+  } else (
+    cluster <- NULL
+  )
 
+  treat_c <- data %>% select({{treatment}}) %>% names
+  event_c <- data %>% select({{event}}) %>% names
+  #cluster <- data %>% select({{cluster}}) %>% names
 
 
   #Vars extracted from custom forms if specified
@@ -152,74 +165,105 @@ inferencR <- function(data,
   #Outputs
   out.list <- list()
 
-  #Treatment model
-  if(is.null(treat.form)) {
-    treat.form <- paste0(treat_c, " == '", levels[2], "' ~ ", paste0(vars_c, collapse = " + "))
+
+  ###################
+  # Treatment model #
+  ###################
+  if(!is.null(treat.form)) {
+    treat.form <- paste0(treat_c, " == \'", levels[2], "\' ~ ", treat.form)
+
   } else {
-    treat.form <- paste0(treat_c, " == '", levels[2], "' ~ ", treat.form)
+    treat.form <- paste0(treat_c, " == \'", levels[2], "\' ~ ", paste0(vars_c, collapse = " + "))
+    #For binreg
+    treat.form.bin <-
+      paste0(treat_c, "~", paste0(vars_c, collapse="+"), collapse = "")
   }
 
   treat.model <- glm(as.formula(treat.form), data=dat,family=binomial(link="logit"))
 
-  #Weighting diagnostics
-  w_object <-  WeightIt::weightit(as.formula(treat.form),
-                                  data = dat,
-                                  estimand = "ATE",
-                                  method = "glm")
+  #########################
+  # Weighting diagnostics #
+  #########################
 
-  dat_w <- dat %>% mutate(ps = w_object$ps,
-                          w = w_object$weights) %>%
-    cutR(w, seq(0,100,weights.breaks), digits = weights.digits,
-         name.list = "wgroup")
+  # return(list(model = treat.model,
+  #             data = dat))
 
+  if(weights) {
 
+    out.list[["weights"]] <-
+      weightR(dat,
+              model = treat.model,
+              treat_c,
+              vars=vars_c,
+              ...)
+              # difference = "standardized",
+              # labs.headings = list("Age" = "age_bin",
+              #                      "BMI" = "bmi_bin"),
+              # labs.subheadings = list("age_bin" = list("test" = "(4.2,38.2]")))
 
-  plot_weights <- summarisR(dat_w,
-                            vars = c(ps, w),
-                            group = !!sym(treat_c),
-                            headings = list("w" = "Weights",
-                                            "ps" = "Propensity Scores"),
-                            bins = bins)
-
-  balance_plot <- cobalt::love.plot(w_object)
-
-  bal_tab <-  cobalt::bal.tab(w_object,
-                              disp = "means",
-                              un=T)
-
-
-  tab_w <- cbind(tablR(dat_w,
-                       group = treat_c,
-                       vars = c(vars_c, ovars_c),
-  ),
-  tablR(dat_w,
-        group = treat_c,
-        vars = c(vars_c, ovars_c),
-        weights = w)[,-1])
+     # <- list(data = dat_w,
+     #                              table_iptw = tab_w,
+     #                              table_strat = strat_w,
+     #                              plot = plot_weights,
+     #                              bal_plot = balance_plot,
+     #                              bal_tab = bal_tab)
 
 
+  }
 
-  dat_w <- dat_w %>%
-    factR(num.vars = "wgroup")
+  # w_object <-  WeightIt::weightit(as.formula(treat.form),
+  #                                 data = dat,
+  #                                 estimand = "ATE",
+  #                                 method = "glm")
+  #
+  # dat_w <- dat %>% mutate(ps = w_object$ps,
+  #                         w = w_object$weights) %>%
+  #   cutR(w, seq(0,100,weights.breaks), digits = weights.digits,
+  #        name.list = "wgroup")
+  #
+  #
+  #
+  # plot_weights <- summarisR(dat_w,
+  #                           vars = c(ps, w),
+  #                           group = !!sym(treat_c),
+  #                           headings = list("w" = "Weights",
+  #                                           "ps" = "Propensity Scores"),
+  #                           bins = bins)
+  #
+  # balance_plot <- cobalt::love.plot(w_object)
+  #
+  # bal_tab <-  cobalt::bal.tab(w_object,
+  #                             disp = "means",
+  #                             un=T)
+  #
+  #
+  # tab_w <- cbind(tablR(dat_w,
+  #                      group = treat_c,
+  #                      vars = c(vars_c, ovars_c),
+  # ),
+  # tablR(dat_w,
+  #       group = treat_c,
+  #       vars = c(vars_c, ovars_c),
+  #       weights = w)[,-1])
+  #
+  #
+  #
+  # dat_w <- dat_w %>%
+  #   factR(num.vars = "wgroup")
+  #
+  # strat_w <-
+  #   iteratR(eval(parse(text = paste0("split(dat_w, ~", treat_c, ")"))),
+  #           group = "wgroup",
+  #           vars = c(vars_c, ovars_c),
+  #           method = "tablR",
+  #           total=T,
+  #           test=F,
+  #           labels = levels)
 
-  strat_w <-
-    iteratR(eval(parse(text = paste0("split(dat_w, ~", treat_c, ")"))),
-            group = "wgroup",
-            vars = c(vars_c, ovars_c),
-            method = "tablR",
-            total=T,
-            test=F,
-            labels = levels)
-
-  out.list[["weights"]] <- list(data = dat_w,
-                                table_iptw = tab_w,
-                                table_strat = strat_w,
-                                plot = plot_weights,
-                                bal_plot = balance_plot,
-                                bal_tab = bal_tab)
 
 
-  if(method == "tte") {
+
+  if(method %in% c("cox", "binomial")) {
 
     horizon <- time
     timevar_c <- data %>% select({{timevar}}) %>% names()
@@ -260,62 +304,91 @@ inferencR <- function(data,
     #Censoring
     cvars <- paste0(c(treat_c, vars_c, cvars_c), collapse = " + ")
 
-    if(is.null(cens.form)) {
-      censor.form <- paste0("Surv(", timevar_c, ", ", event_c, "==0) ~ ", cvars)
-    } else {
+    if(!is.null(cens.form)) {
       censor.form <- paste0("Surv(", timevar_c, ", ", event_c, "==0) ~ ", cens.form)
+
+    } else {
+      if(method == "cox") {
+        censor.form <- paste0("Surv(", timevar_c, ", ", event_c, "==0) ~ ", cvars)
+
+        censor.model <- coxph(as.formula(censor.form), data=dat,  x=TRUE)
+
+      }
+
+      if(method == "binomial") {
+
+        censor.form <- paste0("~strata(", paste0(c(treat_c, vars_c, cvars_c), collapse=","), ")", collapse = "")
+
+        censor.model <- list()
+
+      }
     }
 
-    censor.model <- coxph(as.formula(censor.form), data=dat,  x=TRUE)
+
     censor.model$call$formula <- censor.form
 
+
     #Event
-    if(surv) {
+    if(method == "cox") {
+      if(surv) {
+
+        if(is.null(event.form)) {
+          event.form <- paste0("Surv(", timevar_c, ", ", event_c, ") ~ ", paste0(c(treat_c, vars_c, ovars_c), collapse = " + "))
+        } else {
+          event.form <- paste0("Surv(", timevar_c, ", ", event_c, "==0) ~ ", event.form)
+        }
+
+        event.model <- coxph(as.formula(event.form), data=dat, x=TRUE)
+
+        #Diagnostics
+        c <- cox.zph(event.model)
+        pc <- survminer::ggcoxzph(c)
+        diaglist <- list(c,pc)
+        names(diaglist)<- c("Cox_tests", "Cox_plots")
+
+      } else {
+
+        if(is.null(event.form)) {
+          event.form <- paste0("Hist(", timevar_c, ", ", event_c, ") ~ ", paste0(c(treat_c, vars_c, ovars_c), collapse = " + "))
+        } else {
+          event.form <- paste0("Hist(", timevar_c, ", ", event_c, ") ~ ", event.form)
+        }
+
+        event.model <- CSC(as.formula(event.form), data=dat)
+
+        #Diagnostics
+        out.list[["diagnostics"]] <- list(cox.zph(event.model$models$`Cause 1`),
+                                          survminer::ggcoxzph(cox.zph(event.model$models$`Cause 1`)),
+                                          cox.zph(event.model$models$`Cause 2`),
+                                          survminer::ggcoxzph(cox.zph(event.model$models$`Cause 2`))) %>%
+          set_names(c("Cause1_tests", "Cause1_plots", "Cause2_tests", "Cause2_plots"))
+
+      }
+    }
+
+    if(method == "binomial") {
 
       if(is.null(event.form)) {
-        event.form <- paste0("Surv(", timevar_c, ", ", event_c, ") ~ ", paste0(c(treat_c, vars_c, ovars_c), collapse = " + "))
+        event.form <- paste0("mets::Event(", timevar_c, ",", event_c, ")~", treat_c, "+",
+                             paste0(c(vars_c, ovars_c) , collapse="+"), "+", cluster)
       } else {
-        event.form <- paste0("Surv(", timevar_c, ", ", event_c, "==0) ~ ", event.form)
+        event.form <- paste0("mets::Event(", timevar_c, ",", event_c, ")~", event.form)
       }
 
-      event.model <- coxph(as.formula(event.form), data=dat, x=TRUE)
-
-      #Diagnostics
-      c <- cox.zph(event.model)
-      pc <- survminer::ggcoxzph(c)
-      diaglist <- list(c,pc)
-      names(diaglist)<- c("Cox_tests", "Cox_plots")
-
-    } else {
-
-      if(is.null(event.form)) {
-        event.form <- paste0("Hist(", timevar_c, ", ", event_c, ") ~ ", paste0(c(treat_c, vars_c, ovars_c), collapse = " + "))
-      } else {
-        event.form <- paste0("Hist(", timevar_c, ", ", event_c, ") ~ ", event.form)
-      }
-
-      event.model <- CSC(as.formula(event.form), data=dat)
-
-      #Diagnostics
-      out.list[["diagnostics"]] <- list(cox.zph(event.model$models$`Cause 1`),
-                                        survminer::ggcoxzph(cox.zph(event.model$models$`Cause 1`)),
-                                        cox.zph(event.model$models$`Cause 2`),
-                                        survminer::ggcoxzph(cox.zph(event.model$models$`Cause 2`))) %>%
-        set_names(c("Cause1_tests", "Cause1_plots", "Cause2_tests", "Cause2_plots"))
+      event.model <- list()
 
     }
 
     event.model$call$formula <- as.formula(event.form)
 
 
-
   } else if(method == "binary") {
 
     #GLM
     if(is.null(event.form)) {
-      event.form <- paste0(event_c, " == '", 1, "' ~ ", paste0(c(treat_c, vars_c, ovars_c), collapse = " + "))
+      event.form <- paste0(event_c, " == \'", 1, "\' ~ ", paste0(c(treat_c, vars_c, ovars_c), collapse = " + "))
     } else {
-      event.form <- paste0(event_c, " == '", 1, "' ~ ", event.form)
+      event.form <- paste0(event_c, " == \'", 1, "\' ~ ", event.form)
     }
 
     event.model <- glm(as.formula(event.form), data=dat,family=binomial(link="logit"))
@@ -338,41 +411,111 @@ inferencR <- function(data,
                                                        formula = c(treat.form, event.form, censor.form)))
 
 
-  ate.frame <- ate(event = event.model,
-                   treatment = treat.model,
-                   censor = censor.model,
-                   estimator = estimator,
-                   data = dat,
-                   times = horizon,
-                   cause=cause)
+  if(method %in% c("cox", "binary")) {
+    ate.frame <- ate(event = event.model,
+                     treatment = treat.model,
+                     censor = censor.model,
+                     estimator = estimator,
+                     data = dat,
+                     times = horizon,
+                     cause=cause)
 
-  est <-
-    as.data.frame(confint(ate.frame, level = 1-alpha)$meanRisk)
+    est <-
+      as.data.frame(confint(ate.frame, level = 1-alpha)$meanRisk) %>%
+      rename(!!sym(treat_c) := treatment, est=estimate)
+  }
 
+
+
+  if(method == "binomial") {
+
+    est <- bind_rows(
+      map(seq(breaks, horizon, breaks), function(x) {
+        bin_obj <- mets::binregATE(data=data,
+                                   formula = as.formula(event.form),
+                                   treat.model = as.formula(treat.form.bin),
+                                   cens.model= as.formula(censor.form),
+                                   cause=1,
+                                   time=x)
+
+        as.data.frame(lava::estimate(coef=bin_obj$riskDR,vcov=bin_obj$var.riskDR)$coefmat) %>% tibble::remove_rownames() %>%
+          mutate(!!sym(treat_c) := as.factor(levels),
+                 time = x)
+
+      })) %>%
+      rename(est = "Estimate",
+             lower = "2.5%",
+             upper = "97.5%",
+             se = "Std.Err") %>%
+      mutate(lower = pmax(0,lower),
+             upper = pmin(1, upper),
+             est = pmax(0, est),
+             across(c(est:upper), ~round(.,digits))) %>%
+      select(time, !!sym(treat_c), est, se, lower, upper) %>%
+      arrange(!!sym(treat_c), time) %>%
+      as.data.frame()
+
+
+  }
 
   if(plot) {
 
-    plot.frame <- ate(event = event.model,
-                      treatment = treat.model,
-                      censor = censor.model,
-                      estimator = estimator,
-                      data = dat,
-                      times = unique(sort(c(0,dat[dat[, event_c] == 1 & dat[,timevar_c] < horizon, timevar_c],horizon))),
-                      cause=cause)
+    if(method == "cox") {
+      plot.frame <- ate(event = event.model,
+                        treatment = treat.model,
+                        censor = censor.model,
+                        estimator = estimator,
+                        data = dat,
+                        times = unique(sort(c(0,dat[dat[, event_c] == 1 & dat[,timevar_c] < horizon, timevar_c],horizon))),
+                        cause=cause)
 
-    plot_data <-
-      as.data.frame(confint(plot.frame, level = 1-alpha)$meanRisk)
+      plot_data <-
+        as.data.frame(confint(plot.frame, level = 1-alpha)$meanRisk)
 
-    if(surv & survscale == "OS") {
-      plot_data <- plot_data %>% mutate(across(c(estimate, lower, upper), ~1 - .))%>%
-        rename(upr = lower,
-               lwr = upper) %>%
-        rename(!!sym(treat_c) := treatment, est=estimate, upper = upr, lower = lwr)
+      if(surv & survscale == "OS") {
+        plot_data <- plot_data %>% mutate(across(c(estimate, lower, upper), ~1 - .))%>%
+          rename(upr = lower,
+                 lwr = upper) %>%
+          rename(!!sym(treat_c) := treatment, est=estimate, upper = upr, lower = lwr)
 
-    } else {
+      } else {
 
-      plot_data <- plot_data %>%
-        rename(!!sym(treat_c) := treatment, est=estimate)
+        plot_data <- plot_data %>%
+          rename(!!sym(treat_c) := treatment, est=estimate)
+      }
+    }
+
+    if(method == "binomial") {
+
+      plot_data <-  bind_rows(map(unique(sort(c(0,dat[dat[, event_c] == 1 & dat[,timevar_c] < horizon, timevar_c],horizon))), function(x) {
+        bin_obj <- mets::binregATE(data=data,
+                                   formula = as.formula(event.form),
+                                   treat.model = as.formula(treat.form.bin),
+                                   cens.model= as.formula(censor.form),
+                                   cause=1,
+                                   time=x)
+
+        as.data.frame(lava::estimate(coef=bin_obj$riskDR,vcov=bin_obj$var.riskDR)$coefmat) %>% tibble::remove_rownames() %>%
+          mutate(!!sym(treat_c) := as.factor(levels),
+                 time = x)
+
+
+
+      })) %>%
+        rename(est = "Estimate",
+               se = "Std.Err",
+               lower = "2.5%",
+               upper = "97.5%") %>%
+        mutate(lower = pmax(0,lower),
+               upper = pmin(1, upper),
+               est = pmax(0, est),
+               across(c(est:upper), ~round(.,digits))) %>%
+        select(time, !!sym(treat_c), est, se, lower, upper) %>%
+        arrange(!!sym(treat_c), time) %>%
+        as.data.frame()
+
+
+
     }
 
     plot_data <- plot_data %>%
@@ -409,15 +552,11 @@ inferencR <- function(data,
 
   if(surv & survscale == "OS") {
 
-
     est <- est %>% mutate(across(c(estimate, lower, upper), ~1 - .)) %>%
       rename(upr = lower,
              lwr = upper) %>%
-      rename(!!sym(treat_c) := treatment, est=estimate, upper = upr, lower = lwr)
+      rename(est=estimate, upper = upr, lower = lwr)
 
-  } else {
-    est <- est %>%
-      rename(!!sym(treat_c) := treatment, est=estimate)
   }
 
   est <- est %>%
@@ -426,25 +565,56 @@ inferencR <- function(data,
 
   out.list[["risks"]] <- est
 
-  rd <-
-    as.data.frame(confint(ate.frame, level = 1-alpha)$diffRisk) %>%
-    rename(diff = estimate) %>%
-    select(time, A, B,diff:p.value) %>%
-    mutate(across(c(diff:upper), ~.*100),
-           across(c(diff:upper), ~round(.,digits-2)),
-           p.exact = pmin(1, p.value * 0.05/alpha),
-           p.value = sapply(p.value * 0.05/alpha, pvertR))
+  if(method %in% c("cox", "binary")) {
+    rd <-
+      as.data.frame(confint(ate.frame, level = 1-alpha)$diffRisk) %>%
+      rename(diff = estimate) %>%
+      select(time, A, B,diff:p.value) %>%
+      mutate(across(c(diff:upper), ~.*100),
+             across(c(diff:upper), ~round(.,digits-2)),
+             p.exact = pmin(1, p.value * 0.05/alpha),
+             p.value = sapply(p.value * 0.05/alpha, pvertR))
+
+
+
+    rr <-
+      as.data.frame(confint(ate.frame, level = 1-alpha)$ratioRisk) %>%
+      rename(ratio = estimate) %>%
+      select(time,A, B, ratio:p.value)%>%
+      mutate(across(c(ratio:upper), ~round(.,digits-2)),
+             p.exact = pmin(1, p.value * 0.05/alpha),
+             p.value = sapply(p.value * 0.05/alpha, pvertR))
+
+  }
+
+  if(method == "binomial") {
+
+    bin_obj <- mets::binregATE(data=data,
+                               formula = as.formula(event.form),
+                               treat.model = as.formula(treat.form.bin),
+                               cens.model= as.formula(censor.form),
+                               cause=1,
+                               time=horizon)
+
+    rd <-
+      as.data.frame(lava::estimate(coef=bin_obj$difriskDR,vcov=as.matrix(bin_obj$var.difriskDR))$coefmat) %>%
+      rename(diff = "Estimate",
+             lower = "2.5%",
+             upper = "97.5%",
+             p.value = "P-value") %>%
+      mutate(across(c(diff:upper), ~.*100),
+             across(c(diff:upper), ~round(.,digits-2)),
+             p.exact = p.value,
+             p.value = pvertR(p.value),
+             time=horizon) %>%
+      select(time, diff, lower, upper, p.value, p.exact) %>%
+      as.data.frame()
+
+    rr <- NULL
+
+  }
 
   out.list[["difference"]] <- rd
-
-  rr <-
-    as.data.frame(confint(ate.frame, level = 1-alpha)$ratioRisk) %>%
-    rename(ratio = estimate) %>%
-    select(time,A, B, ratio:p.value)%>%
-    mutate(across(c(ratio:upper), ~round(.,digits-2)),
-           p.exact = pmin(1, p.value * 0.05/alpha),
-           p.value = sapply(p.value * 0.05/alpha, pvertR))
-
   out.list[["ratio"]] <- rr
 
   counts <-

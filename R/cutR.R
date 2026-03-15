@@ -5,185 +5,200 @@
 #'
 #' @param data dataframe. Works with piping.
 #' @param vars Vector of vars which should be cut
-#' @param seqlist List of the split patterns for each var. E.g. list("v1" = seq(0,10), "v2" = round(quantile(df %>% pull(age), seq(0,1,0.1)),0))
-#' @param name.list Whether the split should overwrite or as a new variable
-#' @param name.pattern Optional naming pattern that should automatically be pasted on the end of the variable name.
+#' @param seq.list List of the split patterns for each var. E.g. list("v1" = seq(0,10), "v2" = round(quantile(df %>% pull(age), seq(0,1,0.1)),0)).\
+#' Can be specified using only "median", "quantile", "quartile" etc which will be applied to all vars
+#' @param name.list list of names for new variables in the format: list("new" = "old")
+#' @param name.pattern naming pattern that should automatically be pasted on the end of all the specified variable names in "vars".
+#' @param simplify whether date intervals should be simplified
+#' @param digits number of digits for label formatting
+#' @param dt whether a data.table should be returned (default = F)
+#'
 #'
 #' @return The inputted dataframe with the cut variables
 #' @export
 #'
 #' @examples
 #' redcap_df %>%
-#'   cutR(size, seq(0,100,10)) %>%
-#'   str
-#'
+#'   datR(c(birth, date_of_surgery)) %>%
+#'   cutR(vars = c(age, birth, size, type, date_of_surgery),
+#'        seq.list = list(age = "10y",
+#'                        birth = "year",
+#'                        size = "quartile",
+#'                        type = c(0,2,10),
+#'                        date_of_surgery = "quarter"))
 
-# #Multiple vars
+# #Multiple seq.lists
 # redcap_df %>%
 #   datR(c(birth, date_of_surgery)) %>%
-#   cutR(vars=c(size, birth, type, date_of_surgery),
-#        seqlist = list("size" = list("quantile", c(0, 0.25,0.5,0.75, 1)),
-#                       "birth" = list("seq", c(1800,3000,10)),
-#                       "type" = c(0,1),
-#                       "date_of_surgery" = seq(1800,3000,10)),
-#        names = list("size" = "sizef",
-#                     "birth" = "byear")) %>%
-#   str
+#   cutR(vars = c(age, birth, size, type, date_of_surgery),
+#        seq.list = list(age = "10y",
+#                        birth = "year",
+#                        size = "quartile",
+#                        type = c(0,2,10),
+#                        date_of_surgery = "quarter"))
 #
-# #Simple
+#
+# #Recycle seq.list
 # redcap_df %>%
-#   cutR(size, seq(0,100,10)) %>%
-#   str
-#
-#
-# #Simple
-# redcap_df %>%
-#   cutR(size, list("quantile", c(0,0.5,1))) %>%
-#   str
-#
-# # Multiple variables with same sequence 1
-# redcap_df %>%
-#   datR(c(birth, followup, date_of_surgery)) %>%
-#   cutR(vars = c(birth, followup, date_of_surgery),
-#        seqlist = seq(1800,2050,10)) %>%
-#   str
-#
-# Multiple variables with same sequence 2 (three examples)
-# redcap_df %>%
-#   #Induce NA
-#   mutate(size = ifelse(row_number() %in% ceiling(runif(20, 1, 500)), NA, size)) %>%
-#   datR(c(birth, followup, date_of_surgery)) %>%
-#   cutR(vars = c(size, type, localisation),
-#        seqlist = seq(0,100,10))
-#
-# redcap_df %>%
-#   #Induce NA
-#   mutate(size = ifelse(row_number() %in% ceiling(runif(20, 1, 500)), NA, size)) %>%
-#   datR(c(birth, followup, date_of_surgery)) %>%
-#   cutR(vars = c(size, type, localisation),
-#        seqlist = list("quantile", c(0,0.5,1)),
-#        name.pattern = "_test")
-#
-# redcap_df %>%
-#   #Conversion into date format
-#   datR(contains("date")) %>%
-#   cutR(vars = c(recurrence_date, metastasis_date),
-#        seqlist = list("recurrence_date" = seq(1900,2030,10),
-#                       "metastasis_date" = seq(1900,2030,10)),
+#   datR(c(birth, date_of_surgery)) %>%
+#   cutR(c(age, birth), "5y",
 #        name.pattern = "_bin")
+#
+# #Quick format
+# redcap_df %>%
+#   cutR(c(age, size, type), "tertile")
 
 
+cutR <- function(data,
+                 vars,
+                 seq.list,
+                 name.list = list(),
+                 name.pattern = NULL,
+                 simplify = T,
+                 digits = 0,
+                 dt=F) {
 
-cutR <- function(data, vars, seqlist, name.list = list(), name.pattern = NULL, digits = 0) {
-
-  vars_c <-
+  vars <-
     data %>% select({{vars}}) %>% names()
 
-  if(length(vars_c) == 1 & (is.null(names(seqlist)) | class(seqlist) == "numeric")) {
+  #Format checking
+  for(v in vars) {
 
-     seqlist <- list(seqlist)
-    names(seqlist) <- vars_c
-
-  }
-
-  #If single sequence is provided, assign to seq_value
-  if(length(vars_c) > 1 & class(seqlist) == "numeric") {
-
-    seq_value <- seqlist
-    seqlist <- list()
-
-
-
-
-  } else if((length(seqlist) != length(vars_c)*2) & length(names(seqlist)) != length(vars_c)) {
-
-
-
-    seq_value <- seqlist
-    seqlist <- list()
-
+            if(any(class(data[[v]]) %in% c("character", "logical"))) {
+              return(cat(paste0("Error: ", v, " is ", class(data[[v]]), " and needs to be converted into numerical, date or integer")))
+            }
 
   }
 
+  dat <- copy(as.data.table(data))
 
-  if(class(name.list) != "list") {
-
-    name.list <- list(name.list)
-    names(name.list) <- vars_c
-
-  }
-
-
-
+  #Name.list
   if(!is.null(name.pattern)) {
 
-    name.list <- as.list(paste0(vars_c, name.pattern)) %>% set_names(vars_c)
+    name.list <- as.list(paste0(vars, name.pattern)) %>% set_names(vars)
+
+  } else {
+
+    name.list.default <- as.list(vars) %>% set_names(vars)
+
+    name.list <- modifyList(name.list.default, listR(name.list, "reverse"))
 
   }
 
+  #Modify seq.list for simple inputs
+  if(class(seq.list) != "list") {
 
-  #Default newvars
-    default_names <- as.list(vars_c)
-    names(default_names) <- vars_c
-
-  newvars <- modifyList(default_names, name.list)
-
-  if(exists("seq_value")) {
-seqlist <- lapply(seq_along(vars_c), function(x) {
-  seq_value
-
-}) %>% set_names(vars_c)
-
-  }
-
-
-  for(v in vars_c) {
-
-    #Check class
-    if(any(class(data[[v]]) %in% c("character", "logical"))) {
-      return(cat(paste0("Error: ", v, " is ", class(data[[v]]), " and needs to be converted into numerical, date or integer")))
+    if(length(vars) == length(seq.list)) {
+    seq.list <- as.list(seq.list) %>% set_names(vars)
+    } else if(length(seq.list == 1)) {
+      seq.list <- map(vars, ~ seq.list) %>% set_names(vars)
+    } else {
+      cat("Error: length of vars != length of seq.list")
     }
-
-    #Extract year from dates
-    if(class(data %>% pull(v)) == "Date") {
-      data <- data %>%
-        mutate(!!sym(newvars[[v]]) := as.numeric(str_extract(!!sym(v), "\\d{4}")))
-    } else if(class(data %>% pull(v)) != "numeric") {
-      data <- data %>%
-        mutate(!!sym(newvars[[v]]) := as.numeric(!!sym(v)))
-    }
-    #Copy frame
-    else {
-      data <- data %>%
-        mutate(!!sym(newvars[[v]]) := !!sym(v))
-    }
-
-    if(seqlist[[v]][[1]] %in% "quantile") {
-
-      seqlist[[v]] <- unique(quantile(data[[v]], seqlist[[v]][[2]], na.rm=T))
-
-    } else if(seqlist[[v]][[1]] %in% "seq") {
-      seqlist[[v]] <- do.call(seq, as.list(seqlist[[v]][[2]]))
-    }
-
-
-    data <- data %>%
-      mutate(!!sym(newvars[[v]]) := str_replace(cut(round(!!sym(newvars[[v]]), digits),
-                                                    breaks = round(seqlist[[v]],digits),
-                                                    include.lowest = TRUE,
-                                                    right = F,
-                                                    dig.lab=4),
-                                                "\\W(-?\\d+\\.?\\d*)\\,(-?\\d+\\.?\\d*)\\W",
-                                                "\\1-\\2")) %>%
-     factR(vars = !!sym(newvars[[v]]))
-
-
 
 
   }
 
- data
+  qlist <- list(percentile = 0.01,
+                decile = 0.1,
+                pentile = 0.2,
+                quartile = 0.25,
+                tertile = 1/3,
+                median = 0.5)
+
+  tlist <- list(year = list(date = as.Date(paste0(c(1800:2100), "-01-01")),
+                            time = seq(0,150)),
+                "5y" = list(date = as.Date(paste0(seq(1800,2100, 5), "-01-01")),
+                            time = seq(0,150,5)),
+                "10y" = list(date = as.Date(paste0(seq(1800,2100, 10), "-01-01")),
+                             time = seq(0,150,10)),
+                half = list(date = as.Date(c(paste0(c(1800:2100), "-01-01"),
+                                             paste0(c(1800:2100), "-07-01")))),
+                quarter = list(date = as.Date(c(paste0(c(1800:2100), "-01-01"),
+                                                paste0(c(1800:2100), "-04-01"),
+                                                paste0(c(1800:2100), "-07-01"),
+                                                paste0(c(1800:2100), "-10-01")))),
+                third = list(date = as.Date(c(paste0(c(1800:2100), "-01-01"),
+                                              paste0(c(1800:2100), "-05-01"),
+                                              paste0(c(1800:2100), "-09-01")))))
+
+  nlist <- list(bmi = c(0,18, 25, 30, 35, 100))
+
+  #Update seq.list
+  seq.vecs <- map(vars, function(v) {
+
+    if(any(seq.list[[v]] %in% names(qlist))) {
+
+      quantile(dat[[v]], seq(0,1,qlist[[seq.list[[v]]]]))
+
+    } else if(any(seq.list[[v]] %in% names(tlist))) {
+
+      if(class(dat[[v]]) %in% c("Date")) {
+
+       tlist[[seq.list[[v]]]][["date"]]
+
+      } else {
+
+        tlist[[seq.list[[v]]]][["time"]]
+      }
+
+    } else {
+
+      seq.list[[v]]
+
+    }
+
+  }) %>% set_names(vars)
+
+  map(vars, function(v) {
+
+    label <- name.list[[v]]
+
+  dat[, c(label) := str_replace(cut(round(dat[[v]], digits),
+                    breaks = unique(round(seq.vecs[[v]], digits)),
+                    include.lowest = TRUE,
+                    right = F,
+                    dig.lab = 4),
+                    "\\W(-?\\d+\\.?\\d*)\\,(-?\\d+\\.?\\d*)\\W",
+                    "\\1-\\2")]
+
+  if(simplify) {
+    #Year
+  if(length(seq.vecs[[v]]) == length(tlist$year$date) & class(seq.vecs[[v]]) == "Date") {
+  dat[, c(label) := str_extract(get(label), "\\d{4}")]
+  }
+    #5y
+    if(length(seq.vecs[[v]]) %in% length(tlist[["5y"]]$date) & class(seq.vecs[[v]]) == "Date") {
+      dat[, c(label) := paste0(str_extract(get(label), "\\d{4}"), "-", as.numeric(str_extract(get(label), "\\d{4}")) +5)]
+    }
+    #10y
+    if(length(seq.vecs[[v]]) %in% length(tlist[["10y"]]$date) & class(seq.vecs[[v]]) == "Date") {
+      dat[, c(label) := paste0(str_extract(get(label), "\\d{4}"), "-", as.numeric(str_extract(get(label), "\\d{4}")) +10)]
+    }
+    #half
+    if(length(seq.vecs[[v]]) %in% length(tlist$half$date) & class(seq.vecs[[v]]) == "Date") {
+      dat[, c(label) := ifelse(str_detect(get(label), "\\d{4}-07"), paste0(str_extract(get(label), "\\d{4}"), ", h1"), paste0(str_extract(get(label), "\\d{4}"), ", h2"))]
+    }
+    #third
+    if(length(seq.vecs[[v]]) %in% c(length(tlist$third$date)) & class(seq.vecs[[v]]) == "Date") {
+      dat[, c(label) := fcase(str_detect(get(label), "\\d{4}-09"), paste0(str_extract(get(label), "\\d{4}"), ", t3"),
+                              str_detect(get(label), "\\d{4}-05"), paste0(str_extract(get(label), "\\d{4}"), ", t2"),
+                              default = paste0(str_extract(get(label), "\\d{4}"), ", t1"))]
+    }
+    #quarter
+    if(length(seq.vecs[[v]]) %in% c(length(tlist$quarter$date)) & class(seq.vecs[[v]]) == "Date") {
+      dat[, c(label) := fcase(str_detect(get(label), "\\d{4}-10"), paste0(str_extract(get(label), "\\d{4}"), ", q4"),
+                              str_detect(get(label), "\\d{4}-07"), paste0(str_extract(get(label), "\\d{4}"), ", q3"),
+                              str_detect(get(label), "\\d{4}-04"), paste0(str_extract(get(label), "\\d{4}"), ", q2"),
+                              default = paste0(str_extract(get(label), "\\d{4}"), ", q1"))]
+    }
+  }
 
 
+  dat[, c(label) := fct_infreq(get(label))]
+
+  })
+
+  if(dt) return(dat) else return(as.data.frame(dat))
 
 }

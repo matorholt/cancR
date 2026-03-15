@@ -1,0 +1,84 @@
+---
+title: "Statistical Analysis Plan"
+output:
+  html_document:
+    toc: true
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+The statistical analysis plan ensures an a priori defined analysis plan, transparency for all collaborators and a optimal workflow.
+
+The statistical analysis plan should contain the following:
+
+## Authors
+List of the full author list or at least tentative authors
+
+## Purpose
+Short introduction to the project
+
+## Population
+Describe the population
+
+## Inclusion/Exclusion criteria
+Specify the above criteria in bullet points
+
+## Exposure
+Define the exposure including the type of data (continuous, binary, categorical, ordinal)
+
+## Outcome
+Define the outcome including type of data (continuous, binary, categorical, ordinal, time-to-event)
+
+## Covariates
+Specify if any covariates should be accounting for, preferably with a directed acyclic graph (DAG)
+
+## Clustering
+Specify if there are clustered observations, if yes specify the structure (e.g. breasts within patients, samples within patients) 
+
+## Analysis hierarchy
+Specify the order of analyses. Specify the role of each analysis (primary, secondary, subgroup, sensitivity)\
+\
+- Primary analysis: Risk of all complications (hematoma, explantation and infection) at 5 years\
+- Secondary analysis: Same as above for each of the complications\
+- Subgroup: Same as the primary analysis but for patients between 2018-2024\
+
+## Data dictionary
+A table with four columns specifying\
+\
+1) The variable name in the dataset
+2) Very short description of the variable
+3) type of data.\
+- If continuous specify the distribution (0 to 1, non-negative, exponential)\
+- If categorical specify the levels and if there is any ordering such as (low, moderate, severe)\
+4) The use of the data point (e.g. outcome, exposure, covariate, cluster)
+
+```{r, echo = F}
+flextable::flextable(data.frame(name = c("hema", "t_hema", "imp_plane2", "age"),
+           description = c("whether hematoma occured",
+                          "time to hematoma",
+                          "implant plane",
+                          "age at surgery"),
+           type = c("binary, 0 = censuring, 1=event",
+                    "continuous, non-negative",
+                    "binary, sg/sm",
+                    "ordinal, binned 5-year age groups"),
+           role = c("outcome", "outcome", "exposure", "covariate")), cwidth = 2)
+```
+
+## Path
+The path to the project folder
+
+# R setup
+The main working folder should ONLY contain the following files at the beginning of the project.\
+\
+- Project file (.Rproj)\
+- MAIN_SCRIPT (.R)\
+- Statistical analysis plan (.docx)\
+- data folder with ONE dataset (.csv/.rds/.txt/.parquet)
+
+See the article `Setup R` for help.

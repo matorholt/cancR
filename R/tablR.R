@@ -230,7 +230,7 @@ tablR <- function(data,
 
   if(censur) {
 
-    tab <- tab %>% mutate(across(everything(), ~ ifelse(str_detect(., "^(1|2|3)\\s\\("), "<=3", .)))
+    tab <- tab %>% mutate(across(everything(), ~ ifelse(str_detect(., "^(1|2|3)\\s\\("), "≤3", .)))
 
   }
 

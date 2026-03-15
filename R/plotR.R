@@ -105,7 +105,7 @@ plotR <- function(list,
                   border = T,
                   p.values = T,
                   style = NULL,
-                  linewidth = 1,
+                  linewidth = 0.8,
                   title = "",
                   title.size = 7,
                   title.shift = c(0,0),
@@ -128,8 +128,8 @@ plotR <- function(list,
                   table.padding = 1,
                   table.title.size = 6,
                   table.text.size = 5,
-                  table.linewidth = 1,
-                  border.linewidth = 1,
+                  table.linewidth = 0.8,
+                  border.linewidth = 0.8,
                   legend.pos = c(0.5,0.9),
                   tscale = 1,
                   censur=F) {
@@ -150,11 +150,9 @@ plotR <- function(list,
   breaks <- list$info$breaks
   surv <- list$info$surv
   survscale <- list$info$survscale
-  tab <- list$table %>% filter(time %in% seq(0, horizon, breaks))
+  tab <- list$table %>% filter(time %in% seq(0, round(horizon,0), round(breaks,0)))
   res <- est %>% filter(time %in% horizon)
   event.digits <- list$info$event.digits
-
-
 
   if(list$info$method == "aalen") {
 
@@ -221,7 +219,7 @@ plotR <- function(list,
 
   if(!print.est) border <- F
 
-  if(censur) tab <- tab %>% mutate(across(c(cumsum, n.risk), ~ ifelse(between(., 1, 3), "\u2264 3", .)))
+  if(censur) tab <- tab %>% mutate(across(c(cumsum, n.risk), ~ ifelse(between(., 1, 3), "≤ 3", .)))
 
   if(missing(y)) {
     if(list$info$survscale == "AM") {
@@ -287,7 +285,7 @@ plotR <- function(list,
     geom_segment(x = 0, xend=0, y=-(y*0.02), yend=y, color = "Black", linewidth = linewidth) +
     scale_color_manual(values = c(col[1:length(levels)]), labels = labs) +
     scale_fill_manual(values = c(col[1:length(levels)]), labels = labs)
-  if(se) p <- p + geom_stepribbon(aes(ymin = lower, ymax = upper), alpha = 0.2, color = NA)
+  if(se) p <- p + pammtools::geom_stepribbon(aes(ymin = lower, ymax = upper), alpha = 0.2, color = NA)
   p <- p +
     coord_cartesian(xlim=c(horizon*-0.1-y.title.shift,horizon), ylim = c(zmin,1.2*y+pmax(res.shift[2],0))) +
     theme_classic() +
@@ -500,4 +498,3 @@ plotR <- function(list,
 
 
 }
-

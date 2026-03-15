@@ -43,6 +43,8 @@ navbar:
         href: articles/tables.html
       - text: Time-to-event analysis
         href: articles/estimatR.html
+      - text: Statistical Analysis Plan
+        href: articles/sap.html
 
 reference:
 - title: Data management functions
@@ -74,7 +76,6 @@ reference:
   - iteratR
   - extractR
   - inferencR
-  - clustR
   - followR
 
 - title: Tables and figures
@@ -122,12 +123,10 @@ reference:
   - colR
   - combinR
   - formatR
-  - geom_stepribbon
   - listR
   - modeR
   - numbR
   - powR
-  - randomizR
   - rollR
   - tickR
   - tockR

@@ -232,7 +232,6 @@ simulatR <- function(register,
 
   if("match" %in% register) {
 
-
     (c <- data.frame(pnr = seq(1,match.cases),
                      case = 1,
                      index = sample(c(sample(seq(as.Date(match.index[1]), as.Date(match.index[2]), by="day"))), size = match.cases, replace=TRUE),
