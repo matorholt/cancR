@@ -64,9 +64,9 @@ cutR <- function(data,
   #Format checking
   for(v in vars) {
 
-            if(any(class(data[[v]]) %in% c("character", "logical"))) {
-              return(cat(paste0("Error: ", v, " is ", class(data[[v]]), " and needs to be converted into numerical, date or integer")))
-            }
+    if(any(class(data[[v]]) %in% c("character", "logical"))) {
+      return(cat(paste0("Error: ", v, " is ", class(data[[v]]), " and needs to be converted into numerical, date or integer")))
+    }
 
   }
 
@@ -89,7 +89,7 @@ cutR <- function(data,
   if(class(seq.list) != "list") {
 
     if(length(vars) == length(seq.list)) {
-    seq.list <- as.list(seq.list) %>% set_names(vars)
+      seq.list <- as.list(seq.list) %>% set_names(vars)
     } else if(length(seq.list == 1)) {
       seq.list <- map(vars, ~ seq.list) %>% set_names(vars)
     } else {
@@ -135,7 +135,7 @@ cutR <- function(data,
 
       if(class(dat[[v]]) %in% c("Date")) {
 
-       tlist[[seq.list[[v]]]][["date"]]
+        tlist[[seq.list[[v]]]][["date"]]
 
       } else {
 
@@ -154,48 +154,49 @@ cutR <- function(data,
 
     label <- name.list[[v]]
 
-  dat[, c(label) := str_replace(cut(round(dat[[v]], digits),
-                    breaks = unique(round(seq.vecs[[v]], digits)),
-                    include.lowest = TRUE,
-                    right = F,
-                    dig.lab = 4),
-                    "\\W(-?\\d+\\.?\\d*)\\,(-?\\d+\\.?\\d*)\\W",
-                    "\\1-\\2")]
+    dat[, c(label) := str_replace(cut(round(dat[[v]], digits),
+                                      breaks = unique(round(seq.vecs[[v]], digits)),
+                                      include.lowest = TRUE,
+                                      right = F,
+                                      dig.lab = 4),
+                                  "\\W(-?\\d+\\.?\\d*)\\,(-?\\d+\\.?\\d*)\\W",
+                                  "\\1-\\2")]
 
-  if(simplify) {
-    #Year
-  if(length(seq.vecs[[v]]) == length(tlist$year$date) & class(seq.vecs[[v]]) == "Date") {
-  dat[, c(label) := str_extract(get(label), "\\d{4}")]
-  }
-    #5y
-    if(length(seq.vecs[[v]]) %in% length(tlist[["5y"]]$date) & class(seq.vecs[[v]]) == "Date") {
-      dat[, c(label) := paste0(str_extract(get(label), "\\d{4}"), "-", as.numeric(str_extract(get(label), "\\d{4}")) +5)]
+    if(simplify) {
+      #Year
+      if(length(seq.vecs[[v]]) == length(tlist$year$date) & class(seq.vecs[[v]]) == "Date") {
+        dat[, c(label) := str_extract(get(label), "\\d{4}")]
+      }
+      #5y
+      if(length(seq.vecs[[v]]) %in% length(tlist[["5y"]]$date) & class(seq.vecs[[v]]) == "Date") {
+        dat[, c(label) := paste0(str_extract(get(label), "\\d{4}"), "-", as.numeric(str_extract(get(label), "\\d{4}")) +5)]
+      }
+      #10y
+      if(length(seq.vecs[[v]]) %in% length(tlist[["10y"]]$date) & class(seq.vecs[[v]]) == "Date") {
+        dat[, c(label) := paste0(str_extract(get(label), "\\d{4}"), "-", as.numeric(str_extract(get(label), "\\d{4}")) +10)]
+      }
+      #half
+      if(length(seq.vecs[[v]]) %in% length(tlist$half$date) & class(seq.vecs[[v]]) == "Date") {
+        dat[, c(label) := ifelse(str_detect(get(label), "\\d{4}-07"), paste0(str_extract(get(label), "\\d{4}"), ", h1"), paste0(str_extract(get(label), "\\d{4}"), ", h2"))]
+      }
+      #third
+      if(length(seq.vecs[[v]]) %in% c(length(tlist$third$date)) & class(seq.vecs[[v]]) == "Date") {
+        dat[, c(label) := fcase(str_detect(get(label), "\\d{4}-09"), paste0(str_extract(get(label), "\\d{4}"), ", t3"),
+                                str_detect(get(label), "\\d{4}-05"), paste0(str_extract(get(label), "\\d{4}"), ", t2"),
+                                default = paste0(str_extract(get(label), "\\d{4}"), ", t1"))]
+      }
+      #quarter
+      if(length(seq.vecs[[v]]) %in% c(length(tlist$quarter$date)) & class(seq.vecs[[v]]) == "Date") {
+        dat[, c(label) := fcase(str_detect(get(label), "\\d{4}-10"), paste0(str_extract(get(label), "\\d{4}"), ", q4"),
+                                str_detect(get(label), "\\d{4}-07"), paste0(str_extract(get(label), "\\d{4}"), ", q3"),
+                                str_detect(get(label), "\\d{4}-04"), paste0(str_extract(get(label), "\\d{4}"), ", q2"),
+                                default = paste0(str_extract(get(label), "\\d{4}"), ", q1"))]
+      }
     }
-    #10y
-    if(length(seq.vecs[[v]]) %in% length(tlist[["10y"]]$date) & class(seq.vecs[[v]]) == "Date") {
-      dat[, c(label) := paste0(str_extract(get(label), "\\d{4}"), "-", as.numeric(str_extract(get(label), "\\d{4}")) +10)]
-    }
-    #half
-    if(length(seq.vecs[[v]]) %in% length(tlist$half$date) & class(seq.vecs[[v]]) == "Date") {
-      dat[, c(label) := ifelse(str_detect(get(label), "\\d{4}-07"), paste0(str_extract(get(label), "\\d{4}"), ", h1"), paste0(str_extract(get(label), "\\d{4}"), ", h2"))]
-    }
-    #third
-    if(length(seq.vecs[[v]]) %in% c(length(tlist$third$date)) & class(seq.vecs[[v]]) == "Date") {
-      dat[, c(label) := fcase(str_detect(get(label), "\\d{4}-09"), paste0(str_extract(get(label), "\\d{4}"), ", t3"),
-                              str_detect(get(label), "\\d{4}-05"), paste0(str_extract(get(label), "\\d{4}"), ", t2"),
-                              default = paste0(str_extract(get(label), "\\d{4}"), ", t1"))]
-    }
-    #quarter
-    if(length(seq.vecs[[v]]) %in% c(length(tlist$quarter$date)) & class(seq.vecs[[v]]) == "Date") {
-      dat[, c(label) := fcase(str_detect(get(label), "\\d{4}-10"), paste0(str_extract(get(label), "\\d{4}"), ", q4"),
-                              str_detect(get(label), "\\d{4}-07"), paste0(str_extract(get(label), "\\d{4}"), ", q3"),
-                              str_detect(get(label), "\\d{4}-04"), paste0(str_extract(get(label), "\\d{4}"), ", q2"),
-                              default = paste0(str_extract(get(label), "\\d{4}"), ", q1"))]
-    }
-  }
 
+    dat[, c(label) := ifelse(str_detect(get(label), "NA"), NA, get(label))]
 
-  dat[, c(label) := fct_infreq(get(label))]
+    dat[, c(label) := fct_infreq(get(label))]
 
   })
 

@@ -7,7 +7,7 @@
 powR(
   text,
   write.sleep = 0.02,
-  mouse.sleep = 0.25,
+  mouse.sleep = 0.5,
   special.sleep = 0.05,
   where = "pc",
   server.language = T,

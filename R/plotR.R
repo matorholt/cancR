@@ -96,7 +96,7 @@ plotR <- function(list,
                   y=100,
                   col=cancR_palette,
                   table.col = "#616161",
-                  risk.col = T,
+                  risk.col = F,
                   time.unit = "m2y",
                   labs = levels,
                   print.est = TRUE,
@@ -131,6 +131,7 @@ plotR <- function(list,
                   table.linewidth = 0.8,
                   border.linewidth = 0.8,
                   legend.pos = c(0.5,0.9),
+                  legend.size = 16,
                   tscale = 1,
                   censur=F) {
 
@@ -298,7 +299,7 @@ plotR <- function(list,
           legend.position.inside = legend.pos,
           legend.direction = "horizontal",
           legend.title = element_blank(),
-          legend.text = element_text(size=16*tscale),
+          legend.text = element_text(size=legend.size*tscale),
           plot.margin = margin(0,1,0,0, unit = "cm"))
   #Labels
   p <-
@@ -322,7 +323,7 @@ plotR <- function(list,
 
   #Risk table
   if(any(table %nin% "none")) {
-    tablabs <- str_replace_all(table, c("risk" = "No. at Risk",
+    tablabs <- str_replace_all(table, c("risk" = "At Risk",
                                         "event" = "Cumulative Events"))
 
     #Grid
@@ -335,12 +336,12 @@ plotR <- function(list,
         lengths <- c(2,2,horizon*1.04)
       }
 
-      p <- p +
-        suppressWarnings(geom_segment(x = 0, xend=lengths[i], y=lines[i], yend=lines[i], color = table.col, linewidth = table.linewidth))
+      #  p <- p +
+      # suppressWarnings(geom_segment(x = 0, xend=lengths[i], y=lines[i], yend=lines[i], color = table.col, linewidth = table.linewidth))
 
       if(i < 3) {
         p <- p +
-          suppressWarnings(annotate("text", label = tablabs[i], x = 3, y = lines[i], color = table.col, size = table.title.size*tscale, hjust="left"))
+          suppressWarnings(annotate("text", label = tablabs[i], x = 0, y = lines[i], color = table.col, size = table.title.size*tscale, hjust="left"))
       }
 
 

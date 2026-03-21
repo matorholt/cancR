@@ -154,11 +154,25 @@ iteratR <- function(data,
 
     labels <- NULL
 
-    cat(paste0("Exporting: ", length(data), " objects"))
+    #cat(paste0("Exporting: ", length(data), " objects"))
+
+    arg.list <- list(...)
+
+    if("name" %in% names(arg.list)) {
+      names <- arg.list$name
+      arg.list$name <- NULL
+
+    } else {
+      names <- names(data)
+    }
+
 
     for(p in seq_along(data)) {
 
-      savR(data[[p]], names(data)[p], ...)
+      rlang::exec(savR,
+                  object = data[[p]],
+                  name = names[p],
+                  !!!arg.list)
 
     }
 

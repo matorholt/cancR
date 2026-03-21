@@ -16,7 +16,7 @@
 
 powR <- function(text,
                  write.sleep = 0.02,
-                 mouse.sleep = 0.25,
+                 mouse.sleep = 0.5,
                  special.sleep = 0.05,
                   where = "pc",
                   server.language = T,
@@ -40,13 +40,7 @@ powR <- function(text,
   #                                    "`" = "xsplitxffxsplitx")) %>% str_split(., "xsplitx"))
 
   #Coordinates
-  coord.list <- list(pc = list(tab = c(2360, 1410),
-                               dk = c(2360, 1195),
-                               us = c(2360, 1310),
-                               rs = c(2665, 167),
-                               stab = c(5010, 1418),
-                               sdk = c(4945, 1296),
-                               sus = c(4931, 1217),
+  coord.list <- list(pc = list(rs = c(2665, 167),
                                tool = c(2944, 31),
                                go = c(2993, 401),
                                code = c(3569, 483),
@@ -54,13 +48,7 @@ powR <- function(text,
                                app = c(4113, 1034),
                                ok = c(3917, 1034),
                                local = c(623, 546)),
-                     laptop = list(tab = c(2365, 1579),
-                                   dk = c(2370, 1350),
-                                   us = c(2370, 1460),
-                                   rs = c(205, 294),
-                                   stab = c(2451, 1574),
-                                   sdk = c(2451, 1315),
-                                   sus = c(2451, 1377),
+                     laptop = list(rs = c(648,1572),
                                    tool = c(381, 34),
                                    go = c(467, 404),
                                    code = c(1052, 589),
@@ -68,17 +56,11 @@ powR <- function(text,
                                    app = c(1528, 1095),
                                    ok = c(1349, 1095),
                                    local = c(3917, 546)),
-                     iw = list(tab = c(2370, 1410),
-                               dk = c(2360, 1250),
-                               us = c(2360, 1310),
-                               rs = c(2665, 167),
-                               stab = c(5010, 1418),
-                               sdk = c(4945, 1296),
-                               sus = c(4931, 1217),
+                     iw = list(rs = c(2665, 167),
                                tool = c(2944, 31),
                                go = c(2993, 401),
                                code = c(3569, 483),
-                               match = c(3688, 575),
+                               match = c(3687, 542),
                                app = c(4113, 1034),
                                ok = c(3917, 1034),
                                local = c(623, 546)))
@@ -90,14 +72,9 @@ powR <- function(text,
 
   cat("\nConverting to US keyboard\n")
   Sys.sleep(0.5)
-  #Move cursor and select US keyboard
-  KeyboardSimulator::mouse.move(coord.list[[where]][["tab"]][1],coord.list[[where]][["tab"]][2])
-  Sys.sleep(mouse.sleep)
-  KeyboardSimulator::mouse.click("left")
-  KeyboardSimulator::mouse.move(coord.list[[where]][["us"]][1],coord.list[[where]][["us"]][2])
-  Sys.sleep(mouse.sleep)
-  KeyboardSimulator::mouse.click("left")
-  KeyboardSimulator::mouse.move(current[1], current[2])
+  KeyboardSimulator::keybd.press("win", hold = T)
+  KeyboardSimulator::keybd.press(" ")
+  KeyboardSimulator::keybd.release("win")
 
   cat("\nChoosing screen to write and configuring R\n")
 
@@ -107,7 +84,7 @@ powR <- function(text,
 
   #Select screen
   if(where == "laptop") {
-  KeyboardSimulator::mouse.move(648,1572)
+  KeyboardSimulator::mouse.move(coord.list[[where]][["rs"]][1],coord.list[[where]][["rs"]][2])
   Sys.sleep(mouse.sleep)
   KeyboardSimulator::mouse.click("left")
   Sys.sleep(mouse.sleep)
@@ -119,14 +96,10 @@ powR <- function(text,
 
   #Select US keyboard if on server
   if(server.language){
-    KeyboardSimulator::mouse.move(coord.list[[where]][["stab"]][1],coord.list[[where]][["stab"]][2])
-    Sys.sleep(mouse.sleep)
-    KeyboardSimulator::mouse.click("left")
-    KeyboardSimulator::mouse.move(coord.list[[where]][["sus"]][1],coord.list[[where]][["sus"]][2])
-    Sys.sleep(mouse.sleep)
-    KeyboardSimulator::mouse.click("left")
-    KeyboardSimulator::mouse.move(coord.list[[where]][["rs"]][1],coord.list[[where]][["rs"]][2])
-    Sys.sleep(mouse.sleep)
+    Sys.sleep(0.5)
+    KeyboardSimulator::keybd.press("win", hold = T)
+    KeyboardSimulator::keybd.press(" ")
+    KeyboardSimulator::keybd.release("win")
     KeyboardSimulator::mouse.click("left")
   }
 
@@ -158,7 +131,7 @@ Sys.sleep(1)
   cat("\nPasting text\n")
   split_list <-
     str_replace_all(text, c("\n(?=(\\s{2,20}))" = "xsplitxenterxsplitx",
-                            '(?<=((cat|paste)\\((.|\n){0,5}"(.|\n){0,150}))\n(?=((.|\n){0,150}"(.|\n){0,5}\\))(?!(\\s{2,20})))' = "NEW",
+                            '(?<=((cat|paste0?)\\((.|\n){0,5}"(.|\n){0,150}))\n(?=((.|\n){0,150}"(.|\n){0,5}\\))(?!(\\s{2,20})))' = "NEW",
                             "\n" = "xsplitxenterxsplitx",
                             "NEW" = "xsplitxNEWxsplitx",
                             "," = "xsplitxcommaxsplitx",
@@ -300,11 +273,10 @@ Sys.sleep(1)
   cat("\nReturn to standard language\n")
   #Change language back server
   if(server.language){
-    KeyboardSimulator::mouse.move(coord.list[[where]][["stab"]][1],coord.list[[where]][["stab"]][2])
-    Sys.sleep(mouse.sleep)
-    KeyboardSimulator::mouse.click("left")
-    KeyboardSimulator::mouse.move(coord.list[[where]][["sdk"]][1],coord.list[[where]][["sdk"]][2])
-    Sys.sleep(mouse.sleep)
+    Sys.sleep(0.5)
+    KeyboardSimulator::keybd.press("win", hold = T)
+    KeyboardSimulator::keybd.press(" ")
+    KeyboardSimulator::keybd.release("win")
     KeyboardSimulator::mouse.click("left")
   }
 
@@ -319,12 +291,11 @@ Sys.sleep(1)
   KeyboardSimulator::mouse.move(coord.list[[where]][["local"]][1],coord.list[[where]][["local"]][2])
   Sys.sleep(mouse.sleep)
   KeyboardSimulator::mouse.click("left")
-  KeyboardSimulator::mouse.move(coord.list[[where]][["tab"]][1],coord.list[[where]][["tab"]][2])
   Sys.sleep(mouse.sleep)
-  KeyboardSimulator::mouse.click("left")
-  KeyboardSimulator::mouse.move(coord.list[[where]][["dk"]][1],coord.list[[where]][["dk"]][2])
-  Sys.sleep(mouse.sleep)
-  KeyboardSimulator::mouse.click("left")
+  KeyboardSimulator::keybd.press("win", hold = T)
+  KeyboardSimulator::keybd.press(" ")
+  KeyboardSimulator::keybd.release("win")
+
 
   KeyboardSimulator::mouse.move(current[1], current[2])
 

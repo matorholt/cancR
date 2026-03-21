@@ -137,7 +137,7 @@ searchR <- function(reglist,
     d
   })
 
-if(!is.null(cores)) with(future::plan(multisession, workers = cores), local=TRUE)
+if(!is.null(cores)) multitaskR(cores = cores)
 
 
   progressr::handlers(global = TRUE)

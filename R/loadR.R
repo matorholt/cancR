@@ -190,7 +190,7 @@ loadR <- function(regs,
 
     } else if(i == "lmdb") {
 
-      with(plan(multisession, workers = cores), local = TRUE)
+      multitaskR(cores = cores)
 
       lmdb_frame <- rbindlist(future_map(seq(lmdb.start,lmdb.stop), function(year) {
 

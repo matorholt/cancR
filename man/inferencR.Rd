@@ -29,6 +29,7 @@ inferencR(
   event.digits = 2,
   alpha = 0.05,
   weights = T,
+  weight.vars,
   weights.digits = 1,
   weights.breaks = 1,
   ...

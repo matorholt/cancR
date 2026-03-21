@@ -144,7 +144,7 @@ tablR <- function(data,
 
     #Group name inserted if omitted from argument
     if(length(labs.groups) == 0) {
-     # return(data[[group_c]])
+      # return(data[[group_c]])
       if(is.factor(data[[group_c]])) {
         labs.groups <- listR(levels(data[[group_c]]), type = "vec2list")
       } else {
@@ -155,12 +155,12 @@ tablR <- function(data,
 
 
 
-       if(pluck_depth(labs.groups) == 2) {
+    if(pluck_depth(labs.groups) == 2) {
 
-         labs.groups <-
-           list(labs.groups) %>% set_names(group_c)
+      labs.groups <-
+        list(labs.groups) %>% set_names(group_c)
 
-       }
+    }
 
     data <- data %>%
       factR(vars=group_c,
@@ -170,20 +170,27 @@ tablR <- function(data,
 
   }
 
-  #Format levels
-  data <- data %>%
-    factR(vars=c(vars_c[vars_c %in% vars_cat]),
-          num.vars = num_c,
-          labels = labs.subheadings,
-          levels = levels,
-          reference = reference,
-          lab_to_lev=T)
-  #Set reference
-  data <- data %>%
-    factR(vars = names(reference),
-          reference = reference)
+  for(v in vars_c[vars_c %in% vars_cat]) {
+
+    if(v %in% c(names(labs.subheadings), names(levels), names(reference)) | is.character(data[[v]])) {
+
+      data <- data %>%
+        factR(vars=v,
+              num.vars = num_c,
+              labels = labs.subheadings,
+              levels = levels,
+              reference = reference,
+              lab_to_lev=T)
+
+    }
+  }
 
 
+  #Format pseudonumerical levels
+  data <- data %>%
+    factR(num.vars = num_c)
+
+  print(str(data$ab_irrigation))
 
   #Table controls
   c <- tableby.control(test=test, total=total,
@@ -216,7 +223,7 @@ tablR <- function(data,
                    weights = eval(parse(text = weights_c)))
 
   if(length(labs.headings) > 0) {
-  headings_reverse <- names(labs.headings) %>% set_names(labs.headings)
+    headings_reverse <- names(labs.headings) %>% set_names(labs.headings)
   } else {
     headings_reverse <- labs.headings
   }
@@ -254,12 +261,12 @@ tablR <- function(data,
 
   #SIMPLIFICATION
 
-    if(length(simplify) > 0) {
+  if(length(simplify) > 0) {
 
-      #Remove pattern
-      remove <- paste0("\\b(", paste0(simplify.remove, collapse = "|"), ")\\b", collapse="")
+    #Remove pattern
+    remove <- paste0("\\b(", paste0(simplify.remove, collapse = "|"), ")\\b", collapse="")
 
-      #Convert simplify to named list if vector
+    #Convert simplify to named list if vector
     if(class(simplify) != "list") {
       simplify <- as.list(simplify) %>% set_names(simplify)
 
@@ -269,7 +276,7 @@ tablR <- function(data,
 
       #Only multiple categories gets "-" for right-shifting
       if(length(simplify[[i]]) > 1) {
-         labels <- paste0("-  ", simplify[[i]])
+        labels <- paste0("-  ", simplify[[i]])
       } else {
         labels <- simplify[[i]]
       }
@@ -307,7 +314,7 @@ tablR <- function(data,
 
   if(test) {
     tab <- tab %>%
-    dplyr::rename("P-value" = `p value`) %>%
+      dplyr::rename("P-value" = `p value`) %>%
       mutate(`P-value` = pvertR(`P-value`, na= " "))
   }
 
@@ -353,4 +360,3 @@ tablR <- function(data,
 
 
 }
-

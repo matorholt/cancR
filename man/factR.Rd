@@ -12,7 +12,9 @@ factR(
   levels = list(),
   labels = list(),
   lab_to_lev = FALSE,
-  reverse = F
+  reverse = F,
+  auto.format = F,
+  dt = F
 )
 }
 \arguments{
@@ -31,6 +33,10 @@ factR(
 \item{lab_to_lev}{Whether changing labels should change levels if these are not specified (defaults to TRUE)}
 
 \item{reverse}{Whether the levels should be reversed (default is FALSE)}
+
+\item{auto.format}{whether no/yes and 0/1 should be autoformatted with no as reference}
+
+\item{dt}{whether the data frame should be returned as data.table (default = F)}
 }
 \value{
 Returns the inputted dataframe with modified factor variables

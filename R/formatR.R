@@ -173,7 +173,7 @@ formatR <- function(data,
   data <- data %>%
     mutate(age = round(as.numeric(index - birth)/365.25,1)) %>%
     cutR({{cut_vars}},
-         seqlist = seqlist,
+         seq.list = seqlist,
          name.list = names) %>%
     factR(vars=c({{cat.vars}}, {{num.vars}}), labels = labels, lab_to_lev=F) %>%
     mutate(across(c(as.vector(unlist(names)), {{cat.vars}}), ~ fct_drop(.)))

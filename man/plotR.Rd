@@ -9,7 +9,7 @@ plotR(
   y = 100,
   col = cancR_palette,
   table.col = "#616161",
-  risk.col = T,
+  risk.col = F,
   time.unit = "m2y",
   labs = levels,
   print.est = TRUE,
@@ -44,6 +44,7 @@ plotR(
   table.linewidth = 0.8,
   border.linewidth = 0.8,
   legend.pos = c(0.5, 0.9),
+  legend.size = 16,
   tscale = 1,
   censur = F
 )

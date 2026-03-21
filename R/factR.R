@@ -19,6 +19,8 @@
 #' @param labels List of variables with the corresponding labels (e.g. list("v3" = c("e" = "epsilon", "d" = "delta")))
 #' @param lab_to_lev Whether changing labels should change levels if these are not specified (defaults to TRUE)
 #' @param reverse Whether the levels should be reversed (default is FALSE)
+#' @param auto.format whether no/yes and 0/1 should be autoformatted with no as reference
+#' @param dt whether the data frame should be returned as data.table (default = F)
 #'
 #' @return Returns the inputted dataframe with modified factor variables
 #' @export
@@ -97,7 +99,16 @@
 #     num.vars=vnum,
 #     labels = list("vnum" = c("test" = "cci_0")))
 
-factR <- function(data, vars, num.vars, reference = list(), levels = list(), labels = list(), lab_to_lev = FALSE, reverse = F) {
+factR <- function(data,
+                  vars,
+                  num.vars,
+                  reference = list(),
+                  levels = list(),
+                  labels = list(),
+                  lab_to_lev = FALSE,
+                  reverse = F,
+                  auto.format = F,
+                  dt = F) {
 
   if(any("data.table" %in% class(data))) {
     data <- as.data.frame(data)
@@ -109,42 +120,42 @@ factR <- function(data, vars, num.vars, reference = list(), levels = list(), lab
   vars_c <-
     data %>% select({{vars}}, matches(c(names(labels), names(reference), names(levels), "xemptyx"))) %>% names
 
-    vars_c <- vars_c[vars_c %nin% num_c]
+  vars_c <- vars_c[vars_c %nin% num_c]
 
-    #Allow unnamed lists
+  #Allow unnamed lists
   if(length(vars_c) == 1) {
 
 
-  if(length(levels) > 0) {
-    if(!is.null(names(levels))) {
-      levels <- unlist(levels %>% set_names(NULL))
+    if(length(levels) > 0) {
+      if(!is.null(names(levels))) {
+        levels <- unlist(levels %>% set_names(NULL))
+
+      }
+      levels <- list(as.list(levels))
+      names(levels) <- vars_c
 
     }
-    levels <- list(as.list(levels))
-    names(levels) <- vars_c
-
-  }
 
     if(length(labels) > 0) {
 
       if(all(names(labels) %nin% vars_c)) {
 
-      labels <- list(as.list(labels)) %>% set_names(vars_c)
+        labels <- list(as.list(labels)) %>% set_names(vars_c)
 
-    }
+      }
 
     }
   }
 
 
-    if(length(vars_c) == 1 & length(reference) == 1) {
+  if(length(vars_c) == 1 & length(reference) == 1) {
 
-      if(class(reference) == "character") {
-        reference <- list(reference)
+    if(class(reference) == "character") {
+      reference <- list(reference)
 
-      }
-      names(reference) <- vars_c
     }
+    names(reference) <- vars_c
+  }
 
 
 
@@ -154,34 +165,48 @@ factR <- function(data, vars, num.vars, reference = list(), levels = list(), lab
 
   if(length(vars_c) > 0) {
 
-  for(v in vars_c) {
+    map(vars_c, function(v) {
+
+      if(lab_to_lev & v %in% names(labels)) {
+
+        levels[[v]] <- labels[[v]]
+      }
+
+      if(auto.format & v %nin% names(labels) & length(na.omit(unique(data[[v]]))) == 2) {
+
+        #No/Yes
+        if(all(str_detect(na.omit(unique(data[[v]])), regex("no|yes", ignore_case=T)))) {
+
+          levels[[v]] <- c("no", "No", "yes", "Yes")
+
+        }
+
+        if(all(str_detect(na.omit(unique(data[[v]])), regex("0|1", ignore_case=T))))
+
+          labels[[v]] <- list("No" = "0",
+                              "Yes" = "1")
+
+      }
+
+      suppressWarnings(data[, c(v) := fct_infreq(as.character(get(v)))][
+        , c(v) := fct_relevel(get(v), reference[[v]])][
+          , c(v) := fct_relevel(get(v), levels[[v]])])
+
+      if(v %in% names(labels)) {
+
+        data[, c(v) := fct_recode(get(v), !!!setNames(labels[[v]], as.character(names(labels[[v]]))))]
+
+      }
 
 
 
-    if(lab_to_lev & v %in% names(labels)) {
+      if(reverse) {
+        data[, substitute(v) := fct_rev(get(v))]
 
-      levels[[v]] <- labels[[v]]
-    }
-
-    suppressWarnings(data[, substitute(v) := fct_infreq(as.character(get(v)))][
-      , substitute(v) := fct_relevel(get(v), reference[[v]])][
-        , substitute(v) := fct_relevel(get(v), levels[[v]])])
-
-    if(v %in% names(labels)) {
-
-      data[, substitute(v) := fct_recode(get(v), !!!setNames(labels[[v]], as.character(names(labels[[v]]))))]
-
-    }
+      }
 
 
-
-    if(reverse) {
-      data[, substitute(v) := fct_rev(get(v))]
-
-    }
-
-
-  }
+    })
 
   }
 
@@ -216,6 +241,6 @@ factR <- function(data, vars, num.vars, reference = list(), levels = list(), lab
     }
   }
 
-  as.data.frame(data)
+  if(dt) return(data) else return(as.data.frame(data))
 
 }

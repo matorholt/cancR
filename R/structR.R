@@ -82,7 +82,8 @@ structR <- function(data,
                     keep.dates=F,
                     digits = 2,
                     id,
-                    check = F){
+                    check = F)
+{
 
   #Convert to data.frame
   if(any(c("data.table", "tbl") %in% class(data))) {

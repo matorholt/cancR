@@ -110,10 +110,10 @@ inferencR <- function(data,
                       event.digits = 2,
                       alpha = 0.05,
                       weights = T,
+                      weight.vars,
                       weights.digits = 1,
                       weights.breaks = 1,
                       ...) {
-
 
   cat("\ninferencR initialized: ", tickR(), "\n")
 
@@ -143,8 +143,6 @@ inferencR <- function(data,
 
   treat_c <- data %>% select({{treatment}}) %>% names
   event_c <- data %>% select({{event}}) %>% names
-  #cluster <- data %>% select({{cluster}}) %>% names
-
 
   #Vars extracted from custom forms if specified
   if(missing(vars)) {
@@ -185,82 +183,24 @@ inferencR <- function(data,
   # Weighting diagnostics #
   #########################
 
-  # return(list(model = treat.model,
-  #             data = dat))
+
 
   if(weights) {
+
+    if(missing(weight.vars)) {
+
+      weight.vars <- vars_c
+
+    }
 
     out.list[["weights"]] <-
       weightR(dat,
               model = treat.model,
               treat_c,
-              vars=vars_c,
+              vars= dat %>% select({{weight.vars}}) %>% names,
               ...)
-              # difference = "standardized",
-              # labs.headings = list("Age" = "age_bin",
-              #                      "BMI" = "bmi_bin"),
-              # labs.subheadings = list("age_bin" = list("test" = "(4.2,38.2]")))
-
-     # <- list(data = dat_w,
-     #                              table_iptw = tab_w,
-     #                              table_strat = strat_w,
-     #                              plot = plot_weights,
-     #                              bal_plot = balance_plot,
-     #                              bal_tab = bal_tab)
-
 
   }
-
-  # w_object <-  WeightIt::weightit(as.formula(treat.form),
-  #                                 data = dat,
-  #                                 estimand = "ATE",
-  #                                 method = "glm")
-  #
-  # dat_w <- dat %>% mutate(ps = w_object$ps,
-  #                         w = w_object$weights) %>%
-  #   cutR(w, seq(0,100,weights.breaks), digits = weights.digits,
-  #        name.list = "wgroup")
-  #
-  #
-  #
-  # plot_weights <- summarisR(dat_w,
-  #                           vars = c(ps, w),
-  #                           group = !!sym(treat_c),
-  #                           headings = list("w" = "Weights",
-  #                                           "ps" = "Propensity Scores"),
-  #                           bins = bins)
-  #
-  # balance_plot <- cobalt::love.plot(w_object)
-  #
-  # bal_tab <-  cobalt::bal.tab(w_object,
-  #                             disp = "means",
-  #                             un=T)
-  #
-  #
-  # tab_w <- cbind(tablR(dat_w,
-  #                      group = treat_c,
-  #                      vars = c(vars_c, ovars_c),
-  # ),
-  # tablR(dat_w,
-  #       group = treat_c,
-  #       vars = c(vars_c, ovars_c),
-  #       weights = w)[,-1])
-  #
-  #
-  #
-  # dat_w <- dat_w %>%
-  #   factR(num.vars = "wgroup")
-  #
-  # strat_w <-
-  #   iteratR(eval(parse(text = paste0("split(dat_w, ~", treat_c, ")"))),
-  #           group = "wgroup",
-  #           vars = c(vars_c, ovars_c),
-  #           method = "tablR",
-  #           total=T,
-  #           test=F,
-  #           labels = levels)
-
-
 
 
   if(method %in% c("cox", "binomial")) {
@@ -404,7 +344,7 @@ inferencR <- function(data,
 
   }
 
-  out.list[["models"]] <- list("treatment" = summary(treat.model),
+  out.list[["models"]] <- list("treatment" = treat.model,
                                "event" = event.model,
                                "censoring" = censor.model,
                                "formulas" = data.frame(model = c("treatment", "event", "censoring"),

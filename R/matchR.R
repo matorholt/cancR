@@ -174,11 +174,7 @@ matchR <- function(data,
 
   if(!is.null(cores)) {
 
-    with(future::plan(multisession, workers = cores), local = TRUE)
-
-  } else {
-
-    with(future::plan(sequential), local = TRUE)
+    multitaskR(cores = cores)
 
   }
 

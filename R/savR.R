@@ -92,7 +92,6 @@ savR <- function(object,
     return(cat("Error: Unvalid format. Supported formats are pdf, svg, tiff, jpg, png, rds, csv and parquet"))
   }
 
-
   if(missing(name)) {
     name <- paste0(substitute(object))
   }
@@ -110,20 +109,12 @@ savR <- function(object,
              sep = sep,
              bom=T)
 
-      opt <- options(show.error.messages = FALSE)
-      on.exit(options(opt))
-      stop()
-
     }
 
     if("rds" %in% format) {
 
       saveRDS(object,
               paste0(name, ".rds", collapse=""))
-
-      opt <- options(show.error.messages = FALSE)
-      on.exit(options(opt))
-      stop()
 
     }
 
@@ -135,10 +126,6 @@ savR <- function(object,
         compression = "zstd",
         compression_level = 19
       )
-
-      opt <- options(show.error.messages = FALSE)
-      on.exit(options(opt))
-      stop()
 
     }
 
@@ -200,6 +187,8 @@ savR <- function(object,
 
     cat(paste0("\n\nExporting: ", name))
     for(p in format) {
+
+      print(paste0(name, ".", p, collapse=""))
 
       cat(paste0("\n", p, ": "))
 
