@@ -80,7 +80,9 @@ The order of effects is:</p><ol><li><p>Set as factor (fct_infreq setting levels 
 <span>  levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  lab_to_lev <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  reverse <span class="op">=</span> <span class="cn">F</span></span>
+<span>  reverse <span class="op">=</span> <span class="cn">F</span>,</span>
+<span>  auto.format <span class="op">=</span> <span class="cn">F</span>,</span>
+<span>  dt <span class="op">=</span> <span class="cn">F</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -119,6 +121,14 @@ The order of effects is:</p><ol><li><p>Set as factor (fct_infreq setting levels 
 <dt id="arg-reverse">reverse<a class="anchor" aria-label="anchor" href="#arg-reverse"></a></dt>
 <dd><p>Whether the levels should be reversed (default is FALSE)</p></dd>
 
+
+<dt id="arg-auto-format">auto.format<a class="anchor" aria-label="anchor" href="#arg-auto-format"></a></dt>
+<dd><p>whether no/yes and 0/1 should be autoformatted with no as reference</p></dd>
+
+
+<dt id="arg-dt">dt<a class="anchor" aria-label="anchor" href="#arg-dt"></a></dt>
+<dd><p>whether the data frame should be returned as data.table (default = F)</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -130,7 +140,7 @@ The order of effects is:</p><ol><li><p>Set as factor (fct_infreq setting levels 
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by Mathias Ørholt.</p>
+  <p>Developed by Mathias Ørholt, Ida Wulff.</p>
 </div>
 
 <div class="pkgdown-footer-right">

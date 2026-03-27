@@ -71,12 +71,14 @@ reference:
   desc: >
     Functions that perform statistical analysis
   contents:
-  - incidencR
+
   - estimatR
-  - iteratR
   - extractR
-  - inferencR
   - followR
+  - incidencR
+  - inferencR
+  - iteratR
+  - weightR
 
 - title: Tables and figures
   desc: >
@@ -86,6 +88,7 @@ reference:
   - dagR
   - plotR
   - savR
+  - swimmR
   - tablR
 
 - title: Register-specific functions
@@ -125,6 +128,7 @@ reference:
   - formatR
   - listR
   - modeR
+  - multitaskR
   - numbR
   - powR
   - rollR

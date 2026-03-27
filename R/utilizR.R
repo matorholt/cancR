@@ -407,6 +407,7 @@ numbR <- function(numbers, digits = 1, nsmall, ama = F) {
 #' @param data dataset
 #' @param vars column(s) which unique ids should be based on
 #' @param label label for new unique id column
+#' @param dt whether a data.table should be returned
 #'
 #' @return adds a new column to the dataset with unique ids based on original id conditional on a sorting
 #' @export
@@ -418,12 +419,16 @@ numbR <- function(numbers, digits = 1, nsmall, ama = F) {
 #   rollR()
 
 
-rollR <- function(data, vars = id, label = order) {
+rollR <- function(data, vars = id, label = order, dt = F) {
 
   vars <- names(dplyr::select(data, {{ vars }}))
   label_name <- deparse(substitute(label))
 
-  as.data.table(data)[, (label_name) := data.table::rleidv(.SD), .SDcols = vars] %>% as.data.frame
+  if(dt) {
+    return(as.data.table(data)[, (label_name) := .GRP, by = vars])
+  } else {
+    return(as.data.table(data)[, (label_name) := .GRP, by = vars] %>% as.data.frame)
+  }
 }
 
 #' @title Format p-values to AMA manual of style

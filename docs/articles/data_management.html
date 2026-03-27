@@ -632,15 +632,14 @@ case_when() - Splits based on a sequence or quantiles: cutR()</p>
 <span><span class="co">#&gt; 5       NA       0    0    NA  0       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span></span>
 <span><span class="co">#&gt; 6        1       1    1     1  0       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span></span></code></pre></div>
 <p>Multiple splits can also be performed with cutR() with name
-assigning</p>
+assigning. This will create two new variables</p>
 <div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">redcap_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/cutR.html">cutR</a></span><span class="op">(</span>vars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">age</span>, <span class="va">size</span><span class="op">)</span>,</span>
-<span>       seqlist <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"age"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">100</span>,<span class="fl">10</span><span class="op">)</span>,</span>
-<span>                      <span class="st">"size"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"quantile"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">0.25</span>,<span class="fl">0.5</span>,<span class="fl">0.75</span>,<span class="fl">1</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>       name.list <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"age"</span> <span class="op">=</span> <span class="st">"age_group"</span>,</span>
-<span>                        <span class="st">"size"</span> <span class="op">=</span> <span class="st">"size_bin"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
-<span>  <span class="va">head</span></span>
+<span>       seq.list <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>age <span class="op">=</span> <span class="st">"10y"</span>,</span>
+<span>                      size <span class="op">=</span> <span class="st">"quartile"</span><span class="op">)</span>,</span>
+<span>       name.list <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>age_group <span class="op">=</span> <span class="st">"age"</span>,</span>
+<span>                        size_bin <span class="op">=</span> <span class="st">"size"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="va">head</span></span>
 <span><span class="co">#&gt;   id sex  age      birth   followup date_of_surgery      size type localisation</span></span>
 <span><span class="co">#&gt; 1  1   1 79.1 20-09-1929 03-04-2023      2008-11-03  7.302734    1            3</span></span>
 <span><span class="co">#&gt; 2  2   2 38.1 12-10-1953 18-12-2025      1991-11-13 20.043036    1            1</span></span>
@@ -669,7 +668,7 @@ input variables are similar such as dates</p>
 <span>  <span class="co">#Conversion into date format</span></span>
 <span>  <span class="fu"><a href="../reference/datR.html">datR</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html" class="external-link">contains</a></span><span class="op">(</span><span class="st">"date"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/cutR.html">cutR</a></span><span class="op">(</span>vars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">recurrence_date</span>, <span class="va">metastasis_date</span><span class="op">)</span>,</span>
-<span>       seqlist <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"seq"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1900</span>,<span class="fl">2030</span>,<span class="fl">10</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>       seq.list <span class="op">=</span> <span class="st">"10y"</span>,</span>
 <span>       name.pattern <span class="op">=</span> <span class="st">"_bin"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="va">head</span></span>
 <span><span class="co">#&gt;   id sex  age      birth   followup date_of_surgery      size type localisation</span></span>
@@ -1331,7 +1330,7 @@ as all rows are kept.</p>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by Mathias Ørholt.</p>
+  <p>Developed by Mathias Ørholt, Ida Wulff.</p>
 </div>
 
 <div class="pkgdown-footer-right">

@@ -233,8 +233,14 @@ decodR <- function(codelist,
   out.list[["searchR"]][["sub.list"]] <- main$labels
 
   dframe <- rrapply(main, how = "melt") %>%
-    filter(L1 != "labels") %>%
-    mutate(L1 = ifelse(str_detect(L1, "case"), paste0(L1,"_",L2), L2))
+    filter(L1 != "labels")
+
+  #Combine case with register if case defined from multiple
+  if(length(main$case) > 1) {
+   dframe <- dframe %>% mutate(L1 = ifelse(str_detect(L1, "case"), paste0(L1,"_",L2), L1))
+  }
+  #Choose L2 as main names
+  dframe <- dframe %>% mutate(L1 = ifelse(str_detect(L1, "case"), L1, L2))
 
 slist <- main$labels
 
@@ -244,6 +250,7 @@ for(i in seq_along(slist)) {
 
   split <- dframe %>%
     filter(L1 %in% names(slist)[[i]])
+
 
   for(x in seq_along(slist[[i]])) {
 
@@ -291,13 +298,6 @@ out.list[["searchR"]][["sub.labels"]] <- label_list
                                         }), use.names = F)
 
     out.list[["includR"]][["exclusion.out"]] <- main$design$exclusion
-
-    if(length(names(main$case)) > 1) {
-      out.list[["includR"]]$case <-  paste0("case_", names(main$case))
-    } else {
-      out.list[["includR"]]$case <-  "case"
-    }
-
     out.list[["includR"]][["age.limit"]] <- main$design$age.limit
     out.list[["includR"]][["period"]] <- main$design$period
 
@@ -322,7 +322,7 @@ out.list[["searchR"]][["sub.labels"]] <- label_list
  return(out.list)
 
 }
-
+#
 # multilist <- list(case = list(lpr = list("abdomen" = list("kidney" = c("DA","DB","DC"),
 #                                                           "liver" = c("DD", "DE", "DF")),
 #                                          "thorax" = list("heart" = c("DG", "DH", "DI"))),
@@ -337,4 +337,19 @@ out.list[["searchR"]][["sub.labels"]] <- label_list
 #                                 period = c("2000-01-01", "2022-12-31"),
 #                                 exclusion = c("sc_date")))
 #
+#
+#
+# multilist2 <- list(case = list(lpr = list("abdomen" = list("kidney" = c("DA","DB","DC"),
+#                                                           "liver" = c("DD", "DE", "DF")),
+#                                          "thorax" = list("heart" = c("DG", "DH", "DI")))),
+#                   lpr = list(immune_diag = "DJ",
+#                              cll = c("DK4", "DL")),
+#                   lmdb = list(immune_drugs = "A"),
+#                   opr = list(trans = "KA"),
+#                   labels = list("case" = c("region", "organ"),
+#                                 "immune_drugs" = "immsup"),
+#                   design = list(age.limit = 18,
+#                                 period = c("2000-01-01", "2022-12-31"),
+#                                 exclusion = c("sc_date")))
 # m.list <- decodR(multilist)
+# m.list <- decodR(multilist2)

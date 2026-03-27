@@ -122,6 +122,8 @@ factR <- function(data,
 
   vars_c <- vars_c[vars_c %nin% num_c]
 
+
+
   #Allow unnamed lists
   if(length(vars_c) == 1) {
 
@@ -201,7 +203,8 @@ factR <- function(data,
 
 
       if(reverse) {
-        data[, substitute(v) := fct_rev(get(v))]
+
+        data[, c(v) := fct_rev(get(v))]
 
       }
 

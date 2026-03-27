@@ -4,31 +4,20 @@
 \alias{rowR}
 \title{Perform rowwise operations}
 \usage{
-rowR(
-  data,
-  vars,
-  type,
-  new,
-  na.rm = T,
-  filter = NULL,
-  match = "contains",
-  direction
-)
+rowR(data, vars, type, label, na.rm = T, filter = NULL, direction, dt = F)
 }
 \arguments{
 \item{data}{dataset}
 
-\item{vars}{vector of vars the rowwise operation should be perfomed}
+\item{vars}{vector of vars the rowwise operation should be perfomed. If missing, all columns are assigned}
 
-\item{type}{pmin, pmax, all.na, any.na, sum.na, sum}
+\item{type}{pmin, pmax, all.na, any.na, sum.na, sum or fill}
 
-\item{new}{name of the new variable. If missing, type is inserted (e.g. pmin)}
+\item{label}{label of the new variable. If missing, type is inserted (e.g. pmin)}
 
 \item{na.rm}{whether NAs should be removed (default = T)}
 
 \item{filter}{whether rows with all.na or any.na should be removed}
-
-\item{match}{whether the provided diagnosis codes should be matched exactly, start with/end with or contain (default)}
 
 \item{direction}{the direction of the rowwise fill. Can be "left", "rigth", "leftright" and "rightleft". Corresponds to "updown".}
 }

@@ -13,6 +13,7 @@ weightR(
   labs.subheadings = list(),
   difference = "standardized",
   weights = "w",
+  tail = 50,
   num.vars,
   simplify = F,
   digits = 2
@@ -31,9 +32,11 @@ weightR(
 
 \item{labs.subheadings}{list of variable levels in the format list(var = list(new = "old"))}
 
-\item{difference}{whether the results should be outputtet as weighted or standardized weighted differences}
+\item{difference}{whether the results should be outputtet as absolute or standardized weighted differences}
 
 \item{weights}{name of the column containing weights}
+
+\item{tail}{the number of covariate-groups with the highest weights to show (e.g. top 50)}
 
 \item{num.vars}{pseudo numerical variables for ordering of levels}
 

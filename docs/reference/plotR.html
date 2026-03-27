@@ -56,7 +56,7 @@
 <span>  y <span class="op">=</span> <span class="fl">100</span>,</span>
 <span>  col <span class="op">=</span> <span class="va">cancR_palette</span>,</span>
 <span>  table.col <span class="op">=</span> <span class="st">"#616161"</span>,</span>
-<span>  risk.col <span class="op">=</span> <span class="cn">T</span>,</span>
+<span>  risk.col <span class="op">=</span> <span class="cn">F</span>,</span>
 <span>  time.unit <span class="op">=</span> <span class="st">"m2y"</span>,</span>
 <span>  labs <span class="op">=</span> <span class="va">levels</span>,</span>
 <span>  print.est <span class="op">=</span> <span class="cn">TRUE</span>,</span>
@@ -91,6 +91,7 @@
 <span>  table.linewidth <span class="op">=</span> <span class="fl">0.8</span>,</span>
 <span>  border.linewidth <span class="op">=</span> <span class="fl">0.8</span>,</span>
 <span>  legend.pos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">0.9</span><span class="op">)</span>,</span>
+<span>  legend.size <span class="op">=</span> <span class="fl">16</span>,</span>
 <span>  tscale <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  censur <span class="op">=</span> <span class="cn">F</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -277,11 +278,11 @@
 <span class="r-in"><span>timevar <span class="op">=</span> <span class="va">ttt</span>,</span></span>
 <span class="r-in"><span>event <span class="op">=</span> <span class="va">event</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> estimatR initialized:  2026-03-15 22:52:11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> estimatR initialized:  2026-03-27 23:12:49</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Total runtime: </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 0.14 secs</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 0.18 secs</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $table</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     time n.risk n.event       est       se.est     lower     upper cumsum</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1      0   2000       0 1.0000000 0.0000000000 1.0000000 1.0000000      0</span>
@@ -584,7 +585,7 @@
 <span class="r-in"><span>event <span class="op">=</span> <span class="va">event</span>,</span></span>
 <span class="r-in"><span>group <span class="op">=</span> <span class="va">X2</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> estimatR initialized:  2026-03-15 22:52:11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> estimatR initialized:  2026-03-27 23:12:49</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  </span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in select(., {    {        group    }}):</span> Can't select columns that don't exist.</span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span style="color: #BB0000;">✖</span> Column `X2` doesn't exist.</span>
@@ -597,7 +598,7 @@
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by Mathias Ørholt.</p>
+  <p>Developed by Mathias Ørholt, Ida Wulff.</p>
 </div>
 
 <div class="pkgdown-footer-right">

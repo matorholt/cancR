@@ -369,6 +369,10 @@ inferencR <- function(data,
 
   if(method == "binomial") {
 
+    switch(estimator,
+           "AIPTW" = {estimator <- "DR"},
+           "GFORMULA" = {estimator <- "G"})
+
     est <- bind_rows(
       map(seq(breaks, horizon, breaks), function(x) {
         bin_obj <- mets::binregATE(data=data,
@@ -378,7 +382,7 @@ inferencR <- function(data,
                                    cause=1,
                                    time=x)
 
-        as.data.frame(lava::estimate(coef=bin_obj$riskDR,vcov=bin_obj$var.riskDR)$coefmat) %>% tibble::remove_rownames() %>%
+        as.data.frame(lava::estimate(coef=bin_obj[[paste0("risk", estimator)]],vcov=bin_obj[[paste0("var.risk", estimator)]])$coefmat) %>% tibble::remove_rownames() %>%
           mutate(!!sym(treat_c) := as.factor(levels),
                  time = x)
 
@@ -435,7 +439,7 @@ inferencR <- function(data,
                                    cause=1,
                                    time=x)
 
-        as.data.frame(lava::estimate(coef=bin_obj$riskDR,vcov=bin_obj$var.riskDR)$coefmat) %>% tibble::remove_rownames() %>%
+        as.data.frame(lava::estimate(coef=bin_obj[[paste0("risk", estimator)]],vcov=bin_obj[[paste0("var.risk", estimator)]])$coefmat) %>% tibble::remove_rownames() %>%
           mutate(!!sym(treat_c) := as.factor(levels),
                  time = x)
 
@@ -537,7 +541,7 @@ inferencR <- function(data,
                                time=horizon)
 
     rd <-
-      as.data.frame(lava::estimate(coef=bin_obj$difriskDR,vcov=as.matrix(bin_obj$var.difriskDR))$coefmat) %>%
+      as.data.frame(lava::estimate(coef=bin_obj[[paste0("difrisk", estimator)]],vcov=bin_obj[[paste0("var.difrisk", estimator)]])$coefmat) %>%
       rename(diff = "Estimate",
              lower = "2.5%",
              upper = "97.5%",

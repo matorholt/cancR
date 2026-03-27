@@ -19,8 +19,9 @@ powR <- function(text,
                  mouse.sleep = 0.5,
                  special.sleep = 0.05,
                   where = "pc",
-                  server.language = T,
-                 server.automate = T) {
+                 server.language = T,
+                 server.options = T,
+                 toggle.options = T) {
 
   tickR()
 
@@ -66,9 +67,87 @@ powR <- function(text,
                                local = c(623, 546)))
 
 
+  #Define current and on.exits
 
   #Current cursor location
   current <- KeyboardSimulator::mouse.get_cursor()
+
+  on.exit({
+    #Release ALT
+    KeyboardSimulator::keybd.release("alt")
+    #Toggle matching parens/quotes
+    if(toggle.options) {
+      KeyboardSimulator::mouse.move(coord.list[[where]][["rs"]][1],coord.list[[where]][["rs"]][2])
+      Sys.sleep(mouse.sleep)
+      KeyboardSimulator::mouse.click("left")
+      Sys.sleep(0.5)
+      KeyboardSimulator::keybd.press("ctrl", hold = T)
+      KeyboardSimulator::keybd.press("shift", hold = T)
+      KeyboardSimulator::keybd.press("p", hold = T)
+      KeyboardSimulator::keybd.release("ctrl")
+      KeyboardSimulator::keybd.release("shift")
+      KeyboardSimulator::keybd.release("p")
+      Sys.sleep(0.5)
+      KeyboardSimulator::keybd.type_string("parentheses and")
+      Sys.sleep(0.5)
+      KeyboardSimulator::keybd.press("enter")
+      KeyboardSimulator::keybd.press("esc")
+      # cat("\nReturning to standard settings\n")
+      # KeyboardSimulator::mouse.move(coord.list[[where]][["tool"]][1], coord.list[[where]][["tool"]][2])
+      # Sys.sleep(mouse.sleep)
+      # KeyboardSimulator::mouse.click("left")
+      # KeyboardSimulator::mouse.move(coord.list[[where]][["go"]][1],coord.list[[where]][["go"]][2])
+      # Sys.sleep(mouse.sleep)
+      # KeyboardSimulator::mouse.click("left")
+      # KeyboardSimulator::mouse.move(coord.list[[where]][["code"]][1],coord.list[[where]][["code"]][2])
+      # Sys.sleep(mouse.sleep)
+      # KeyboardSimulator::mouse.click("left")
+      # KeyboardSimulator::mouse.move(coord.list[[where]][["match"]][1],coord.list[[where]][["match"]][2])
+      # Sys.sleep(mouse.sleep)
+      # KeyboardSimulator::mouse.click("left")
+      # KeyboardSimulator::mouse.move(coord.list[[where]][["app"]][1],coord.list[[where]][["app"]][2])
+      # Sys.sleep(mouse.sleep)
+      # KeyboardSimulator::mouse.click("left")
+      # KeyboardSimulator::mouse.move(coord.list[[where]][["ok"]][1],coord.list[[where]][["ok"]][2])
+      # Sys.sleep(mouse.sleep)
+      # KeyboardSimulator::mouse.click("left")
+    }
+
+    #Change language back server
+    if(server.language){
+      cat("\nReturning to standard language on server\n")
+      Sys.sleep(0.5)
+      KeyboardSimulator::keybd.press("win", hold = T)
+      KeyboardSimulator::keybd.press(" ")
+      KeyboardSimulator::keybd.release("win")
+      KeyboardSimulator::mouse.click("left")
+    }
+
+    #Close window
+    if(where == "laptop") {
+      KeyboardSimulator::mouse.move(1485,13)
+      Sys.sleep(mouse.sleep)
+      KeyboardSimulator::mouse.click("left")
+      Sys.sleep(mouse.sleep)
+    }
+
+    #Change language back main computer
+    cat("\nReturning to standard language on local\n")
+    KeyboardSimulator::mouse.move(coord.list[[where]][["local"]][1],coord.list[[where]][["local"]][2])
+    Sys.sleep(mouse.sleep)
+    KeyboardSimulator::mouse.click("left")
+    Sys.sleep(mouse.sleep)
+    KeyboardSimulator::keybd.press("win", hold = T)
+    KeyboardSimulator::keybd.press(" ")
+    KeyboardSimulator::keybd.release("win")
+
+    #Default cursor location
+    KeyboardSimulator::mouse.move(current[1], current[2])
+
+    cat(paste0("\nTotal runtime: \n"))
+    cat(tockR("diff"))
+
+  }, add=TRUE)
 
   cat("\nConverting to US keyboard\n")
   Sys.sleep(0.5)
@@ -104,26 +183,42 @@ powR <- function(text,
   }
 
   #Toggle matching parens/quotes
-  if(server.automate) {
-  KeyboardSimulator::mouse.move(coord.list[[where]][["tool"]][1], coord.list[[where]][["tool"]][2])
-  Sys.sleep(mouse.sleep)
-  KeyboardSimulator::mouse.click("left")
-  KeyboardSimulator::mouse.move(coord.list[[where]][["go"]][1],coord.list[[where]][["go"]][2])
-  Sys.sleep(mouse.sleep)
-  KeyboardSimulator::mouse.click("left")
-  KeyboardSimulator::mouse.move(coord.list[[where]][["code"]][1],coord.list[[where]][["code"]][2])
-  Sys.sleep(mouse.sleep)
-  KeyboardSimulator::mouse.click("left")
-  KeyboardSimulator::mouse.move(coord.list[[where]][["match"]][1],coord.list[[where]][["match"]][2])
-  Sys.sleep(mouse.sleep)
-  KeyboardSimulator::mouse.click("left")
-  KeyboardSimulator::mouse.move(coord.list[[where]][["app"]][1],coord.list[[where]][["app"]][2])
-  Sys.sleep(mouse.sleep)
-  KeyboardSimulator::mouse.click("left")
-  KeyboardSimulator::mouse.move(coord.list[[where]][["ok"]][1],coord.list[[where]][["ok"]][2])
-  Sys.sleep(mouse.sleep)
-  KeyboardSimulator::mouse.click("left")
-  }
+  if(toggle.options) {
+    KeyboardSimulator::mouse.move(coord.list[[where]][["rs"]][1],coord.list[[where]][["rs"]][2])
+    Sys.sleep(mouse.sleep)
+    KeyboardSimulator::mouse.click("left")
+    Sys.sleep(0.5)
+    KeyboardSimulator::keybd.press("ctrl", hold = T)
+    KeyboardSimulator::keybd.press("shift", hold = T)
+    KeyboardSimulator::keybd.press("p", hold = T)
+    KeyboardSimulator::keybd.release("ctrl")
+    KeyboardSimulator::keybd.release("shift")
+    KeyboardSimulator::keybd.release("p")
+    Sys.sleep(0.5)
+    KeyboardSimulator::keybd.type_string("parentheses and")
+    Sys.sleep(0.5)
+    KeyboardSimulator::keybd.press("enter")
+    KeyboardSimulator::keybd.press("esc")
+}
+  # KeyboardSimulator::mouse.move(coord.list[[where]][["tool"]][1], coord.list[[where]][["tool"]][2])
+  # Sys.sleep(mouse.sleep)
+  # KeyboardSimulator::mouse.click("left")
+  # KeyboardSimulator::mouse.move(coord.list[[where]][["go"]][1],coord.list[[where]][["go"]][2])
+  # Sys.sleep(mouse.sleep)
+  # KeyboardSimulator::mouse.click("left")
+  # KeyboardSimulator::mouse.move(coord.list[[where]][["code"]][1],coord.list[[where]][["code"]][2])
+  # Sys.sleep(mouse.sleep)
+  # KeyboardSimulator::mouse.click("left")
+  # KeyboardSimulator::mouse.move(coord.list[[where]][["match"]][1],coord.list[[where]][["match"]][2])
+  # Sys.sleep(mouse.sleep)
+  # KeyboardSimulator::mouse.click("left")
+  # KeyboardSimulator::mouse.move(coord.list[[where]][["app"]][1],coord.list[[where]][["app"]][2])
+  # Sys.sleep(mouse.sleep)
+  # KeyboardSimulator::mouse.click("left")
+  # KeyboardSimulator::mouse.move(coord.list[[where]][["ok"]][1],coord.list[[where]][["ok"]][2])
+  # Sys.sleep(mouse.sleep)
+  # KeyboardSimulator::mouse.click("left")
+  # }
 
 
 Sys.sleep(1)
@@ -131,7 +226,7 @@ Sys.sleep(1)
   cat("\nPasting text\n")
   split_list <-
     str_replace_all(text, c("\n(?=(\\s{2,20}))" = "xsplitxenterxsplitx",
-                            '(?<=((cat|paste0?)\\((.|\n){0,5}"(.|\n){0,150}))\n(?=((.|\n){0,150}"(.|\n){0,5}\\))(?!(\\s{2,20})))' = "NEW",
+                            '(?<=(cat\\((.|\n){0,5}"(.|\n){0,150}))\n(?=((.|\n){0,150}"(.|\n){0,5}\\))(?!(\\s{2,20})))' = "NEW",
                             "\n" = "xsplitxenterxsplitx",
                             "NEW" = "xsplitxNEWxsplitx",
                             "," = "xsplitxcommaxsplitx",
@@ -246,61 +341,7 @@ Sys.sleep(1)
     Sys.sleep(write.sleep)
   }
 
-  cat("\nReturn to standard settings\n")
-
-  #Toggle matching parens/quotes
-  if(server.automate) {
-  KeyboardSimulator::mouse.move(coord.list[[where]][["tool"]][1], coord.list[[where]][["tool"]][2])
-  Sys.sleep(mouse.sleep)
-  KeyboardSimulator::mouse.click("left")
-  KeyboardSimulator::mouse.move(coord.list[[where]][["go"]][1],coord.list[[where]][["go"]][2])
-  Sys.sleep(mouse.sleep)
-  KeyboardSimulator::mouse.click("left")
-  KeyboardSimulator::mouse.move(coord.list[[where]][["code"]][1],coord.list[[where]][["code"]][2])
-  Sys.sleep(mouse.sleep)
-  KeyboardSimulator::mouse.click("left")
-  KeyboardSimulator::mouse.move(coord.list[[where]][["match"]][1],coord.list[[where]][["match"]][2])
-  Sys.sleep(mouse.sleep)
-  KeyboardSimulator::mouse.click("left")
-  KeyboardSimulator::mouse.move(coord.list[[where]][["app"]][1],coord.list[[where]][["app"]][2])
-  Sys.sleep(mouse.sleep)
-  KeyboardSimulator::mouse.click("left")
-  KeyboardSimulator::mouse.move(coord.list[[where]][["ok"]][1],coord.list[[where]][["ok"]][2])
-  Sys.sleep(mouse.sleep)
-  KeyboardSimulator::mouse.click("left")
-  }
-
-  cat("\nReturn to standard language\n")
-  #Change language back server
-  if(server.language){
-    Sys.sleep(0.5)
-    KeyboardSimulator::keybd.press("win", hold = T)
-    KeyboardSimulator::keybd.press(" ")
-    KeyboardSimulator::keybd.release("win")
-    KeyboardSimulator::mouse.click("left")
-  }
-
-  if(where == "laptop") {
-    KeyboardSimulator::mouse.move(1485,13)
-    Sys.sleep(mouse.sleep)
-    KeyboardSimulator::mouse.click("left")
-    Sys.sleep(mouse.sleep)
-  }
-
-  #Change language back main computer
-  KeyboardSimulator::mouse.move(coord.list[[where]][["local"]][1],coord.list[[where]][["local"]][2])
-  Sys.sleep(mouse.sleep)
-  KeyboardSimulator::mouse.click("left")
-  Sys.sleep(mouse.sleep)
-  KeyboardSimulator::keybd.press("win", hold = T)
-  KeyboardSimulator::keybd.press(" ")
-  KeyboardSimulator::keybd.release("win")
-
-
-  KeyboardSimulator::mouse.move(current[1], current[2])
-
   cat("\nPrinting Done\n")
-  cat(paste0("\nTotal runtime: \n"))
-  cat(tockR("diff"))
+
 
 }

@@ -140,7 +140,7 @@ searchR <- function(reglist,
 if(!is.null(cores)) multitaskR(cores = cores)
 
 
-  progressr::handlers(global = TRUE)
+  #progressr::handlers(global = TRUE)
   handlers(list(
     handler_progress(
       format   = "|:bar| :current/:total (:percent) - :message",
@@ -253,10 +253,3 @@ if(!is.null(cores)) multitaskR(cores = cores)
   joined_data
 
 }
-
-#rlang::exec(searchR, reglist, !!!c.list$searchR)
-
-# searchR(testlist,
-#         search.list = list(lpr = c("DF", "DO", "DN", "DT"),
-#                            lmdb = c("A", "B", "C", "D")),
-#         cores = NULL)

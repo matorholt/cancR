@@ -11,7 +11,8 @@ powR(
   special.sleep = 0.05,
   where = "pc",
   server.language = T,
-  server.automate = T
+  server.options = T,
+  toggle.options = T
 )
 }
 \arguments{

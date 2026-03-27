@@ -160,7 +160,8 @@ matchR <- function(data,
   total_cases <- data[case == 1,]
 
   #Partition into age-sex cohorts filtered on presence of cases
-  split_df <- split(full_df, by = c("tvar", "sex"))[as.character(sort(unique(interaction(total_cases$byear, total_cases$sex))))]
+  split_df <-
+    split(full_df, by = c("tvar", "sex"))[as.character(sort(unique(interaction(total_cases$tvar, total_cases$ses))))]
 
   cat(paste0("\nPartitioning of age-sex cohorts: completed - ",  tockR("time"), "\n\n"))
 

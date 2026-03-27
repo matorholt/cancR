@@ -10,8 +10,9 @@
 #' @param vars vector of covariates to estimate weights
 #' @param labs.headings list of varible names in the format list(new = "old")
 #' @param labs.subheadings list of variable levels in the format list(var = list(new = "old"))
-#' @param difference whether the results should be outputtet as weighted or standardized weighted differences
+#' @param difference whether the results should be outputtet as absolute or standardized weighted differences
 #' @param weights name of the column containing weights
+#' @param tail the number of covariate-groups with the highest weights to show (e.g. top 50)
 #' @param num.vars pseudo numerical variables for ordering of levels
 #' @param simplify drop first level of binary variables
 #'
@@ -43,6 +44,7 @@ weightR <- function(data,
                     labs.subheadings = list(),
                     difference = "standardized",
                     weights = "w",
+                    tail = 50,
                     num.vars,
                     simplify = F,
                     digits = 2) {
@@ -73,11 +75,6 @@ weightR <- function(data,
   dat[, w := ifelse(eval(parse(text=names(model$model)[1])), 1/ps, 1/(1-ps))]
 
   dat <- recodR(dat, labs.subheadings, dt=T)
-
-  # dat <- factR(dat,
-  #              vars = data %>% select(vars) %>% select(is.factor) %>% names,
-  #              auto.format = T,
-  #              dt=T)
 
   w.df <- rbindlist(
     map(vars, function(i) {
@@ -181,6 +178,79 @@ weightR <- function(data,
     annotate("text", x=-x*1.4, y=unique(labels.df$header), label = unique(labels.df$var), fontface = 2) +
     coord_cartesian(xlim=c(-x*1.4, x))
 
+  #Covariate plot
+  for(i in vars) {
+
+    if(is.numeric(dat[[i]])) {
+
+      dat <- cutR(dat, i, "quartile", dt=T)
+    }
+
+
+
+  }
+
+  dat[, covs := do.call(paste, c(.SD, sep = "|")), .SDcols = c(vars)]
+
+
+  vplot_df <-
+    map_dfr(unique(dat[order(-w)]$covs), function(i) {
+
+      dat[covs == i, .(
+        min = min(w),
+        q1 = quantile(w, 0.25),
+        median = median(w),
+        q3 = quantile(w, 0.75),
+        max = max(w),
+        obs = .N,
+        prop = .N/nrow(dat)
+      ), by = treatment][, covs := i]
+
+
+    })[order(-max)] %>%
+    rollR(vars=covs, label = grps, dt=T) %>% .[order(grps)] %>% .[grps <= tail] %>% as.data.frame
+
+  point_df <- joinR(dat[, .SD, .SDcols = c(treatment, "covs", "w")],  vplot_df %>% distinct(covs, grps), by = "covs") %>% drop_na(grps)
+
+  covariate.plot <- ggplot(vplot_df, aes(y=as.factor(grps), fill = as.factor(grps), color = as.factor(grps))) +
+    coord_cartesian(ylim=c(0, length(unique(vplot_df$covs))+1)) +
+    annotate("text", x=0, y=length(unique(vplot_df$covs))+1, label = paste0(as.character(levels(vplot_df[[treatment]]))[1], " versus ", as.character(levels(vplot_df[[treatment]]))[2])) +
+    geom_boxplot(data = vplot_df %>% filter(!!sym(treatment) == as.character(levels(vplot_df[[treatment]]))[1]),
+
+                 aes(xmin = -min,
+                     xlower = -q1,
+                     xmiddle = -median,
+                     xupper = -q3,
+                     xmax = -max),
+                 stat = "identity",
+                 color = "Black",
+                 alpha = 0.5) +
+    geom_boxplot(data = vplot_df %>% filter(!!sym(treatment) == as.character(levels(vplot_df[[treatment]]))[2]),
+                 aes(
+                   xmin = min,
+                   xlower = q1,
+                   xmiddle = median,
+                   xupper = q3,
+                   xmax = max
+                 ),
+                 stat = "identity",
+                 color = "Black",
+                 alpha = 0.5
+    ) +
+    scale_x_continuous(breaks = seq(-100,100,2.5)) +
+    scale_y_discrete(labels = unique(vplot_df$covs)) +
+    labs(x="Weights", y="") +
+    theme_classic() +
+    theme(legend.position = "none",
+          axis.line.y = element_blank(),
+          axis.ticks.y = element_blank()) +
+    geom_jitter(data = point_df %>% filter(!!sym(treatment) == as.character(levels(vplot_df[[treatment]]))[2]), aes(x=w, y=as.factor(grps)), height = 0.1, alpha = 0.5, size = 3) +
+    geom_jitter(data = point_df %>% filter(!!sym(treatment) == as.character(levels(vplot_df[[treatment]]))[1]), aes(x=-w, y=as.factor(grps)), height = 0.1, alpha = 0.5, size = 3) +
+    geom_segment(data = vplot_df %>% filter(!!sym(treatment) == as.character(levels(vplot_df[[treatment]]))[1]), aes(x=0, xend=-prop*10, y=as.factor(grps), yend = as.factor(grps)), linewidth = 5) +
+    geom_segment(data = vplot_df %>% filter(!!sym(treatment) == as.character(levels(vplot_df[[treatment]]))[2]), aes(x=0, xend=prop*10, y=as.factor(grps), yend = as.factor(grps)), linewidth = 5) +
+    geom_vline(xintercept = c(-1,0,1), linetype = c(1,2,1))
+
+
   dat <- as.data.frame(dat)
 
   weight.plots <- collectR(
@@ -200,8 +270,11 @@ weightR <- function(data,
       max.weight <- max(dat$w)
 
       p <- p +
-        geom_density(data = dat %>% filter(!!sym(treatment) == as.character(levels(dat[[treatment]]))[1]), alpha = 0.4) +
-        geom_density(data = dat %>% filter(!!sym(treatment) == as.character(levels(dat[[treatment]]))[2]), aes(after_stat(-density)), alpha = 0.4) +
+        geom_density(data = dat %>% filter(!!sym(treatment) == as.character(levels(dat[[treatment]]))[1]), aes(after_stat(density)+1), alpha = 0.4) +
+        geom_density(data = dat %>% filter(!!sym(treatment) == as.character(levels(dat[[treatment]]))[2]), aes(after_stat(-density)-1), alpha = 0.4) +
+        geom_rect(xmin=-1, xmax=1, ymin=1, ymax=max.weight, fill = "White", color = NA) +
+        geom_jitter(data = dat %>% filter(!!sym(treatment) == as.character(levels(dat[[treatment]]))[1]), aes(x=0.5,y=w), width = 0.15, alpha = 0.4, size = 2, show.legend=F) +
+        geom_jitter(data = dat %>% filter(!!sym(treatment) == as.character(levels(dat[[treatment]]))[2]), aes(x=-0.5,y=w), width = 0.15, alpha = 0.4, size = 2, show.legend=F) +
         geom_vline(xintercept = 0) +
         geom_hline(yintercept = 1) +
         scale_y_continuous(breaks = seq(2.5,max.weight,2.5)) +
@@ -219,7 +292,7 @@ weightR <- function(data,
       dens <- max(abs(c(ggplot_build(p)$data[[1]]$density, ggplot_build(p)$data[[2]]$density)))
 
       p <- p +
-        coord_cartesian(xlim=c(-dens, dens), ylim = c(1,max.weight))
+        coord_cartesian(xlim=c(-dens-1, dens+1), ylim = c(1,max.weight))
 
 
 
@@ -248,10 +321,13 @@ weightR <- function(data,
           theme_classic()
       }), ncol = 2)
 
+
   return(list(table = w.df,
               overall = total.plots,
               balance = balance.plot,
-              weights = weight.plots))
+              weights = weight.plots,
+              covariates = covariate.plot,
+              data = dat))
 
 
 }

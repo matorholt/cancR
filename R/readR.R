@@ -70,7 +70,7 @@ readR <- function(path, extension = "", leading.zeros = T, na = "", ...) {
 
   if(any(str_detect(path, ".parquet") | extension == "parquet")) {
 
-    return(as.data.frame(read_parquet(path,
+    return(as.data.frame(arrow::read_parquet(path,
                                       as_data_frame = T,
                                       ...)))
 

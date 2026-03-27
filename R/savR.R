@@ -83,6 +83,8 @@ savR <- function(object,
                  device= NULL,
                  compression="lzw",
                  format = c("pdf"),
+                 parquet.format = "zstd",
+                 parquet.compression = 19,
                  size = 9,
                  table.width = 1,
                  folder = "Tables and Figures",
@@ -123,8 +125,8 @@ savR <- function(object,
       write_parquet(
         object,
         name,
-        compression = "zstd",
-        compression_level = 19
+        compression = parquet.format,
+        compression_level = parquet.compression
       )
 
     }

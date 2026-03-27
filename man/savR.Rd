@@ -15,6 +15,8 @@ savR(
   device = NULL,
   compression = "lzw",
   format = c("pdf"),
+  parquet.format = "zstd",
+  parquet.compression = 19,
   size = 9,
   table.width = 1,
   folder = "Tables and Figures",

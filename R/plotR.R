@@ -181,7 +181,7 @@ plotR <- function(list,
                       numbR(list[[c_var]][,which(names(list[[c_var]]) %in% c("hr", "ratio", "diff"))], contrast.digits),
                       " (95%CI ",
                       numbR(list[[c_var]][["lower"]], contrast.digits),
-                      "-",
+                      " to ",
                       numbR(list[[c_var]][["upper"]], contrast.digits),
                       "), ",
                       list[[c_var]][["p.value"]])
@@ -216,15 +216,13 @@ plotR <- function(list,
     if(!p.values) c_labels <- str_remove(c_labels, ",\\sp\\s=.*")
   }
 
-
-
   if(!print.est) border <- F
 
   if(censur) tab <- tab %>% mutate(across(c(cumsum, n.risk), ~ ifelse(between(., 1, 3), "≤ 3", .)))
 
   if(missing(y)) {
     if(list$info$survscale == "AM") {
-      y <- closR(pmin(max(plot$upper[plot$time == round(horizon, event.digits)]*1.3), 1)*100, c(seq(1,5), seq(10, 100, 10)))
+      y <- closR(pmin(max(plot$upper[plot$time == round(horizon, event.digits)]*2), 1)*100, c(seq(1,5), seq(10,50,5), seq(60, 100, 10)))
     } else {
       y <- 100
     }
@@ -341,7 +339,7 @@ plotR <- function(list,
 
       if(i < 3) {
         p <- p +
-          suppressWarnings(annotate("text", label = tablabs[i], x = 0, y = lines[i], color = table.col, size = table.title.size*tscale, hjust="left"))
+          suppressWarnings(annotate("text", label = tablabs[i], x = -(horizon*0.075), y = lines[i], color = table.col, size = table.title.size*tscale, hjust="left"))
       }
 
 
@@ -427,7 +425,6 @@ plotR <- function(list,
         shift <- ifelse(horizon == 60, 4, 12)
         right <- (xstart*0.2+horizon*0.39)+res.shift[1]+shift+border.shift
 
-
       }
 
       #Groups == 2 or >2 without contrasts
@@ -460,7 +457,7 @@ plotR <- function(list,
 
         #Border settings
         buttom <- rows[length(rows)] - (rows[length(rows)-1]-rows[length(rows)])
-        right <- (xstart*0.3+horizon*0.39)+res.shift[1]+border.shift
+        right <- (xstart*0.4+str_count(c_labels)*0.67)+res.shift[1]+border.shift
 
 
 
@@ -472,7 +469,7 @@ plotR <- function(list,
   if(border) {
 
     top <- rows[1] + (rows[1]-rows[2])
-    left <- (xstart*0.5)+res.shift[1]
+    left <- (xstart*0.4)+res.shift[1]
     if(!is.null(style)) right <- right + horizon/60
 
     p <- p + annotate("segment", x=left, xend = right, y=top, yend = top, linewidth = border.linewidth) +

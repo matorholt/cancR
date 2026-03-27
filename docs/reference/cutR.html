@@ -115,7 +115,1008 @@ Can be specified using only "median", "quantile", "quartile" etc which will be a
 <span class="r-in"><span>                       size <span class="op">=</span> <span class="st">"quartile"</span>,</span></span>
 <span class="r-in"><span>                       type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">2</span>,<span class="fl">10</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                       date_of_surgery <span class="op">=</span> <span class="st">"quarter"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in cutR(., vars = c(age, birth, size, type, date_of_surgery), seq.list = list(age = "10y",     birth = "year", size = "quartile", type = c(0, 2, 10), date_of_surgery = "quarter")):</span> unused argument (seq.list = list(age = "10y", birth = "year", size = "quartile", type = c(0, 2, 10), date_of_surgery = "quarter"))</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      id sex   age birth   followup date_of_surgery  size type localisation</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1     1   1 70-80  1929 03-04-2023        2008, q4  2-14  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2     2   2 30-40  1953 18-12-2025        1991, q4 14-24  0-2            1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3     3   1 60-70  1948 21-09-2025        2008, q4 38-50  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4     4   1 40-50  1949 11-02-2022        1994, q3 24-38  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5     5   2 40-50  1966 21-04-2022        2005, q3 24-38 2-10            1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6     6   1 80-90  1925 17-07-2023        2007, q1 38-50 2-10            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7     7   1 70-80  1921 15-11-2023        1996, q2 38-50  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8     8   1 30-40  1960 07-10-2021        1999, q3  2-14  0-2            5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9     9   2 30-40  1958 11-03-2025        1990, q3  2-14  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10   10   2 50-60  1953 28-11-2021        2004, q4 14-24 2-10            1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11   11   1 60-70  1946 09-06-2023        2008, q1  2-14  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12   12   1 70-80  1927 24-04-2024        1999, q2 38-50 2-10            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13   13   1 10-20  1980 01-06-2022        1992, q2 24-38 2-10            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 14   14   1 60-70  1944 08-06-2021        2006, q1 14-24  0-2            0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 15   15   1 10-20  1979 11-10-2025        1993, q1 38-50  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 16   16   2 30-40  1957 22-03-2025        1991, q1 14-24  0-2            4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 17   17   2 50-60  1943 24-12-2024        2001, q4 38-50  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 18   18   2 20-30  1974 31-10-2022        1997, q2  2-14  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 19   19   2 30-40  1966 01-05-2023        2001, q2 38-50  0-2            4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 20   20   1 50-60  1939 01-10-2024        1997, q2  2-14  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 21   21   1 80-90  1925 07-02-2025        2008, q2 38-50  0-2            4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 22   22   1 10-20  1980 06-09-2024        1994, q3  2-14  0-2            4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 23   23   1 30-40  1969 31-07-2022        2005, q1 14-24 2-10            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 24   24   1 60-70  1941 17-11-2024        2005, q1 24-38  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 25   25   1 70-80  1927 25-05-2025        2002, q3 24-38 2-10            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 26   26   1 20-30  1980 11-01-2025        2004, q2  2-14  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 27   27   2 50-60  1951 07-05-2022        2003, q2 14-24  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 28   28   1 60-70  1941 19-06-2021        2003, q2 24-38 2-10            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 29   29   1 60-70  1947 16-02-2025        2009, q3 24-38  0-2            4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 30   30   2 10-20  1978 02-03-2025        1992, q2 38-50  0-2            4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 31   31   2 40-50  1955 04-03-2023        1996, q2  2-14  0-2            4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 32   32   2 60-70  1940 04-12-2022        2008, q3  2-14  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 33   33   1 60-70  1931 20-11-2021        1992, q2 14-24 2-10            4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 34   34   2 40-50  1961 20-01-2025        2009, q4 24-38 2-10            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 35   35   1 60-70  1932 02-01-2024        1996, q2  2-14 2-10            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 36   36   1 80-90  1921 23-08-2021        2002, q1 14-24 2-10            4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 37   37   2 30-40  1968 12-05-2025        1998, q2 24-38  0-2            4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 38   38   1 60-70  1936 24-04-2025        2003, q3 24-38  0-2            4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 39   39   2 60-70  1928 03-09-2024        1990, q1 24-38  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 40   40   2 10-20  1977 15-03-2023        1993, q2  2-14  0-2            0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 41   41   2 20-30  1979 27-02-2021        2000, q4 24-38 2-10            1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 42   42   2 60-70  1947 26-02-2023        2007, q4 14-24  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 43   43   1 60-70  1943 10-05-2025        2009, q1 14-24 2-10            1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 44   44   2 30-40  1961 04-10-2024        1996, q4 38-50  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 45   45   2 40-50  1955 11-05-2025        2001, q2 14-24 2-10            4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 46   46   2 30-40  1963 29-09-2021        2002, q2 14-24 2-10            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 47   47   2 50-60  1945 29-02-2024        1997, q1  2-14  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 48   48   2 20-30  1970 01-03-2022        1995, q2 38-50  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 49   49   1 40-50  1948 22-10-2022        1991, q2 14-24  0-2            4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 50   50   1 40-50  1965 29-06-2023        2007, q2 24-38 2-10            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 51   51   2 50-60  1936 04-11-2023        1992, q1  2-14  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 52   52   1 10-20  1978 06-03-2022        1990, q4 14-24  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 53   53   2 80-90  1924 18-04-2021        2005, q2 24-38 2-10            1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 54   54   2 50-60  1950 05-03-2021        2000, q2 14-24 2-10            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 55   55   1 40-50  1962 26-05-2023        2006, q3 38-50  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 56   56   1 40-50  1946 28-04-2022        1992, q3 24-38 2-10            1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 57   57   2 60-70  1926 24-03-2021        1990, q1 38-50  0-2            1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 58   58   2 60-70  1937 09-07-2023        2003, q4  2-14  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 59   59   2 60-70  1933 04-04-2022        2001, q1 38-50  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 60   60   1 60-70  1925 18-09-2022        1992, q1 38-50  0-2            1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 61   61   1 40-50  1957 11-02-2022        2004, q3 38-50  0-2            0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 62   62   2 70-80  1929 02-11-2021        2002, q3 14-24  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 63   63   2 20-30  1963 07-12-2022        1990, q4 14-24  0-2            4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 64   64   2 20-30  1969 19-02-2025        1996, q3 14-24  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 65   65   2 40-50  1947 06-11-2024        1993, q1 24-38  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 66   66   2 20-30  1979 27-02-2023        2002, q1 14-24  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 67   67   2 50-60  1946 07-04-2022        1998, q1  2-14  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 68   68   1 10-20  1976 24-09-2022        1990, q2 24-38  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 69   69   2 60-70  1946 22-01-2023        2006, q4 38-50  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 70   70   2 40-50  1964 03-04-2022        2004, q4 24-38  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 71   71   2 50-60  1939 29-05-2021        1997, q1  2-14 2-10            4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 72   72   2 70-80  1925 10-01-2022        2001, q3  2-14  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 73   73   1 60-70  1926 29-12-2025        1990, q3 38-50  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 74   74   1 30-40  1958 15-11-2025        1997, q4 38-50 2-10            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 75   75   1 50-60  1947 11-10-2021        2004, q2  2-14  0-2            1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 76   76   2 50-60  1942 07-03-2023        1997, q1  2-14  0-2            4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 77   77   2 70-80  1930 17-09-2021        2009, q2 38-50  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 78   78   1 40-50  1958 18-01-2024        2003, q2 14-24  0-2            0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 79   79   1 70-80  1927 03-04-2024        1999, q3 14-24  0-2            4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 80   80   2 50-60  1944 20-02-2022        1998, q3 38-50  0-2            1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 81   81   2 10-20  1978 07-03-2024        1991, q3 38-50 2-10            1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 82   82   2 50-60  1941 11-07-2022        1997, q4 24-38  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 83   83   1 20-30  1965 25-10-2022        1993, q2 24-38 2-10            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 84   84   1 50-60  1944 12-07-2024        1996, q1  2-14  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 85   85   1 10-20  1976 05-08-2024        1995, q1 14-24  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 86   86   2 20-30  1978 27-05-2023        2002, q2 14-24 2-10            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 87   87   1 10-20  1976 15-12-2023        1992, q3 24-38  0-2            1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 88   88   2 60-70  1937 16-09-2024        1999, q4  2-14 2-10            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 89   89   1 70-80  1931 13-01-2024        2002, q4 24-38 2-10            5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 90   90   2 40-50  1953 02-05-2023        1997, q3 38-50  0-2            4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 91   91   1 50-60  1950 09-10-2024        2003, q1 14-24  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 92   92   1 20-30  1974 25-11-2021        2002, q4 38-50  0-2            1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 93   93   2 40-50  1956 24-06-2021        1998, q1  2-14  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 94   94   2 10-20  1972 03-11-2023        1991, q4 14-24 2-10            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 95   95   1 50-60  1960 26-10-2023        2009, q4 38-50  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 96   96   1 60-70  1925 04-03-2021        1994, q2  2-14  0-2            4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 97   97   1 30-40  1953 11-11-2024        1992, q3  2-14 2-10            1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 98   98   2 50-60  1951 09-10-2021        2008, q1  2-14  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 99   99   2 60-70  1932 04-03-2025        2000, q1 24-38  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 100 100   1 60-70  1937 20-04-2021        2002, q2 38-50  0-2            1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 101 101   2 40-50  1954 08-08-2025        1996, q4 14-24  0-2            4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 102 102   2 70-80  1935 06-12-2022        2005, q3 38-50  0-2            4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 103 103   2 30-40  1965 12-04-2024        2003, q4  2-14 2-10            4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 104 104   1 10-20  1973 31-10-2021        1990, q3  2-14  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 105 105   1 70-80  1930 16-11-2024        2001, q3  2-14  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 106 106   1 50-60  1942 13-10-2025        1998, q2 24-38  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 107 107   1 60-70  1935 19-01-2022        2001, q3  2-14  0-2            4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 108 108   2 40-50  1955 24-09-2022        2003, q4 38-50  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 109 109   1 40-50  1950 18-05-2024        1997, q4  2-14  0-2            4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 110 110   1 30-40  1968 10-05-2021        2004, q3  2-14  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 111 111   1 70-80  1923 23-06-2021        1995, q3  2-14 2-10            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 112 112   1 10-20  1978 16-10-2025        1998, q2 14-24  0-2            4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 113 113   1 60-70  1924 21-04-2025        1991, q1 38-50  0-2            4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 114 114   2 80-90  1920 22-01-2023        2004, q3  2-14  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 115 115   2 40-50  1942 28-03-2022        1990, q2 14-24  0-2            4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 116 116   2 30-40  1973 19-03-2021        2006, q3 14-24  0-2            4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 117 117   2 20-30  1969 27-07-2022        1994, q3 38-50  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 118 118   1 30-40  1968 30-05-2025        2001, q4  2-14  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 119 119   2 20-30  1969 05-12-2023        1994, q1 24-38  0-2            0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 120 120   2 40-50  1945 04-02-2022        1991, q3 38-50  0-2            4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 121 121   2 80-90  1922 02-06-2021        2007, q2 38-50  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 122 122   2 70-80  1937 03-11-2024        2009, q2  2-14  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 123 123   1 80-90  1921 27-08-2025        2007, q4 24-38  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 124 124   1 70-80  1922 29-09-2025        1993, q4 14-24  0-2            4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 125 125   2 70-80  1934 24-04-2022        2008, q2 38-50 2-10            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 126 126   1 80-90  1921 18-01-2023        2004, q4 38-50  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 127 127   1 20-30  1977 27-01-2021        2005, q2 24-38 2-10            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 128 128   2 70-80  1937 29-06-2025        2007, q2 14-24  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 129 129   2 60-70  1930 05-11-2025        1993, q4 14-24  0-2            1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 130 130   1 20-30  1971 18-12-2021        1995, q2 14-24  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 131 131   1 50-60  1950 15-02-2021        2002, q4 38-50  0-2            4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 132 132   1 40-50  1965 28-09-2024        2007, q2 24-38  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 133 133   2 50-60  1951 31-01-2025        2006, q1 24-38 2-10            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 134 134   1 60-70  1946 30-03-2022        2006, q4 14-24  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 135 135   2 60-70  1933 16-07-2021        1996, q3 38-50 2-10            1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 136 136   1 70-80  1925 13-10-2025        1998, q3 14-24  0-2            0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 137 137   2 30-40  1958 09-08-2025        1991, q1  2-14  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 138 138   2 40-50  1960 03-06-2024        2000, q1 24-38  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 139 139   2 60-70  1941 04-01-2022        2004, q2 38-50  0-2            1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 140 140   1 20-30  1970 07-12-2021        1990, q4  2-14 2-10            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 141 141   2 70-80  1924 02-11-2025        2004, q1 14-24  0-2            1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 142 142   1 60-70  1946 31-03-2021        2009, q2 24-38  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 143 143   1 40-50  1967 24-04-2025        2008, q1  2-14 2-10            1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 144 144   2 70-80  1920 08-09-2022        1991, q4 24-38  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 145 145   1 60-70  1938 03-04-2022        2001, q1  2-14  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 146 146   2 30-40  1957 18-02-2023        1995, q1 24-38  0-2            4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 147 147   2 20-30  1967 01-02-2025        1995, q1 38-50  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 148 148   2 20-30  1979 27-09-2022        2002, q4 14-24  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 149 149   1 50-60  1934 26-09-2021        1990, q3 24-38  0-2            4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 150 150   1 80-90  1929 18-05-2025        2009, q4 24-38  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 151 151   2 30-40  1961 17-12-2025        1992, q2 24-38  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 152 152   1 70-80  1928 06-09-2021        2004, q4 14-24  0-2            4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 153 153   1 30-40  1965 23-07-2023        2002, q3 38-50  0-2            4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 154 154   1 60-70  1929 31-12-2023        1991, q1 14-24 2-10            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 155 155   1 30-40  1958 11-04-2021        1994, q2 24-38  0-2            1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 156 156   2 20-30  1973 26-12-2025        2000, q2 24-38 2-10            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 157 157   2 20-30  1970 05-06-2025        2000, q1  2-14  0-2            1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 158 158   2 20-30  1979 04-06-2022        2003, q4 24-38  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 159 159   2 50-60  1935 23-04-2025        1990, q4  2-14 2-10            1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 160 160   2 70-80  1927 01-05-2021        1999, q3  2-14  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 161 161   1 60-70  1927 03-11-2022        1995, q1 14-24 2-10            1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 162 162   1 60-70  1939 09-07-2023        2000, q3  2-14  0-2            4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 163 163   1 30-40  1968 30-03-2022        2000, q1 14-24 2-10            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 164 164   2 40-50  1956 28-09-2024        1998, q2  2-14 2-10            1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 165 165   1 20-30  1980 14-07-2024        2005, q2  2-14  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 166 166   1 60-70  1941 12-10-2022        2005, q2 24-38  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 167 167   2 40-50  1951 14-01-2021        2000, q3 24-38 2-10            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 168 168   1 60-70  1929 14-11-2022        1991, q1 24-38  0-2            4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 169 169   1 50-60  1943 05-12-2024        1996, q2 14-24 2-10            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 170 170   2 40-50  1954 09-09-2022        1995, q2 38-50  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 171 171   1 40-50  1960 01-01-2021        2005, q3 38-50  0-2            4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 172 172   1 30-40  1969 03-08-2022        2003, q3 38-50 2-10            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 173 173   2 50-60  1948 05-07-2022        2004, q1 38-50 2-10            4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 174 174   1 40-50  1956 20-11-2025        2001, q3 38-50  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 175 175   1 50-60  1951 13-11-2023        2005, q4 14-24  0-2            1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 176 176   2 40-50  1949 07-05-2021        1992, q2 38-50  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 177 177   2 70-80  1931 02-07-2024        2002, q1  2-14  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 178 178   2 40-50  1960 20-06-2025        2009, q1  2-14 2-10            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 179 179   2 30-40  1957 24-11-2024        1991, q3 24-38  0-2            1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 180 180   1 20-30  1977 23-10-2021        2002, q4 14-24 2-10            4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 181 181   2 80-90  1922 28-11-2024        2007, q4 38-50 2-10            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 182 182   1 50-60  1944 01-03-2024        1997, q4 24-38  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 183 183   1 60-70  1925 06-06-2023        1990, q4  2-14  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 184 184   1 30-40  1965 09-01-2021        1997, q1 24-38 2-10            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 185 185   1 30-40  1957 25-09-2022        1994, q2  2-14  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 186 186   1 30-40  1958 28-04-2023        1994, q4 14-24  0-2            1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 187 187   2 40-50  1961 18-06-2024        2005, q1  2-14  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 188 188   1 50-60  1949 31-05-2024        2006, q4 38-50  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 189 189   2 60-70  1941 13-07-2024        2008, q4 24-38  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 190 190   1 20-30  1972 21-02-2022        1992, q4 38-50  0-2            4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 191 191   1 70-80  1928 03-11-2025        1999, q1 38-50  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 192 192   2 50-60  1951 13-06-2022        2008, q2 38-50  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 193 193   1 70-80  1930 28-06-2023        2001, q4 14-24  0-2            1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 194 194   2 60-70  1923 27-05-2023        1991, q2  2-14  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 195 195   2 50-60  1942 25-05-2024        1994, q1 14-24  0-2            1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 196 196   2 20-30  1962 20-10-2022        1991, q2  2-14  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 197 197   1 70-80  1922 19-05-2025        1997, q3  2-14  0-2            4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 198 198   2 30-40  1975 12-09-2023        2006, q1 38-50  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 199 199   1 60-70  1926 19-05-2022        1990, q2  2-14  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 200 200   1 20-30  1963 09-08-2022        1990, q2  2-14  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 201 201   2 30-40  1969 28-07-2022        2004, q3 38-50  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 202 202   2 40-50  1951 06-06-2021        1996, q2  2-14 2-10            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 203 203   1 10-20  1980 23-03-2023        1995, q3  2-14  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 204 204   2 70-80  1925 08-03-2022        1996, q3 38-50  0-2            4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 205 205   2 60-70  1928 11-04-2025        1992, q2 14-24 2-10            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 206 206   2 40-50  1963 11-07-2025        2005, q1 38-50  0-2            1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 207 207   1 40-50  1958 01-05-2022        2005, q2 14-24  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 208 208   1 70-80  1929 04-12-2021        2008, q2  2-14 2-10            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 209 209   2 30-40  1963 20-04-2025        1995, q4 24-38  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 210 210   1 20-30  1977 20-11-2022        2004, q4 14-24 2-10            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 211 211   1 70-80  1926 23-07-2025        1999, q2 38-50  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 212 212   1 40-50  1959 15-10-2025        2004, q2  2-14 2-10            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 213 213   1 20-30  1974 20-03-2022        1997, q2 38-50  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 214 214   2 30-40  1960 03-01-2022        2000, q1 38-50  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 215 215   1 30-40  1955 25-07-2021        1993, q4 38-50  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 216 216   1 30-40  1969 05-10-2024        2006, q2  2-14  0-2            4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 217 217   1 50-60  1933 25-12-2023        1991, q1  2-14 2-10            1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 218 218   2 60-70  1933 17-10-2025        1994, q3 14-24 2-10            1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 219 219   2 70-80  1920 18-03-2022        1992, q4 14-24 2-10            0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 220 220   1 60-70  1944 10-05-2025        2005, q4 24-38  0-2            4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 221 221   2 30-40  1962 18-11-2025        1997, q1 38-50  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 222 222   2 70-80  1927 12-11-2022        2005, q3 24-38  0-2            5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 223 223   2 50-60  1945 16-01-2023        2000, q3 14-24  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 224 224   2 40-50  1958 07-08-2021        2000, q1 14-24  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 225 225   2 40-50  1963 14-02-2023        2007, q3 24-38  0-2            4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 226 226   1 60-70  1929 13-08-2022        1994, q3 14-24  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 227 227   2 30-40  1959 28-06-2022        1995, q2 14-24  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 228 228   1 70-80  1926 01-11-2021        2001, q1 38-50  0-2            1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 229 229   1 40-50  1966 11-03-2024        2007, q2  2-14 2-10            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 230 230   2 40-50  1959 03-10-2024        2003, q1 14-24 2-10            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 231 231   1 30-40  1964 08-06-2025        1995, q2  2-14  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 232 232   1 30-40  1962 23-09-2022        1995, q2 14-24 2-10            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 233 233   1 80-90  1923 28-03-2023        2007, q2 38-50  0-2            1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 234 234   1 30-40  1967 14-02-2023        1999, q2 38-50  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 235 235   1 50-60  1954 08-08-2021        2009, q1 14-24  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 236 236   2 70-80  1926 06-05-2023        2004, q1 24-38  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 237 237   2 70-80  1931 20-10-2025        2001, q1 38-50  0-2            4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 238 238   2 60-70  1943 09-08-2023        2006, q2 38-50  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 239 239   2 30-40  1960 05-06-2023        1998, q4 38-50  0-2            1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 240 240   2 50-60  1933 08-01-2022        1992, q4 24-38  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 241 241   2 20-30  1976 18-02-2022        1999, q4 38-50  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 242 242   2 40-50  1960 09-08-2024        2000, q2 24-38  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 243 243   1 80-90  1922 06-05-2023        2006, q3 38-50  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 244 244   2 30-40  1966 16-03-2022        1999, q4 38-50 2-10            4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 245 245   1 30-40  1963 21-04-2022        2000, q3  2-14  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 246 246   2 10-20  1979 25-04-2025        1990, q2 14-24  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 247 247   1 20-30  1971 05-02-2024        1993, q4 14-24  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 248 248   2 30-40  1974 15-06-2021        2004, q2 38-50  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 249 249   1 40-50  1951 28-09-2024        2000, q1 14-24  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 250 250   2 60-70  1934 25-06-2022        1994, q2 14-24  0-2            1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 251 251   1 20-30  1979 05-07-2025        2008, q3  2-14  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 252 252   2 70-80  1920 06-07-2022        1990, q3 24-38  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 253 253   1 60-70  1931 03-06-2025        1994, q3 14-24 2-10            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 254 254   1 60-70  1935 13-03-2022        1999, q1  2-14  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 255 255   1 70-80  1922 06-06-2022        1999, q4  2-14  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 256 256   1 10-20  1980 03-09-2022        1997, q4 24-38  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 257 257   2 50-60  1941 07-03-2025        1990, q4  2-14  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 258 258   1 60-70  1936 05-08-2021        2004, q3 24-38  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 259 259   1 70-80  1926 02-01-2024        1996, q4 24-38  0-2            1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 260 260   2 80-90  1921 07-04-2022        2006, q2  2-14  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 261 261   2 60-70  1948 24-12-2022        2009, q3 24-38 2-10            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 262 262   1 20-30  1979 21-03-2022        2007, q3  2-14  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 263 263   1 40-50  1967 12-10-2023        2008, q4 38-50 2-10            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 264 264   1 30-40  1968 22-07-2022        2003, q1 38-50  0-2            0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 265 265   1 50-60  1953 14-02-2022        2005, q3 14-24 2-10            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 266 266   2 40-50  1960 14-04-2021        2000, q1 14-24 2-10            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 267 267   1 60-70  1931 09-04-2022        1990, q4 14-24  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 268 268   1 70-80  1930 05-04-2021        2009, q3  2-14 2-10            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 269 269   2 40-50  1946 10-03-2024        1993, q3 14-24  0-2            1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 270 270   2 70-80  1933 16-10-2024        2007, q4 14-24 2-10            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 271 271   2 70-80  1927 02-05-2025        1999, q2  2-14  0-2            1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 272 272   2 60-70  1924 06-01-2022        1992, q1 24-38  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 273 273   1 30-40  1971 22-01-2022        2006, q4 24-38  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 274 274   2 50-60  1954 04-04-2022        2006, q4  2-14  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 275 275   1 60-70  1931 09-08-2025        1996, q1  2-14  0-2            1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 276 276   1 70-80  1923 28-09-2021        2001, q4 24-38  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 277 277   2 40-50  1948 19-11-2021        1990, q2 24-38 2-10            5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 278 278   2 40-50  1959 22-07-2024        2000, q3 14-24  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 279 279   2 40-50  1956 03-04-2023        2002, q4 14-24  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 280 280   2 10-20  1978 15-03-2023        1992, q3 38-50 2-10            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 281 281   2 60-70  1927 17-10-2022        1990, q2 38-50 2-10            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 282 282   2 30-40  1977 22-11-2025        2008, q3 24-38  0-2            1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 283 283   1 30-40  1960 04-08-2025        1996, q2 38-50  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 284 284   2 20-30  1971 16-03-2021        1996, q2 24-38  0-2            4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 285 285   2 70-80  1920 05-03-2024        1995, q2 14-24  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 286 286   2 60-70  1939 08-03-2023        2007, q4 38-50  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 287 287   2 30-40  1963 29-09-2022        1998, q4 14-24  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 288 288   2 30-40  1968 30-03-2024        2008, q1 38-50  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 289 289   2 30-40  1962 18-10-2023        1992, q2 24-38  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 290 290   2 30-40  1965 27-01-2021        1995, q1 14-24 2-10            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 291 291   1 30-40  1975 15-07-2022        2007, q2 14-24  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 292 292   1 40-50  1957 19-12-2025        1998, q3 14-24  0-2            0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 293 293   2 70-80  1929 31-10-2021        2002, q4 38-50  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 294 294   2 40-50  1950 30-12-2025        1999, q1 24-38  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 295 295   1 40-50  1966 16-09-2022        2006, q1 24-38  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 296 296   2 20-30  1977 07-11-2022        2002, q3 14-24  0-2            4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 297 297   2 60-70  1936 27-04-2022        2002, q3 38-50 2-10            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 298 298   1 40-50  1951 16-10-2021        1992, q2 38-50  0-2            4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 299 299   2 60-70  1945 24-11-2024        2008, q4 24-38 2-10            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 300 300   2 60-70  1936 08-06-2023        1996, q4 38-50 2-10            4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 301 301   1 30-40  1967 24-05-2021        1998, q1 38-50  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 302 302   1 40-50  1953 20-02-2022        1996, q3 24-38  0-2            4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 303 303   1 80-90  1921 15-07-2021        2002, q2 14-24  0-2            4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 304 304   1 50-60  1942 13-10-2025        2000, q4 24-38  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 305 305   1 60-70  1942 14-09-2025        2008, q3  2-14  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 306 306   1 20-30  1974 29-10-2025        2002, q3 24-38  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 307 307   2 40-50  1962 14-10-2023        2005, q2 24-38 2-10            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 308 308   2 30-40  1961 20-12-2023        2001, q1 24-38  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 309 309   2 70-80  1927 22-01-2024        2004, q4  2-14  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 310 310   2 50-60  1946 05-11-2021        1998, q3 24-38  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 311 311   1 70-80  1931 12-07-2024        2006, q1 24-38  0-2            0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 312 312   1 70-80  1924 08-09-2021        1995, q3 24-38  0-2            4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 313 313   1 50-60  1940 23-08-2023        1997, q3  2-14  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 314 314   1 50-60  1955 07-06-2023        2008, q3  2-14  0-2            4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 315 315   1 30-40  1974 03-12-2023        2006, q1 24-38  0-2            4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 316 316   1 60-70  1944 24-06-2021        2004, q4  2-14  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 317 317   1 50-60  1948 07-10-2022        2003, q4 14-24 2-10            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 318 318   1 30-40  1953 21-12-2025        1992, q3 14-24  0-2            1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 319 319   1 80-90  1927 22-01-2025        2007, q3 14-24  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 320 320   2 20-30  1978 04-10-2025        2001, q1 24-38  0-2            4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 321 321   1 80-90  1924 12-08-2025        2005, q1 14-24  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 322 322   2 50-60  1943 17-05-2025        2001, q3 38-50 2-10            4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 323 323   2 50-60  1941 01-08-2021        1999, q4  2-14 2-10            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 324 324   1 50-60  1956 24-02-2025        2007, q4 24-38 2-10            5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 325 325   1 60-70  1944 08-07-2022        2004, q2 24-38 2-10            1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 326 326   2 20-30  1969 18-01-2025        1995, q3 38-50  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 327 327   2 50-60  1944 20-06-2023        2000, q1  2-14  0-2            4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 328 328   2 30-40  1970 16-05-2022        2000, q4  2-14 2-10            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 329 329   2 40-50  1954 24-12-2023        1997, q3 14-24  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 330 330   1 20-30  1967 17-09-2022        1991, q1 14-24  0-2            4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 331 331   1 80-90  1925 14-12-2022        2009, q4 14-24  0-2            1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 332 332   2 50-60  1953 06-03-2024        2003, q3  2-14 2-10            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 333 333   2 50-60  1941 09-05-2023        1996, q4 14-24 2-10            1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 334 334   2 70-80  1927 04-03-2025        1998, q2 38-50  0-2            4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 335 335   1 80-90  1920 07-12-2023        2009, q3 38-50  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 336 336   2 60-70  1934 23-07-2021        1994, q3 14-24  0-2            1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 337 337   2 20-30  1980 15-01-2021        2008, q1  2-14  0-2            4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 338 338   1 40-50  1947 18-05-2022        1993, q3 14-24  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 339 339   2 80-90  1922 16-02-2021        2008, q2 24-38 2-10            4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 340 340   1 70-80  1935 08-05-2022        2006, q4 38-50 2-10            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 341 341   2 20-30  1973 29-04-2022        1993, q2  2-14 2-10            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 342 342   2 50-60  1943 01-10-2024        1993, q2 38-50 2-10            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 343 343   2 30-40  1967 26-01-2022        1997, q4  2-14 2-10            4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 344 344   2 70-80  1921 27-10-2025        1995, q4  2-14  0-2            4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 345 345   2 20-30  1977 27-03-2023        1999, q4 24-38 2-10            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 346 346   1 50-60  1951 06-09-2023        2005, q2 24-38 2-10            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 347 347   1 40-50  1949 09-01-2024        1992, q3 38-50  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 348 348   2 30-40  1967 16-10-2025        2004, q3  2-14 2-10            4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 349 349   2 60-70  1923 24-02-2021        1991, q1 38-50  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 350 350   1 40-50  1968 24-08-2021        2009, q2 24-38  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 351 351   1 40-50  1956 05-06-2025        2000, q2 24-38  0-2            4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 352 352   2 60-70  1936 02-09-2022        1999, q2 38-50  0-2            0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 353 353   1 20-30  1980 18-06-2024        2003, q2 14-24  0-2            0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 354 354   2 60-70  1946 05-05-2022        2008, q2 38-50  0-2            1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 355 355   1 50-60  1955 30-11-2024        2007, q2 38-50  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 356 356   2 70-80  1922 23-03-2021        1996, q4 24-38  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 357 357   1 60-70  1947 09-03-2021        2008, q4 14-24  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 358 358   2 30-40  1961 18-10-2022        1996, q3 38-50  0-2            0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 359 359   1 50-60  1949 10-11-2022        2008, q3  2-14  0-2            1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 360 360   1 50-60  1940 19-08-2021        1998, q2 14-24 2-10            1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 361 361   1 80-90  1920 12-07-2025        2000, q4  2-14  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 362 362   2 50-60  1953 03-07-2022        2008, q3  2-14  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 363 363   1 60-70  1934 05-11-2023        1998, q4 14-24  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 364 364   2 20-30  1975 02-12-2024        2002, q3  2-14  0-2            4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 365 365   2 80-90  1928 27-10-2025        2008, q3 38-50  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 366 366   1 70-80  1926 16-12-2023        1997, q1 38-50  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 367 367   2 40-50  1949 03-09-2024        1993, q1 38-50 2-10            4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 368 368   2 20-30  1965 24-05-2025        1991, q1  2-14 2-10            4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 369 369   1 60-70  1930 05-06-2024        1998, q4 24-38  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 370 370   1 50-60  1934 17-02-2023        1990, q2  2-14 2-10            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 371 371   1 50-60  1940 04-03-2022        1992, q2  2-14  0-2            1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 372 372   1 60-70  1949 08-10-2025        2009, q2 38-50  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 373 373   2 80-90  1925 14-02-2024        2006, q3 14-24  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 374 374   2 10-20  1978 23-01-2021        1990, q2 24-38  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 375 375   1 40-50  1948 07-12-2023        1997, q1 38-50  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 376 376   2 30-40  1959 09-12-2021        1991, q1  2-14  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 377 377   2 70-80  1920 22-09-2022        1995, q1 14-24  0-2            1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 378 378   1 60-70  1941 22-05-2024        2006, q3 24-38 2-10            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 379 379   1 70-80  1921 17-02-2022        1996, q2 14-24  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 380 380   1 30-40  1960 22-07-2021        1998, q1 14-24  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 381 381   2 70-80  1924 24-04-2022        1995, q3 24-38 2-10            4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 382 382   2 10-20  1980 02-05-2024        1991, q4 38-50 2-10            4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 383 383   1 40-50  1944 31-05-2022        1991, q2  2-14  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 384 384   1 60-70  1925 29-06-2025        1992, q2  2-14  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 385 385   1 30-40  1955 04-02-2024        1991, q2 14-24  0-2            4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 386 386   2 20-30  1976 26-03-2025        2004, q3 38-50  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 387 387   2 70-80  1921 03-11-2023        1993, q1 38-50 2-10            4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 388 388   1 50-60  1940 25-02-2022        1995, q3 24-38 2-10            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 389 389   1 40-50  1958 01-08-2022        2007, q1 24-38  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 390 390   2 30-40  1963 19-05-2021        1999, q1 38-50  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 391 391   1 20-30  1973 12-06-2024        2000, q1 38-50  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 392 392   1 50-60  1956 29-12-2023        2009, q3 14-24  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 393 393   2 20-30  1968 15-05-2025        1997, q2 24-38  0-2            4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 394 394   2 70-80  1922 06-12-2024        1997, q4 24-38  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 395 395   1 70-80  1929 16-03-2023        2007, q3 14-24  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 396 396   1 50-60  1947 31-08-2021        2004, q4 14-24  0-2            4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 397 397   1 40-50  1954 07-01-2021        1993, q3 38-50  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 398 398   1 30-40  1965 08-01-2024        1999, q2 24-38  0-2            0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 399 399   1 50-60  1942 10-03-2023        1997, q1  2-14 2-10            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 400 400   2 60-70  1943 19-12-2022        2004, q4 14-24  0-2            1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 401 401   1 40-50  1945 13-07-2025        1992, q3 38-50  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 402 402   1 40-50  1961 17-01-2022        2005, q2 14-24  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 403 403   1 50-60  1954 12-07-2025        2009, q3 14-24  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 404 404   2 80-90  1921 03-03-2022        2005, q4 24-38 2-10            1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 405 405   1 40-50  1953 13-05-2023        1995, q2  2-14  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 406 406   2 20-30  1972 11-10-2025        1998, q2 24-38 2-10            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 407 407   2 70-80  1921 25-02-2024        1995, q3  2-14  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 408 408   1 30-40  1975 23-09-2021        2006, q3  2-14  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 409 409   1 30-40  1962 02-10-2025        2001, q3 14-24  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 410 410   1 20-30  1974 12-09-2025        1996, q4  2-14  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 411 411   1 30-40  1969 20-10-2024        1999, q2 38-50  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 412 412   1 50-60  1940 05-08-2022        1991, q2 24-38  0-2            4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 413 413   2 30-40  1973 30-07-2022        2006, q4 24-38  0-2            1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 414 414   1 20-30  1979 22-12-2025        1999, q1  2-14  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 415 415   2 40-50  1966 02-12-2023        2009, q2  2-14 2-10            4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 416 416   2 30-40  1969 29-11-2023        2007, q4 38-50  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 417 417   2 20-30  1968 24-07-2021        1990, q3 14-24 2-10            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 418 418   1 20-30  1979 13-08-2021        2004, q4 24-38 2-10            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 419 419   1 60-70  1939 27-06-2023        2003, q4  2-14  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 420 420   1 40-50  1951 09-10-2023        1996, q4 24-38 2-10            1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 421 421   2 40-50  1967 13-04-2021        2007, q4  2-14  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 422 422   2 40-50  1948 21-01-2025        1992, q1  2-14 2-10            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 423 423   2 20-30  1976 04-07-2021        2000, q1 14-24  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 424 424   1 60-70  1948 04-03-2023        2009, q2 14-24  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 425 425   1 20-30  1971 13-01-2022        1994, q3  2-14 2-10            4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 426 426   1 20-30  1974 28-05-2022        1996, q4 38-50  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 427 427   1 50-60  1949 01-08-2025        2000, q1 38-50  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 428 428   2 30-40  1971 28-08-2025        2006, q4 38-50  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 429 429   1 70-80  1924 02-09-2021        1998, q3 24-38  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 430 430   1 20-30  1977 23-11-2023        2001, q4  2-14  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 431 431   1 30-40  1969 19-06-2025        2003, q1 24-38  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 432 432   1 10-20  1974 20-04-2023        1991, q1 38-50  0-2            1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 433 433   1 50-60  1938 29-11-2025        1996, q3  2-14 2-10            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 434 434   2 10-20  1980 06-08-2022        1997, q1 38-50  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 435 435   1 60-70  1934 07-09-2022        1998, q2 38-50 2-10            4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 436 436   2 30-40  1959 30-05-2023        1993, q4  2-14 2-10            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 437 437   2 20-30  1964 26-03-2022        1993, q3 24-38 2-10            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 438 438   2 80-90  1924 27-10-2022        2007, q1 14-24  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 439 439   2 30-40  1960 17-09-2023        1990, q2  2-14  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 440 440   2 60-70  1941 28-07-2025        2006, q2 24-38  0-2            4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 441 441   2 60-70  1935 15-05-2025        1999, q4 24-38  0-2            4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 442 442   2 30-40  1970 22-05-2024        2001, q2 14-24 2-10            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 443 443   2 60-70  1931 06-09-2022        1998, q1 14-24  0-2            5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 444 444   1 20-30  1978 18-06-2024        2000, q4 14-24  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 445 445   2 30-40  1969 26-12-2023        2003, q4 38-50 2-10            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 446 446   1 50-60  1953 30-03-2024        2006, q4 24-38  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 447 447   2 60-70  1944 02-03-2024        2009, q4 14-24  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 448 448   1 30-40  1975 02-06-2024        2006, q4 24-38  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 449 449   1 20-30  1967 25-07-2025        1994, q3 38-50 2-10            4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 450 450   2 40-50  1952 03-12-2025        1999, q2 38-50 2-10            1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 451 451   2 70-80  1933 10-01-2023        2004, q2 38-50  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 452 452   1 40-50  1946 01-08-2021        1991, q1 14-24  0-2            1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 453 453   1 30-40  1972 08-05-2022        2002, q1 14-24  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 454 454   2 30-40  1960 15-05-2022        1993, q3 24-38  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 455 455   2 80-90  1927 21-12-2021        2008, q1 24-38 2-10            4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 456 456   2 40-50  1951 08-02-2021        1996, q1  2-14 2-10            1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 457 457   1 40-50  1946 20-11-2025        1992, q2  2-14  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 458 458   1 50-60  1940 14-05-2023        1992, q2  2-14  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 459 459   1 70-80  1923 01-04-2025        1999, q4 14-24 2-10            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 460 460   1 60-70  1931 02-02-2024        1998, q4 14-24 2-10            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 461 461   2 20-30  1970 22-05-2025        1996, q2  2-14  0-2            1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 462 462   2 50-60  1957 23-04-2024        2008, q2 38-50 2-10            5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 463 463   1 40-50  1945 22-12-2022        1990, q4 14-24  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 464 464   2 20-30  1979 20-02-2022        1998, q4 38-50  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 465 465   1 10-20  1976 23-07-2025        1994, q1 14-24  0-2            4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 466 466   2 40-50  1963 20-10-2022        2008, q1 14-24  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 467 467   1 40-50  1959 01-11-2024        2004, q1 14-24  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 468 468   2 60-70  1928 02-12-2024        1990, q4  2-14  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 469 469   2 40-50  1963 22-01-2025        2004, q2 38-50  0-2            0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 470 470   1 50-60  1951 21-01-2022        2002, q4 24-38  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 471 471   2 30-40  1956 26-06-2023        1994, q3 24-38  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 472 472   1 40-50  1956 23-04-2023        2002, q4 38-50  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 473 473   2 50-60  1951 25-03-2023        2004, q3  2-14 2-10            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 474 474   2 60-70  1942 08-10-2024        2008, q3 38-50  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 475 475   1 40-50  1962 30-12-2021        2009, q2 38-50 2-10            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 476 476   1 60-70  1932 11-03-2023        1995, q1 24-38  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 477 477   1 20-30  1970 09-01-2023        1999, q2 14-24  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 478 478   1 60-70  1926 29-07-2025        1996, q1  2-14 2-10            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 479 479   1 60-70  1935 28-10-2022        2004, q2 38-50 2-10            1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 480 480   1 70-80  1925 10-11-2023        2001, q4 14-24  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 481 481   2 60-70  1931 30-09-2021        1997, q3 24-38  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 482 482   1 60-70  1937 06-03-2023        1999, q4 38-50  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 483 483   1 50-60  1943 13-04-2024        2000, q4 38-50  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 484 484   1 20-30  1977 23-11-2021        1999, q4 38-50  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 485 485   1 60-70  1944 22-10-2025        2005, q3 24-38  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 486 486   2 50-60  1934 18-10-2025        1991, q2  2-14 2-10            1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 487 487   2 70-80  1925 29-08-2025        1997, q2 14-24  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 488 488   1 20-30  1980 03-08-2024        1999, q4 24-38  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 489 489   1 10-20  1976 05-07-2024        1992, q4 38-50 2-10            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 490 490   2 70-80  1923 29-08-2022        2002, q3 14-24 2-10            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 491 491   1 60-70  1926 17-04-2023        1990, q2  2-14  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 492 492   2 40-50  1956 07-11-2024        2004, q2 38-50  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 493 493   1 70-80  1920 19-04-2024        1995, q2 24-38  0-2            4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 494 494   2 70-80  1926 25-02-2025        2002, q2 24-38 2-10            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 495 495   2 20-30  1973 03-04-2024        1994, q1  2-14  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 496 496   1 10-20  1972 03-11-2025        1991, q3  2-14  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 497 497   1 20-30  1965 29-01-2023        1992, q1 38-50  0-2            3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 498 498   1 60-70  1931 11-08-2023        1998, q1 24-38  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 499 499   2 60-70  1944 05-09-2021        2007, q3 24-38  0-2            4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 500 500   2 60-70  1942 21-11-2022        2008, q2 14-24  0-2            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     necrosis margins cd10 sox10 ck death_date recurrence_date metastasis_date</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1         NA       0    1     1  1       &lt;NA&gt;      2015-03-22            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2         NA       0    0     0 NA       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3          0       1   NA    NA  0 2017-09-02            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4          1       0    0     0  0 2018-10-04      2011-12-31            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5         NA       0    0    NA  0       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6          1       1    1     1  0       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7          0       1    0     1  0       &lt;NA&gt;      2012-08-30            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8          1       0    0     0 NA 2018-05-09      2012-01-31      2011-10-13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9         NA       1    1     1  0       &lt;NA&gt;      2014-02-16            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10        NA       1    1     1  1       &lt;NA&gt;      2014-08-15            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11        NA       0   NA     0  0       &lt;NA&gt;      2011-04-04            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12        NA       0    1     1 NA 2018-10-15      2012-06-29            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13         0       1    0     1  0 2020-03-28      2014-09-16            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 14         1       0    0     0 NA       &lt;NA&gt;      2011-05-23            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 15         1       0    0    NA NA 2020-09-30      2014-01-06            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 16         0       0    0     0 NA       &lt;NA&gt;            &lt;NA&gt;      2012-04-11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 17        NA       1   NA     0 NA 2018-08-28            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 18         0       1    1     0  1       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 19        NA       0   NA     0 NA       &lt;NA&gt;      2010-11-15            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 20         1       1   NA     1 NA       &lt;NA&gt;      2010-08-13            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 21         1       1    0     0  1       &lt;NA&gt;            &lt;NA&gt;      2012-04-13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 22         0       1   NA    NA NA       &lt;NA&gt;      2012-05-04      2014-03-30</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 23        NA       0   NA     0 NA       &lt;NA&gt;      2010-06-12      2014-10-10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 24         1       0    1    NA  0 2020-11-06            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 25         0       0   NA     1 NA 2020-05-29            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 26         0       0    1     1  0       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 27        NA       0    1    NA  1 2017-06-25            &lt;NA&gt;      2013-05-21</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 28         1       0   NA     0  0       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 29         1       0    0     1  1 2019-02-19            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 30        NA       0    1     1  0 2018-07-01      2012-08-19      2014-02-27</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 31        NA       1   NA     1 NA       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 32         1       0    0     1  1       &lt;NA&gt;            &lt;NA&gt;      2011-04-24</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 33        NA       1    1     0  0       &lt;NA&gt;      2013-10-14      2014-06-21</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 34         0       0    1     0  0 2017-06-14      2010-08-21      2013-09-08</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 35        NA       0    1     0  1       &lt;NA&gt;      2015-02-10      2013-10-15</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 36        NA       0   NA     0  0 2018-09-29      2015-01-24      2011-05-26</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 37         0       1    1     0  1 2017-12-09      2012-09-02            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 38         1       0    1     0  1 2020-07-08      2011-01-23            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 39         0       1   NA     1  1 2020-10-02            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 40         0       1    1     1 NA 2019-05-16      2014-09-30            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 41         1       0    1    NA  0       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 42        NA       1    0     1 NA       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 43        NA       1    0    NA  1       &lt;NA&gt;      2012-11-10      2011-08-18</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 44         1       0    1     1 NA 2017-07-20            &lt;NA&gt;      2011-11-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 45        NA       0    0     0  1       &lt;NA&gt;            &lt;NA&gt;      2014-09-05</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 46         1       0    1    NA  1       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 47        NA       1   NA     0  1       &lt;NA&gt;            &lt;NA&gt;      2011-10-26</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 48         0       0    1    NA  1       &lt;NA&gt;      2012-05-07            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 49         1       1   NA    NA NA 2019-02-25            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 50         1       0    0     1  1       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 51         0       1    1     1  0 2018-04-29            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 52         0       1   NA     0 NA 2016-04-26            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 53         0       1   NA     1  0 2017-05-05            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 54         1       1   NA     0  0 2020-01-31      2012-01-03            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 55        NA       1    0     1  0 2020-08-29            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 56         1       1    1     0  0 2017-10-14            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 57         1       1    1    NA  1       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 58        NA       1    0     0  0 2020-08-28      2014-02-08      2013-04-18</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 59         1       0    0     1 NA 2016-04-23      2014-08-09            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 60        NA       1   NA    NA NA       &lt;NA&gt;      2011-10-20            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 61        NA       0   NA     0  0       &lt;NA&gt;      2011-02-23            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 62         1       0   NA    NA  0       &lt;NA&gt;      2013-11-11      2013-05-25</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 63         1       1    0     0  0       &lt;NA&gt;      2010-11-17            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 64         0       1    1    NA  1 2017-05-19            &lt;NA&gt;      2014-07-11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 65         1       0    1     1 NA       &lt;NA&gt;      2015-08-31            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 66        NA       0    0     0  1 2017-01-12            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 67         1       0   NA     1  1       &lt;NA&gt;      2010-08-28      2012-10-29</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 68        NA       1    0     0  0       &lt;NA&gt;      2014-11-03            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 69        NA       0    1     0  1 2019-11-28      2012-06-14            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 70         0       1    1     0 NA       &lt;NA&gt;      2015-03-15            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 71        NA       0   NA    NA  1       &lt;NA&gt;      2011-06-14            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 72         1       1   NA     0  1       &lt;NA&gt;            &lt;NA&gt;      2015-01-05</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 73         1       0   NA     0 NA       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 74         1       0    0     0  1       &lt;NA&gt;            &lt;NA&gt;      2015-12-04</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 75         1       1    0     1  1       &lt;NA&gt;      2014-03-28            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 76         0       1   NA     1  1       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 77         1       1    0    NA  0 2020-07-26      2010-03-01      2010-07-08</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 78         0       0    0     0 NA 2017-01-01      2011-12-15            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 79         1       0   NA     1  0       &lt;NA&gt;      2014-11-14            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 80         1       0    1    NA  0 2020-04-25            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 81        NA       1   NA    NA  1       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 82        NA       0   NA     0  1       &lt;NA&gt;            &lt;NA&gt;      2014-05-22</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 83         1       0   NA     0  1       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 84         0       1    1     0  1       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 85         1       0    0    NA  1       &lt;NA&gt;      2015-12-06            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 86        NA       1   NA    NA  1 2017-01-15      2014-01-28            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 87         0       1   NA    NA NA       &lt;NA&gt;      2012-07-17      2011-06-28</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 88         0       0    0    NA  0 2016-08-12      2015-07-28      2013-11-28</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 89        NA       0    1     1  1       &lt;NA&gt;      2014-08-13            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 90         1       0    1     1 NA 2020-08-23      2015-11-11            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 91         0       0    0     1  0 2016-02-16      2015-04-05            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 92         0       1    0     1  0       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 93        NA       1   NA    NA  1       &lt;NA&gt;      2011-03-11      2015-08-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 94         1       0   NA    NA NA 2020-11-01      2015-03-06            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 95         1       0   NA     1 NA       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 96         0       0    1    NA NA 2016-02-13            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 97         1       0    0     1 NA       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 98        NA       0    0     0  1       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 99         1       1   NA     1  0 2018-06-30            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 100        1       0    0     0  1 2019-03-24            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 101       NA       0    1     1 NA       &lt;NA&gt;      2013-01-24            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 102        0       0    0     1  1       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 103       NA       1    1    NA NA 2016-01-24            &lt;NA&gt;      2012-02-17</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 104       NA       1   NA     0 NA       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 105        1       0   NA     1  0       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 106       NA       1    0     1  0       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 107        1       1   NA     1  0       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 108        1       1    1     0 NA 2020-07-31      2014-02-20            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 109       NA       0    1     0  1       &lt;NA&gt;      2015-06-30            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 110        1       1    1     0  1 2018-01-01      2012-02-14      2013-03-07</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 111       NA       1    0    NA NA       &lt;NA&gt;      2012-09-20            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 112        1       1    0    NA NA       &lt;NA&gt;            &lt;NA&gt;      2015-11-07</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 113       NA       0    1     1  1 2018-05-04      2014-02-07            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 114        1       0    1     0  1       &lt;NA&gt;            &lt;NA&gt;      2014-07-21</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 115        0       0   NA    NA  1       &lt;NA&gt;      2014-12-11            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 116        0       0    0     1  0       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 117       NA       1   NA     1 NA 2018-11-11      2011-12-19            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 118       NA       0    0     0  0       &lt;NA&gt;            &lt;NA&gt;      2014-10-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 119       NA       0   NA     1  1 2020-05-19      2014-09-27      2015-07-11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 120        0       0    0    NA  0       &lt;NA&gt;      2013-10-28      2012-07-12</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 121        0       0   NA     1  1       &lt;NA&gt;      2010-05-02      2015-12-28</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 122        0       0    0     0  0 2020-07-06      2013-02-20            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 123        0       1    1     0  1 2019-05-25      2010-07-17            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 124        1       1    0     0  0       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 125        0       1    0     0  0 2018-07-12      2014-09-14            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 126        0       1   NA     1  0       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 127       NA       1    1     1 NA       &lt;NA&gt;      2011-09-30      2011-02-04</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 128        0       0    1     0  1 2017-01-16            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 129        0       0   NA     1  1       &lt;NA&gt;      2013-08-11            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 130        0       1    1    NA  0       &lt;NA&gt;      2010-09-27      2015-10-17</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 131       NA       0    0    NA  1 2019-03-10            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 132        1       0   NA     1  0 2020-04-20            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 133       NA       1    1     0 NA       &lt;NA&gt;      2014-08-10            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 134        0       1    1     1 NA       &lt;NA&gt;      2011-12-08            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 135       NA       0   NA     0 NA       &lt;NA&gt;            &lt;NA&gt;      2010-05-24</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 136       NA       1    0     1  0 2016-02-17      2013-12-26            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 137        0       1   NA    NA  1 2019-03-06      2014-06-29            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 138       NA       1    1     1  1 2019-11-26            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 139        1       1   NA     1 NA       &lt;NA&gt;      2011-11-27            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 140        0       0   NA    NA  0       &lt;NA&gt;      2014-12-10            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 141       NA       0    0     0  0       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 142        1       0    0     1  0       &lt;NA&gt;      2011-12-26            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 143       NA       1    0    NA  1 2016-11-27            &lt;NA&gt;      2012-05-26</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 144       NA       1    1    NA  0       &lt;NA&gt;      2014-02-12      2015-04-08</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 145        1       1   NA    NA  1       &lt;NA&gt;            &lt;NA&gt;      2010-12-27</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 146        1       0    1     1 NA       &lt;NA&gt;      2013-08-30            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 147        0       1    1     1  1       &lt;NA&gt;            &lt;NA&gt;      2013-03-16</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 148        0       1    0    NA  1 2019-04-28            &lt;NA&gt;      2015-06-26</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 149        1       1    1     1  0       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 150       NA       1    1    NA  0 2017-03-22      2014-01-21            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 151       NA       0    0     1  0       &lt;NA&gt;      2014-12-24      2012-12-25</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 152       NA       0   NA     0 NA 2017-09-21            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 153        0       0    1    NA NA       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 154       NA       0    0    NA  1       &lt;NA&gt;      2010-08-18            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 155        1       1    1     0  0       &lt;NA&gt;      2011-03-14            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 156       NA       0   NA    NA NA 2020-03-17      2012-12-15            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 157        0       1   NA     0 NA       &lt;NA&gt;      2014-12-14      2011-03-23</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 158        1       0    0    NA  0       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 159       NA       0    1     1  1 2019-12-14      2014-06-07            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 160       NA       0    1     1  1       &lt;NA&gt;      2010-08-16            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 161       NA       0   NA    NA  1 2016-08-17            &lt;NA&gt;      2014-03-12</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 162       NA       0    0    NA  0 2018-04-18      2012-04-23            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 163        1       1    1     0  0       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 164       NA       1    0    NA  1 2018-10-20            &lt;NA&gt;      2011-12-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 165       NA       1   NA     0  1 2017-11-09      2015-05-13            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 166        1       0   NA    NA NA       &lt;NA&gt;            &lt;NA&gt;      2015-12-19</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 167       NA       1    0    NA NA 2019-06-23      2011-09-12            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 168       NA       1   NA     1  0       &lt;NA&gt;      2012-12-29      2013-12-29</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 169        1       0   NA     0  1       &lt;NA&gt;            &lt;NA&gt;      2014-04-11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 170       NA       1    1     1  0       &lt;NA&gt;      2011-02-16            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 171        1       0   NA     0  0       &lt;NA&gt;      2012-03-16      2012-08-14</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 172        0       1   NA     0  1 2020-10-15      2015-03-17            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 173       NA       0   NA     0  1       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 174       NA       0   NA     0  0 2019-04-22            &lt;NA&gt;      2013-08-14</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 175        1       1    0     1 NA 2019-08-04      2014-02-23            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 176        1       1   NA    NA NA       &lt;NA&gt;      2012-11-28      2013-11-21</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 177        0       0    1     1  0 2018-02-13      2010-01-24            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 178        0       0    1     1 NA       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 179        0       0    0     1  0       &lt;NA&gt;            &lt;NA&gt;      2011-06-25</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 180        0       0    1    NA  0 2017-09-13            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 181        1       0   NA    NA NA       &lt;NA&gt;      2013-03-14            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 182        1       0    1     1  1 2018-04-05            &lt;NA&gt;      2010-10-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 183       NA       0   NA     1 NA       &lt;NA&gt;      2012-12-31            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 184        0       1    1     0 NA       &lt;NA&gt;            &lt;NA&gt;      2011-06-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 185        0       0    1    NA NA 2017-06-22      2014-08-12      2013-05-09</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 186        1       1    1    NA  1       &lt;NA&gt;      2012-02-18            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 187        1       1    1    NA  1       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 188       NA       0    0     0 NA       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 189        0       0    0     1 NA 2018-09-25            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 190        1       0   NA     1  1       &lt;NA&gt;      2015-11-21      2013-01-24</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 191        0       1   NA     0 NA 2019-08-11            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 192       NA       1    1    NA  0       &lt;NA&gt;      2013-01-27            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 193        1       0    1     0  0       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 194        0       1    0     0  0       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 195       NA       0   NA     0  1       &lt;NA&gt;      2012-02-29            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 196        0       1   NA     0  1 2020-12-03      2015-11-09      2014-09-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 197        1       1   NA     0  1 2020-04-12            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 198       NA       0    0     1  0 2019-05-05            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 199        1       0   NA     0 NA       &lt;NA&gt;      2015-09-24            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 200       NA       1    1     0  0       &lt;NA&gt;            &lt;NA&gt;      2010-06-06</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 201       NA       1    0     0  1       &lt;NA&gt;      2015-08-14      2011-02-18</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 202        0       1   NA     0 NA       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 203        0       1    0     0  1       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 204        0       0    0     1  1       &lt;NA&gt;            &lt;NA&gt;      2014-12-08</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 205       NA       0   NA    NA  1       &lt;NA&gt;      2010-02-06      2011-01-23</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 206        0       0    1     0  1       &lt;NA&gt;      2015-06-08            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 207        1       1   NA     1  0       &lt;NA&gt;      2013-05-17            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 208        1       1    0    NA  1 2016-01-31      2013-03-19      2015-12-26</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 209        1       1    1    NA  1       &lt;NA&gt;            &lt;NA&gt;      2011-01-25</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 210        1       0    1     0  1       &lt;NA&gt;      2013-05-10      2013-01-25</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 211       NA       1    1    NA  1       &lt;NA&gt;            &lt;NA&gt;      2011-01-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 212        1       1   NA    NA  1       &lt;NA&gt;      2012-11-07            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 213        0       1    1    NA NA       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 214       NA       0    1     1 NA 2016-10-15            &lt;NA&gt;      2015-08-16</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 215        1       1    1    NA  0       &lt;NA&gt;            &lt;NA&gt;      2013-03-22</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 216        1       0    0     1 NA       &lt;NA&gt;      2010-10-26            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 217        1       1    0    NA  1 2018-12-17      2010-07-05            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 218        1       1   NA     1 NA       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 219        0       1    0     1  1       &lt;NA&gt;      2013-05-18            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 220        0       0    1     0  0       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 221        0       0    0     1  1 2020-05-31      2014-09-24            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 222       NA       0    1     1  1       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 223        0       1    0     0  1       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 224       NA       0    1     1 NA 2019-01-12      2015-10-06            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 225       NA       0   NA    NA  0       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 226        0       1    0     1  0       &lt;NA&gt;      2013-01-13            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 227       NA       1   NA     0 NA       &lt;NA&gt;      2013-11-15            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 228       NA       0    1     0  1       &lt;NA&gt;      2015-01-31            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 229        1       0   NA     0 NA 2017-01-04            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 230        1       1    0    NA  1       &lt;NA&gt;      2012-10-22      2014-08-21</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 231       NA       1   NA     1 NA       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 232        0       0   NA     0  0       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 233       NA       0   NA     1  1 2020-02-14            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 234        1       1   NA     0  1 2018-11-25            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 235        1       1    1     0 NA       &lt;NA&gt;      2015-03-13            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 236       NA       0    1     0  0       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 237        0       1    1    NA  0       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 238       NA       0    0     0 NA 2017-01-08            &lt;NA&gt;      2011-10-10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 239        0       1    1     1  0       &lt;NA&gt;      2012-05-06            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 240        1       1   NA     1  0 2019-09-02            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 241        0       1   NA    NA  1       &lt;NA&gt;      2010-03-28            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 242       NA       1   NA     1  1 2018-11-05            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 243       NA       1    1     1  0       &lt;NA&gt;      2012-10-15            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 244       NA       0   NA    NA NA 2016-11-08            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 245        1       1    1    NA  0 2017-09-07            &lt;NA&gt;      2014-12-20</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 246        0       0    0    NA NA       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 247        1       0    1    NA  1 2016-07-13            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 248        0       0    1     0  1       &lt;NA&gt;      2015-08-25            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 249       NA       1   NA     1 NA       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 250       NA       0    0    NA NA 2020-08-13      2012-05-05            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 251       NA       1    1     1  0       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 252       NA       1   NA     1  0       &lt;NA&gt;      2011-03-20            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 253       NA       0    1     1 NA       &lt;NA&gt;      2011-07-04            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 254       NA       0    0     0 NA 2020-07-30      2014-04-21            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 255        0       0   NA     1  0       &lt;NA&gt;      2013-07-10            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 256        0       1    1     0  1       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 257        0       0   NA     1  1       &lt;NA&gt;      2013-11-01      2015-02-19</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 258        1       0    0     1  0       &lt;NA&gt;            &lt;NA&gt;      2011-10-19</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 259       NA       1    1     0 NA 2017-07-06            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 260        1       1    1     1  0       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 261        0       1    0     0  0       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 262        0       1    0     0  0       &lt;NA&gt;            &lt;NA&gt;      2013-05-30</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 263       NA       1    1    NA NA       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 264        1       1    0    NA  0 2017-12-03      2010-12-02      2014-11-28</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 265       NA       0    1    NA  0       &lt;NA&gt;      2011-12-13            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 266        1       1    0     1 NA 2018-07-17      2014-10-02            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 267       NA       1    0     1  0 2018-06-14      2013-09-26            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 268        1       1    1     1  1       &lt;NA&gt;      2015-11-25            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 269        0       1    0    NA  0 2018-06-10      2014-05-02      2011-03-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 270       NA       0   NA     0  0 2019-02-10            &lt;NA&gt;      2014-06-11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 271        1       1    1     1  0       &lt;NA&gt;            &lt;NA&gt;      2010-11-29</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 272        0       0   NA     1  0 2016-08-30            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 273        0       0   NA     0  0       &lt;NA&gt;            &lt;NA&gt;      2013-03-23</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 274        0       0   NA     1  0       &lt;NA&gt;      2014-12-03      2012-07-28</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 275       NA       1    0     1  1       &lt;NA&gt;      2014-10-05      2012-10-21</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 276       NA       1    1     0  1 2019-07-27            &lt;NA&gt;      2011-07-08</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 277        1       1    0    NA NA       &lt;NA&gt;      2010-11-06            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 278        1       1    0     1 NA 2018-07-25      2012-07-20            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 279        1       1   NA    NA  1       &lt;NA&gt;      2011-07-28      2011-05-12</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 280       NA       1    0     0  0       &lt;NA&gt;      2011-03-04            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 281        0       0   NA    NA  1 2019-12-20      2013-07-24      2012-03-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 282       NA       1   NA     1  0       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 283        0       0    1    NA  0       &lt;NA&gt;      2015-05-20      2013-11-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 284       NA       0    1    NA  0 2017-03-11            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 285        1       0    1     1  0       &lt;NA&gt;      2012-05-21            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 286        1       0    0     1 NA 2016-01-12      2015-01-23            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 287       NA       1    0     0  1 2016-01-08            &lt;NA&gt;      2010-09-07</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 288       NA       0    0     0 NA 2020-05-26      2015-10-23            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 289       NA       1    0     1  0       &lt;NA&gt;      2010-11-29      2011-07-19</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 290        1       1    0     1 NA       &lt;NA&gt;      2015-02-22            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 291        0       0   NA     0 NA       &lt;NA&gt;      2014-10-14            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 292        0       0    1     0 NA 2017-11-25      2013-03-09      2010-10-28</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 293        1       1    1     0  0 2017-03-26      2010-02-05            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 294        0       1    0    NA  0       &lt;NA&gt;      2010-10-13      2012-11-05</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 295        0       1    1    NA NA       &lt;NA&gt;      2012-06-11      2013-04-11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 296        1       0    1     1 NA       &lt;NA&gt;      2014-07-14            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 297        1       0    0     1 NA 2017-02-26            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 298       NA       1   NA     0  1       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 299       NA       0    0     1  0       &lt;NA&gt;      2012-07-21            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 300        0       0   NA    NA NA       &lt;NA&gt;            &lt;NA&gt;      2015-06-09</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 301        0       0    1    NA  0 2018-07-09      2012-12-27            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 302        1       0   NA     0  1 2020-10-18            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 303        0       0   NA    NA NA       &lt;NA&gt;      2015-02-26            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 304       NA       1   NA     0  1 2017-03-31            &lt;NA&gt;      2014-07-09</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 305        0       0    0    NA NA 2016-05-20            &lt;NA&gt;      2015-10-05</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 306       NA       1    1     0 NA       &lt;NA&gt;      2010-08-25      2011-03-11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 307        0       0    0    NA NA       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 308       NA       0    1     0  1 2016-09-30            &lt;NA&gt;      2014-12-18</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 309       NA       1    1    NA  0 2019-12-10      2010-06-08            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 310        0       1   NA    NA  1       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 311       NA       1   NA    NA  0       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 312        1       1    0    NA  1 2020-07-10      2012-04-27            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 313       NA       0    0    NA  1 2018-03-14            &lt;NA&gt;      2010-12-04</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 314       NA       1    1    NA  0       &lt;NA&gt;      2010-12-01            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 315        1       0    1     1  1 2020-01-03      2011-10-06            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 316        0       1    0     0  1       &lt;NA&gt;      2011-10-05            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 317        1       0    1     1  1       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 318       NA       0    1     0  1 2020-03-16            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 319        0       1    0     1 NA       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 320       NA       0    0    NA NA 2016-03-15      2013-08-25            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 321        0       0   NA     1 NA 2016-06-14            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 322        1       0    0     1  0       &lt;NA&gt;      2015-05-18      2014-04-13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 323        1       0   NA    NA NA       &lt;NA&gt;      2012-08-05      2015-09-14</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 324        1       1    0     0  0       &lt;NA&gt;      2013-02-19            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 325        0       0    0     1 NA 2019-07-16      2010-06-26      2014-05-13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 326        0       1   NA     1  0       &lt;NA&gt;      2013-02-11            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 327        0       0    1     1  1 2018-04-26            &lt;NA&gt;      2014-06-26</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 328        0       0    0    NA  1       &lt;NA&gt;      2010-08-10            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 329        0       0    1    NA  1 2020-09-27            &lt;NA&gt;      2013-05-27</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 330        0       1    1     0 NA       &lt;NA&gt;            &lt;NA&gt;      2010-01-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 331        0       0    0    NA  1       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 332       NA       0   NA     1  1       &lt;NA&gt;            &lt;NA&gt;      2010-04-22</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 333       NA       0    1    NA  1 2020-06-25            &lt;NA&gt;      2012-01-06</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 334        0       0    1     1  1       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 335        0       0   NA     0  1       &lt;NA&gt;            &lt;NA&gt;      2010-05-05</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 336        1       0   NA    NA NA 2016-08-23      2011-02-11            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 337        1       1   NA     1  1       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 338        1       1    1    NA  1       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 339        1       1    1    NA  0       &lt;NA&gt;      2015-11-16      2013-11-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 340        0       1    0     1 NA       &lt;NA&gt;      2013-12-23            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 341        0       1    0     1 NA       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 342        0       1    0     1  0 2019-09-15            &lt;NA&gt;      2015-10-22</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 343        0       0    0    NA NA       &lt;NA&gt;            &lt;NA&gt;      2013-10-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 344       NA       0    1     1  0 2016-08-15      2011-03-30            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 345        0       1   NA    NA  0       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 346       NA       1    1    NA  1       &lt;NA&gt;      2011-02-02            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 347        1       1    1     0  0       &lt;NA&gt;      2014-03-21            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 348        1       0   NA    NA  0       &lt;NA&gt;            &lt;NA&gt;      2011-03-27</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 349        1       1    1     1  1       &lt;NA&gt;            &lt;NA&gt;      2013-05-19</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 350        1       0   NA    NA NA       &lt;NA&gt;            &lt;NA&gt;      2012-06-12</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 351        0       0    1    NA  1       &lt;NA&gt;      2014-02-13            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 352       NA       1    0     1  0 2019-07-28            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 353        1       0    0     0 NA       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 354       NA       0    0     1 NA       &lt;NA&gt;            &lt;NA&gt;      2012-02-13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 355        1       1   NA     1  0       &lt;NA&gt;      2015-04-14            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 356        0       1   NA     0 NA 2020-06-28      2013-10-30            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 357        1       0   NA     1 NA 2016-08-25            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 358        1       0   NA     1 NA       &lt;NA&gt;            &lt;NA&gt;      2010-02-06</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 359        1       1    1     0 NA       &lt;NA&gt;            &lt;NA&gt;      2013-02-19</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 360       NA       0   NA     0 NA 2019-09-18      2012-04-11            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 361       NA       1   NA    NA  0 2016-06-21            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 362       NA       1   NA     1  0       &lt;NA&gt;      2012-07-02            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 363        0       1    0    NA  1       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 364        1       1    0     1 NA       &lt;NA&gt;      2013-07-16      2010-08-08</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 365        1       1   NA     1  1       &lt;NA&gt;            &lt;NA&gt;      2015-03-09</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 366       NA       0    0    NA  1       &lt;NA&gt;      2010-04-05      2015-10-11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 367        1       0    0     0  1       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 368        1       1   NA     0 NA 2018-07-16            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 369        0       0    1     1  0       &lt;NA&gt;      2013-10-13            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 370        0       0    1     0  0       &lt;NA&gt;            &lt;NA&gt;      2014-01-07</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 371        1       0    0     1  0       &lt;NA&gt;      2010-12-20      2014-04-10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 372        1       1   NA     0 NA 2020-02-28      2012-11-06            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 373        0       0    0    NA NA       &lt;NA&gt;      2010-01-30            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 374        1       0   NA     0  1       &lt;NA&gt;      2013-02-22            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 375        0       0    1    NA NA 2019-01-16      2015-02-28      2012-04-04</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 376       NA       0    1    NA  0 2018-08-21            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 377        1       0   NA     0 NA 2019-11-12      2010-06-14      2015-04-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 378        0       1   NA    NA NA 2017-09-23      2012-11-11            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 379        0       0    0    NA  0       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 380        0       1    1     0  0       &lt;NA&gt;      2011-01-25            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 381        0       0    0     0  1 2020-08-01            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 382       NA       1    1     0  1       &lt;NA&gt;            &lt;NA&gt;      2013-05-24</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 383        0       1    1     0 NA       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 384       NA       1    0     1 NA       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 385       NA       0    0     0 NA       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 386       NA       1   NA     0  1       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 387        1       0    1    NA  1 2016-05-13      2014-07-26      2012-01-30</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 388        1       1    0    NA  0 2020-08-16            &lt;NA&gt;      2012-04-22</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 389       NA       1    0     1  0 2018-09-30      2011-09-20      2014-01-14</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 390        1       1    0     1 NA 2016-04-21            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 391        1       0    0    NA NA       &lt;NA&gt;            &lt;NA&gt;      2013-09-13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 392        1       1    1     1 NA       &lt;NA&gt;      2014-04-14            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 393        0       1    1     1  1 2017-01-28      2014-04-08      2012-10-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 394       NA       0    1     0  1 2019-07-23            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 395       NA       0    0    NA  0       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 396       NA       0    1     0  1       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 397        1       0    0     0 NA 2019-04-18      2014-09-02            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 398        0       0    1     1  1       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 399       NA       1   NA    NA  1       &lt;NA&gt;      2011-10-28      2015-10-31</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 400       NA       1    0     0  0 2017-05-08      2014-08-29            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 401       NA       1   NA     0  0       &lt;NA&gt;      2013-03-07            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 402       NA       1    0    NA  0       &lt;NA&gt;      2010-08-14            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 403        0       1   NA     0  0       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 404        1       0    1     1  1       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 405       NA       1    0     0  1       &lt;NA&gt;      2014-06-25      2011-06-13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 406       NA       0   NA     1  0 2016-01-19      2010-04-08      2013-04-04</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 407       NA       0    0    NA NA 2017-12-01      2011-06-02            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 408        0       0    1    NA  1       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 409       NA       1    1     0  0       &lt;NA&gt;      2011-11-08            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 410        0       0   NA     1  0       &lt;NA&gt;            &lt;NA&gt;      2010-02-09</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 411       NA       0   NA     1  1 2020-03-07      2012-03-19            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 412       NA       1    1     0  1       &lt;NA&gt;      2010-09-24            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 413        0       1    1    NA NA       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 414        1       0   NA     0  0 2017-04-24            &lt;NA&gt;      2015-05-05</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 415        0       1    1     1  1       &lt;NA&gt;            &lt;NA&gt;      2010-01-12</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 416       NA       1    0     1  1       &lt;NA&gt;            &lt;NA&gt;      2011-02-25</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 417        1       1    0     0 NA       &lt;NA&gt;            &lt;NA&gt;      2015-03-26</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 418        0       1    1     0  1 2016-02-10            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 419        1       1    0     0  1       &lt;NA&gt;      2010-03-27            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 420        0       0   NA    NA NA 2017-07-12            &lt;NA&gt;      2010-12-11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 421       NA       0    0    NA  0       &lt;NA&gt;            &lt;NA&gt;      2014-08-13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 422       NA       0   NA     1  0 2018-05-08            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 423        1       1    0    NA  0       &lt;NA&gt;      2012-07-11      2011-09-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 424        0       0    0     0 NA       &lt;NA&gt;            &lt;NA&gt;      2014-07-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 425        0       1    1    NA NA 2020-08-20      2014-07-05      2015-08-12</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 426        0       1    0     1  1 2019-10-29      2013-08-06      2013-09-15</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 427       NA       0    0    NA  1       &lt;NA&gt;      2015-03-28            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 428       NA       0   NA     1  0       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 429       NA       0    0    NA  1       &lt;NA&gt;            &lt;NA&gt;      2013-02-04</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 430        0       0    1    NA  1       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 431        1       1   NA    NA NA 2016-01-29      2015-04-25            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 432       NA       1    1     1  1       &lt;NA&gt;      2014-07-29            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 433        1       0    1     0 NA       &lt;NA&gt;      2010-01-08            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 434        0       0    0     1  1       &lt;NA&gt;      2011-07-20      2013-02-15</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 435        1       1    0    NA  0 2018-04-10            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 436        1       1    0     0 NA       &lt;NA&gt;      2012-06-04            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 437        0       0    0     0 NA       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 438       NA       1    1    NA  0       &lt;NA&gt;      2012-09-21            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 439       NA       1   NA    NA NA       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 440        1       1    0     0  0       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 441        1       1    0     0 NA       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 442        0       0    0     1  0       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 443       NA       1   NA    NA  1       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 444       NA       1   NA     0  1 2018-05-30            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 445        0       0    0     0  1 2020-03-13      2015-03-31      2014-12-23</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 446       NA       1   NA     1 NA       &lt;NA&gt;      2010-05-10            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 447        1       0    1     0 NA 2018-02-12            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 448        0       1   NA    NA  0       &lt;NA&gt;            &lt;NA&gt;      2013-11-04</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 449        0       0    0    NA NA       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 450        0       1    0    NA  1       &lt;NA&gt;      2011-01-22            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 451        1       0   NA     0  0       &lt;NA&gt;      2012-11-27            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 452        1       0   NA    NA NA       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 453        1       0    1    NA  1       &lt;NA&gt;      2013-07-31            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 454       NA       0   NA    NA  1       &lt;NA&gt;      2012-01-20            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 455        0       1    1     0  0 2020-11-03            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 456        1       0    0    NA  1 2017-12-29            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 457        1       1    0    NA  0       &lt;NA&gt;      2012-01-19            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 458        1       0   NA    NA NA       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 459        0       0    1     0  0       &lt;NA&gt;      2014-11-24            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 460        0       1   NA     1 NA       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 461       NA       1   NA     0  0       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 462        1       0    1     1  1       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 463       NA       0    0    NA  0 2020-01-25      2011-03-12      2014-09-17</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 464        0       1    0    NA  0       &lt;NA&gt;      2011-10-08            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 465        1       1    0    NA NA 2016-09-10            &lt;NA&gt;      2015-04-04</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 466        0       1   NA     1  1 2020-01-20      2012-10-19      2011-05-24</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 467        1       0    0    NA NA 2019-12-15            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 468        0       0   NA    NA  1       &lt;NA&gt;      2010-08-31      2014-11-16</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 469        0       1    1    NA NA       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 470       NA       0    0     1 NA       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 471        0       0   NA     0 NA 2020-03-06            &lt;NA&gt;      2015-08-25</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 472        0       0    0     0  1 2019-12-29            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 473       NA       0    0     0 NA       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 474        0       1    0     1  0       &lt;NA&gt;      2015-06-05            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 475        1       0    0     1  0 2020-06-30            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 476        0       1   NA     1 NA 2020-09-11            &lt;NA&gt;      2015-09-21</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 477        0       1    1    NA  0 2017-04-08      2014-05-27            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 478       NA       1    0    NA  1 2016-04-10      2015-10-28            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 479        0       0    1     1  1       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 480        1       0    1     1  0       &lt;NA&gt;      2013-08-12            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 481        1       1   NA     0 NA 2018-02-05            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 482       NA       0   NA     1  0 2019-03-13            &lt;NA&gt;      2015-05-15</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 483        0       1    1    NA  1       &lt;NA&gt;            &lt;NA&gt;      2010-05-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 484        1       0    0     0  0 2020-10-07      2010-10-28      2012-04-20</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 485        0       1    0     1 NA       &lt;NA&gt;      2014-03-23            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 486       NA       0   NA     1  0       &lt;NA&gt;      2014-08-25            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 487        0       1    1    NA NA       &lt;NA&gt;            &lt;NA&gt;      2010-06-29</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 488        1       1    1    NA  1       &lt;NA&gt;            &lt;NA&gt;      2011-05-15</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 489        1       0    1     1  0       &lt;NA&gt;      2011-06-21            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 490        0       0    0    NA  0       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 491        0       1    1    NA NA       &lt;NA&gt;      2010-02-10      2014-02-10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 492        0       1   NA     1  1 2016-03-14      2014-04-12            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 493        0       1   NA     1  1       &lt;NA&gt;            &lt;NA&gt;      2010-10-17</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 494        0       0   NA     1  0       &lt;NA&gt;            &lt;NA&gt;      2014-09-18</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 495       NA       1    0     0  0 2016-03-23      2012-09-10      2013-04-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 496        0       1    0     0 NA       &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 497       NA       1    0     1  0 2016-05-09      2015-01-16            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 498        0       0    1    NA  0       &lt;NA&gt;      2010-08-06            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 499        0       1    1     0  1 2018-12-24            &lt;NA&gt;            &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 500        0       0    0     0  1 2017-05-12      2013-04-08            &lt;NA&gt;</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
@@ -123,7 +1124,7 @@ Can be specified using only "median", "quantile", "quartile" etc which will be a
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by Mathias Ørholt.</p>
+  <p>Developed by Mathias Ørholt, Ida Wulff.</p>
 </div>
 
 <div class="pkgdown-footer-right">
