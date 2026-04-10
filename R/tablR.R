@@ -190,8 +190,6 @@ tablR <- function(data,
   data <- data %>%
     factR(num.vars = num_c)
 
-  print(str(data$ab_irrigation))
-
   #Table controls
   c <- tableby.control(test=test, total=total,
                        numeric.test=test.stats[1], cat.test=test.stats[2],

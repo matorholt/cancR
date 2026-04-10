@@ -17,6 +17,7 @@ loadR(
   simulation = F,
   cores = 4,
   dt = F,
+  cancR.covariates = "all",
   ...
 )
 }

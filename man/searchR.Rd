@@ -10,7 +10,7 @@ searchR(
   name.list = NULL,
   sub.list = list(),
   sub.labels = NULL,
-  exclusion = "NULL",
+  exclusion.list = list(),
   slice = "first",
   format = "date",
   date.filter = NULL,
@@ -32,7 +32,7 @@ searchR(
 
 \item{sub.labels}{list of labels for the diagnosis code colum (e.g. list("subtype" = list("a" = c("DC1", "DC2"))))}
 
-\item{exclusion}{vector of diagnosis codes for exclusion}
+\item{exclusion.list}{list with same structure as search.list for exclusion codes}
 
 \item{slice}{which rows should be selected (first(default)/last/all)}
 

@@ -13,7 +13,9 @@ includR(
   period = NULL,
   fu = "fu",
   birth = "birth",
-  export = F
+  remove = NULL,
+  export = F,
+  dt = F
 )
 }
 \arguments{

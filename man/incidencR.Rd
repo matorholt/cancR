@@ -43,18 +43,19 @@ Directly standardized incidence rates inspired by the dsr package by Matt Kumar.
 }
 \examples{
 (rates <-
-incidencR(redcap_df \%>\%
-           recodR(list("sex" = list("Female" = 1,
-                                     "Male" = 2))),
-          index = date_of_surgery,
-          group = type,
-          unit = 100000,
-          strata = list(c("year"),
-                        c("age", "sex"),
-                        c("year", "type"),
-                        c("year", "type", "age"),
-                        c("type", "age"),
-                        c("year", "age", "sex", "type"))))
+   incidencR(redcap_df \%>\%
+               recodR(list("sex" = list("Female" = 1,
+                                        "Male" = 2))),
+             index = date_of_surgery,
+             group = type,
+             unit = 100000,
+             strata = list(c("year"),
+                           c("age", "sex"),
+                           c("year", "type"),
+                           c("year", "type", "age"),
+                           c("type", "age"),
+                           c("year", "age", "sex", "type"))))
+
 
 ggplot(rates$year_type, aes(x=year, y=weighted_rate, color = type, fill = type)) +
   geom_point() +

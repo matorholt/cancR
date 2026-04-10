@@ -6,11 +6,10 @@
 \usage{
 matchR(
   data,
-  td.frame,
+  td.frame = NULL,
   index = index,
   case = case,
   follow = fu,
-  td.date = from,
   fixed.vars = c(byear, sex),
   td.vars,
   exclude,
@@ -20,8 +19,9 @@ matchR(
   seed = 1,
   cores = 4,
   pnr = pnr,
+  birth = birth,
   interval = NULL,
-  diminish = T
+  dt = F
 )
 }
 \arguments{
@@ -34,8 +34,6 @@ matchR(
 \item{case}{1/0 indicator for case/control status}
 
 \item{follow}{End of follow up as date}
-
-\item{td.date}{Name of the date column in the time dependent matching covariate dataset}
 
 \item{fixed.vars}{Vector of fixed matching parameters}
 
@@ -57,7 +55,9 @@ matchR(
 
 \item{interval}{Interval to split birthyear into intervals (e.g. 1950-1955). Assigns a new variable named "age_group".}
 
-\item{diminish}{Whether unused variables in td.frame should be removed (default = T)}
+\item{dt}{whether the dataframe should be returned as a data.table}
+
+\item{td.date}{Name of the date column in the time dependent matching covariate dataset}
 }
 \value{
 Returns the same dataframe as the original but with n_control matches and pairs indicated with a "set" column.

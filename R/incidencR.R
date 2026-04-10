@@ -18,19 +18,22 @@
 #' @export
 #'
 #' @examples
-#' (rates <-
-#' incidencR(redcap_df %>%
-#'            recodR(list("sex" = list("Female" = 1,
-#'                                      "Male" = 2))),
-#'           index = date_of_surgery,
-#'           group = type,
-#'           unit = 100000,
-#'           strata = list(c("year"),
-#'                         c("age", "sex"),
-#'                         c("year", "type"),
-#'                         c("year", "type", "age"),
-#'                         c("type", "age"),
-#'                         c("year", "age", "sex", "type"))))
+
+
+#'(rates <-
+#'    incidencR(redcap_df %>%
+#'                recodR(list("sex" = list("Female" = 1,
+#'                                         "Male" = 2))),
+#'              index = date_of_surgery,
+#'              group = type,
+#'              unit = 100000,
+#'              strata = list(c("year"),
+#'                            c("age", "sex"),
+#'                            c("year", "type"),
+#'                            c("year", "type", "age"),
+#'                            c("type", "age"),
+#'                            c("year", "age", "sex", "type"))))
+#'
 #'
 #' ggplot(rates$year_type, aes(x=year, y=weighted_rate, color = type, fill = type)) +
 #'   geom_point() +
@@ -91,7 +94,7 @@ aggregate_df <- data %>%
            sex = str_to_lower(str_extract(sex, "\\w"))) %>%
     cutR(age,
          c(seq(0,85,5), 150),
-         name.list = list(age = "age_group")) %>%
+         "age_group") %>%
     mutate(age_group = ifelse(age_group == "85-150", "85+", as.character(age_group)),
            !!sym(group_c) := as.character(!!sym(group_c))) %>%
     select(year, age_group, sex, !!sym(group_c)) %>%

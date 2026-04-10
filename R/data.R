@@ -119,3 +119,12 @@
 #'   ...
 #' }
 "population_who"
+
+#' @title ICD diagnosis codes
+#'
+#' @description List of diagnosis codes after the ICD chapters
+#'
+#'
+#' @format A list of diagnosis codes divided into the ICD chapters including a sublist with major diseases only
+#'
+"cancR_codes"

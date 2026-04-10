@@ -4,7 +4,12 @@
 \alias{decodR}
 \title{Decoding of the main codelist for loading and searching in registries}
 \usage{
-decodR(codelist, regs = c("pop", "sc", "meta", "dsd"), type = "matching")
+decodR(
+  codelist,
+  regs = c("pop", "sc", "meta", "dsd"),
+  type = "matching",
+  cancR.covariates = "all"
+)
 }
 \arguments{
 \item{codelist}{List of lists with registries, diagnosis codes and labels. See example.}

@@ -4,12 +4,16 @@
 \alias{listR}
 \title{Routine modifications of lists}
 \usage{
-listR(input, type, ...)
+listR(input, type, layer, collapse = F, ...)
 }
 \arguments{
 \item{input}{the list or vector}
 
 \item{type}{type of modification of the list. See details}
+
+\item{layer}{vector of integers indicating which layer to remove if type is "peel" or to keep if type is "pick". Layer 1 is the top layer}
+
+\item{collapse}{whether duplicated elements should be collapsed (defualt = F)}
 
 \item{...}{arguments for the rrapply function}
 }
@@ -23,6 +27,7 @@ The functions is also a wrapper for the rrapply and map_depth functions with the
 \details{
 "reverse" reverses the values and names of a list which is used as inputs in functions such as str_replace.
 "vec2list" converts a vector to a list with names corresponding to the vector elements
+"peel" and "pick" depends on "layer" and either drops or keeps the specified vector.
 }
 \examples{
 

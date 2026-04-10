@@ -21,7 +21,7 @@
 #' @param cores Cores, defaults to 4
 #' @param pnr Name of PNR column
 #' @param interval Interval to split birthyear into intervals (e.g. 1950-1955). Assigns a new variable named "age_group".
-#' @param diminish Whether unused variables in td.frame should be removed (default = T)
+#' @param dt whether the dataframe should be returned as a data.table
 #'
 #' @return Returns the same dataframe as the original but with n_control matches and pairs indicated with a "set" column.
 #' @export
@@ -35,8 +35,10 @@
 #
 # pop <- simulatR("match",
 #                n=n,
-#                match.cases = c)
-#
+#                match.cases = c) %>%
+#   mutate(byear = round(runif(n, 1955,1965),0),
+#          ethnic = sample(c("euro", "africa", "asia"), n, replace=TRUE))
+# #
 # set.seed(1)
 # covariates <- simulatR("covariates",
 #                        n=n+c)
@@ -45,35 +47,25 @@
 #                             format = "long",
 #                             n=n+c)
 
-# post_match <-
-#   matchR(data=pop,
-#          fu=follow,
-#          td.vars = c(income, education, cci, cancer),
-#          exclude = c(skinc, imm_sup),
-#          exclude.length = 365.25*1,
-#          td.frame = covariates_df,
-#          n.controls=4,
-#          seed=1,
-#          cores = 4)
+# tdf <-
+# matchR(data=pop,
+#        follow=follow,
+#        fixed.vars = c(byear, sex, ethnic),
+#        td.vars = c(education, cancer),
+#        exclude = c(skinc, imm_sup),
+#        exclude.length = 365.25*5,
+#        td.frame = covariates_df,
+#        n.controls=2,
+#        seed=1,
+#        cores = NULL,
+#        dt = T)
 
-#Fast
-# post_match <-
-#   matchR(data=match_df,
-#          fu=follow,
-#          td.vars = c(income, education, cci, cancer),
-#          exclude = c(skinc, imm_sup),
-#          exclude.length = 365.25*1,
-#          td.frame = covariates_df,
-#          n.controls=4,
-#          seed=1,
-#          cores = 4)
 
 matchR <- function(data,
-                   td.frame,
+                   td.frame = NULL,
                    index = index,
                    case = case,
                    follow = fu,
-                   td.date = from,
                    fixed.vars = c(byear, sex),
                    td.vars,
                    exclude,
@@ -83,8 +75,9 @@ matchR <- function(data,
                    seed=1,
                    cores=4,
                    pnr=pnr,
+                   birth = birth,
                    interval = NULL,
-                   diminish = T) {
+                   dt=F) {
 
   if("date" %in% names(data)) {
     return(cat("Error: The pre_match dataframe cannot contain a variable named date"))
@@ -94,15 +87,14 @@ matchR <- function(data,
 
   start <- tickR.start
 
-  cat(paste0("\nInitializing matchR algorithm: ", tockR("time"), "\n"))
+  cli::cli_h2("Initializing matchR algorithm: {tockR('time')}")
 
-  case <- data %>% select({{case}}) %>% names()
-  fu <- data %>% select({{follow}}) %>% names()
-  pnr <- data %>% select({{pnr}}) %>% names()
-  index <- data %>% select({{index}}) %>% names()
-  td.date <- td.frame %>% select({{td.date}}) %>% names()
-  vars <- c(data %>% select({{fixed.vars}}) %>% names(), td.frame %>% select({{td.vars}}) %>% names())
-  exclude <- data %>% select({{exclude}}) %>% names()
+  case <- data %>% select({{case}}) %>% names
+  fu <- data %>% select({{follow}}) %>% names
+  birth <- data %>% select({{birth}}) %>% names
+  pnr <- data %>% select({{pnr}}) %>% names
+  index <- data %>% select({{index}}) %>% names
+  exclude <- data %>% select({{exclude}}) %>% names
 
   if(!is.null(interval)) {
     data[["age_group"]] <- data[["tvar"]] <- cutR(data, byear, seq(1800,3000,interval))[["byear"]]
@@ -110,86 +102,72 @@ matchR <- function(data,
     data[["tvar"]] <- data[["byear"]]
   }
 
-  vars_c <- str_replace_all(vars, "byear", "tvar")
+  fixed.vars <- data %>% select({{fixed.vars}}) %>% names %>% str_replace_all(., "byear", "tvar")
 
   setDT(data)
-  setDT(td.frame)
 
-  cat(paste0("\nData reduction: "))
-
-  #Remove unused columns
-  td.frame[, c(names(td.frame)[names(td.frame) %nin% c(vars, "pnr", "from", "to")]) := NULL]
+  cli::cli_h3("Data reduction")
 
   #Change names
   namelist <- list(pnr = pnr,
                    case = case,
                    index = index,
-                   fu = fu,
-                   from = td.date)
+                   fu = fu)
 
   setnames(data,
-           unlist(namelist[namelist != "from"]),
-           names(namelist[namelist != "from"]))
-
-  setnames(td.frame,
-           unlist(namelist[c("pnr", "from")]),
-           names(namelist[c("pnr", "from")]))
+           unlist(namelist),
+           names(namelist))
 
   data <- data[case == 1 | (case == 0 & fu > min(index, na.rm=T))] %>%
     .[.[, Reduce(`&`, lapply(.SD, function(x) is.na(x) | x > min(index, na.rm=T))),.SDcols = c(exclude)], .SDcols= c(exclude)]
 
-  cat(paste0("completed - ", tockR("time"), "\n\n"))
-
-  cat(paste0("Merging time-dependent data frame: "))
+  cli::cli_text("Completed - {tockR('time')}")
+  cli::cli_h3("Merging time-dependent data frame")
 
   all_indices <- data[case==1, substitute(index)]
 
-  #TD covariates are merged with data. Only time windows that include an index from any of the cases are included to reduce data.
-  full_df <- merge(data, td.frame[pnr %in% data[, pnr]], by = pnr)[order(-case, pnr, from)][
-    from <= index | (case==0 & from <= max(index, na.rm=T))][
-      index >= from & index < to | case == 0][
-        sapply(seq_len(.N), function(i)
-          any(all_indices >= from[i] & all_indices < to[i])
-        )][
-          , set := match(pnr, unique(pnr))]
+  #If TD covariates are assigned, merge with main data
+  if(!is.null(td.frame)) {
+    vars <- c(fixed.vars, td.frame %>% select({{td.vars}}) %>% names)
 
-  cat(paste0("\nMerging time-dependent data frame: completed - ",  tockR("time"), "\n\n"))
+    setDT(td.frame)
 
-  cat(paste0("Partitioning of age-sex cohorts: "))
+    #Merge
+    data <- merge(data, td.frame, by = pnr)[order(-case, pnr, from)]
 
-  total_cases <- data[case == 1,]
-
-  #Partition into age-sex cohorts filtered on presence of cases
-  split_df <-
-    split(full_df, by = c("tvar", "sex"))[as.character(sort(unique(interaction(total_cases$tvar, total_cases$ses))))]
-
-  cat(paste0("\nPartitioning of age-sex cohorts: completed - ",  tockR("time"), "\n\n"))
-
-  if(str_detect(names(split_df)[1], "-")) {
-    cat(paste0("Partitioning ", length(split_df), " cohorts: \n"))
-    cat(paste0(names(split_df), collapse="\n"))
-    cat("\n\n")
   } else {
-    cat(paste0("Partitioning ", length(split_df), " cohorts (", names(split_df)[1], " to ", names(split_df)[length(split_df)], "): \n\n"))
+    data[, from := substitute(birth)][
+      , to := substitute(fu)]
+
+    vars <- fixed.vars
   }
 
+  data[, set := match(pnr, unique(pnr))]
+
+  cli::cli_text("Completed - {tockR('time')}")
+  cli::cli_h3("Partitioning of cohorts")
+
+  #Isolate cases and get case-specific cohorts for splitting
+  total_cases <- data[case == 1][, cohorts := do.call(paste, c(.SD, sep = ".")), .SDcols = c(fixed.vars)]
+
+   #Partition into cohorts filtered on presence in cases
+  split_df <-
+    split(data, by = fixed.vars)[sort(unique(total_cases$cohorts))]
+
+  cli::cli_text("Completed - {tockR('time')}")
+
   if(!is.null(cores)) {
-
     multitaskR(cores = cores)
-
   }
 
   progressr::handlers(global = TRUE)
-  handlers(list(
-    handler_progress(
-      format   = "|:bar| :current/:total (:percent) - :message",
-      width    = getOption("width"),
-      complete = "=",
-      clear = F
-    )))
+  progressr::handlers("cli")
+  options(cli.progress_bar_style = "fillsquares")
 
   p <- progressr::progressor(along = seq_along(split_df))
 
+  cli::cli_h2("MATCHING")
+  cli::cli_text("{length(split_df)} cohorts ({names(split_df)[1]} to {names(split_df)[length(split_df)]})")
   ##MATCHING##
   cohort_list <- future_map(seq_along(split_df), function(j) {
 
@@ -197,22 +175,14 @@ matchR <- function(data,
 
                            df <- split_df[[j]]
 
-                           cases <- df[get("case") == 1]
+                           cases <- df[case == 1]
 
-                           control_list <- list()
+                          # control_list <- list()
 
-                           for(c in seq_along(cases$set)) {
-
-                             i <- cases$set[[c]]
-
-                             if(j > 1) {
-                              #Case status
-                             message(paste0("Cohort: ", names(split_df)[j], " - case: ", c, " of ", nrow(cases), " total (", round(c/nrow(cases)*100,1), ")%"))
-
-                             }
+                           control_list <- map(cases$set, function(i) {
 
                              #Index for current case
-                             itime <- df[set == i, get("index")]
+                             itime <- df[set == i, index]
 
                              #Keep cases with:
                              # - index > current index (Cases cannot be selected as controls if already cases)
@@ -220,29 +190,29 @@ matchR <- function(data,
                              # - fu > current index (alive at index) & where the current index is contained between from and to
 
                              df_c <- df[set == i |
-                                          (get("index") > itime |
-                                             (case == 0 & fu > itime & (itime >= from & itime < to))),] %>%
+                                          (index > itime |
+                                             (case == 0 & (itime >= from & itime < to))),] %>%
                                #Exclude cases who were exposed within x-days before index (arg: exclude.length)
                                .[.[, Reduce(`&`, lapply(.SD, function(x) is.na(x) | !between((as.numeric(itime - x)), 0, exclude.length))) | set == i,.SDcols = c(exclude)], .SDcols= c(exclude)]
 
                              #Fast binary-search on matching parameters
-                             filters <- as.list(df_c[set==i, .SD, .SDcols=vars_c])
+                             filters <- as.list(df_c[set==i, .SD, .SDcols=vars])
 
-                             setkeyv(df_c, vars_c)
+                             setkeyv(df_c, vars)
 
-                             control_list[[c]] <- df_c[filters] %>%
+                             df_c[filters] %>%
 
                                #Not-yet cases converted to controls. Censoring at time of switch to case and removing index-date
-                               .[, c("fu") := if_else(get("case") == 1 & set != i, get("index"), get("fu"))] %>%
-                               .[, c("index") := if_else(get("case") == 1 & set != i, as.Date(NA), get("index"))] %>%
-                               .[, c("case") := ifelse(get("case") == 1 & set != i, 0, get("case"))]
+                               .[, fu := if_else(case == 1 & set != i, index, fu)] %>%
+                               .[, index := if_else(case == 1 & set != i, as.Date(NA), index)] %>%
+                               .[, case := ifelse(case == 1 & set != i, 0, case)]
 
 
 
                              #Reroute output
                              #control_list[[c]] <- df_c
 
-                           }
+                           })
 
                            control_list <- control_list[order(sapply(control_list, nrow))]
 
@@ -258,8 +228,8 @@ matchR <- function(data,
                              if(replace) {
 
                                m <-
-                                 control_list[[i]][order(-get("case"))][
-                                   ,set:=first(set)][get("case") == 0][
+                                 control_list[[i]][order(-case)][
+                                   ,set:=first(set)][case == 0][
                                      sample(.N, pmin(.N, n.controls))]
 
                               #Same as above, but a cumulative ID list excludes previous matches
@@ -267,12 +237,12 @@ matchR <- function(data,
 
                                m <-
                                  control_list[[i]][
-                                   order(-get("case"))][
+                                   order(-case)][
                                      ,set:=first(set)][
-                                       get("case") == 0 & !(get("pnr") %in% idlist)][
+                                       case == 0 & !(pnr %in% idlist)][
                                          sample(.N, pmin(.N, n.controls))]
 
-                               idlist <- c(idlist, m[, c("pnr")])
+                               idlist <- c(idlist, m[, pnr])
 
 
                              }
@@ -295,11 +265,6 @@ matchR <- function(data,
                            seed = seed
                          ))
 
-  #close(pb)
-
-  cat("\nMatching complete!\n")
-  cat("Total runtime: \n")
-  cat(tockR("diff", start), "\n\n")
 
   #Sorting + controls inherit index date and exclusion variables are omitted.
   match.df <- rbindlist(cohort_list)[order(set, -case)][
@@ -313,7 +278,11 @@ matchR <- function(data,
            names(namelist[namelist != "from"]),
            unlist(namelist[namelist != "from"]))
 
-  as.data.frame(match.df)
+  cli::cli_h3("Matching complete!")
+  cli::cli_text("Total runtime:")
+  cli::cli_text(tockR("diff", start))
+
+  if(dt) return(match.df) else return(as.data.frame(match.df))
 
   #Reroute output
   #cohort_list

@@ -56,15 +56,7 @@ powR <- function(text,
                                    match = c(1144, 676),
                                    app = c(1528, 1095),
                                    ok = c(1349, 1095),
-                                   local = c(3917, 546)),
-                     iw = list(rs = c(2665, 167),
-                               tool = c(2944, 31),
-                               go = c(2993, 401),
-                               code = c(3569, 483),
-                               match = c(3687, 542),
-                               app = c(4113, 1034),
-                               ok = c(3917, 1034),
-                               local = c(623, 546)))
+                                   local = c(3917, 546)))
 
 
   #Define current and on.exits

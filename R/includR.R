@@ -25,17 +25,22 @@ includR <- function(data,
                     period = NULL,
                     fu="fu",
                     birth = "birth",
-                    export = F) {
+                    remove = NULL,
+                    export = F,
+                    dt = F) {
 
-  cat("\nincludR initialized: ", tickR(), "\n")
+  tickR()
 
+  start <- tickR.start
 
+  cli::cli_h2("Initializing incR algorithm: {tockR('time')}")
 
   exe_c <- data %>% select({{exclusion.ex}}) %>% names()
   exo_c <- data %>% select({{exclusion.out}}) %>% names()
   fu_c <- data %>% select({{fu}}) %>% names()
   birth_c <- data %>% select({{birth}}) %>% names()
-
+  case_c <- data %>% select(contains("case")) %>% names()
+  remove_c <- data %>% select(contains({{remove}})) %>% names
 
   flow_list <- list()
 
@@ -47,20 +52,18 @@ includR <- function(data,
   if(!missing(exclusion.ex)) {
 
     data[, exclusion_date := do.call(pmin, c(.SD, list(na.rm=TRUE))),
-         .SDcols= c(exe_c)][
-           , byear := str_extract(get(birth_c), "\\d{4}")]
-
+         .SDcols= c(exe_c)]
 
   }
 
   {
 
-    supp_c <- data %>% select(contains("case")) %>% names()
-
     data[, index := do.call(pmin, c(.SD, list(na.rm=TRUE))),
-         .SDcols= c(supp_c)]
+         .SDcols= c(case_c)][
+           , byear := as.numeric(str_extract(get(birth_c), "\\d{4}"))][
+           , case := ifelse(!is.na(index), 1, 0)]
 
-    for(i in supp_c) {
+    for(i in case_c) {
 
       flow_list[["entry"]][["case"]][[i]] <- paste0("- / ", nrow(data[!is.na(data[[i]]),]))
 
@@ -69,7 +72,7 @@ includR <- function(data,
 
 
   flow_list[["entry"]][["total"]] <- paste0("- / ", nrow(data[!is.na(data[["index"]]),]))
-  data[, case := ifelse(!is.na(index), 1, 0)]
+
 
   #Split
   cases <- data[case == 1,]
@@ -171,12 +174,13 @@ includR <- function(data,
 
   }
 
-  cat(paste0("\nTotal runtime: \n"))
-  cat(tockR("diff"))
 
-  bind_rows(cases, conts)
+
+  cli::cli_text("")
+  cli::cli_h3("Inclusion complete!")
+  cli::cli_text("Total runtime:")
+  cli::cli_text(tockR("diff", start))
+
+  bind_rows(cases, conts)[, (c(exe_c, case_c, remove_c)) := NULL]
 
 }
-
-
-

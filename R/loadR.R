@@ -39,6 +39,7 @@ loadR <- function(regs,
                   simulation = F,
                   cores = 4,
                   dt = F,
+                  cancR.covariates = "all",
                   ...) {
 
 
@@ -46,16 +47,16 @@ loadR <- function(regs,
 
   start <- tickR.start
 
-  cat(paste0("\nInitializing loadR algorithm: ", tockR("time"), "\n\n"))
+  cli::cli_h2("Initializing loadR algorithm: {tockR('time')}")
 
   regs <- match.arg(regs, c("lpr", "lmdb", "pop", "pato", "cancer", "opr", "sc", "meta", "dsd", "ses", "covariates", "dcr"), several.ok = T)
 
   if(!is.null(keep.list) & class(keep.list) != "list") {
-    stop("Format the argument \'keep\' as a list with the structure list(\'lpr\' = c(\'vars\'), \'lmdb\' = c(\'vars\'))")
+    return(cli::cli_alert_danger("Error: Format the argument \'keep\' as a list with the structure list(lpr = c(\'vars\'), lmdb = c(\'vars\'))"))
   }
 
   if(!is.null(pattern.list) & class(pattern.list) != "list") {
-    stop("Format the argument \'pattern.list\' as a list with the structure list(\'lpr\' = c(\'DC92\', \'DC239\'), \'lmdb\' = c(\'L04\', \'L01\'))")
+    return(cli::cli_alert_danger("Format the argument \'pattern.list\' as a list with the structure list(lpr = c(\'DC92\', \'DC239\'), lmdb = c(\'L04\', \'L01\'))"))
   }
 
   if(class(id.filter) %in% c("character", "numeric", "integer")) {
@@ -65,6 +66,7 @@ loadR <- function(regs,
   }
 
   if(missing(simulation) & str_detect(getwd(), "V:|X:", negate=T)) {
+    cli::cli_alert_warning("SIMULATION OF DATASETS")
     simulation <- T
   }
 
@@ -79,7 +81,8 @@ loadR <- function(regs,
 
       tickR()
 
-      cat(paste0(i,": "))
+      cli::cli_h3("{str_to_upper(i)}:")
+
 
       reglist[[i]] <- simulatR(i,
                                n = n,
@@ -87,12 +90,13 @@ loadR <- function(regs,
                                pattern.list,
                                ...)
 
-      cat(paste0("Completed - ", tockR("time"), ", runtime: ", tockR("diff"), "\n"))
+      cli::cli_alert_success("Completed - {tockR(\'time\')}")
 
     }
 
-    cat(paste0("\nTotal runtime: \n"))
-    cat(paste0(tockR("diff", start), "\n\n"))
+    cli::cli_h3("Loading complete!")
+    cli::cli_text("Total runtime:")
+    cli::cli_text(tockR("diff", start))
 
     if(length(reglist) == 1) {
 
@@ -156,7 +160,7 @@ loadR <- function(regs,
 
     tickR()
 
-    cat(paste0(i,": "))
+    cli::cli_h3("{str_to_upper(i)}:")
 
     if(i %in% names(pattern.list2)) {
       pattern <- paste0("prxmatch(\'/", paste0(pattern.list[[i]], collapse="|"), "/\', ", vars.select$cancer[1], ") OR prxmatch(\'/", paste0(pattern.list2[[i]], collapse="|"), "/\', ", vars.select[[i]][2], ")")
@@ -210,7 +214,26 @@ loadR <- function(regs,
       }
 
 
-    } else {
+    } else if(i == "covariates") {
+
+      if(cancR.covariates == "all") {
+        keep <- names(cancR_codes)
+
+      } else {
+       keep <- names(cancR_codes)[str_detect(names(cancR_codes), "major", negate=T)]
+      }
+
+      if(dt) {
+        reglist[[i]] <- as.data.table(arrow::read_parquet(pathlist[["parquet"]][[i]]))[, ..keep]
+      } else {
+        reglist[[i]] <- as.data.frame(arrow::read_parquet(pathlist[["parquet"]][[i]]))[, keep]
+      }
+
+
+
+
+
+      } else {
 
       i_frame <- importSAS(pathlist[["sas"]][[i]],
                            obs = n,
@@ -230,12 +253,13 @@ loadR <- function(regs,
 
     }
 
-    cat(paste0("Completed - ", tockR("time"), ", runtime: ", tockR("diff"), "\n"))
+    cli::cli_alert_success("Completed - {tockR(\'time\')}")
 
   }
 
-  cat(paste0("\nTotal runtime: \n"))
-  cat(paste0(tockR("diff", start), "\n\n"))
+  cli::cli_h3("Loading complete!")
+  cli::cli_text("Total runtime:")
+  cli::cli_text(tockR("diff", start))
 
   if(length(reglist) == 1) {
 

@@ -7,7 +7,7 @@
 #' @param vars Vector of vars which should be cut
 #' @param seq.list List of the split patterns for each var. E.g. list("v1" = seq(0,10), "v2" = round(quantile(df %>% pull(age), seq(0,1,0.1)),0)).\
 #' Can be specified using only "median", "quantile", "quartile" etc which will be applied to all vars
-#' @param name.list list of names for new variables in the format: list("new" = "old")
+#' @param name.list list of names for new variables in the format: list("new" = "old"). Names can also be provided as a vector of same length as vars.
 #' @param name.pattern naming pattern that should automatically be pasted on the end of all the specified variable names in "vars".
 #' @param simplify whether date intervals should be simplified
 #' @param digits number of digits for label formatting
@@ -44,9 +44,9 @@
 #   cutR(c(age, birth), "5y",
 #        name.pattern = "_bin")
 #
-# #Quick format
+#Quick format
 # redcap_df %>%
-#   cutR(c(age, size, type), "tertile")
+#   cutR(c(age, size, type), "tertile", c("age_group", "size_t"))
 
 
 cutR <- function(data,
@@ -80,6 +80,19 @@ cutR <- function(data,
   } else {
 
     name.list.default <- as.list(vars) %>% set_names(vars)
+
+    #Allow names as vector
+    if(class(name.list) != "list") {
+
+      if(length(name.list) == length(vars)) {
+
+      name.list <- as.list(vars) %>% set_names(name.list)
+      } else {
+        return(cli::cli_alert_danger("Error: Length of vars.list not equal to length of variables"))
+
+      }
+
+    }
 
     name.list <- modifyList(name.list.default, listR(name.list, "reverse"))
 

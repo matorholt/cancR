@@ -205,7 +205,8 @@
 
 decodR <- function(codelist,
                    regs = c("pop", "sc", "meta", "dsd"),
-                   type = "matching") {
+                   type = "matching",
+                   cancR.covariates = "all") {
 
   if(type == "matching" & sum(str_detect(names(codelist), "case")) != 1) {
     return(cat("Error: Only one elment in the list can be named case"))
@@ -224,7 +225,7 @@ decodR <- function(codelist,
 
      out.list[["loadR"]][["pattern.list"]][[i]] <- unlist(main[i], use.names = F)
 
-     out.list[["searchR"]][["search.list"]][[i]] <- main[[i]]
+     out.list[["searchR"]][["search.list"]][[i]] <- listR(main[[i]], "pick", c(pluck_depth(main[[i]])-1, pluck_depth(main[[i]])))
 
    }
 
@@ -293,13 +294,76 @@ out.list[["searchR"]][["sub.labels"]] <- label_list
 
     }
 
-    out.list[["includR"]][["exclusion.ex"]] <- unlist(lapply(main[regs.names], function(i) {
-                                          names(i)
-                                        }), use.names = F)
+    #If cases are identified in LPR and also present in cancR_codes (str_detect both directions)
+    if("lpr" %in% names(main$case)) {
 
+      if(cancR.covariates == "all") {
+      cancR_codes_keep <- names(cancR_codes)[str_detect(names(cancR_codes), "major", negate=T)]
+      } else {
+        cancR_codes_keep <- names(cancR_codes)
+      }
+
+      e_names <- c()
+
+      for(i in cancR_codes_keep) {
+
+        if(any(str_detect(unlist(cancR_codes[[i]]), paste0("^", unlist(main$case$lpr), collapse="|"))) |
+           any(str_detect(unlist(main$case$lpr), paste0("^", unlist(cancR_codes[[i]]), collapse="|")))) {
+
+          out.list[["searchR"]][["search.list"]][["lpr"]][[i]] <- cancR_codes[[i]]
+          out.list[["searchR"]][["exclusion.list"]][["lpr"]][[i]] <- unlist(main$case$lpr, use.names = F)
+
+          e_names <- c(e_names, i)
+
+        }
+
+
+
+      }
+
+
+
+      if(length(e_names) > 0) {
+       cli::cli_alert_warning("{length(e_names)} covariates containing case-codes:")
+        cli::cli_ul(e_names)
+      }
+
+
+    }
+
+    out.list[["includR"]][["exclusion.ex"]] <-
+      unlist(map(main[regs.names], ~ {
+
+      if(pluck_depth(.x) > 2 & "exclusion" %in% names(.x)) {
+        names(.x[["exclusion"]])
+      } else {
+        names(.x)
+      }
+
+
+      }), use.names = F)
+
+    #If any covariates are defined
+    if(any(unlist(map(main[regs.names], ~ "covariates" %in% names(.x))))) {
+
+      out.list[["updatR"]][["vars"]] <-
+        out.list[["includR"]][["remove"]] <-
+        unlist(map(main[regs.names], ~ {
+
+          if(pluck_depth(.x) > 2 & "covariates" %in% names(.x)) {
+            names(.x[["covariates"]])
+          }
+
+        }), use.names = F)
+
+
+    }
+
+    out.list[["includR"]][["remove"]] <- c(out.list[["includR"]][["remove"]], e_names)
     out.list[["includR"]][["exclusion.out"]] <- main$design$exclusion
     out.list[["includR"]][["age.limit"]] <- main$design$age.limit
     out.list[["includR"]][["period"]] <- main$design$period
+    out.list[["updatR"]][["vars"]] <- c(out.list[["updatR"]][["vars"]], e_names)
 
 
 
@@ -322,34 +386,4 @@ out.list[["searchR"]][["sub.labels"]] <- label_list
  return(out.list)
 
 }
-#
-# multilist <- list(case = list(lpr = list("abdomen" = list("kidney" = c("DA","DB","DC"),
-#                                                           "liver" = c("DD", "DE", "DF")),
-#                                          "thorax" = list("heart" = c("DG", "DH", "DI"))),
-#                               pato = list(pcc = "M80")),
-#                   lpr = list(immune_diag = "DJ",
-#                              cll = c("DK4", "DL")),
-#                   lmdb = list(immune_drugs = "A"),
-#                   opr = list(trans = "KA"),
-#                   labels = list("case_lpr" = c("region", "organ"),
-#                                 "immune_drugs" = "immsup"),
-#                   design = list(age.limit = 18,
-#                                 period = c("2000-01-01", "2022-12-31"),
-#                                 exclusion = c("sc_date")))
-#
-#
-#
-# multilist2 <- list(case = list(lpr = list("abdomen" = list("kidney" = c("DA","DB","DC"),
-#                                                           "liver" = c("DD", "DE", "DF")),
-#                                          "thorax" = list("heart" = c("DG", "DH", "DI")))),
-#                   lpr = list(immune_diag = "DJ",
-#                              cll = c("DK4", "DL")),
-#                   lmdb = list(immune_drugs = "A"),
-#                   opr = list(trans = "KA"),
-#                   labels = list("case" = c("region", "organ"),
-#                                 "immune_drugs" = "immsup"),
-#                   design = list(age.limit = 18,
-#                                 period = c("2000-01-01", "2022-12-31"),
-#                                 exclusion = c("sc_date")))
-# m.list <- decodR(multilist)
-# m.list <- decodR(multilist2)
+

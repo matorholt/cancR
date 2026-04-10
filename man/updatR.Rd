@@ -2,22 +2,26 @@
 % Please edit documentation in R/updatR.R
 \name{updatR}
 \alias{updatR}
-\title{Update of Charlson Comorbidity Index or covariate values over time}
+\title{Data reduction, updating and insertion of time-dependent covariates}
 \usage{
-updatR(data, exclusion, match = "start")
+updatR(td.frame, update.frame, vars, indices = NULL, pnrs = NULL, dt = F)
 }
 \arguments{
-\item{data}{data frame with case IDS}
+\item{td.frame}{data frame of time-dependent covariates with dates in from/to format}
 
-\item{exclusion}{Vector of diagnosis codes to be excluded (e.g. c("DC1", "DC2", "DC3"))}
+\item{update.frame}{data.frame of index dates of covariates that should be updated/inserted}
 
-\item{lpr}{lpr data frame. Loaded automatically if missing}
+\item{vars}{vector of variables to update/insert}
 
-\item{td.frame}{Time-dependent frame containing CCI values to be changed. Loaded automatically if missing}
+\item{indices}{vector of index dates for data reduction}
+
+\item{pnrs}{vector of pnrs for data reduction}
+
+\item{dt}{whether the dataframe should be returned as a data.table}
 }
 \value{
-An updated td.frame
+A reduced and updated time-dependent data frame
 }
 \description{
-Update of Charlson Comorbidity Index or covariate values over time
+Data reduction, updating and insertion of time-dependent covariates
 }

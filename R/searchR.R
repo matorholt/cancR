@@ -6,7 +6,7 @@
 #' @param sub.list list of variables where the diagnosis code should be kept (e.g. list("KOL" = "subtype"))
 #' @param sub.labels list of labels for the diagnosis code colum (e.g. list("subtype" = list("a" = c("DC1", "DC2"))))
 #' @param name.list list of labels for the main columns (e.g. list("case" = "diabetes))
-#' @param exclusion vector of diagnosis codes for exclusion
+#' @param exclusion.list list with same structure as search.list for exclusion codes
 #' @param slice which rows should be selected (first(default)/last/all)
 #' @param format whether selected rows should contain date or 1
 #' @param match the match of the regex code (match, start, end or contains(default))
@@ -26,6 +26,7 @@
 #                 opr = simulatR("opr", n=n, opr.diag.count = 10),
 #                 lmdb = simulatR("lmdb", n = n),
 #                 pop = simulatR("pop", n=n*10),
+#                 pato = simulatR("pato", n=n),
 #                 sc = data.frame(pnr = sample(seq(1,n*10), n*10*0.1, replace=F),
 #                                 sc_date = sample(c(sample(seq(as.Date('1990/01/01'), as.Date('2020/01/01'), by="day"))), n*10*0.1, replace=TRUE),
 #                                 meta_date = sample(c(sample(seq(as.Date('1990/01/01'), as.Date('2020/01/01'), by="day"))), n*10*0.1, replace=TRUE),
@@ -34,7 +35,7 @@
 #
 #
 # reglist <- lapply(reglist, as.data.frame)
-#
+
 # #Multilevel codelist
 # clist <- decodR(list("lpr_case" =
 #                        list(supergroup_a =
@@ -96,7 +97,7 @@ searchR <- function(reglist,
                     name.list = NULL,
                     sub.list = list(),
                     sub.labels = NULL,
-                    exclusion = "NULL",
+                    exclusion.list = list(),
                     slice = "first",
                     format = "date",
                     date.filter = NULL,
@@ -110,12 +111,11 @@ searchR <- function(reglist,
 
   start <- tickR.start
 
-  cat(paste0("\nInitializing searchR algorithm: ", tockR("time"), "\n\n"))
+  cli::cli_h2("Initializing searchR algorithm: {tockR('time')}")
 
   match <- match.arg(match, c("start", "end", "exact", "contains"))
   format <- match.arg(format, c("categorical", "date", "code"))
   slice <- match.arg(slice, c("first", "last", "all"))
-
 
 
   if(class(reglist) %in% "data.frame") {
@@ -123,6 +123,12 @@ searchR <- function(reglist,
     reglist <- lst(" " = reglist)
     names(search.list) <- " "
   } else {
+
+    if(any(names(search.list) %nin% names(reglist))) {
+
+      return(cli::cli_alert_danger("Error: {names(c.list$searchR$search.list)[names(c.list$searchR$search.list) %nin% names(reglist)]} not present in reglist"))
+
+    }
 
     reglist <- reglist[names(search.list)]
 
@@ -137,30 +143,26 @@ searchR <- function(reglist,
     d
   })
 
+
 if(!is.null(cores)) multitaskR(cores = cores)
 
-
-  #progressr::handlers(global = TRUE)
-  handlers(list(
-    handler_progress(
-      format   = "|:bar| :current/:total (:percent) - :message",
-      width    = getOption("width"),
-      complete = "=",
-      clear = F
-    )))
+  progressr::handlers(global = TRUE)
+  progressr::handlers("cli")
+  options(cli.progress_bar_style = "fillsquares")
 
   #Loop through reglist
   joined_data <-
     joinR(
-      map(seq_along(reglist), function(x) {
+      map(names(reglist), function(x) {
 
         tickR()
-        cat(paste0("\n\nLoading ", str_to_upper(names(reglist)[x]), ": \n\n"))
 
-        varlist <- search.list[[names(reglist)[[x]]]]
-        reg <- names(reglist)[x]
+        cli::cli_h3("Loading {str_to_upper(x)}")
 
-        if(names(reglist)[[x]] == "pato") {
+        varlist <- search.list[[x]]
+        exlist <- exclusion.list[[x]]
+
+        if(x == "pato") {
           regex <- c("\\b(", ")")
         } else {
 
@@ -172,21 +174,23 @@ if(!is.null(cores)) multitaskR(cores = cores)
           )
         }
 
-       p <- progressr::progressor(along = seq_along(varlist))
+       p <- progressr::progressor(along = varlist)
 
         #Loop through variables
         out <- joinR(
-          future_map(seq_along(varlist), function(k) {
+          future_map(names(varlist), function(i) {
 
                     tickR()
 
-                    i <- names(varlist)[k]
-
                     pattern <- paste0(regex[1], paste0(varlist[[i]], collapse="|"), regex[2])
 
-                    exclude <- paste0(regex[1], paste0(exclusion, collapse="|"), regex[2])
+                    if(i %in% names(exlist)) {
+                    exclude <- paste0(regex[1], paste0(exlist[[i]], collapse="|"), regex[2])
+                    } else {
+                      exclude <- "^$"
+                    }
 
-                    data <- as.data.table(reglist[[reg]])[str_detect(code, pattern) & str_detect(code, exclude, negate=T)]
+                    data <- as.data.table(reglist[[x]])[code %like% pattern & !code %like% exclude]
 
                     if(!is.null(date.filter)) {
 
@@ -219,14 +223,16 @@ if(!is.null(cores)) multitaskR(cores = cores)
 
                     setkeyv(data, pnr_c)
 
-                    p(paste0(names(varlist)[k], " complete: ", tockR("time"), " - Runtime: ", tockR()))
+                    p(paste0(i, " complete: ", tockR("time"), " - Runtime: ", tockR()))
+                    #p(cli::cli_alert_success("good job"))
 
                     data
 
 
                   }), by = pnr_c, type = "full", dt=T)
 
-        cat(paste0(str_to_upper(names(reglist)[x]), " complete: ", tockR("time"), " - Runtime: ", tockR()))
+
+        cli::cli_alert_success("Completed - {tockR('time')}, runtime: {tockR()}")
 
         out
 
@@ -245,9 +251,9 @@ if(!is.null(cores)) multitaskR(cores = cores)
 
   }
 
-  cat("\n\nSearching complete!\n")
-  cat("Total runtime: \n")
-  cat(tockR("diff", start), "\n\n")
+  cli::cli_h3("Search complete!")
+  cli::cli_text("Total runtime:")
+  cli::cli_text(tockR("diff", start))
 
   if(!dt) return(as.data.frame(joined_data))
   joined_data

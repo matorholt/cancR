@@ -23,7 +23,7 @@ cutR(
 \item{seq.list}{List of the split patterns for each var. E.g. list("v1" = seq(0,10), "v2" = round(quantile(df \%>\% pull(age), seq(0,1,0.1)),0)).\
 Can be specified using only "median", "quantile", "quartile" etc which will be applied to all vars}
 
-\item{name.list}{list of names for new variables in the format: list("new" = "old")}
+\item{name.list}{list of names for new variables in the format: list("new" = "old"). Names can also be provided as a vector of same length as vars.}
 
 \item{name.pattern}{naming pattern that should automatically be pasted on the end of all the specified variable names in "vars".}
 
