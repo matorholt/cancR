@@ -47,7 +47,7 @@ loadR <- function(regs,
 
   start <- tickR.start
 
-  cli::cli_h2("Initializing loadR algorithm: {tockR('time')}")
+  cli::cli_h2("Initializing loadR algorithm: {tockR(\'time\')}")
 
   regs <- match.arg(regs, c("lpr", "lmdb", "pop", "pato", "cancer", "opr", "sc", "meta", "dsd", "ses", "covariates", "dcr"), several.ok = T)
 
@@ -120,7 +120,7 @@ loadR <- function(regs,
                       "meta" = "V:/Data/Workdata/709545/Mathias Oerholt/DATASETS/SKIN_METASTASIS.parquet",
                       "dsd" = "V:/Data/Workdata/709545/Mathias Oerholt/DATASETS/SKIN_DEATH.parquet",
                       "ses" = "V:/Data/Workdata/709545/Mathias Oerholt/DATASETS/SES_wide.parquet",
-                      "covariates" = "V:/Data/Workdata/709545/Mathias Oerholt/DATASETS/TIME_COVARIATES.parquet",
+                      "covariates" = "V:/Data/Workdata/709545/Mathias Oerholt/DATASETS/COVARIATES.parquet",
                       "dcr" = "V:/Data/Workdata/709545/Mathias Oerholt/DATASETS/DCR.parquet"),
          "sas" = list("lpr" = "X:/Data/Rawdata_Hurtig/709545/Grunddata/LPR/diag_indl.sas7bdat",
                       "cancer" = "X:/Data/Rawdata_Hurtig/709545/Grunddata/Cancer/t_tumor.sas7bdat",
@@ -133,7 +133,7 @@ loadR <- function(regs,
          "pato" = c("pnr", "k_matnr", "D_MODTDATO", "C_SNOMEDKODE"),
          "cancer" = c("pnr", "d_diagnosedato", "c_icd10", "c_morfo3"),
          "lmdb" = c("pnr", "eksd", "apk", "atc", "strnum", "strunit", "PACKSIZE"),
-         "opr" = c("pnr", "opr", "inddto"))
+         "opr" = c("pnr", "opr", "tilopr", "inddto"))
 
   vars.default <-
     list("lpr" = "diag",

@@ -111,7 +111,7 @@ searchR <- function(reglist,
 
   start <- tickR.start
 
-  cli::cli_h2("Initializing searchR algorithm: {tockR('time')}")
+  cli::cli_h2("Initializing searchR algorithm: {tockR(\'time\')}")
 
   match <- match.arg(match, c("start", "end", "exact", "contains"))
   format <- match.arg(format, c("categorical", "date", "code"))
@@ -232,7 +232,7 @@ if(!is.null(cores)) multitaskR(cores = cores)
                   }), by = pnr_c, type = "full", dt=T)
 
 
-        cli::cli_alert_success("Completed - {tockR('time')}, runtime: {tockR()}")
+        cli::cli_alert_success("Completed - {tockR(\'time\')}, runtime: {tockR()}")
 
         out
 

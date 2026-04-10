@@ -52,7 +52,7 @@ updatR <- function(td.frame,
 
   start <- tickR.start
 
-  cli::cli_h2("Initializing updatR algorithm: {tockR('time')}")
+  cli::cli_h2("Initializing updatR algorithm: {tockR(\'time\')}")
 
   setDT(td.frame)
 
@@ -62,7 +62,7 @@ updatR <- function(td.frame,
 
     td.frame <- td.frame[pnr %in% pnrs]
 
-    cli::cli_alert_success("Completed - {tockR('time')}, runtime: {tockR()}")
+    cli::cli_alert_success("Completed - {tockR(\'time\')}, runtime: {tockR()}")
 
   }
 
@@ -75,7 +75,7 @@ updatR <- function(td.frame,
 
     td.frame <- td.frame[findInterval(from, all_indices) < findInterval(to, all_indices)]
 
-    cli::cli_alert_success("Completed - {tockR('time')}, runtime: {tockR()}")
+    cli::cli_alert_success("Completed - {tockR(\'time\')}, runtime: {tockR()}")
 
   }
 
@@ -138,7 +138,7 @@ updatR <- function(td.frame,
 
     }
   }
-  cli::cli_alert_success("Completed - {tockR('time')}, runtime: {tockR()}")
+  cli::cli_alert_success("Completed - {tockR(\'time\')}, runtime: {tockR()}")
 
   cli::cli_h3("Updating complete!")
   cli::cli_text("Total runtime:")

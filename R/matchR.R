@@ -87,7 +87,7 @@ matchR <- function(data,
 
   start <- tickR.start
 
-  cli::cli_h2("Initializing matchR algorithm: {tockR('time')}")
+  cli::cli_h2("Initializing matchR algorithm: {tockR(\'time\')}")
 
   case <- data %>% select({{case}}) %>% names
   fu <- data %>% select({{follow}}) %>% names
@@ -121,7 +121,7 @@ matchR <- function(data,
   data <- data[case == 1 | (case == 0 & fu > min(index, na.rm=T))] %>%
     .[.[, Reduce(`&`, lapply(.SD, function(x) is.na(x) | x > min(index, na.rm=T))),.SDcols = c(exclude)], .SDcols= c(exclude)]
 
-  cli::cli_text("Completed - {tockR('time')}")
+  cli::cli_text("Completed - {tockR(\'time\')}")
   cli::cli_h3("Merging time-dependent data frame")
 
   all_indices <- data[case==1, substitute(index)]
@@ -144,7 +144,7 @@ matchR <- function(data,
 
   data[, set := match(pnr, unique(pnr))]
 
-  cli::cli_text("Completed - {tockR('time')}")
+  cli::cli_text("Completed - {tockR(\'time\')}")
   cli::cli_h3("Partitioning of cohorts")
 
   #Isolate cases and get case-specific cohorts for splitting
@@ -154,7 +154,7 @@ matchR <- function(data,
   split_df <-
     split(data, by = fixed.vars)[sort(unique(total_cases$cohorts))]
 
-  cli::cli_text("Completed - {tockR('time')}")
+  cli::cli_text("Completed - {tockR(\'time\')}")
 
   if(!is.null(cores)) {
     multitaskR(cores = cores)

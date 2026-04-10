@@ -33,7 +33,7 @@ includR <- function(data,
 
   start <- tickR.start
 
-  cli::cli_h2("Initializing incR algorithm: {tockR('time')}")
+  cli::cli_h2("Initializing includR algorithm: {tockR(\'time\')}")
 
   exe_c <- data %>% select({{exclusion.ex}}) %>% names()
   exo_c <- data %>% select({{exclusion.out}}) %>% names()
