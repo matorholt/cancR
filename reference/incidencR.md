@@ -73,18 +73,18 @@ specified in the strata-argument, stratified incidence rates
 
 ``` r
 (rates <-
-incidencR(redcap_df %>%
-           recodR(list("sex" = list("Female" = 1,
-                                     "Male" = 2))),
-          index = date_of_surgery,
-          group = type,
-          unit = 100000,
-          strata = list(c("year"),
-                        c("age", "sex"),
-                        c("year", "type"),
-                        c("year", "type", "age"),
-                        c("type", "age"),
-                        c("year", "age", "sex", "type"))))
+   incidencR(redcap_df %>%
+               recodR(list("sex" = list("Female" = 1,
+                                        "Male" = 2))),
+             index = date_of_surgery,
+             group = type,
+             unit = 100000,
+             strata = list(c("year"),
+                           c("age", "sex"),
+                           c("year", "type"),
+                           c("year", "type", "age"),
+                           c("type", "age"),
+                           c("year", "age", "sex", "type"))))
 #> $overall
 #> # A tibble: 1 × 8
 #>   cases  pyears crude_rate crude_lower crude_upper weighted_rate weighted_lower
@@ -214,6 +214,7 @@ incidencR(redcap_df %>%
 #> # ℹ 3 more variables: weighted_rate <dbl>, weighted_lower <dbl>,
 #> #   weighted_upper <dbl>
 #> 
+
 
 ggplot(rates$year_type, aes(x=year, y=weighted_rate, color = type, fill = type)) +
   geom_point() +

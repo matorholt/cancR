@@ -29,6 +29,7 @@
     <li><a class="dropdown-item" href="../articles/data_management.html">Data Management</a></li>
     <li><a class="dropdown-item" href="../articles/tables.html">Tables</a></li>
     <li><a class="dropdown-item" href="../articles/estimatR.html">Time-to-event analysis</a></li>
+    <li><a class="dropdown-item" href="../articles/sap.html">Statistical Analysis Plan</a></li>
   </ul></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
@@ -111,18 +112,18 @@
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="op">(</span><span class="va">rates</span> <span class="op">&lt;-</span></span></span>
-<span class="r-in"><span><span class="fu">incidencR</span><span class="op">(</span><span class="va">redcap_df</span> <span class="op">%&gt;%</span></span></span>
-<span class="r-in"><span>           <span class="fu"><a href="recodR.html">recodR</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"sex"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"Female"</span> <span class="op">=</span> <span class="fl">1</span>,</span></span>
-<span class="r-in"><span>                                     <span class="st">"Male"</span> <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>          index <span class="op">=</span> <span class="va">date_of_surgery</span>,</span></span>
-<span class="r-in"><span>          group <span class="op">=</span> <span class="va">type</span>,</span></span>
-<span class="r-in"><span>          unit <span class="op">=</span> <span class="fl">100000</span>,</span></span>
-<span class="r-in"><span>          strata <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"year"</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>                        <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"age"</span>, <span class="st">"sex"</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>                        <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"year"</span>, <span class="st">"type"</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>                        <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"year"</span>, <span class="st">"type"</span>, <span class="st">"age"</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>                        <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"type"</span>, <span class="st">"age"</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>                        <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"year"</span>, <span class="st">"age"</span>, <span class="st">"sex"</span>, <span class="st">"type"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span>   <span class="fu">incidencR</span><span class="op">(</span><span class="va">redcap_df</span> <span class="op">%&gt;%</span></span></span>
+<span class="r-in"><span>               <span class="fu"><a href="recodR.html">recodR</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"sex"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"Female"</span> <span class="op">=</span> <span class="fl">1</span>,</span></span>
+<span class="r-in"><span>                                        <span class="st">"Male"</span> <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>             index <span class="op">=</span> <span class="va">date_of_surgery</span>,</span></span>
+<span class="r-in"><span>             group <span class="op">=</span> <span class="va">type</span>,</span></span>
+<span class="r-in"><span>             unit <span class="op">=</span> <span class="fl">100000</span>,</span></span>
+<span class="r-in"><span>             strata <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"year"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                           <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"age"</span>, <span class="st">"sex"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                           <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"year"</span>, <span class="st">"type"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                           <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"year"</span>, <span class="st">"type"</span>, <span class="st">"age"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                           <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"type"</span>, <span class="st">"age"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                           <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"year"</span>, <span class="st">"age"</span>, <span class="st">"sex"</span>, <span class="st">"type"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $overall</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 1 × 8</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   cases  pyears crude_rate crude_lower crude_upper weighted_rate weighted_lower</span>
@@ -253,6 +254,7 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   weighted_upper &lt;dbl&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">ggplot</span><span class="op">(</span><span class="va">rates</span><span class="op">$</span><span class="va">year_type</span>, <span class="fu">aes</span><span class="op">(</span>x<span class="op">=</span><span class="va">year</span>, y<span class="op">=</span><span class="va">weighted_rate</span>, color <span class="op">=</span> <span class="va">type</span>, fill <span class="op">=</span> <span class="va">type</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span></span>
 <span class="r-in"><span>  <span class="fu">geom_point</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span></span>
 <span class="r-in"><span>  <span class="fu">geom_line</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span></span>
@@ -270,7 +272,7 @@
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by Mathias Ørholt.</p>
+  <p>Developed by Mathias Ørholt, Ida Wulff.</p>
 </div>
 
 <div class="pkgdown-footer-right">

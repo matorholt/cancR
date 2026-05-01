@@ -1,32 +1,40 @@
-# Update of Charlson Comorbidity Index or covariate values over time
+# Data reduction, updating and insertion of time-dependent covariates
 
-Update of Charlson Comorbidity Index or covariate values over time
+Data reduction, updating and insertion of time-dependent covariates
 
 ## Usage
 
 ``` r
-updatR(data, exclusion, match = "start")
+updatR(td.frame, update.frame, vars, indices = NULL, pnrs = NULL, dt = F)
 ```
 
 ## Arguments
 
-- data:
-
-  data frame with case IDS
-
-- exclusion:
-
-  Vector of diagnosis codes to be excluded (e.g. c("DC1", "DC2", "DC3"))
-
-- lpr:
-
-  lpr data frame. Loaded automatically if missing
-
 - td.frame:
 
-  Time-dependent frame containing CCI values to be changed. Loaded
-  automatically if missing
+  data frame of time-dependent covariates with dates in from/to format
+
+- update.frame:
+
+  data.frame of index dates of covariates that should be
+  updated/inserted
+
+- vars:
+
+  vector of variables to update/insert
+
+- indices:
+
+  vector of index dates for data reduction
+
+- pnrs:
+
+  vector of pnrs for data reduction
+
+- dt:
+
+  whether the dataframe should be returned as a data.table
 
 ## Value
 
-An updated td.frame
+A reduced and updated time-dependent data frame

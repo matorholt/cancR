@@ -31,7 +31,11 @@ Install the latest version of Rtools from their website:
 ### Step 3
 
 Install the heaven package using devtools by writing the command
-`devtools::install_github("tagteam/heaven")`
+`devtools::install_github("tagteam/heaven")`.
+
+NB: Currently, a bug in the heaven repo throws an error. Install a
+previous version instead:
+`devtools::install_github("tagteam/heaven@eb4a937")`
 
 ### Step 4
 

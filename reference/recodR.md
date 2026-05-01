@@ -5,7 +5,7 @@ Recode multiple variables
 ## Usage
 
 ``` r
-recodR(data, namelist, match = "exact", replace = F)
+recodR(data, namelist, match = "exact", replace = F, dt = F)
 ```
 
 ## Arguments
@@ -29,6 +29,10 @@ recodR(data, namelist, match = "exact", replace = F)
   whether multiple matches should be replaced directly (such as 1,4 to
   head, arm)
 
+- dt:
+
+  whether the dataframe should be returned as data.table (default = F)
+
 ## Value
 
 the input data frame with recoded variables
@@ -36,6 +40,7 @@ the input data frame with recoded variables
 ## Examples
 
 ``` r
+
             df %>%
   recodR(list("diag" = list("KOL" = "DX123",
                             "Astma" = c("DC123", "DC2"),

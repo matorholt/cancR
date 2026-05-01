@@ -13,6 +13,7 @@ We use our `redcap_df` as an example. Let us create a simple table of
 the whole population and present the covariates age, sex and tumor type
 
 ``` r
+
 tablR(redcap_df,
       vars = c(age, sex, type))
 #>                        Overall (N=500)
@@ -35,6 +36,7 @@ numeric. We convert the variables using
 need to specify the data frame in [`tablR()`](../reference/tablR.md)
 
 ``` r
+
 redcap_df %>% 
   factR(c(sex, type)) %>% 
   tablR(vars = c(age, sex, type))
@@ -57,6 +59,7 @@ If we want to compare multiple groups, we use the `group` argument. Let
 us compare tumor types
 
 ``` r
+
 redcap_df %>% 
   factR(c(sex, type)) %>% 
   tablR(group = type,
@@ -74,6 +77,7 @@ We can also add a `total`column and also test the differences in
 distributions
 
 ``` r
+
 redcap_df %>% 
   factR(c(sex, type),
         levels = list("type" = c("0", "1", "2"))) %>% 
@@ -110,6 +114,7 @@ It is possible to rename three types of labels:
 - Variable labels/levels: `labs.subheadings`  
 
 ``` r
+
 redcap_df %>%
   factR(c(type, sex)) %>%
   tablR(
@@ -137,6 +142,7 @@ The order of the groups and variable levels can be specified with the
 arguments
 
 ``` r
+
 redcap_df %>%
   factR(c(type, sex, localisation)) %>%
   tablR(
@@ -163,11 +169,11 @@ redcap_df %>%
 #> 5     Female              47 (42%)          123 (48%)         74 (56%)     
 #> 6     Male                66 (58%)          131 (52%)         59 (44%)     
 #> 7  Localisation                                                            
-#> 8     Neck                6 (5.3%)          8 (3.1%)          1 (0.8%)     
-#> 9     Head                9 (8.0%)          31 (12%)          24 (18%)     
-#> 10    Trunk               47 (42%)          74 (29%)          46 (35%)     
-#> 11    Upper Extremity     30 (26%)          94 (37%)          35 (26%)     
-#> 12    Lower Extremity     20 (18%)          45 (18%)          23 (17%)     
+#> 8     Trunk               47 (42%)          74 (29%)          46 (35%)     
+#> 9     Upper Extremity     30 (26%)          94 (37%)          35 (26%)     
+#> 10    Lower Extremity     20 (18%)          45 (18%)          23 (17%)     
+#> 11    Head                9 (8.0%)          31 (12%)          24 (18%)     
+#> 12    Neck                6 (5.3%)          8 (3.1%)          1 (0.8%)     
 #> 13    Unspecified         1 (0.9%)          2 (0.8%)          4 (3.0%)
 ```
 
@@ -178,6 +184,7 @@ interquartile range and range. This can be specified in the
 [`numeric()`](https://rdrr.io/r/base/numeric.html) argument
 
 ``` r
+
 redcap_df %>%
   factR(c(type, sex, localisation)) %>%
   tablR(
@@ -205,11 +212,11 @@ redcap_df %>%
 #> 5     Female                47 (42%)       123 (48%)          74 (56%)
 #> 6     Male                  66 (58%)       131 (52%)          59 (44%)
 #> 7  Localisation                                                       
-#> 8     Neck                  6 (5.3%)       8 (3.1%)           1 (0.8%)
-#> 9     Head                  9 (8.0%)       31 (12%)           24 (18%)
-#> 10    Trunk                 47 (42%)       74 (29%)           46 (35%)
-#> 11    Upper Extremity       30 (26%)       94 (37%)           35 (26%)
-#> 12    Lower Extremity       20 (18%)       45 (18%)           23 (17%)
+#> 8     Trunk                 47 (42%)       74 (29%)           46 (35%)
+#> 9     Upper Extremity       30 (26%)       94 (37%)           35 (26%)
+#> 10    Lower Extremity       20 (18%)       45 (18%)           23 (17%)
+#> 11    Head                  9 (8.0%)       31 (12%)           24 (18%)
+#> 12    Neck                  6 (5.3%)       8 (3.1%)           1 (0.8%)
 #> 13    Unspecified           1 (0.9%)       2 (0.8%)           4 (3.0%)
 ```
 
@@ -222,6 +229,7 @@ also collapse variables of similar kind for simplicity with the
 yes/no, 1/0, positive/negative syntax.
 
 ``` r
+
 # redcap_df %>%
 #   mutate(margins = sample(c("0","1"), nrow(redcap_df), replace=TRUE)) %>%
 #   factR(c(type, sex, localisation, cd10, sox10, ck, margins, necrosis)) %>%

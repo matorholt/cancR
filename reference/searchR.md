@@ -11,7 +11,7 @@ searchR(
   name.list = NULL,
   sub.list = list(),
   sub.labels = NULL,
-  exclusion = "NULL",
+  exclusion.list = list(),
   slice = "first",
   format = "date",
   date.filter = NULL,
@@ -47,9 +47,9 @@ searchR(
   list of labels for the diagnosis code colum (e.g. list("subtype" =
   list("a" = c("DC1", "DC2"))))
 
-- exclusion:
+- exclusion.list:
 
-  vector of diagnosis codes for exclusion
+  list with same structure as search.list for exclusion codes
 
 - slice:
 

@@ -13,6 +13,7 @@ First we load the cancR package. The package automatically loads many
 packages useful for data management
 
 ``` r
+
 library(cancR)
 ```
 
@@ -38,6 +39,7 @@ rows where type = 1. All these functions are combined into a piping
 structure and assigned to a new object named “new_data”
 
 ``` r
+
 new_data <- redcap_df %>% 
   select(id, sex, birth, type) %>% 
   mutate(new_variable = "new") %>% 
@@ -57,6 +59,7 @@ For a simpler inspection, [`head()`](https://rdrr.io/r/utils/head.html)
 shows only the first six rows in the console
 
 ``` r
+
 head(redcap_df)
 #>   id sex  age      birth   followup date_of_surgery      size type localisation
 #> 1  1   1 79.1 20-09-1929 03-04-2023      2008-11-03  7.302734    1            3
@@ -78,6 +81,7 @@ All column names can be shown with
 [`names()`](https://rdrr.io/r/base/names.html)
 
 ``` r
+
 names(redcap_df)
 #>  [1] "id"              "sex"             "age"             "birth"          
 #>  [5] "followup"        "date_of_surgery" "size"            "type"           
@@ -91,6 +95,7 @@ correct formatting. E.g. are date-variables coded as dates, continouous
 variables as numeric etc.
 
 ``` r
+
 str(redcap_df)
 #> 'data.frame':    500 obs. of  17 variables:
 #>  $ id             : int  1 2 3 4 5 6 7 8 9 10 ...
@@ -120,6 +125,7 @@ To get a graphical glimpse of the data we can use the summarisR()
 function:
 
 ``` r
+
 summarisR(redcap_df, 
           vars = c(sex, size, type, localisation, necrosis, cd10, sox10, ck))
 ```
@@ -129,6 +135,7 @@ summarisR(redcap_df,
 And to exploit the number of missing values we use the missR() function
 
 ``` r
+
 missR(redcap_df)
 #> Nas detected in the following variables:
 #> 
@@ -146,6 +153,7 @@ We can also check if numerical variables are normally distributed with
 the distributR() function
 
 ``` r
+
 distributR(redcap_df,
            vars = size)
 ```
@@ -163,6 +171,7 @@ Variables/columns can be selected and removed with the select()
 function.
 
 ``` r
+
 redcap_df %>% 
   select(id, sex, birth) %>% 
   head
@@ -178,6 +187,7 @@ redcap_df %>%
 Variables are removed with a minus sign.
 
 ``` r
+
 redcap_df %>% 
   select(-id, -birth) %>% 
   head
@@ -201,6 +211,7 @@ It is also possible to choose variable based on text patterns, which is
 useful for variables with a common prefix/suffix such as \_date
 
 ``` r
+
 redcap_df %>% 
   select(contains("_date")) %>% 
   head
@@ -220,6 +231,7 @@ If we need to select a large range of variables we call the first and
 last separated by a colon:
 
 ``` r
+
 redcap_df %>% 
   select(sex:sox10) %>% 
   head
@@ -245,6 +257,7 @@ Renaming of variable names can be done using rename(). The syntax is
 “new name” = “old name”
 
 ``` r
+
 redcap_df %>% 
   rename(index = date_of_surgery,
          cytokeratin = ck) %>% 
@@ -281,6 +294,7 @@ the dataset, it is modified automatically.
 We now recode necrosis, so that 1 = yes and everything else is “no”.
 
 ``` r
+
 redcap_df %>% 
   mutate(necrosis = ifelse(necrosis == 1, "yes", "no")) %>% 
   head
@@ -306,6 +320,7 @@ also assign these as “no” we change the `==` in the mutate function to
 “else” statement, here “no”.
 
 ``` r
+
 redcap_df %>% 
   mutate(necrosis = ifelse(necrosis %in% 1, "yes", "no")) %>% 
   head
@@ -329,6 +344,7 @@ If we want more explicit control with the recoding or we have more than
 one condition, we use case_when
 
 ``` r
+
 redcap_df %>% 
   mutate(necrosis = case_when(necrosis == 1 ~ "yes",
                               necrosis == 0 ~ "no")) %>% 
@@ -353,6 +369,7 @@ Now we have preserved the missing values. We can also control what to do
 with values that does not satisfy any of the criteria
 
 ``` r
+
 redcap_df %>% 
   mutate(necrosis = case_when(necrosis %in% 1 ~ "yes",
                               necrosis %in% 0 ~ "no",
@@ -379,6 +396,7 @@ redcap_df %>%
 Multiple mutate functions can be collected in one call
 
 ``` r
+
 redcap_df %>% 
   mutate(new_variable = "new",
          sex = ifelse(sex == 1, "f", "m"),
@@ -420,6 +438,7 @@ mutate. The syntax is:
 Here we convert the variables cd10, sox10 and ck to characters
 
 ``` r
+
 redcap_df %>% 
   select(cd10, sox10, ck) %>% 
   mutate(across(c(cd10, sox10, ck), ~ as.character(.))) %>% 
@@ -443,6 +462,7 @@ cancR package. The syntax here is a list of lists, so that list(variable
 = list(new name = old name))
 
 ``` r
+
 redcap_df %>% 
   recodR(list("sex" = 
                 list("female" = 1,
@@ -492,6 +512,7 @@ to correct date format. This can easily be done with the datR()
 function:
 
 ``` r
+
 redcap_df %>% 
   datR(c(contains("date"), birth, followup)) %>% 
   head
@@ -530,6 +551,7 @@ case_when() - Splits based on a sequence or quantiles: cutR()
 One split with ifelse()
 
 ``` r
+
 redcap_df %>% 
   mutate(size_bin = ifelse(size > 20, "large", "small")) %>% 
   head
@@ -562,6 +584,7 @@ redcap_df %>%
 More splits with case_when()
 
 ``` r
+
 redcap_df %>% 
   mutate(size_bin = case_when(size > 40 ~ "large",
                           size < 10 ~ "small",
@@ -596,6 +619,7 @@ redcap_df %>%
 Splits based on a sequence can be done with the cutR() function:
 
 ``` r
+
 redcap_df %>%
   cutR(size,
        seq(0,50,10)) %>%
@@ -616,16 +640,17 @@ redcap_df %>%
 #> 6        1       1    1     1  0       <NA>            <NA>            <NA>
 ```
 
-Multiple splits can also be performed with cutR() with name assigning
+Multiple splits can also be performed with cutR() with name assigning.
+This will create two new variables
 
 ``` r
+
 redcap_df %>%
   cutR(vars = c(age, size),
-       seqlist = list("age" = seq(0,100,10),
-                      "size" = list("quantile", c(0,0.25,0.5,0.75,1))),
-       name.list = list("age" = "age_group",
-                        "size" = "size_bin")) %>% 
-  head
+       seq.list = list(age = "10y",
+                      size = "quartile"),
+       name.list = list(age_group = "age",
+                        size_bin = "size")) %>% head
 #>   id sex  age      birth   followup date_of_surgery      size type localisation
 #> 1  1   1 79.1 20-09-1929 03-04-2023      2008-11-03  7.302734    1            3
 #> 2  2   2 38.1 12-10-1953 18-12-2025      1991-11-13 20.043036    1            1
@@ -653,11 +678,12 @@ The new variables can also be given the same name pattern if the input
 variables are similar such as dates
 
 ``` r
+
 redcap_df %>%
   #Conversion into date format
   datR(contains("date")) %>%
   cutR(vars = c(recurrence_date, metastasis_date),
-       seqlist = list("seq", c(1900,2030,10)),
+       seq.list = "10y",
        name.pattern = "_bin") %>% 
   head
 #>   id sex  age      birth   followup date_of_surgery      size type localisation
@@ -693,6 +719,7 @@ str() is used to show the formatting of the type variable has changed to
 factor.
 
 ``` r
+
 redcap_df %>% 
   factR(type) %>% 
   str
@@ -719,6 +746,7 @@ redcap_df %>%
 The reference group is specified using the reference argument
 
 ``` r
+
 redcap_df %>% 
   factR(type,
         reference = "0") %>% 
@@ -746,6 +774,7 @@ redcap_df %>%
 Levels can be manually assigned
 
 ``` r
+
 redcap_df %>%
   factR(type,
         levels = c("2","1","0")) %>%
@@ -774,6 +803,7 @@ New labels can also be assigned and automatically specify levels
 simultaneously
 
 ``` r
+
 redcap_df %>%
   factR(type,
         labels = list("type" = list("benign" = "0",
@@ -805,6 +835,7 @@ Lastly, all the arguments can be specified for multiple variables at
 once
 
 ``` r
+
 redcap_df %>% 
   factR(vars = c(type, sex),
         reference = list("sex" = "2"),
@@ -841,6 +872,7 @@ If we want to keep only certain rows we use filter(). Here we limit the
 dataset to patients without necrosis (necrosis = 0)
 
 ``` r
+
 redcap_df %>% 
   filter(necrosis == 0) %>% 
   head
@@ -874,6 +906,7 @@ In case of multiple conditions we use the `%in%` operator, as this
 specified that the variables has one of the following values
 
 ``` r
+
 redcap_df %>% 
   filter(localisation %in% c(1,2,3)) %>% 
   head
@@ -906,6 +939,7 @@ redcap_df %>%
 For numerical variables we use \<, \>, ==, \>= and \<=
 
 ``` r
+
 redcap_df %>% 
   filter(size > 20) %>% 
   head
@@ -938,6 +972,7 @@ redcap_df %>%
 We can also use between() to specify an interval
 
 ``` r
+
 redcap_df %>% 
   filter(between(size, 10,20)) %>% 
   head
@@ -974,6 +1009,7 @@ to be 1, but either of the conditions for localisation or size can be
 satisified.
 
 ``` r
+
 redcap_df %>% 
   filter(necrosis == 1 & (localisation %in% c(1,2,3) | size > 10)) %>% 
   head
@@ -1009,6 +1045,7 @@ Sorting is done with the arrange(). If the variable needs to be in
 descending order it is prefixed by a desc()
 
 ``` r
+
 redcap_df %>% 
   arrange(size) %>% 
   head()
@@ -1041,6 +1078,7 @@ redcap_df %>%
 Descending size
 
 ``` r
+
 redcap_df %>% 
   arrange(desc(size)) %>% 
   head
@@ -1075,6 +1113,7 @@ redcap_df %>%
 To get a quick overview of missing data in the dataset we use missR()
 
 ``` r
+
 redcap_df %>% 
   missR()
 #> No NAs detected
@@ -1083,6 +1122,7 @@ redcap_df %>%
 Missing values can be dropped with drop_na()
 
 ``` r
+
 redcap_df %>% 
   drop_na(metastasis_date, necrosis) %>% 
   head
@@ -1116,69 +1156,58 @@ Sometimes we want to remove rows where at least one of the values are
 NA. This is done with rowR() which is useful for rowwise operations
 
 ``` r
+
 redcap_df %>% 
   rowR(vars = c(cd10, sox10, ck),
        type = "any.na",
        filter = "remove") %>% 
   head
-#>       id   sex   age      birth   followup date_of_surgery      size  type
-#>    <int> <num> <num>     <char>     <char>          <char>     <num> <int>
-#> 1:     1     1  79.1 20-09-1929 03-04-2023      2008-11-03  7.302734     1
-#> 2:     4     1  45.2 22-04-1949 11-02-2022      1994-07-17 27.853775     1
-#> 3:     6     1  81.2 06-11-1925 17-07-2023      2007-02-02 49.415904     2
-#> 4:     7     1  74.9 16-06-1921 15-11-2023      1996-05-23 41.732124     0
-#> 5:     9     2  31.8 11-11-1958 11-03-2025      1990-08-29 10.726850     0
-#> 6:    10     2  51.3 18-08-1953 28-11-2021      2004-12-08 21.547746     2
-#>    localisation necrosis margins  cd10 sox10    ck death_date recurrence_date
-#>           <int>    <num>  <char> <num> <num> <num>     <char>          <char>
-#> 1:            3       NA       0     1     1     1       <NA>      2015-03-22
-#> 2:            3        1       0     0     0     0 2018-10-04      2011-12-31
-#> 3:            3        1       1     1     1     0       <NA>            <NA>
-#> 4:            2        0       1     0     1     0       <NA>      2012-08-30
-#> 5:            3       NA       1     1     1     0       <NA>      2014-02-16
-#> 6:            1       NA       1     1     1     1       <NA>      2014-08-15
-#>    metastasis_date
-#>             <char>
-#> 1:            <NA>
-#> 2:            <NA>
-#> 3:            <NA>
-#> 4:            <NA>
-#> 5:            <NA>
-#> 6:            <NA>
+#>   id sex  age      birth   followup date_of_surgery      size type localisation
+#> 1  1   1 79.1 20-09-1929 03-04-2023      2008-11-03  7.302734    1            3
+#> 2  4   1 45.2 22-04-1949 11-02-2022      1994-07-17 27.853775    1            3
+#> 3  6   1 81.2 06-11-1925 17-07-2023      2007-02-02 49.415904    2            3
+#> 4  7   1 74.9 16-06-1921 15-11-2023      1996-05-23 41.732124    0            2
+#> 5  9   2 31.8 11-11-1958 11-03-2025      1990-08-29 10.726850    0            3
+#> 6 10   2 51.3 18-08-1953 28-11-2021      2004-12-08 21.547746    2            1
+#>   necrosis margins cd10 sox10 ck death_date recurrence_date metastasis_date
+#> 1       NA       0    1     1  1       <NA>      2015-03-22            <NA>
+#> 2        1       0    0     0  0 2018-10-04      2011-12-31            <NA>
+#> 3        1       1    1     1  0       <NA>            <NA>            <NA>
+#> 4        0       1    0     1  0       <NA>      2012-08-30            <NA>
+#> 5       NA       1    1     1  0       <NA>      2014-02-16            <NA>
+#> 6       NA       1    1     1  1       <NA>      2014-08-15            <NA>
 ```
 
 We can also flag the rows into a new variable
 
 ``` r
+
 redcap_df %>% 
   rowR(vars = c(cd10, sox10, ck),
        type = "any.na",
-       new = "flag") %>% 
+       label = "flag") %>% 
   head
-#>       id   sex   age      birth   followup date_of_surgery      size  type
-#>    <int> <num> <num>     <char>     <char>          <char>     <num> <int>
-#> 1:     1     1  79.1 20-09-1929 03-04-2023      2008-11-03  7.302734     1
-#> 2:     2     2  38.1 12-10-1953 18-12-2025      1991-11-13 20.043036     1
-#> 3:     3     1  60.6 11-05-1948 21-09-2025      2008-12-17 42.412003     1
-#> 4:     4     1  45.2 22-04-1949 11-02-2022      1994-07-17 27.853775     1
-#> 5:     5     2  39.5 18-01-1966 21-04-2022      2005-07-16 25.587530     2
-#> 6:     6     1  81.2 06-11-1925 17-07-2023      2007-02-02 49.415904     2
-#>    localisation necrosis margins  cd10 sox10    ck death_date recurrence_date
-#>           <int>    <num>  <char> <num> <num> <num>     <char>          <char>
-#> 1:            3       NA       0     1     1     1       <NA>      2015-03-22
-#> 2:            1       NA       0     0     0    NA       <NA>            <NA>
-#> 3:            2        0       1    NA    NA     0 2017-09-02            <NA>
-#> 4:            3        1       0     0     0     0 2018-10-04      2011-12-31
-#> 5:            1       NA       0     0    NA     0       <NA>            <NA>
-#> 6:            3        1       1     1     1     0       <NA>            <NA>
-#>    metastasis_date  flag
-#>             <char> <num>
-#> 1:            <NA>     0
-#> 2:            <NA>     1
-#> 3:            <NA>     1
-#> 4:            <NA>     0
-#> 5:            <NA>     1
-#> 6:            <NA>     0
+#>   id sex  age      birth   followup date_of_surgery      size type localisation
+#> 1  1   1 79.1 20-09-1929 03-04-2023      2008-11-03  7.302734    1            3
+#> 2  2   2 38.1 12-10-1953 18-12-2025      1991-11-13 20.043036    1            1
+#> 3  3   1 60.6 11-05-1948 21-09-2025      2008-12-17 42.412003    1            2
+#> 4  4   1 45.2 22-04-1949 11-02-2022      1994-07-17 27.853775    1            3
+#> 5  5   2 39.5 18-01-1966 21-04-2022      2005-07-16 25.587530    2            1
+#> 6  6   1 81.2 06-11-1925 17-07-2023      2007-02-02 49.415904    2            3
+#>   necrosis margins cd10 sox10 ck death_date recurrence_date metastasis_date
+#> 1       NA       0    1     1  1       <NA>      2015-03-22            <NA>
+#> 2       NA       0    0     0 NA       <NA>            <NA>            <NA>
+#> 3        0       1   NA    NA  0 2017-09-02            <NA>            <NA>
+#> 4        1       0    0     0  0 2018-10-04      2011-12-31            <NA>
+#> 5       NA       0    0    NA  0       <NA>            <NA>            <NA>
+#> 6        1       1    1     1  0       <NA>            <NA>            <NA>
+#>   flag
+#> 1    0
+#> 2    1
+#> 3    1
+#> 4    0
+#> 5    1
+#> 6    0
 ```
 
 ### Join multiple data frames
@@ -1199,6 +1228,7 @@ Y that are present in X are joined. For all
 If we want to join two data frames, we use left_join().
 
 ``` r
+
 left_join(redcap_df, analysis_df, by = "id") %>% 
   tail
 #>       id   sex   age      birth   followup date_of_surgery     size  type
@@ -1251,6 +1281,7 @@ is symbolised by a dot. We can also use other functions with the pipe
 operator inside the left_join.
 
 ``` r
+
 analysis_df %>% 
   arrange(id) %>% 
   left_join(.,
@@ -1292,6 +1323,7 @@ analysis_df %>%
 In a full join, all rows are combined
 
 ``` r
+
 analysis_df %>% 
   full_join(.,
             redcap_df %>% select(id, contains("date")),
@@ -1328,6 +1360,7 @@ all rows are kept.
 To obtain a relevant case we split our dataset into two
 
 ``` r
+
 r1 <- redcap_df %>% filter(id < 100)
 r2 <- redcap_df %>% filter(id >= 100)
 

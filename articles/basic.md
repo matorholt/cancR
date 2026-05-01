@@ -24,6 +24,7 @@ prints results from the script and the second is that we can enter
 commands into the console. An example (press enter to run the command):
 
 ``` r
+
 2+2
 #> [1] 4
 ```
@@ -43,6 +44,7 @@ Currently, nothing is loaded. We can assign a value to an object named x
 which will now show in the environment.
 
 ``` r
+
 x <- 1
 ```
 
@@ -50,6 +52,7 @@ The arrow indicates that we are assigning something to the environment.
 We can call this object again, which prints it in the console
 
 ``` r
+
 x
 #> [1] 1
 ```
@@ -57,6 +60,7 @@ x
 We can also save a data frame
 
 ``` r
+
 data <- data.frame(x=1, y=2, z=3)
 ```
 
@@ -66,6 +70,7 @@ also just enter View(data) in the console.
 We can also view the data by typing
 
 ``` r
+
 data
 #>   x y z
 #> 1 1 2 3
@@ -76,6 +81,7 @@ print it simultaneously by adding parentheses around the whole
 expression
 
 ``` r
+
 (data <- data.frame(x=1, y=2, z=3))
 #>   x y z
 #> 1 1 2 3
@@ -88,6 +94,7 @@ The plot windows opens automatically when we plot something. Here we
 plot the sequence of numbers 0-10 on both the x and y-axes.
 
 ``` r
+
 plot(seq(0,10), seq(0,10))
 ```
 
@@ -110,6 +117,7 @@ the number `1` which is a numeric value. This can be reformatted to the
 other formats
 
 ``` r
+
 value <- 1
 as.logical(value)
 #> [1] TRUE
@@ -144,6 +152,7 @@ objects
 These are single values such as a previus example
 
 ``` r
+
 value <- 1
 value
 #> [1] 1
@@ -155,6 +164,7 @@ A vector is a string of values. These are collected using a
 [`c()`](https://rdrr.io/r/base/c.html)
 
 ``` r
+
 vector <- c(1,2,3,4)
 vector
 #> [1] 1 2 3 4
@@ -166,6 +176,7 @@ A dataframe is a collection of vectors of same lentgh constituting the
 columns of a dataframe.
 
 ``` r
+
 v1 <- c(1,2,3,4)
 v2 <- c("a", "b", "c", "d")
 v3 <- c(1.1, 2.2, 3.3, 4.4)
@@ -174,6 +185,7 @@ v3 <- c(1.1, 2.2, 3.3, 4.4)
 These three vectors can be combined into one single data frame
 
 ``` r
+
 df <- data.frame(v1, v2, v3)
 df
 #>   v1 v2  v3
@@ -188,6 +200,7 @@ df
 We can print the number of rows of a dataframe
 
 ``` r
+
 nrow(df)
 #> [1] 4
 ```
@@ -195,6 +208,7 @@ nrow(df)
 And the number of columns
 
 ``` r
+
 ncol(df)
 #> [1] 3
 ```
@@ -202,6 +216,7 @@ ncol(df)
 Or together
 
 ``` r
+
 dim(df)
 #> [1] 4 3
 ```
@@ -212,6 +227,7 @@ The names of the dataframe can be extracted with
 [`names()`](https://rdrr.io/r/base/names.html)
 
 ``` r
+
 names(df)
 #> [1] "v1" "v2" "v3"
 ```
@@ -219,6 +235,7 @@ names(df)
 An entire column can be extracted with the `$` sign
 
 ``` r
+
 df$v2
 #> [1] "a" "b" "c" "d"
 ```
@@ -228,6 +245,7 @@ Values of the dataframe can also be extracted using square brackets
 column:
 
 ``` r
+
 df[1,3]
 #> [1] 1.1
 ```
@@ -236,6 +254,7 @@ Multiple values are collected with
 [`c()`](https://rdrr.io/r/base/c.html)
 
 ``` r
+
 df[c(1,2,3), 3]
 #> [1] 1.1 2.2 3.3
 ```
@@ -244,6 +263,7 @@ All rows or columns are selected by leaving the place blank. This prints
 the entire second column
 
 ``` r
+
 df[, 2]
 #> [1] "a" "b" "c" "d"
 ```
@@ -251,6 +271,7 @@ df[, 2]
 Or the entire third row
 
 ``` r
+
 df[3, ]
 #>   v1 v2  v3
 #> 3  3  c 3.3
@@ -259,6 +280,7 @@ df[3, ]
 We can also name the columns with a text string
 
 ``` r
+
 df[, c("v2", "v3")]
 #>   v2  v3
 #> 1  a 1.1
@@ -273,6 +295,7 @@ If we want to create a new variable we assign this to the dataframe
 using the `$`
 
 ``` r
+
 df$new <- "new"
 df
 #>   v1 v2  v3 new
@@ -285,6 +308,7 @@ df
 If we wish to modify an existing variable we use the same procedure
 
 ``` r
+
 df$v1 <- df$v1 + 5
 df
 #>   v1 v2  v3 new
@@ -300,6 +324,7 @@ A quick overview (structure) of the content of a dataframe is with
 [`str()`](https://rdrr.io/r/utils/str.html)
 
 ``` r
+
 str(df)
 #> 'data.frame':    4 obs. of  4 variables:
 #>  $ v1 : num  6 7 8 9
@@ -319,6 +344,7 @@ list as separate elements. Here we make a list containing our dataframe
 `df`, our single value `value`and our vector `vector`
 
 ``` r
+
 list(df, value, vector)
 #> [[1]]
 #>   v1 v2  v3 new
@@ -341,6 +367,7 @@ The elements can also be named (for layout we press shift + enter to
 enter a new line)
 
 ``` r
+
 (mylist <- list(dataframe = df,
                 single_digit = value,
                 numbers = vector))
@@ -361,6 +388,7 @@ enter a new line)
 The elements of a list can be called
 
 ``` r
+
 mylist["numbers"]
 #> $numbers
 #> [1] 1 2 3 4
@@ -380,6 +408,7 @@ Here x is a vector of values and na.rm indicates whether missing values
 should be removed in the mean
 
 ``` r
+
 mean(x=vector, 
      na.rm=T)
 #> [1] 2.5
@@ -390,6 +419,7 @@ plot(x,y) where x and y are vectors. We could use the vectors from the
 dataframe `df` by calling them with `$`
 
 ``` r
+
 plot(df$v1, df$v3)
 ```
 

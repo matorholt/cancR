@@ -8,6 +8,9 @@ status indicator and a numeric time-to column for the current status.
     #> 2      1    1
     #> 3      2    3
 
+An alternative is to provide only dates for when the events occured
+which is more simple (see `structR` below).
+
 The status indicator indicates whether an event has occured and which
 type of event.  
 - 0 indicates that the patient was event free and the time column
@@ -32,6 +35,7 @@ status/time columns for multiple events. First, we simulate a dataframe
 with 10 patients:
 
 ``` r
+
 n=10
 df <-
   data.frame(
@@ -77,25 +81,26 @@ our competing events. If this includes death, a specific column for
 death + time-to-death will also be generated for evaluation.
 
 ``` r
+
 structR(df,
         index = opdate,
         fu = follow,
         outcomes=c(recurrence_date, metastasis_date, dsd_date),
         competing = c(death_date, second_date)) %>% head
-#>   id     opdate     follow recurrence t_recurrence metastasis t_metastasis dsd
-#> 1  1 2000-01-01 2025-01-01          0       300.02          0       300.02   0
-#> 2  2 2000-01-01 2025-01-01          1        60.02          0       300.02   0
-#> 3  3 2000-01-01 2025-01-01          2        96.00          1        84.01   1
-#> 4  4 2000-01-01 2025-01-01          2       108.02          2       108.02   1
-#> 5  5 2000-01-01 2025-01-01          3        96.00          3        96.00   3
-#> 6  6 2000-01-01 2025-01-01          1        60.02          1        72.02   2
-#>    t_dsd death t_death
-#> 1 300.02     0  300.02
-#> 2 300.02     0  300.02
-#> 3  96.00     1   96.00
-#> 4 108.02     1  108.02
-#> 5  96.00     0  300.02
-#> 6 120.02     1  120.02
+#>   id     opdate     follow t_recurrence recurrence t_metastasis metastasis
+#> 1  1 2000-01-01 2025-01-01       300.02          0       300.02          0
+#> 2  2 2000-01-01 2025-01-01        60.02          1       300.02          0
+#> 3  3 2000-01-01 2025-01-01        96.00          2        84.01          1
+#> 4  4 2000-01-01 2025-01-01       108.02          2       108.02          2
+#> 5  5 2000-01-01 2025-01-01        96.00          3        96.00          3
+#> 6  6 2000-01-01 2025-01-01        60.02          1        72.02          1
+#>    t_dsd dsd t_death death t_second second
+#> 1 300.02   0  300.02     0   300.02      0
+#> 2 300.02   0  300.02     0   300.02      0
+#> 3  96.00   1   96.00     1   300.02      0
+#> 4 108.02   1  108.02     1   300.02      0
+#> 5  96.00   3  300.02     0    96.00      1
+#> 6 120.02   2  120.02     1   300.02      0
 ```
 
 Notice that for each specified outcome, we split the variable into two
@@ -108,6 +113,7 @@ If we want to specify a composite outcome, we use the argument
 of interest and the competing risks.
 
 ``` r
+
 structR(df,
         index = opdate,
         fu = follow,
@@ -115,23 +121,29 @@ structR(df,
         competing = c(death_date, second_date),
         composite = list("pfs" = list("outcomes" = c("recurrence_date", "metastasis_date", "death_date")),
                          "relapse" = list("outcomes" = c("recurrence_date", "metastasis_date", "dsd_date"),
-                                          "competing" = c("death_date")),
-                         "metastasis2" = list("outcomes" = c("metastasis_date"),
-                                       "competing" = c("recurrence_date", "death_date")))) %>% head
-#>   id     opdate     follow recurrence t_recurrence metastasis t_metastasis
-#> 1  1 2000-01-01 2025-01-01          0       300.02          0       300.02
-#> 2  2 2000-01-01 2025-01-01          1        60.02          0       300.02
-#> 3  3 2000-01-01 2025-01-01          2        96.00          1        84.01
-#> 4  4 2000-01-01 2025-01-01          2       108.02          2       108.02
-#> 5  5 2000-01-01 2025-01-01          3        96.00          3        96.00
-#> 6  6 2000-01-01 2025-01-01          1        60.02          1        72.02
-#>   death t_death pfs  t_pfs relapse t_relapse metastasis2 t_metastasis2
-#> 1     0  300.02   0 300.02       0    300.02           0        300.02
-#> 2     0  300.02   1  60.02       1     60.02           2         60.02
-#> 3     1   96.00   1  84.01       1     84.01           1         84.01
-#> 4     1  108.02   1 108.02       1    108.02           2        108.02
-#> 5     0  300.02   0 300.02       0    300.02           0        300.02
-#> 6     1  120.02   1  60.02       1     60.02           2         60.02
+                                          "competing" = c("death_date"))))
+#>    id     opdate     follow pfs relapse t_recurrence recurrence t_metastasis
+#> 1   1 2000-01-01 2025-01-01   0       0       300.02          0       300.02
+#> 2   2 2000-01-01 2025-01-01   1       1        60.02          1       300.02
+#> 3   3 2000-01-01 2025-01-01   1       1        96.00          2        84.01
+#> 4   4 2000-01-01 2025-01-01   1       1       108.02          2       108.02
+#> 5   5 2000-01-01 2025-01-01   3       3        96.00          3        96.00
+#> 6   6 2000-01-01 2025-01-01   1       1        60.02          1        72.02
+#> 7   7 2000-01-01 2025-01-01   3       3        12.02          3        12.02
+#> 8   8 2000-01-01 2025-01-01   1       2       288.00          2       288.00
+#> 9   9 2000-01-01 2025-01-01   1       1        60.02          1       228.01
+#> 10 10 1990-01-01 2025-01-01   1       2       107.99          2       107.99
+#>    metastasis t_death death t_second second  t_pfs t_relapse
+#> 1           0  300.02     0   300.02      0 300.02    300.02
+#> 2           0  300.02     0   300.02      0  60.02     60.02
+#> 3           1   96.00     1   300.02      0  84.01     84.01
+#> 4           2  108.02     1   300.02      0 108.02    108.02
+#> 5           3  300.02     0    96.00      1  96.00     96.00
+#> 6           1  120.02     1   300.02      0  60.02     60.02
+#> 7           3  120.02     1    12.02      1  12.02     12.02
+#> 8           2  288.00     1   300.02      0 288.00    288.00
+#> 9           2  228.01     1   300.02      0  60.02     60.02
+#> 10          2  107.99     1   420.01      0 107.99    107.99
 ```
 
 ## Time-to-event analysis
@@ -170,21 +182,23 @@ For the analysis of a single group, we only need to specify the
 arguments `data`, `timevar` and `event`:
 
 ``` r
+
 g1_res <- estimatR(
   data = df,
   timevar = ttt,
   event = event2)
 #> 
-#> estimatR initialized:  2026-03-03 14:17:35
-#>  
+#> ── Initializing estimatR algorithm: 2026-05-01 08:43:33 ──
 #> 
-#> Total runtime: 
-#> 0.21 secs
+#> ── Estimation complete!
+#> Total runtime:
+#> 0.1 secs
 ```
 
 We extract the main results with `extractR`
 
 ``` r
+
 extractR(g1_res)
 #>   grp     counts                risks
 #> 1     897 / 2000 54% (95%CI 51 to 57)
@@ -193,6 +207,7 @@ extractR(g1_res)
 We can plot the corresponding cumulative incidence curve with `plotR`:
 
 ``` r
+
 plotR(g1_res)
 ```
 
@@ -206,6 +221,7 @@ The g1_res object also includes information regarding the median time to
 event:
 
 ``` r
+
 g1_res$time_to_event
 #>   quantile lower upper
 #> 1       54  49.2  57.6
@@ -217,18 +233,26 @@ For the analysis of two groups we need to specify the `group` argument.
 This will automatically detect the number of groups.
 
 ``` r
+
 g2_res <- estimatR(
   df,
   timevar = ttt,
   event = event2,
   group = g2
 )
+#> 
+#> ── Initializing estimatR algorithm: 2026-05-01 08:43:34 ──
+#> 
+#> ── Estimation complete!
+#> Total runtime:
+#> 1.66 secs
 ```
 
 Again, we extract the main results with `extractR`. Now we also see a
 risk difference and a p-value as we can compare the two groups.
 
 ``` r
+
 extractR(g2_res)
 #>   g2     counts                risks                     diff diff_p.value
 #> 1 T0 735 / 1595 55% (95%CI 52 to 58)                reference    reference
@@ -238,6 +262,7 @@ extractR(g2_res)
 And we can plot the curves.
 
 ``` r
+
 plotR(g2_res)
 ```
 
@@ -249,6 +274,7 @@ If we need to adjust for potential confounders we specify the `vars`
 argument
 
 ``` r
+
 g2_res <- estimatR(
   df,
   timevar = ttt,
@@ -256,12 +282,19 @@ g2_res <- estimatR(
   group = g2,
   vars = c(X6,X7,X8_bin)
 )
+#> 
+#> ── Initializing estimatR algorithm: 2026-05-01 08:43:37 ──
+#> 
+#> ── Estimation complete!
+#> Total runtime:
+#> 1.99 secs
 ```
 
 We can see that all estimates are slightly different as these are now
 standardized
 
 ``` r
+
 plotR(g2_res)
 ```
 
@@ -278,6 +311,7 @@ group
 
 ``` r
 
+
 g2_multires <- iteratR(
   data=df,
   timevar = "ttt",
@@ -285,13 +319,31 @@ g2_multires <- iteratR(
   group = "g2",
   method = "estimatR",
   labels = c("model1", "model2", "model3"))
-  
+#> 
+#> ── Initializing estimatR algorithm: 2026-05-01 08:43:40 ──
+#> 
+#> ── Estimation complete!
+#> Total runtime:
+#> 0.79 secs
+#> 
+#> ── Initializing estimatR algorithm: 2026-05-01 08:43:40 ──
+#> 
+#> ── Estimation complete!
+#> Total runtime:
+#> 0.64 secs
+#> 
+#> ── Initializing estimatR algorithm: 2026-05-01 08:43:41 ──
+#> 
+#> ── Estimation complete!
+#> Total runtime:
+#> 1.05 secs
 ```
 
 `g2_multires` is now a named list containing three `estimatR` objects
 (model 1 to 3) which can be called separately
 
 ``` r
+
 g2_multires$model1$time_to_event
 #>   g2 quantile lower upper
 #> 1 T0     78.0    72  81.6
@@ -302,12 +354,13 @@ We can also use `iteratR` to apply `extractR` on all models to extract
 the main estimates
 
 ``` r
+
 iteratR(
   g2_multires,
   method = "extractR"
 )
 #> 
-#> iteratR initialized:  2026-03-03 14:17:43
+#> iteratR initialized:  2026-05-01 08:43:42
 #>  
 #> 
 #> Total runtime: 
@@ -331,6 +384,7 @@ iteratR(
 We can also plot all three models by changing method to `"plotR"`
 
 ``` r
+
 iteratR(
   g2_multires,
   title = c("m1", "m2", "m3"),

@@ -29,6 +29,7 @@
     <li><a class="dropdown-item" href="../articles/data_management.html">Data Management</a></li>
     <li><a class="dropdown-item" href="../articles/tables.html">Tables</a></li>
     <li><a class="dropdown-item" href="../articles/estimatR.html">Time-to-event analysis</a></li>
+    <li><a class="dropdown-item" href="../articles/sap.html">Statistical Analysis Plan</a></li>
   </ul></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
@@ -168,24 +169,10 @@
 
       <dl><dt>
 
-          <code><a href="incidencR.html">incidencR()</a></code>
-
-        </dt>
-        <dd>Directly standardized incidence rates using the WHO standard population</dd>
-
-        <dt>
-
           <code><a href="estimatR.html">estimatR()</a></code>
 
         </dt>
         <dd>Absolute risk estimation of time-to-event data with competing risks</dd>
-
-        <dt>
-
-          <code><a href="iteratR.html">iteratR()</a></code>
-
-        </dt>
-        <dd>Perform multiple estimatR analyses</dd>
 
         <dt>
 
@@ -196,6 +183,20 @@
 
         <dt>
 
+          <code><a href="followR.html">followR()</a></code>
+
+        </dt>
+        <dd>Calculate median follow-up time using the inverse Kaplan-Meier method</dd>
+
+        <dt>
+
+          <code><a href="incidencR.html">incidencR()</a></code>
+
+        </dt>
+        <dd>Directly standardized incidence rates using the WHO standard population</dd>
+
+        <dt>
+
           <code><a href="inferencR.html">inferencR()</a></code>
 
         </dt>
@@ -203,17 +204,17 @@
 
         <dt>
 
-          <code><a href="clustR.html">clustR()</a></code>
+          <code><a href="iteratR.html">iteratR()</a></code>
 
         </dt>
-        <dd>Causal inference on time-to-event data with clustering and competing risks</dd>
+        <dd>Perform multiple estimatR analyses</dd>
 
         <dt>
 
-          <code><a href="followR.html">followR()</a></code>
+          <code><a href="weightR.html">weightR()</a></code>
 
         </dt>
-        <dd>Calculate median follow-up time using the inverse Kaplan-Meier method</dd>
+        <dd>Weight diagnostics for IPTW</dd>
       </dl></div><div class="section level2">
       <h2 id="tables-and-figures">Tables and figures<a class="anchor" aria-label="anchor" href="#tables-and-figures"></a></h2>
 
@@ -229,7 +230,7 @@
           <code><a href="collectR.html">collectR()</a></code>
 
         </dt>
-        <dd>Collect multiple plots into one</dd>
+        <dd>Collection of multiple plots into one. Wrapper for ggarrange. Input must be a list of plots.</dd>
 
         <dt>
 
@@ -251,6 +252,13 @@
 
         </dt>
         <dd>Save plots and tables</dd>
+
+        <dt>
+
+          <code><a href="swimmR.html">swimmR()</a></code>
+
+        </dt>
+        <dd>Plot individual patient trajectories from time-to-event data (Swimmer plot)</dd>
 
         <dt>
 
@@ -336,7 +344,7 @@
           <code><a href="updatR.html">updatR()</a></code>
 
         </dt>
-        <dd>Update of Charlson Comorbidity Index or covariate values over time</dd>
+        <dd>Data reduction, updating and insertion of time-dependent covariates</dd>
       </dl></div><div class="section level2">
       <h2 id="built-in-datasets">Built-in datasets<a class="anchor" aria-label="anchor" href="#built-in-datasets"></a></h2>
 
@@ -353,6 +361,13 @@
 
         </dt>
         <dd>Simulated dataset for model testing</dd>
+
+        <dt>
+
+          <code><a href="cancR_codes.html">cancR_codes</a></code>
+
+        </dt>
+        <dd>ICD diagnosis codes</dd>
 
         <dt>
 
@@ -435,13 +450,6 @@
 
         <dt>
 
-          <code><a href="geom_stepribbon.html">geom_stepribbon()</a></code>
-
-        </dt>
-        <dd>Stepribbon geom for survival curves</dd>
-
-        <dt>
-
           <code><a href="listR.html">listR()</a></code>
 
         </dt>
@@ -456,6 +464,13 @@
 
         <dt>
 
+          <code><a href="multitaskR.html">multitaskR()</a></code>
+
+        </dt>
+        <dd>Start a multisession with automatic reset</dd>
+
+        <dt>
+
           <code><a href="numbR.html">numbR()</a></code>
 
         </dt>
@@ -466,14 +481,7 @@
           <code><a href="powR.html">powR()</a></code>
 
         </dt>
-        <dd>Converter from Rscript to powershell format</dd>
-
-        <dt>
-
-          <code><a href="randomizR.html">randomizR()</a></code>
-
-        </dt>
-        <dd>Generate stratified, block randomized allocation sequence</dd>
+        <dd>Automated keyboard strokes</dd>
 
         <dt>
 
@@ -508,7 +516,7 @@
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by Mathias Ørholt.</p>
+  <p>Developed by Mathias Ørholt, Ida Wulff.</p>
 </div>
 
 <div class="pkgdown-footer-right">

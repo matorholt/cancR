@@ -12,9 +12,11 @@ includR(
   subgroup = NULL,
   age.limit = NULL,
   period = NULL,
-  fu = fu,
-  birth = birth,
-  export = F
+  fu = "fu",
+  birth = "birth",
+  remove = NULL,
+  export = F,
+  dt = F
 )
 ```
 

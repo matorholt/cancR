@@ -83,6 +83,7 @@ variables with less than 5 unique values are considered as factors.
 ## Examples
 
 ``` r
+
 df <- analysis_df %>%
 mutate(event_date = sample(c(seq(as.Date("1980-01-01"), as.Date("2000-01-01"), by = "years"), NA), size = n(), replace = TRUE))
 

@@ -5,7 +5,12 @@ Decoding of the main codelist for loading and searching in registries
 ## Usage
 
 ``` r
-decodR(codelist, regs = c("pop", "sc", "meta", "dsd"), type = "matching")
+decodR(
+  codelist,
+  regs = c("pop", "sc", "meta", "dsd"),
+  type = "matching",
+  cancR.covariates = "all"
+)
 ```
 
 ## Arguments

@@ -50,6 +50,7 @@ to the main folder (working directory). Here we assign the data to the
 object “raw”.
 
 ``` r
+
 mydata <- readR("data/redcap_data.csv")
 ```
 
@@ -71,6 +72,7 @@ When the redcap dataset and data dictionary have been saved in the
 [`redcapR()`](../reference/redcapR.md) function
 
 ``` r
+
 redcap_data <- readR("data/redcap_data.csv")
 dictionary <- readR("data/data_dictionary.csv")
 

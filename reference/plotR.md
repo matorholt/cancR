@@ -10,7 +10,7 @@ plotR(
   y = 100,
   col = cancR_palette,
   table.col = "#616161",
-  risk.col = T,
+  risk.col = F,
   time.unit = "m2y",
   labs = levels,
   print.est = TRUE,
@@ -19,7 +19,7 @@ plotR(
   border = T,
   p.values = T,
   style = NULL,
-  linewidth = 1,
+  linewidth = 0.8,
   title = "",
   title.size = 7,
   title.shift = c(0, 0),
@@ -42,9 +42,10 @@ plotR(
   table.padding = 1,
   table.title.size = 6,
   table.text.size = 5,
-  table.linewidth = 1,
-  border.linewidth = 1,
+  table.linewidth = 0.8,
+  border.linewidth = 0.8,
   legend.pos = c(0.5, 0.9),
+  legend.size = 16,
   tscale = 1,
   censur = F
 )
@@ -235,11 +236,11 @@ estimatR(analysis_df,
 timevar = ttt,
 event = event)
 #> 
-#> estimatR initialized:  2026-03-03 14:17:08
-#>  
+#> ── Initializing estimatR algorithm: 2026-05-01 08:43:06 ──
 #> 
-#> Total runtime: 
-#> 0.19 secs
+#> ── Estimation complete! 
+#> Total runtime:
+#> 0.07 secs
 #> $table
 #>     time n.risk n.event       est       se.est     lower     upper cumsum
 #> 1      0   2000       0 1.0000000 0.0000000000 1.0000000 1.0000000      0
@@ -542,8 +543,8 @@ timevar = ttt,
 event = event,
 group = X2)
 #> 
-#> estimatR initialized:  2026-03-03 14:17:08
-#>  
+#> ── Initializing estimatR algorithm: 2026-05-01 08:43:06 ──
+#> 
 #> Error in select(., {    {        group    }}): Can't select columns that don't exist.
 #> ✖ Column `X2` doesn't exist.
 

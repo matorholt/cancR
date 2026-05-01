@@ -18,6 +18,8 @@ loadR(
   lmdb.stop = 2023,
   simulation = F,
   cores = 4,
+  dt = F,
+  cancR.covariates = "all",
   ...
 )
 ```

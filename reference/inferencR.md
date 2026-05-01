@@ -14,7 +14,8 @@ inferencR(
   vars,
   outcome.vars,
   censoring.vars,
-  method = "tte",
+  cluster,
+  method = "cox",
   treat.form = NULL,
   event.form = NULL,
   cens.form = NULL,
@@ -29,8 +30,11 @@ inferencR(
   digits = 4,
   event.digits = 2,
   alpha = 0.05,
+  weights = T,
+  weight.vars,
   weights.digits = 1,
-  weights.breaks = 1
+  weights.breaks = 1,
+  ...
 )
 ```
 
@@ -66,6 +70,11 @@ inferencR(
 
   vector of variables that should only be included in the censoring
   model
+
+- cluster:
+
+  variable name for clusters, if chosen binomial regression with robust
+  sandwich variance estimation
 
 - method:
 
@@ -133,6 +142,10 @@ inferencR(
   alpha level for the estimation of confidence intervals and p-values.
   Default = 0.05
 
+- weights:
+
+  whether weighting diagnostics for the IPTW should be returned
+
 - weights.digits:
 
   the number of digits for categorization of weights
@@ -140,6 +153,10 @@ inferencR(
 - weights.breaks:
 
   breaks for categorization of weights
+
+- ...:
+
+  arguments passed to weightR
 
 ## Value
 

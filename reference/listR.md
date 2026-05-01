@@ -7,7 +7,7 @@ map_depth functions with the dots argument.
 ## Usage
 
 ``` r
-listR(input, type, ...)
+listR(input, type, layer, collapse = F, ...)
 ```
 
 ## Arguments
@@ -19,6 +19,15 @@ listR(input, type, ...)
 - type:
 
   type of modification of the list. See details
+
+- layer:
+
+  vector of integers indicating which layer to remove if type is "peel"
+  or to keep if type is "pick". Layer 1 is the top layer
+
+- collapse:
+
+  whether duplicated elements should be collapsed (defualt = F)
 
 - ...:
 
@@ -32,15 +41,21 @@ returns a modified list based on the "type" argument
 
 "reverse" reverses the values and names of a list which is used as
 inputs in functions such as str_replace. "vec2list" converts a vector to
-a list with names corresponding to the vector elements
+a list with names corresponding to the vector elements "peel" and "pick"
+depends on "layer" and either drops or keeps the specified vector.
 
 ## Examples
 
 ``` r
+
 reverse_list <- list("first" = "a1",
                      "second" = "b2")
 
 listR(reverse_list, type = "reverse")
-#>       a1       b2 
-#>  "first" "second" 
+#> $a1
+#> [1] "first"
+#> 
+#> $b2
+#> [1] "second"
+#> 
 ```

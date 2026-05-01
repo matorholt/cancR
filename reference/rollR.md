@@ -6,7 +6,7 @@ piping
 ## Usage
 
 ``` r
-rollR(data, id = id, lab = order)
+rollR(data, vars = id, label = order, dt = F)
 ```
 
 ## Arguments
@@ -15,13 +15,17 @@ rollR(data, id = id, lab = order)
 
   dataset
 
-- id:
+- vars:
 
-  column which unique ids should be based on
+  column(s) which unique ids should be based on
 
-- lab:
+- label:
 
   label for new unique id column
+
+- dt:
+
+  whether a data.table should be returned
 
 ## Value
 

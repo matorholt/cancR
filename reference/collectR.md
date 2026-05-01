@@ -1,4 +1,4 @@
-# Collect multiple plots into one
+# Collection of multiple plots into one. Wrapper for ggarrange. Input must be a list of plots.
 
 Collection of multiple plots into one. Wrapper for ggarrange. Input must
 be a list of plots.
@@ -6,7 +6,7 @@ be a list of plots.
 ## Usage
 
 ``` r
-collectR(plots, collect = T, nrow = 1, ncol = 3, ...)
+collectR(plots, collect = T, ...)
 ```
 
 ## Arguments
@@ -19,6 +19,10 @@ collectR(plots, collect = T, nrow = 1, ncol = 3, ...)
 
   Whether labels should be collected
 
+- ...:
+
+  See ggarrange
+
 - nrow:
 
   Number of rows
@@ -26,10 +30,6 @@ collectR(plots, collect = T, nrow = 1, ncol = 3, ...)
 - ncol:
 
   Number of colums
-
-- ...:
-
-  See ggarrange
 
 ## Value
 

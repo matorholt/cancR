@@ -28,27 +28,29 @@ Functions for typical data management tasks
 
 Functions that perform statistical analysis
 
-- [`incidencR()`](incidencR.md) : Directly standardized incidence rates
-  using the WHO standard population
 - [`estimatR()`](estimatR.md) : Absolute risk estimation of
   time-to-event data with competing risks
-- [`iteratR()`](iteratR.md) : Perform multiple estimatR analyses
 - [`extractR()`](extractR.md) : Extraction of key results from the
   estimatR function
-- [`inferencR()`](inferencR.md) : Causal inference of time-to-event data
-- [`clustR()`](clustR.md) : Causal inference on time-to-event data with
-  clustering and competing risks
 - [`followR()`](followR.md) : Calculate median follow-up time using the
   inverse Kaplan-Meier method
+- [`incidencR()`](incidencR.md) : Directly standardized incidence rates
+  using the WHO standard population
+- [`inferencR()`](inferencR.md) : Causal inference of time-to-event data
+- [`iteratR()`](iteratR.md) : Perform multiple estimatR analyses
+- [`weightR()`](weightR.md) : Weight diagnostics for IPTW
 
 ## Tables and figures
 
 Functions for producing and formatting tables and figures
 
-- [`collectR()`](collectR.md) : Collect multiple plots into one
+- [`collectR()`](collectR.md) : Collection of multiple plots into one.
+  Wrapper for ggarrange. Input must be a list of plots.
 - [`dagR()`](dagR.md) : Draw directed acyclic graphs (DAGS)
 - [`plotR()`](plotR.md) : Autoplot for estimatR, inferencR and clustR
 - [`savR()`](savR.md) : Save plots and tables
+- [`swimmR()`](swimmR.md) : Plot individual patient trajectories from
+  time-to-event data (Swimmer plot)
 - [`tablR()`](tablR.md) : Create frequency tables
 
 ## Register-specific functions
@@ -69,14 +71,15 @@ Functions customized for the danish registers
 - [`searchR()`](searchR.md) : Find covariates or outcomes from the
   registers
 - [`simulatR()`](simulatR.md) : Simulate danish health registers
-- [`updatR()`](updatR.md) : Update of Charlson Comorbidity Index or
-  covariate values over time
+- [`updatR()`](updatR.md) : Data reduction, updating and insertion of
+  time-dependent covariates
 
 ## Built-in datasets
 
 Datasets for testing functions
 
 - [`analysis_df`](analysis_df.md) : Simulated dataset for model testing
+- [`cancR_codes`](cancR_codes.md) : ICD diagnosis codes
 - [`match_df`](match_df.md) : Simulated dataset for the matchR algorithm
 - [`redcap_df`](redcap_df.md) : Simulated Redcap dataset
 - [`covariates_df`](covariates_df.md) : Simulated time-dependent
@@ -97,14 +100,12 @@ Small utility functions
   cominations/permutations
 - [`formatR()`](formatR.md) : Auto-formatting of a data frame with
   layout option for typical levels and labels
-- [`geom_stepribbon()`](geom_stepribbon.md) : Stepribbon geom for
-  survival curves
 - [`listR()`](listR.md) : Routine modifications of lists
 - [`modeR()`](modeR.md) : Get the mode (most common value) of a vector.
+- [`multitaskR()`](multitaskR.md) : Start a multisession with automatic
+  reset
 - [`numbR()`](numbR.md) : Format numeric vectors
-- [`powR()`](powR.md) : Converter from Rscript to powershell format
-- [`randomizR()`](randomizR.md) : Generate stratified, block randomized
-  allocation sequence
+- [`powR()`](powR.md) : Automated keyboard strokes
 - [`rollR()`](rollR.md) : Assign rolling ID.
 - [`tickR()`](tickR.md) : First timestamp for taking time
 - [`tockR()`](tockR.md) : Last timestamp for taking time

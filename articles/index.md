@@ -9,5 +9,6 @@
 - [Import data to R](import.md):
 - [Install and Update R](install.md):
 - [Redcap and R](redcap.md):
+- [Statistical Analysis Plan](sap.md):
 - [Setup and New Projects](setup.md):
 - [Tables](tables.md):

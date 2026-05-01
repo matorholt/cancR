@@ -10,17 +10,21 @@ analysis_df
 
 ## Format
 
-A data frame with 2000 rows and 14 columns:
+A data frame with 2000 rows and 21 columns:
 
-- X1:
+- id:
 
-  group variable with three levels (T0, T1 and T2)
+  patient id
 
-- X2:
+- g2:
 
   group variable with two levels 0/1
 
-- X3:
+- g3:
+
+  group variable with three levels (T0, T1 and T2)
+
+- g4:
 
   group variable with three levels (T0, T1, T2 and T3)
 
@@ -49,10 +53,6 @@ A data frame with 2000 rows and 14 columns:
 
   status indicator with multiple competing risks. 0=censorm, 1=event,
   2=death, 3=competing event
-
-- id:
-
-  patient id
 
 - X6_bin, X7_bin, X8_bin, X9_bin, X10_bin:
 

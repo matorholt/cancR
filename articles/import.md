@@ -1,6 +1,7 @@
 # Import data to R
 
 ``` r
+
 library(cancR)
 ```
 
@@ -16,6 +17,7 @@ easy by automatically chosing the correct function based on the file
 extension.
 
 ``` r
+
 mydata <- readR("data/dataset.csv")
 ```
 
@@ -31,6 +33,7 @@ redcap in the article `Redcap and R`) and 2) The data dictionary from
 redcap (see `Redcap and R`)
 
 ``` r
+
 redcap_data <- readR("data/redcap_data.csv")
 dictionary <- readR("data/data_dictionary.csv")
 
@@ -45,6 +48,7 @@ If there is a sheet containing CPR-numbers and id numbers it is also
 possible to automatically extract birth date and sex in `redcapR`
 
 ``` r
+
 redcap_data <- readR("data/redcap_data.csv")
 dictionary <- readR("data/data_dictionary.csv")
 cprlist <- readR("data/cprlist.csv")

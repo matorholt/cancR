@@ -9,11 +9,10 @@ covariate values.
 ``` r
 matchR(
   data,
-  td.frame,
+  td.frame = NULL,
   index = index,
   case = case,
-  fu = fu,
-  td.date = from,
+  follow = fu,
   fixed.vars = c(byear, sex),
   td.vars,
   exclude,
@@ -23,7 +22,9 @@ matchR(
   seed = 1,
   cores = 4,
   pnr = pnr,
-  interval = NULL
+  birth = birth,
+  interval = NULL,
+  dt = F
 )
 ```
 
@@ -47,14 +48,9 @@ matchR(
 
   1/0 indicator for case/control status
 
-- fu:
+- follow:
 
   End of follow up as date
-
-- td.date:
-
-  Name of the date column in the time dependent matching covariate
-  dataset
 
 - fixed.vars:
 
@@ -97,6 +93,15 @@ matchR(
 
   Interval to split birthyear into intervals (e.g. 1950-1955). Assigns a
   new variable named "age_group".
+
+- dt:
+
+  whether the dataframe should be returned as a data.table
+
+- td.date:
+
+  Name of the date column in the time dependent matching covariate
+  dataset
 
 ## Value
 

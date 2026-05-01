@@ -26,7 +26,9 @@ factR(
   levels = list(),
   labels = list(),
   lab_to_lev = FALSE,
-  reverse = F
+  reverse = F,
+  auto.format = F,
+  dt = F
 )
 ```
 
@@ -67,6 +69,14 @@ factR(
 - reverse:
 
   Whether the levels should be reversed (default is FALSE)
+
+- auto.format:
+
+  whether no/yes and 0/1 should be autoformatted with no as reference
+
+- dt:
+
+  whether the data frame should be returned as data.table (default = F)
 
 ## Value
 
