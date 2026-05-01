@@ -49,7 +49,7 @@ loadR <- function(regs,
 
   cli::cli_h2("Initializing loadR algorithm: {tockR(\'time\')}")
 
-  regs <- match.arg(regs, c("lpr", "lmdb", "pop", "pato", "cancer", "opr", "sc", "meta", "dsd", "ses", "covariates", "dcr"), several.ok = T)
+  regs <- match.arg(regs, c("lpr", "lmdb", "pop", "pato", "cancer", "opr", "sc", "meta", "dsd", "ses", "covariates", "dcr", "immune"), several.ok = T)
 
   if(!is.null(keep.list) & class(keep.list) != "list") {
     return(cli::cli_alert_danger("Error: Format the argument \'keep\' as a list with the structure list(lpr = c(\'vars\'), lmdb = c(\'vars\'))"))
@@ -65,7 +65,7 @@ loadR <- function(regs,
 
   }
 
-  if(missing(simulation) & str_detect(getwd(), "V:|X:", negate=T)) {
+  if(missing(simulation) & str_detect(getwd(), "V:|X:|~", negate=T)) {
     cli::cli_alert_warning("SIMULATION OF DATASETS")
     simulation <- T
   }
@@ -121,7 +121,8 @@ loadR <- function(regs,
                       "dsd" = "V:/Data/Workdata/709545/Mathias Oerholt/DATASETS/SKIN_DEATH.parquet",
                       "ses" = "V:/Data/Workdata/709545/Mathias Oerholt/DATASETS/SES_wide.parquet",
                       "covariates" = "V:/Data/Workdata/709545/Mathias Oerholt/DATASETS/COVARIATES.parquet",
-                      "dcr" = "V:/Data/Workdata/709545/Mathias Oerholt/DATASETS/DCR.parquet"),
+                      "dcr" = "V:/Data/Workdata/709545/Mathias Oerholt/DATASETS/DCR.parquet",
+                      "immune" = "V:/Data/Workdata/709545/Mathias Oerholt/DATASETS/IMMUNE_DRUGS.parquet"),
          "sas" = list("lpr" = "X:/Data/Rawdata_Hurtig/709545/Grunddata/LPR/diag_indl.sas7bdat",
                       "cancer" = "X:/Data/Rawdata_Hurtig/709545/Grunddata/Cancer/t_tumor.sas7bdat",
                       "opr" = "X:/Data/Rawdata_Hurtig/709545/Grunddata/LPR/opr.sas7bdat"))
@@ -133,7 +134,7 @@ loadR <- function(regs,
          "pato" = c("pnr", "k_matnr", "D_MODTDATO", "C_SNOMEDKODE"),
          "cancer" = c("pnr", "d_diagnosedato", "c_icd10", "c_morfo3"),
          "lmdb" = c("pnr", "eksd", "apk", "atc", "strnum", "strunit", "PACKSIZE"),
-         "opr" = c("pnr", "opr", "tilopr", "inddto"))
+         "opr" = c("pnr", "opr", "tilopr", "odto"))
 
   vars.default <-
     list("lpr" = "diag",
@@ -170,7 +171,7 @@ loadR <- function(regs,
       pattern <- NULL
     }
 
-    if((is.null(n) & is.null(id.filter) & !(i %in% names(keep.list)) & !(i %in% names(pattern.list))) | i %in% c("pop", "sc", "meta", "dsd", "ses", "dcr")) {
+    if((is.null(n) & is.null(id.filter) & !(i %in% names(keep.list)) & !(i %in% names(pattern.list))) | i %in% c("pop", "sc", "meta", "dsd", "ses", "dcr", "immune")) {
 
       if(dt) {
         reglist[[i]] <- as.data.table(arrow::read_parquet(pathlist[["parquet"]][[i]]))

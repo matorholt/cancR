@@ -54,13 +54,17 @@ updatR <- function(td.frame,
 
   cli::cli_h2("Initializing updatR algorithm: {tockR(\'time\')}")
 
+  if(length(pnrs) == 0 | length(indices) == 0) {
+    return(cli::cli_alert_danger("Error: Pnrs or Indices of length = 0"))
+  }
+
   setDT(td.frame)
 
   if(!is.null(pnrs)) {
     tickR()
     cli::cli_h3("Filtering PNRs")
 
-    td.frame <- td.frame[pnr %in% pnrs]
+    td.frame <- td.frame[pnr %chin% pnrs]
 
     cli::cli_alert_success("Completed - {tockR(\'time\')}, runtime: {tockR()}")
 
@@ -79,10 +83,12 @@ updatR <- function(td.frame,
 
   }
 
-  cli::cli_h3("Updating and Inserting")
-  tickR()
+
 
   if(!missing(vars)) {
+    cli::cli_h3("Updating and Inserting")
+    tickR()
+
     vars <- update.frame %>% select({{vars}}) %>% names
 
     setDT(update.frame)
@@ -135,10 +141,11 @@ updatR <- function(td.frame,
       }
       p(paste0("Updating: ", v, " complete: ", tockR("time"), " - Runtime: ", tockR()))
 
+      cli::cli_alert_success("Completed - {tockR(\'time\')}, runtime: {tockR()}")
 
     }
   }
-  cli::cli_alert_success("Completed - {tockR(\'time\')}, runtime: {tockR()}")
+
 
   cli::cli_h3("Updating complete!")
   cli::cli_text("Total runtime:")
@@ -148,10 +155,3 @@ updatR <- function(td.frame,
 
 
 }
-
-# tdf <-
-#   updatR(covariates_df,
-#               update.frame,
-#               vars = c(connective, new),
-#               indices = pop[pop$case == 1,"index"],
-#               pnrs = pop$pnr)

@@ -50,47 +50,36 @@
 #' @examples
 #' #Risk in one group
 #'
-#' estimatR(analysis_df,
+#' t1 <- estimatR(analysis_df,
 #' timevar = ttt,
 #' event = event)
 #'
+#' plotR(t1)
+#'
 #' #Risks in multiple groups
-#' estimatR(analysis_df,
+#' t2 <- estimatR(analysis_df,
 #' timevar = ttt,
 #' event = event,
 #' group = X2)
 #'
+#' plotR(t2)
+#'
 #'
 
-#t1 <- estimatR(analysis_df, ttt, event2, X2, time = 120, vars = c(X6,X7))
-# t2 <- estimatR(df2, ttt, event2, X1, time = 120, type = "select", vars = c(X6,X7), pl=T)
-# t3 <- estimatR(df2, ttt, event2, X3, time = 60, type = "select", vars = c(X6,X7), pl=T)
-#
-#plotR(t1)
-
-# t1 <- inferencR(df,
-#                 treatment = X2,
-#                 timevar = time,
-#                 event = event2,
-#                 vars = c(X1, X3, X6, X7))
-#
-# plotR(t1)
-
-# t2 <- inferencR(df,
-#                 treatment = X2,
-#                 timevar = time,
-#                 event = event,
-#                 vars = c(X1, X3, X6, X7),
-#                 survscale = "AM")
-#
-# plotR(t2)
-
-# i <- estimatR(analysis_df,
-#                timevar = ttt,
-#                event = event2)
-#
-# plotR(i,
-#       p.values=F)
+# t0 <- estimatR(analysis_df, ttt, event2, time = 120)
+# t1 <- estimatR(analysis_df, ttt, event2, g2, time = 120, vars = c(X6,X7))
+# t2 <- estimatR(analysis_df, ttt, event2, g3, time = 120, vars = c(X6,X7), pl=T)
+# t3 <- estimatR(analysis_df, ttt, event2, g4, time = 120, vars = c(X6,X7), pl=T)
+# i1 <- inferencR(analysis_df,treatment = g2,
+#                   timevar = ttt,
+#                   event = event2,
+#                   vars = c(g3, g4, X6, X7),
+#                 estimator = "GFORMULA")
+# plotR(t0)
+# plotR(t1, style = "jama")
+# plotR(t2, print.est = F)
+# plotR(t3)
+# plotR(i1)
 
 plotR <- function(list,
                   y=100,
@@ -168,56 +157,6 @@ plotR <- function(list,
 
   }
 
-  if(contrast != "none") {
-    #Contrast labels
-    c_var <- names(list)[str_detect(names(list), paste0(contrast, collapse="|"))]
-
-    switch(contrast,
-           "rd" = c_var <- "difference",
-           "rr" = c_var <- "ratio")
-
-    c_labels <- str_c(str_to_upper(contrast),
-                      " = ",
-                      numbR(list[[c_var]][,which(names(list[[c_var]]) %in% c("hr", "ratio", "diff"))], contrast.digits),
-                      " (95%CI ",
-                      numbR(list[[c_var]][["lower"]], contrast.digits),
-                      " to ",
-                      numbR(list[[c_var]][["upper"]], contrast.digits),
-                      "), ",
-                      list[[c_var]][["p.value"]])
-
-
-
-    if(!is.null(style)) {
-
-      if(style == "jama") {
-        c_labels <- sapply(c_labels, function(x) {
-          x <- str_replace(x, "RD","ARD")
-          x <- str_split(str_remove(x, "(?<=(p.{3}))0"), "p")
-
-          bquote(.(x[[1]][[1]])~italic("P")~.(x[[1]][[2]]))
-        })
-      }
-
-      if(style == "italic") {
-
-        c_labels <- sapply(c_labels, function(x) {
-
-          bquote(italic(.(x)))
-        })
-
-      }
-    }
-
-    if(length(levels) > 2) {
-      c_labels <- c("reference", c_labels[1:(length(levels)-1)])
-    }
-
-    if(!p.values) c_labels <- str_remove(c_labels, ",\\sp\\s=.*")
-  }
-
-  if(!print.est) border <- F
-
   if(censur) tab <- tab %>% mutate(across(c(cumsum, n.risk), ~ ifelse(between(., 1, 3), "≤ 3", .)))
 
   if(missing(y)) {
@@ -276,12 +215,13 @@ plotR <- function(list,
            unit <- str_to_title(time.unit)
          })
 
+
   #PLOT BODY
   p <-
     ggplot(plot, aes(x=time, y=est, color = !!sym(group), fill = !!sym(group))) +
     geom_step(linewidth = linewidth) +
-    geom_segment(x = 0, xend=horizon*1.04, y=-(y*0.02), yend=-(y*0.02), color = "Black", linewidth = linewidth) +
-    geom_segment(x = 0, xend=0, y=-(y*0.02), yend=y, color = "Black", linewidth = linewidth) +
+    geom_segment(x = -(horizon*0.01), xend=horizon*1.04, y=-(y*0.01), yend=-(y*0.01), color = "Black", linewidth = linewidth) +
+    geom_segment(x = 0, xend=0, y=-(y*0.03), yend=y, color = "Black", linewidth = linewidth) +
     scale_color_manual(values = c(col[1:length(levels)]), labels = labs) +
     scale_fill_manual(values = c(col[1:length(levels)]), labels = labs)
   if(se) p <- p + pammtools::geom_stepribbon(aes(ymin = lower, ymax = upper), alpha = 0.2, color = NA)
@@ -377,105 +317,111 @@ plotR <- function(list,
     }
   }
 
-  #Result labels
+
+  #Labels
+  if(print.est) {
+
+    #Header
+    p.header <- paste0(horizon/u, "-", ifelse(unit %in% "Years", str_remove(unit, "s"), unit), " Risk", collapse="")
+
+    #Contrast
+    if(contrast != "none") {
+
+      switch(contrast,
+             "rd" = c_var <- "difference",
+             "rr" = c_var <- "ratio")
+
+      if(p.values) {
+        pval <- list[[c_var]][["p.value"]]
+      } else {
+        pval <- NULL
+      }
+
+      c_label <- str_c(str_to_upper(contrast),
+                       " = ",
+                       numbR(list[[c_var]][,which(names(list[[c_var]]) %in% c("hr", "ratio", "diff"))], contrast.digits),
+                       " (95%CI ",
+                       numbR(list[[c_var]][["lower"]], contrast.digits),
+                       " to ",
+                       numbR(list[[c_var]][["upper"]], contrast.digits),
+                       "), ",
+                       pval)[1:(length(levels)-1)]
+
+      if(!is.null(style)) {
+
+        if(style == "jama") {
+          c_label <- str_replace_all(c_label, "RD =", "ARD =")
+          c_label <- str_remove(c_label, "(?<=(p.{3}))0")
+        }
+      }
+
+    } else {c_label <- NULL}
+
+    #If more than 2 groups, contrasts are appended to the ends of risks
+    if(length(levels) > 2 & contrast != "none") {
+      p.labs <- map_chr(seq_along(levels), ~ {
+        paste(c(numbR(res$est[.x]*100,res.digits), "%, ", c("Reference", c_label)[.x]), collapse="")
+      })
+    } else {
+      p.labs <- c(map_chr(seq_along(levels), ~ {
+        paste(c(numbR(res$est[.x]*100,res.digits),"% (95%CI ", numbR(res$lower[.x]*100, res.digits),"-", numbR(res$upper[.x]*100, res.digits),")"), collapse="")
+      }), c_label)
+    }
+
+    p.labs <- c(p.header, p.labs)
+
+  #PLOT LABELS
   if(length(levels) == 1) {
     p <- p + theme(legend.position = "none")
   }
 
   xstart <- horizon*0.1
-  rows <- (y*(seq(0.92, 0.92-((0.07*res.spacing)*(length(levels)+1)), -0.07*res.spacing)))+res.shift[2]
+  rows <- (y*(seq(0.92, 0.92-((0.07*res.spacing)*(length(p.labs)-1)), -0.07*res.spacing)))+res.shift[2]
 
   if(survscale == "OS") {
     rows <- rev(1-rows)
   }
 
-  if(print.est) {
+  p <- p +
+    annotate("text",
+             x = xstart + res.shift[1],
+             y=rows,
+             label = p.labs,
+             fontface = c(2, rep(1, length(p.labs)-1)),
+             hjust="left",
+             size = res.size*tscale)
 
-    #Header
-    p <- p + annotate("text",
-                      x=xstart+res.shift[1],
-                      y=rows[1],
-                      label = paste0(horizon/u, "-", ifelse(unit %in% "Years", str_remove(unit, "s"), unit), " Risk", collapse=""),
-                      fontface = 2,
-                      hjust="left",
-                      size = 5*tscale)
+  #Segments
+  for(i in 2:(length(levels)+1)) {
 
-    for(i in 1:length(levels)) {
+    p <- p +
+      annotate("segment",
+               x=xstart*0.6+res.shift[1],
+               xend=xstart*0.9+res.shift[1],
+               y=rows[i],
+               yend=rows[i], color = col[i-1], linewidth = linewidth*1.5)
 
-      #Segments
-      p <- p +
-        annotate("segment",
-                 x=xstart*0.6+res.shift[1],
-                 xend=xstart*0.9+res.shift[1],
-                 y=rows[i+1],
-                 yend=rows[i+1], color = col[i], linewidth = linewidth*1.5)
-
-      #Groups > 2 with contrasts
-      if(length(levels) > 2 & contrast != "none") {
-        p <- p + annotate("text",
-                          x=xstart+res.shift[1],
-                          y=rows[i+1],
-                          label = paste0(numbR(res$est[i]*100, res.digits),"%, ",c_labels[[i]]),
-                          #label = bquote(.(numbR(res$est[i]*100, res.digits))~"%"~.(c_labels[[i]])), #original bquote
-                          fontface=1,
-                          hjust="left",
-                          size = res.size*tscale)
-        #Border settings
-        buttom <- rows[length(rows)]
-        shift <- ifelse(horizon == 60, 4, 12)
-        right <- (xstart*0.2+horizon*0.39)+res.shift[1]+shift+border.shift
-
-      }
-
-      #Groups == 2 or >2 without contrasts
-      else{
-        p <- p +
-          annotate("text",
-                   x=xstart+res.shift[1],
-                   y=rows[i+1],
-                   label = paste(c(numbR(res$est[i]*100,res.digits),"% (95%CI ", numbR(res$lower[i]*100, res.digits),"-", numbR(res$upper[i]*100, res.digits),")"), collapse=""),
-                   fontface=1,
-                   hjust="left",
-                   size = res.size*tscale)
-
-
-
-        if(contrast != "none") {
-
-          p <-  p+ annotate("text",
-                            x=xstart+res.shift[1],
-                            y = rows[length(levels)+2],
-                            label = c_labels[[1]],
-                            hjust = "left",
-                            size = res.size*tscale)
-        }
-
-        if(length(levels) == 1) {
-          #buttom <- buttom - 1
-          rows <- rows[1:length(rows)-1]
-        }
-
-        #Border settings
-        buttom <- rows[length(rows)] - (rows[length(rows)-1]-rows[length(rows)])
-        right <- (xstart*0.4+str_count(c_labels)*0.67)+res.shift[1]+border.shift
-
-
-
-      }
-
-    }
   }
+
+        #Border settings customization
+        buttom <- rows[length(rows)] - (rows[1]-rows[2])
+        width<- ifelse(horizon == 60, 1.5, 1.9)
+        right <- max(str_count(p.labs))*width+res.shift[1]+border.shift
+        top <- rows[1] + (rows[1]-rows[2])
+        left <- (xstart*0.4)+res.shift[1]
+
 
   if(border) {
 
-    top <- rows[1] + (rows[1]-rows[2])
-    left <- (xstart*0.4)+res.shift[1]
+
     if(!is.null(style)) right <- right + horizon/60
 
     p <- p + annotate("segment", x=left, xend = right, y=top, yend = top, linewidth = border.linewidth) +
       annotate("segment", x=left, xend = right, y=buttom, yend = buttom, linewidth = border.linewidth) +
       annotate("segment", x=left, xend = left, y = top, yend = buttom, linewidth = border.linewidth) +
       annotate("segment", x=right, xend = right, y = top, yend = buttom, linewidth = border.linewidth)
+  }
+
   }
 
   p$y <- y*100
@@ -489,6 +435,8 @@ plotR <- function(list,
                                y = c(-(y*0.02), y)),
                    dimensions = list(x = c(horizon*-0.1-y.title.shift,horizon),
                                      y = c(zmin,1.2*y+pmax(res.shift[2],0))))
+
+
 
 
 

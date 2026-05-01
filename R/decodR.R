@@ -16,20 +16,23 @@
 #'
 
 # Matching codelist
-# nlist <- list(case = list(lpr = list("abdomen" = list("kidney" = c("tx1a","tx1b","tx1c"),
-#                                                    "liver" = c("tx2a", "tx2b", "tx2c")),
-#                                    "thorax" = list("heart" = c("tx3a", "tx3b", "tx3c"),
-#                                                    "lung" = c("tx4a", "tx4b", "tx3c"))),
-#                            pato = list(pcc = "M80")),
-#               lpr = list(immune_diag = "a3",
-#                           cll = c("a4", "b4")),
-#               lmdb = list(immune_drugs = "a5"),
-#               opr = list(trans = "t5"),
-#               labels = list("lpr_case" = c("SOTR", "region"),
-#                                  "lpr_ex" = "immsup"),
-#               design = list(age.limit = 18,
-#                             period = c("2000-01-01", "2022-12-31"),
-#                             exclusion = c("sc_date")))
+codelist_matching <- list(
+  case = list("lpr" = c("DA", "DB"),
+              "pato" = "M(83)"),
+  lpr = list(exclusion = list(immun_lpr = c("DC", "DD", "DE"),
+                              leukemia = c("DF", "DG")),
+             covariates = list(hiv = c("DH", "DI"))),
+  lmdb = list("cvd_atc" = c("A","B"),
+              "chemo" = "G"),
+  opr = list("procedures" = c("KA","KB")),
+  immune = list(immun_atc = c("L04W", "L04G")),
+  design = list(age.limit = 18,
+                period = c("2000-01-01", "2022-12-31"),
+                look.back = 5,
+                exclusion = c("sc_date"),
+                            matching = "all",
+                            controls = 4,
+                            interval = 5))
 #
 # codelist_matching <- list(
 #   case = list("lpr" = c("DA", "DB"),
@@ -218,7 +221,7 @@ decodR <- function(codelist,
   out.list <- list()
 
   #loadR registries
-  regs.names <- as.character(na.omit(str_extract(names(main), "lpr|lmdb|opr|cancer|pato")))
+  regs.names <- as.character(na.omit(str_extract(names(main), "lpr|lmdb|opr|cancer|pato|immune")))
   out.list[["loadR"]][["regs"]] <- c(regs.names, regs)
 
    for(i in regs.names) {
@@ -236,6 +239,9 @@ decodR <- function(codelist,
   dframe <- rrapply(main, how = "melt") %>%
     filter(L1 != "labels")
 
+  #return(dframe)
+
+
   #Combine case with register if case defined from multiple
   if(length(main$case) > 1) {
    dframe <- dframe %>% mutate(L1 = ifelse(str_detect(L1, "case"), paste0(L1,"_",L2), L1))
@@ -247,10 +253,13 @@ slist <- main$labels
 
 label_list <- list()
 
+
 for(i in seq_along(slist)) {
 
   split <- dframe %>%
     filter(L1 %in% names(slist)[[i]])
+
+
 
 
   for(x in seq_along(slist[[i]])) {
@@ -294,6 +303,8 @@ out.list[["searchR"]][["sub.labels"]] <- label_list
 
     }
 
+    e_names <- c()
+
     #If cases are identified in LPR and also present in cancR_codes (str_detect both directions)
     if("lpr" %in% names(main$case)) {
 
@@ -302,8 +313,6 @@ out.list[["searchR"]][["sub.labels"]] <- label_list
       } else {
         cancR_codes_keep <- names(cancR_codes)
       }
-
-      e_names <- c()
 
       for(i in cancR_codes_keep) {
 
@@ -332,7 +341,7 @@ out.list[["searchR"]][["sub.labels"]] <- label_list
     }
 
     out.list[["includR"]][["exclusion.ex"]] <-
-      unlist(map(main[regs.names], ~ {
+      c(unlist(map(main[regs.names], ~ {
 
       if(pluck_depth(.x) > 2 & "exclusion" %in% names(.x)) {
         names(.x[["exclusion"]])
@@ -341,7 +350,7 @@ out.list[["searchR"]][["sub.labels"]] <- label_list
       }
 
 
-      }), use.names = F)
+      }), use.names = F), "immigration")
 
     #If any covariates are defined
     if(any(unlist(map(main[regs.names], ~ "covariates" %in% names(.x))))) {
@@ -363,7 +372,24 @@ out.list[["searchR"]][["sub.labels"]] <- label_list
     out.list[["includR"]][["exclusion.out"]] <- main$design$exclusion
     out.list[["includR"]][["age.limit"]] <- main$design$age.limit
     out.list[["includR"]][["period"]] <- main$design$period
+    out.list[["includR"]][["look.back"]] <- out.list[["matchR"]][["look.back"]] <- main$design$look.back*365.25
     out.list[["updatR"]][["vars"]] <- c(out.list[["updatR"]][["vars"]], e_names)
+
+    #Matching parametres
+    switch(main$design$matching,
+           "all" = {matching <- c("education", "income", "degurba", "martital", "cancer", "cvd", "connective", "endo", "gi", "hema", "infection", "lungs", "neuro", "psych", "skin", "urinary")},
+           "none" = {matching <- NULL},
+           "ses" = {matching <- c("education", "income", "degurba", "martital")},
+           "ses_cci" = {matching <- c("education", "income", "degurba", "martital", "cci")},
+           {matching <- main$design$matching})
+
+    if(!is.null(matching)) {out.list[["matchR"]][["td.vars"]] <- matching}
+
+    out.list[["matchR"]][["n.controls"]] <- main$design$controls
+
+    if("interval" %in% names(main$design)) out.list[["matchR"]][["interval"]] <- main$design$interval
+
+    out.list[["matchR"]][["exclude"]] <- c(main$design$exclusion, "exclusion_date")
 
 
 

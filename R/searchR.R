@@ -31,66 +31,11 @@
 #                                 sc_date = sample(c(sample(seq(as.Date('1990/01/01'), as.Date('2020/01/01'), by="day"))), n*10*0.1, replace=TRUE),
 #                                 meta_date = sample(c(sample(seq(as.Date('1990/01/01'), as.Date('2020/01/01'), by="day"))), n*10*0.1, replace=TRUE),
 #                                 pato_supp = sample(c(sample(seq(as.Date('1990/01/01'), as.Date('2020/01/01'), by="day"))), n*10*0.1, replace=TRUE)))
-#
-#
-#
-# reglist <- lapply(reglist, as.data.frame)
-
-# #Multilevel codelist
-# clist <- decodR(list("lpr_case" =
-#                        list(supergroup_a =
-#                               list(group_a1 = list("sg1" = c("DB6", "DB7"),
-#                                                   "sg2" = c("DD22", "DD23")),
-#                                    group_b1 = list("sg3" = c("DD4"))),
-#
-#                             supergroup_b =
-#                               list(group_a2 = list("sg4" = c("DE5", "DF"),
-#                                                    "sg5" = c("DF", "DG"))),
-#
-#                             supergroup_c =
-#                               list(group_a3 = list("sg6" = c("DJ", "DK"),
-#                                                    "sg7" = c("DL", "DM")),
-#                                    group_b3 = list("sg8" = c("DN")))),
-#
-#                      "lpr_ex" = list("e1" = c("DO", "DP"),
-#                                      "c2" = c("DR", "DQ")),
-#                      "lmdb_ex" = list("immune" = "C0"),
-#                      "opr_ex" = list("sotr" = c("DT", "DG", "DK")),
-#                      "labels" = list("lpr_case" = c("sg_level", "g_level", "sub_level"),
-#                                      "lpr_ex" = "immsup"),
-#                      "exclusion" = c("DQ","ZZ2")))
-#
-#
-# t <- searchR(dfs,
-#         clist$searchR.list,
-#         sub.list = clist$searchR.keep,
-#         sub.labels = clist$recodR.labels,
-#         exclusion = clist$searchR.exclusion)
-#
-# Simple example
-# t <- searchR(dfs$lpr,
-#         list("t_var" = c("DP"),
-#              "d_var" = c("DQ")),
-#         format = "date",
-#         date.filter = "1995-12-31")
-#
-# yframe <- data.frame()
-#
-# for(i in c("1996-01-01","2006-01-01","2010-01-01")) {
-#
-#   yframe <- bind_rows(yframe, as.data.table(searchR(dfs$lpr,
-#           list("t_var" = c("DP"),
-#                "d_var" = c("DQ")),
-#           format = "categorical",
-#           date.filter = i))[, year := i])
-#
-#
-# }
-#
-# yframe %>% arrange(pnr)
 
 
-
+#Simple example
+# searchR(reglist, list(lpr = list(test = c("DF", "DB")),
+#                       opr = list(test2 = c("KF", "KB"))))
 
 searchR <- function(reglist,
                     search.list,
@@ -124,27 +69,31 @@ searchR <- function(reglist,
     names(search.list) <- " "
   } else {
 
+    if(pluck_depth(search.list) != 3) {
+      return(cli::cli_alert_danger("Error: search.list needs to have a depth of 3. Maybe the list is unnamed"))
+    }
+
     if(any(names(search.list) %nin% names(reglist))) {
 
-      return(cli::cli_alert_danger("Error: {names(c.list$searchR$search.list)[names(c.list$searchR$search.list) %nin% names(reglist)]} not present in reglist"))
+      return(cli::cli_alert_danger("Error: {names(search.list)[names(search.list) %nin% names(reglist)]} not present in reglist"))
 
     }
 
-    reglist <- reglist[names(search.list)]
 
+    reglist <- reglist[names(search.list)]
 
   }
 
   pnr_c <- reglist[[1]] %>% select({{pnr}}) %>% names
 
-  reglist <- lapply(reglist, function(d) {
-    colnames(d)[which(str_detect(colnames(d), "eksd|inddto"))] <- "date"
-    colnames(d)[which(str_detect(colnames(d), "diag|opr|atc|snomed"))] <- "code"
-    d
-  })
+  reg.labels <- list(lpr = c("inddto", "diag"),
+                     opr = c("odto", "opr"),
+                     lmdb = c("eksd", "atc"),
+                     immune = c("date", "atc"),
+                     pato = c("date", "snomed"))
 
 
-if(!is.null(cores)) multitaskR(cores = cores)
+ if(!is.null(cores)) multitaskR(cores = cores)
 
   progressr::handlers(global = TRUE)
   progressr::handlers("cli")
@@ -158,6 +107,10 @@ if(!is.null(cores)) multitaskR(cores = cores)
         tickR()
 
         cli::cli_h3("Loading {str_to_upper(x)}")
+
+        setDT(reglist[[x]])
+
+        setnames(reglist[[x]], reg.labels[[x]], c("date", "code"))
 
         varlist <- search.list[[x]]
         exlist <- exclusion.list[[x]]
@@ -177,7 +130,8 @@ if(!is.null(cores)) multitaskR(cores = cores)
        p <- progressr::progressor(along = varlist)
 
         #Loop through variables
-        out <- joinR(
+        out <-
+          joinR(
           future_map(names(varlist), function(i) {
 
                     tickR()
@@ -190,7 +144,7 @@ if(!is.null(cores)) multitaskR(cores = cores)
                       exclude <- "^$"
                     }
 
-                    data <- as.data.table(reglist[[x]])[code %like% pattern & !code %like% exclude]
+                    data <- reglist[[x]][code %like% pattern & !code %like% exclude]
 
                     if(!is.null(date.filter)) {
 
@@ -224,7 +178,6 @@ if(!is.null(cores)) multitaskR(cores = cores)
                     setkeyv(data, pnr_c)
 
                     p(paste0(i, " complete: ", tockR("time"), " - Runtime: ", tockR()))
-                    #p(cli::cli_alert_success("good job"))
 
                     data
 
@@ -237,6 +190,7 @@ if(!is.null(cores)) multitaskR(cores = cores)
         out
 
       }), by = pnr_c, type = "full", dt=T)[order(get(pnr_c))]
+
 
   if(!is.null(sub.labels)) {
 

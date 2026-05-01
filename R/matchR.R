@@ -14,7 +14,8 @@
 #' @param fixed.vars Vector of fixed matching parameters
 #' @param td.vars Vector of time-dependent matching parameters
 #' @param exclude Vector of parameters that are not allowed to occur before index
-#' @param exclude.length Number of days before index where exclusions must not have occured. Default: 50 years (=never)
+#' @param look.back look back in days period where exposure and outcomes are not allowed to happen (default is 100 years - 365.25*100)
+#' @param index.shift number of days before index where exposure and outcomes are allowed, default = 0
 #' @param n.controls Number of desired controls per case
 #' @param replace whether controls should be sampled with replacement (default = T)
 #' @param seed Seed
@@ -29,10 +30,10 @@
 #'
 #'
 
-# n=1000
-# c=5
+# n=4000
+# c=10
 #
-#
+# set.seed(1)
 # pop <- simulatR("match",
 #                n=n,
 #                match.cases = c) %>%
@@ -62,22 +63,23 @@
 
 
 matchR <- function(data,
-                   td.frame = NULL,
-                   index = index,
-                   case = case,
-                   follow = fu,
-                   fixed.vars = c(byear, sex),
-                   td.vars,
-                   exclude,
-                   exclude.length = 365.25*100,
-                   n.controls=4,
-                   replace = T,
-                   seed=1,
-                   cores=4,
-                   pnr=pnr,
-                   birth = birth,
-                   interval = NULL,
-                   dt=F) {
+                    td.frame = NULL,
+                    index = index,
+                    case = case,
+                    follow = fu,
+                    fixed.vars = c(byear, sex),
+                    td.vars,
+                    exclude,
+                    look.back = 365.25*100,
+                    index.shift = 0,
+                    n.controls=4,
+                    replace = T,
+                    seed=1,
+                    cores=4,
+                    pnr=pnr,
+                    birth = birth,
+                    interval = NULL,
+                    dt=F) {
 
   if("date" %in% names(data)) {
     return(cat("Error: The pre_match dataframe cannot contain a variable named date"))
@@ -87,13 +89,19 @@ matchR <- function(data,
 
   start <- tickR.start
 
+  on.exit({
+    cli::cli_h3("Matching complete!")
+    cli::cli_text("Total runtime:")
+    cli::cli_text(tockR("diff", start))
+  })
+
   cli::cli_h2("Initializing matchR algorithm: {tockR(\'time\')}")
 
-  case <- data %>% select({{case}}) %>% names
-  fu <- data %>% select({{follow}}) %>% names
-  birth <- data %>% select({{birth}}) %>% names
-  pnr <- data %>% select({{pnr}}) %>% names
-  index <- data %>% select({{index}}) %>% names
+  case    <- data %>% select({{case}})    %>% names
+  fu      <- data %>% select({{follow}})  %>% names
+  birth   <- data %>% select({{birth}})   %>% names
+  pnr     <- data %>% select({{pnr}})     %>% names
+  index   <- data %>% select({{index}})   %>% names
   exclude <- data %>% select({{exclude}}) %>% names
 
   if(!is.null(interval)) {
@@ -102,61 +110,52 @@ matchR <- function(data,
     data[["tvar"]] <- data[["byear"]]
   }
 
-  fixed.vars <- data %>% select({{fixed.vars}}) %>% names %>% str_replace_all(., "byear", "tvar")
+  fixed.vars <- data %>% select({{fixed.vars}}) %>% names %>%
+    str_replace_all(., "byear", "tvar")
 
   setDT(data)
 
   cli::cli_h3("Data reduction")
 
-  #Change names
-  namelist <- list(pnr = pnr,
-                   case = case,
+  namelist <- list(pnr   = pnr,
+                   case  = case,
                    index = index,
-                   fu = fu)
+                   fu    = fu)
 
-  setnames(data,
-           unlist(namelist),
-           names(namelist))
+  setnames(data, unlist(namelist), names(namelist))
 
-  data <- data[case == 1 | (case == 0 & fu > min(index, na.rm=T))] %>%
-    .[.[, Reduce(`&`, lapply(.SD, function(x) is.na(x) | x > min(index, na.rm=T))),.SDcols = c(exclude)], .SDcols= c(exclude)]
-
-  cli::cli_text("Completed - {tockR(\'time\')}")
+  cli::cli_alert_success("Completed - {tockR(\'time\')}")
   cli::cli_h3("Merging time-dependent data frame")
 
-  all_indices <- data[case==1, substitute(index)]
-
-  #If TD covariates are assigned, merge with main data
   if(!is.null(td.frame)) {
     vars <- c(fixed.vars, td.frame %>% select({{td.vars}}) %>% names)
 
     setDT(td.frame)
 
-    #Merge
+    # Merge upfront as in original
     data <- merge(data, td.frame, by = pnr)[order(-case, pnr, from)]
 
   } else {
-    data[, from := substitute(birth)][
-      , to := substitute(fu)]
-
+    data[, from := get(birth)][, to := fu]
     vars <- fixed.vars
   }
 
+  # match() gives a globally unique integer per unique pnr
   data[, set := match(pnr, unique(pnr))]
 
-  cli::cli_text("Completed - {tockR(\'time\')}")
+  cli::cli_alert_success("Completed - {tockR(\'time\')}")
   cli::cli_h3("Partitioning of cohorts")
 
-  #Isolate cases and get case-specific cohorts for splitting
-  total_cases <- data[case == 1][, cohorts := do.call(paste, c(.SD, sep = ".")), .SDcols = c(fixed.vars)]
+  total_cases <- data[case == 1L][
+    , cohorts := do.call(paste, c(.SD, sep = ".")), .SDcols = fixed.vars]
 
-   #Partition into cohorts filtered on presence in cases
-  split_df <-
-    split(data, by = fixed.vars)[sort(unique(total_cases$cohorts))]
+  setkeyv(data, c(fixed.vars, "pnr"))
 
-  cli::cli_text("Completed - {tockR(\'time\')}")
+  split_df <- split(data, by = fixed.vars)[sort(unique(total_cases$cohorts))]
 
-  if(!is.null(cores)) {
+  cli::cli_alert_success("Completed - {tockR(\'time\')}")
+
+  if(!inherits(plan(), "multisession") & !is.null(cores)) {
     multitaskR(cores = cores)
   }
 
@@ -168,124 +167,150 @@ matchR <- function(data,
 
   cli::cli_h2("MATCHING")
   cli::cli_text("{length(split_df)} cohorts ({names(split_df)[1]} to {names(split_df)[length(split_df)]})")
-  ##MATCHING##
+
   cohort_list <- future_map(seq_along(split_df), function(j) {
 
     tickR()
 
-                           df <- split_df[[j]]
+    df    <- split_df[[j]]
+    cases <- df[case == 1L]
 
-                           cases <- df[case == 1]
+    #Case status at index
+    cases_td <- cases[index >= from & index < to]
 
-                          # control_list <- list()
-
-                           control_list <- map(cases$set, function(i) {
-
-                             #Index for current case
-                             itime <- df[set == i, index]
-
-                             #Keep cases with:
-                             # - index > current index (Cases cannot be selected as controls if already cases)
-                             #Keep controls (with:
-                             # - fu > current index (alive at index) & where the current index is contained between from and to
-
-                             df_c <- df[set == i |
-                                          (index > itime |
-                                             (case == 0 & (itime >= from & itime < to))),] %>%
-                               #Exclude cases who were exposed within x-days before index (arg: exclude.length)
-                               .[.[, Reduce(`&`, lapply(.SD, function(x) is.na(x) | !between((as.numeric(itime - x)), 0, exclude.length))) | set == i,.SDcols = c(exclude)], .SDcols= c(exclude)]
-
-                             #Fast binary-search on matching parameters
-                             filters <- as.list(df_c[set==i, .SD, .SDcols=vars])
-
-                             setkeyv(df_c, vars)
-
-                             df_c[filters] %>%
-
-                               #Not-yet cases converted to controls. Censoring at time of switch to case and removing index-date
-                               .[, fu := if_else(case == 1 & set != i, index, fu)] %>%
-                               .[, index := if_else(case == 1 & set != i, as.Date(NA), index)] %>%
-                               .[, case := ifelse(case == 1 & set != i, 0, case)]
+    #Matching parameters + case_set and itime for matching
+    case_times <- cases_td[, c(list(case_set = set, itime = index), .SD),
+                           .SDcols = vars]
 
 
 
-                             #Reroute output
-                             #control_list[[c]] <- df_c
+    #Controls
+    controls_df <- df[case == 0L]
+    setkeyv(controls_df, vars)
 
-                           })
+    #Matching all control candidates to all cases (case_set = matched case)
+    cand <- controls_df[case_times,
+                        on              = vars,
+                        allow.cartesian = TRUE,
+                        nomatch         = 0
+    ][itime >= from & itime < to]
 
-                           control_list <- control_list[order(sapply(control_list, nrow))]
+    #Exclude criteria before index
+    if(length(exclude) > 0L) {
+      excl_mask <- Reduce(`&`, lapply(exclude, function(col) {
+        x <- cand[[col]]
+        is.na(x) | !between(as.numeric(cand$itime - x), index.shift, look.back)
+      }))
+      cand <- cand[excl_mask]
+    }
 
-                           idlist <- c()
+    #Not yet cases
+    future_cases_df <- df[case == 1L]
+    setkeyv(future_cases_df, vars)
 
-                           matches <- list()
-
-                           #For each case, n controls are sampled
-                           for(i in seq(1,length(control_list))) {
-
-                             set.seed(seed)
-
-                             if(replace) {
-
-                               m <-
-                                 control_list[[i]][order(-case)][
-                                   ,set:=first(set)][case == 0][
-                                     sample(.N, pmin(.N, n.controls))]
-
-                              #Same as above, but a cumulative ID list excludes previous matches
-                             } else {
-
-                               m <-
-                                 control_list[[i]][
-                                   order(-case)][
-                                     ,set:=first(set)][
-                                       case == 0 & !(pnr %in% idlist)][
-                                         sample(.N, pmin(.N, n.controls))]
-
-                               idlist <- c(idlist, m[, pnr])
+    future_cands <- future_cases_df[case_times,
+                                    on              = vars,
+                                    allow.cartesian = TRUE,
+                                    nomatch         = 0
+    ][set != case_set & index > itime][itime >= from & itime < to]
 
 
-                             }
 
-                             matches[[i]] <- m
+    if(nrow(future_cands) > 0L) {
 
-                           }
+      if(length(exclude) > 0L) {
+        excl_mask_fc <- Reduce(`&`, lapply(exclude, function(col) {
+          x <- future_cands[[col]]
+          is.na(x) | !between(as.numeric(future_cands$itime - x), index.shift, look.back)
+        }))
+        future_cands <- future_cands[excl_mask_fc]
+      }
 
-                           p(paste0("Cohort: ", names(split_df)[j], " - cases/total: ", nrow(cases), "/", nrow(total_cases), " complete: ", tockR("time"), " - Runtime: ", tockR()))
+      future_cands[, fu    := index]
+      future_cands[, index := as.Date(NA)]
+      future_cands[, case  := 0L]
+    }
 
-                           as.data.frame(bind_rows(cases, rbindlist(matches)))
+    #Combine controls + not yet cases
+    all_cands <- rbindlist(
+      list(cand, future_cands),
+      use.names = TRUE,
+      fill      = TRUE
+    )
 
-                           #   #Reroute output
-                           #control_list
-                           #   #matches
+    set.seed(seed)
 
-                           #
-                           #
-                         }, .options = furrr_options(
-                           seed = seed
-                         ))
+    #With replacement
+    if(replace) {
+
+      matched_controls <- all_cands[
+        , .SD[sample(.N, pmin(.N, n.controls))],
+        by = case_set
+      ]
+
+    } else {
+
+      #Sort by number of candidates
+      case_order <- all_cands[
+        , .(n_cands = .N), by = case_set
+      ][order(n_cands), case_set]
+
+      used_ids <- character(0L)
+
+      matched_controls <-
+        rbindlist(map(case_order, function(cs) {
+
+          eligible <- all_cands[case_set == cs & !(pnr %chin% used_ids)]
 
 
-  #Sorting + controls inherit index date and exclusion variables are omitted.
-  match.df <- rbindlist(cohort_list)[order(set, -case)][
-    , index := nafill(index, "locf")][
-      , c(exclude[exclude != "sc_date"], "from", "to", "tvar") := NULL]
+          m <- eligible[sample(.N, pmin(.N, n.controls))]
+
+          used_ids <<- c(used_ids, m$pnr)
+
+          m
+        }), use.names = TRUE, fill = TRUE)
+
+    }
+
+    #Assign case-set to set
+    matched_controls[, set := case_set][, case_set := NULL]
+
+    #Collect all case/control pairs
+    out <- rbindlist(
+      list(cases_td, matched_controls),
+      use.names = TRUE,
+      fill      = TRUE
+    )[, itime := NULL]
+
+    p(message = paste0(
+      "Cohort: ", names(split_df)[j], " (",j, "/", length(split_df),
+      ") - cases/total: ", nrow(cases_td), "/", nrow(total_cases),
+      " complete: ", tockR("time"),
+      " - Runtime: ", tockR()
+    ))
+
+    out
+
+  }, .options = furrr_options(seed = seed))
+
+  #Drop cols
+  drop <- c(exclude[exclude != "sc_date"], "from", "to", "tvar")
+
+  #Controls inherit indices
+  match.df <- rbindlist(cohort_list, use.names = TRUE, fill = TRUE)[
+    order(set, -case)][
+      , index := nafill(index, "locf")][
+        , (drop) := NULL]
 
   setcolorder(match.df, c("pnr", "case", "set", "index"))
 
-  #Returning original names
-  setnames(match.df,
-           names(namelist[namelist != "from"]),
-           unlist(namelist[namelist != "from"]))
+  # Restore original column names
+  setnames(match.df, names(namelist), unlist(namelist))
 
   cli::cli_h3("Matching complete!")
   cli::cli_text("Total runtime:")
   cli::cli_text(tockR("diff", start))
 
   if(dt) return(match.df) else return(as.data.frame(match.df))
-
-  #Reroute output
-  #cohort_list
-  #split_df
 
 }

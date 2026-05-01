@@ -455,7 +455,7 @@ We can also flag the rows into a new variable
 redcap_df %>% 
   rowR(vars = c(cd10, sox10, ck),
        type = "any.na",
-       new = "flag") %>% 
+       label = "flag") %>% 
   head
 ```
 

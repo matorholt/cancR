@@ -15,6 +15,7 @@
 <url><loc>/index.html</loc></url>
 <url><loc>/LICENSE.html</loc></url>
 <url><loc>/reference/analysis_df.html</loc></url>
+<url><loc>/reference/cancR_codes.html</loc></url>
 <url><loc>/reference/cci_timR.html</loc></url>
 <url><loc>/reference/checkR.html</loc></url>
 <url><loc>/reference/closR.html</loc></url>
@@ -49,6 +50,7 @@
 <url><loc>/reference/match_df.html</loc></url>
 <url><loc>/reference/missR.html</loc></url>
 <url><loc>/reference/modeR.html</loc></url>
+<url><loc>/reference/multitaskR.html</loc></url>
 <url><loc>/reference/numbR.html</loc></url>
 <url><loc>/reference/plotR.html</loc></url>
 <url><loc>/reference/population_denmark.html</loc></url>
@@ -69,10 +71,12 @@
 <url><loc>/reference/simulatR.html</loc></url>
 <url><loc>/reference/structR.html</loc></url>
 <url><loc>/reference/summarisR.html</loc></url>
+<url><loc>/reference/swimmR.html</loc></url>
 <url><loc>/reference/tablR.html</loc></url>
 <url><loc>/reference/tickR.html</loc></url>
 <url><loc>/reference/tockR.html</loc></url>
 <url><loc>/reference/updatR.html</loc></url>
 <url><loc>/reference/viewR.html</loc></url>
+<url><loc>/reference/weightR.html</loc></url>
 </urlset>
 

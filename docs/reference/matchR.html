@@ -53,11 +53,10 @@
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">matchR</span><span class="op">(</span></span>
 <span>  <span class="va">data</span>,</span>
-<span>  <span class="va">td.frame</span>,</span>
+<span>  td.frame <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  index <span class="op">=</span> <span class="va">index</span>,</span>
 <span>  case <span class="op">=</span> <span class="va">case</span>,</span>
 <span>  follow <span class="op">=</span> <span class="va">fu</span>,</span>
-<span>  td.date <span class="op">=</span> <span class="va">from</span>,</span>
 <span>  fixed.vars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">byear</span>, <span class="va">sex</span><span class="op">)</span>,</span>
 <span>  <span class="va">td.vars</span>,</span>
 <span>  <span class="va">exclude</span>,</span>
@@ -67,8 +66,9 @@
 <span>  seed <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  cores <span class="op">=</span> <span class="fl">4</span>,</span>
 <span>  pnr <span class="op">=</span> <span class="va">pnr</span>,</span>
+<span>  birth <span class="op">=</span> <span class="va">birth</span>,</span>
 <span>  interval <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  diminish <span class="op">=</span> <span class="cn">T</span></span>
+<span>  dt <span class="op">=</span> <span class="cn">F</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -94,10 +94,6 @@
 
 <dt id="arg-follow">follow<a class="anchor" aria-label="anchor" href="#arg-follow"></a></dt>
 <dd><p>End of follow up as date</p></dd>
-
-
-<dt id="arg-td-date">td.date<a class="anchor" aria-label="anchor" href="#arg-td-date"></a></dt>
-<dd><p>Name of the date column in the time dependent matching covariate dataset</p></dd>
 
 
 <dt id="arg-fixed-vars">fixed.vars<a class="anchor" aria-label="anchor" href="#arg-fixed-vars"></a></dt>
@@ -140,8 +136,12 @@
 <dd><p>Interval to split birthyear into intervals (e.g. 1950-1955). Assigns a new variable named "age_group".</p></dd>
 
 
-<dt id="arg-diminish">diminish<a class="anchor" aria-label="anchor" href="#arg-diminish"></a></dt>
-<dd><p>Whether unused variables in td.frame should be removed (default = T)</p></dd>
+<dt id="arg-dt">dt<a class="anchor" aria-label="anchor" href="#arg-dt"></a></dt>
+<dd><p>whether the dataframe should be returned as a data.table</p></dd>
+
+
+<dt id="arg-td-date">td.date<a class="anchor" aria-label="anchor" href="#arg-td-date"></a></dt>
+<dd><p>Name of the date column in the time dependent matching covariate dataset</p></dd>
 
 </dl></div>
     <div class="section level2">

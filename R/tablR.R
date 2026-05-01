@@ -92,7 +92,7 @@ tablR <- function(data,
                   digits = 1,
                   ama = T,
                   simplify = list(),
-                  simplify.remove = c("no", "0"),
+                  simplify.remove = c("no", "No", "0"),
                   print = F,
                   flextable = F) {
 
@@ -242,11 +242,11 @@ tablR <- function(data,
   if(ama) {
 
     tab <- tab %>% mutate(across(c(2:ncol(tab)), ~ ifelse(str_detect(., "%"),
-                                                        ifelse(as.numeric(str_extract(., "\\d+\\.\\d*(?=(%))")) >= 10,
-                                                               str_replace(., "\\d+\\.\\d*(?=(%))", as.character(round(as.numeric(str_extract(., "\\d+\\.\\d*(?=(%))")),0))),
-                                                               .)
+                                                          ifelse(as.numeric(str_extract(., "\\d+\\.\\d*(?=(%))")) >= 10,
+                                                                 str_replace(., "\\d+\\.\\d*(?=(%))", as.character(round(as.numeric(str_extract(., "\\d+\\.\\d*(?=(%))")),0))),
+                                                                 .)
 
-                                                        , .)))
+                                                          , .)))
 
   }
 
@@ -308,7 +308,7 @@ tablR <- function(data,
 
   }
 
-  headings_index <- which(str_detect(tab[, "var"], "-"))
+  headings_index <- which(str_detect(tab[, "var"], "-\\s{2}"))
 
   if(test) {
     tab <- tab %>%
@@ -333,8 +333,6 @@ tablR <- function(data,
            var = str_pad(str_trim(var), width = max(str_count(str_trim(var))), side = "right"),
            var = str_remove(var, "xzx")) %>%
     dplyr::rename(" " = 1)
-
-
 
   if(print) {
     print(tab)

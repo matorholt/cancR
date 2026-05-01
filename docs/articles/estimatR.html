@@ -252,11 +252,11 @@ arguments <code>data</code>, <code>timevar</code> and
 <span>  timevar <span class="op">=</span> <span class="va">ttt</span>,</span>
 <span>  event <span class="op">=</span> <span class="va">event2</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; estimatR initialized:  2026-03-15 22:53:24</span></span>
-<span><span class="co">#&gt;  </span></span>
+<span><span class="co">#&gt; ── <span style="font-weight: bold;">Initializing estimatR algorithm: 2026-05-01 10:33:47</span> ──</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Total runtime: </span></span>
-<span><span class="co">#&gt; 0.21 secs</span></span></code></pre></div>
+<span><span class="co">#&gt; ── Estimation complete!</span></span>
+<span><span class="co">#&gt; Total runtime:</span></span>
+<span><span class="co">#&gt; 0.08 secs</span></span></code></pre></div>
 <p>We extract the main results with <code>extractR</code></p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/extractR.html">extractR</a></span><span class="op">(</span><span class="va">g1_res</span><span class="op">)</span></span>
@@ -289,7 +289,13 @@ of groups.</p>
 <span>  timevar <span class="op">=</span> <span class="va">ttt</span>,</span>
 <span>  event <span class="op">=</span> <span class="va">event2</span>,</span>
 <span>  group <span class="op">=</span> <span class="va">g2</span></span>
-<span><span class="op">)</span></span></code></pre></div>
+<span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ── <span style="font-weight: bold;">Initializing estimatR algorithm: 2026-05-01 10:33:48</span> ──</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ── Estimation complete!</span></span>
+<span><span class="co">#&gt; Total runtime:</span></span>
+<span><span class="co">#&gt; 1.07 secs</span></span></code></pre></div>
 <p>Again, we extract the main results with <code>extractR</code>. Now we
 also see a risk difference and a p-value as we can compare the two
 groups.</p>
@@ -315,7 +321,13 @@ groups.</p>
 <span>  event <span class="op">=</span> <span class="va">event2</span>,</span>
 <span>  group <span class="op">=</span> <span class="va">g2</span>,</span>
 <span>  vars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">X6</span>,<span class="va">X7</span>,<span class="va">X8_bin</span><span class="op">)</span></span>
-<span><span class="op">)</span></span></code></pre></div>
+<span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ── <span style="font-weight: bold;">Initializing estimatR algorithm: 2026-05-01 10:33:50</span> ──</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ── Estimation complete!</span></span>
+<span><span class="co">#&gt; Total runtime:</span></span>
+<span><span class="co">#&gt; 1.31 secs</span></span></code></pre></div>
 <p>We can see that all estimates are slightly different as these are now
 standardized</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
@@ -340,7 +352,24 @@ group</p>
 <span>  group <span class="op">=</span> <span class="st">"g2"</span>,</span>
 <span>  method <span class="op">=</span> <span class="st">"estimatR"</span>,</span>
 <span>  labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"model1"</span>, <span class="st">"model2"</span>, <span class="st">"model3"</span><span class="op">)</span><span class="op">)</span></span>
-<span>  </span></code></pre></div>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ── <span style="font-weight: bold;">Initializing estimatR algorithm: 2026-05-01 10:33:53</span> ──</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ── Estimation complete!</span></span>
+<span><span class="co">#&gt; Total runtime:</span></span>
+<span><span class="co">#&gt; 0.37 secs</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ── <span style="font-weight: bold;">Initializing estimatR algorithm: 2026-05-01 10:33:53</span> ──</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ── Estimation complete!</span></span>
+<span><span class="co">#&gt; Total runtime:</span></span>
+<span><span class="co">#&gt; 0.48 secs</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ── <span style="font-weight: bold;">Initializing estimatR algorithm: 2026-05-01 10:33:53</span> ──</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ── Estimation complete!</span></span>
+<span><span class="co">#&gt; Total runtime:</span></span>
+<span><span class="co">#&gt; 0.61 secs</span></span></code></pre></div>
 <p><code>g2_multires</code> is now a named list containing three
 <code>estimatR</code> objects (model 1 to 3) which can be called
 separately</p>
@@ -357,7 +386,7 @@ on all models to extract the main estimates</p>
 <span>  method <span class="op">=</span> <span class="st">"extractR"</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; iteratR initialized:  2026-03-15 22:53:33</span></span>
+<span><span class="co">#&gt; iteratR initialized:  2026-05-01 10:33:54</span></span>
 <span><span class="co">#&gt;  </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Total runtime: </span></span>
@@ -394,7 +423,7 @@ on all models to extract the main estimates</p>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by Mathias Ørholt.</p>
+  <p>Developed by Mathias Ørholt, Ida Wulff.</p>
 </div>
 
 <div class="pkgdown-footer-right">

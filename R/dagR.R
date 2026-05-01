@@ -158,6 +158,7 @@ dagR <- function(treatment,
                  position.digits = 0,
                  seed=1,
                  margin = c(-.1,.1,-.1,.1),
+                 print = F,
                  draw = F) {
 
 
@@ -173,19 +174,19 @@ dagR <- function(treatment,
     #Cleaning - fix bblist
 
 
-    treatment <- str_extract(dagitty, ".+(?=(\\s\\[exposure))")
-    outcome <- str_extract(dagitty, ".+(?=(\\s\\[outcome))")
+    treatment <- str_remove_all(str_extract(dagitty, ".+(?=(\\s\\[exposure))"), '"')
+    outcome <- str_remove_all(str_extract(dagitty, ".+(?=(\\s\\[outcome))"), '"')
 
-    vars <- unlist(str_extract_all(dagitty, "(?<!(\\>\\s)).+(?=(\\s\\[))"))
+    vars <- str_remove_all(unlist(str_extract_all(dagitty, "(?<!(\\>\\s)).+(?=(\\s\\[))")), '"')
 
     #Scaling, x = 2.25 and y=1.7, reverse y-axis
     positions <- data.frame(vars = vars,
-                            x = (as.numeric(unlist(str_extract_all(dagitty, "(?<=(pos.))\\-?\\d+\\.?\\d*"))[1:length(vars)]))*5,
-                            y = -1*(as.numeric(unlist(str_extract_all(dagitty, "(?<=(\\,))\\-?\\d+\\.?\\d*"))[1:length(vars)]))*5) %>%
+                            x = (as.numeric(unlist(str_extract_all(dagitty, "(?<=(pos=\\W))\\-?\\d+\\.?\\d*"))[1:length(vars)]))*5,
+                            y = -1*(as.numeric(unlist(str_extract_all(dagitty, "(?<=(pos=\\W\\-?\\d{1,50}\\.?\\d{0,5},))\\-?\\d+\\.?\\d*"))[1:length(vars)]))*5) %>%
       mutate(across(c(x,y), ~ round(., position.digits)))
 
-    from <- unlist(str_extract_all(dagitty, ".+(?=(\\s\\-\\>))"))
-    to <- unlist(str_extract_all(dagitty, "(?<=(\\-\\>\\s)).+"))
+    from <- str_remove_all(unlist(str_extract_all(dagitty, ".+(?=(\\s\\-\\>))")), '"')
+    to <- str_remove_all(unlist(str_extract_all(dagitty, "(?<=(\\-\\>\\s)).+")), '"')
 
         path.list <- lapply(unique(from), function(i) {
       c(to[which(from == i)])
@@ -223,6 +224,7 @@ dagR <- function(treatment,
     }
 
   }
+
 
   segs <-
     bind_rows(lapply(seq_along(path.list), function(i) {
@@ -376,11 +378,13 @@ dagR <- function(treatment,
 
   }
 
+
   p <- p +
     geom_label(size = label.size, border.color = label.color, fill = positions$cols) +
     theme_void() +
     coord_cartesian(xlim=range(segs$x)+margin[1:2],
                     ylim=range(segs$y)+margin[3:4])
+
 
   if(draw) {
 
@@ -391,6 +395,11 @@ dagR <- function(treatment,
 
     }
 
+  }
+
+  if(print) {
+    print(positions)
+    print(segs)
   }
 
 return(p)

@@ -115,7 +115,9 @@ inferencR <- function(data,
                       weights.breaks = 1,
                       ...) {
 
-  cat("\ninferencR initialized: ", tickR(), "\n")
+  cli::cli_h2("Initializing inferencR algorithm: {tockR(\'time\')}")
+
+  tickR()
 
   dat <- data %>%
     drop_na({{treatment}})
@@ -129,7 +131,7 @@ inferencR <- function(data,
 
       if(i == "timevar" & method != "cox") next
 
-      return(cat(paste0("Error: Argument ", i, " is not specified")))
+      return(cli::cli_alert_danger("Error: Argument {i} is not specified"))
     }
 
   }
@@ -584,8 +586,9 @@ inferencR <- function(data,
                              breaks = breaks,
                              event.digits = event.digits)
 
-  cat(paste0("\nTotal runtime: \n"))
-  cat(tockR("diff"))
+  cli::cli_h3("Inferencing complete!")
+  cli::cli_text("Total runtime:")
+  cli::cli_text(tockR("diff", tickR.start))
 
   class(out.list)<- "inferencR"
   return(out.list)

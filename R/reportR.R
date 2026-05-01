@@ -18,92 +18,41 @@
 #'
 #'
 
-# library(foreach)
-# library(doParallel)
-#
-# no = 40000
-# cno= 0.0025*no
-#
-#
-# set.seed(2)
-# (c <- data.frame(id = paste("pnr", rnorm(cno, 40000,1000)),
-#                  case = 1,
-#                  index = sample(c(sample(seq(as.Date('1990/01/01'), as.Date('2010/01/01'), by="day"))), size = cno, replace=TRUE),
-#                  follow = c(sample(seq(as.Date('2015/01/01'), as.Date('2020/01/01'), by="day"), cno, replace=T)),
-#                  birth = sample(c(sample(seq(as.Date('1958/01/01'), as.Date('1961/01/01'), by="day"))), size = cno, replace=TRUE),
-#                  byear = sample(c(seq(1958,1961)), cno, replace=T),
-#                  sex = sample(c("f","m"), cno, replace=T),
-#                  skinc = sample(c(sample(seq(as.Date('2011/01/01'), as.Date('2020/01/01'), by="day")),rep(as.Date(NA),8000)), size = cno, replace=TRUE),
-#                  imm_sup = sample(c(sample(seq(as.Date('2011/01/01'), as.Date('2020/01/01'), by="day")),rep(as.Date(NA),8000)), size = cno, replace=TRUE),
-#                  random1 = 1,
-#                  random2 = 2) %>%
-#     mutate(across(c(skinc, imm_sup), ~ if_else(. > follow | .< index, follow-100, .))))
-#
-# (cnt <- data.frame(id = paste("pnr", rnorm(no, 40000,1000)),
-#                    case = 0,
-#                    follow = c(sample(seq(as.Date('1980/01/01'), as.Date('2020/01/01'), by="day"), no, replace=T)),
-#                    birth = sample(c(sample(seq(as.Date('1958/01/01'), as.Date('1961/01/01'), by="day"))), size = cno, replace=TRUE),
-#                    byear = sample(c(seq(1958,1961)), no, replace=T),
-#                    sex = sample(c("f","m"), no, replace=T),
-#                    skinc = sample(c(sample(seq(as.Date('1985/01/01'), as.Date('2000/01/01'), by="day")),rep(as.Date(NA),8000)), size = no, replace=TRUE),
-#                    imm_sup = sample(c(sample(seq(as.Date('1985/01/01'), as.Date('2000/01/01'), by="day")),rep(as.Date(NA),8000)), size = no, replace=TRUE),
-#                    random1 = 1,
-#                    random2 = 2) %>%
-#     mutate(across(c(skinc, imm_sup), ~ if_else(. > follow, follow-2000, .))))
-#
-# pop <- bind_rows(c, cnt)
+# n=4000
+# c=10
 #
 # set.seed(1)
-# mp <- 40
-# (ses <- data.frame(var = sample(c("marital",
-#                                   "education",
-#                                   "income",
-#                                   "cci",
-#                                   "region"),
-#                                 size = no*mp,
-#                                 replace=TRUE),
-#                    date = sample(c(sample(seq(as.Date('1980/01/01'), as.Date('2000/01/01'), by="day"))), size = no*mp, replace=TRUE),
-#                    id = sample(pop$id, size = no*mp, replace=TRUE)) %>%
-#     arrange(id) %>%
-#     mutate(val = case_when(var %in% "income" ~ sample(paste("q", seq(1,4), sep=""), no*mp, prob = rep(0.25,4), replace=TRUE),
-#                            var %in% "education" ~ sample(c("low", "medium", "high"), no*mp, prob = rep(1/3,3), replace=TRUE),
-#                            var %in% "cci" ~ sample(c("cci_0",
-#                                                         "cci_1",
-#                                                         "cci_2-3",
-#                                                         "cci_4-5",
-#                                                         "cci_6+"), no*mp, prob = rep(0.20,5), replace=TRUE),
-#                            var %in% "region" ~ sample(c("the_capital_region_of_denmark",
-#                                                         "region_zealand",
-#                                                         "the_north_denmark_region",
-#                                                         "central_denmark_region",
-#                                                         "the_region_of_southern_denmark"), no*mp, prob = rep(0.20,5), replace=TRUE),
-#                            var %in% "marital" ~ sample(c("married",
-#                                                         "unmarried",
-#                                                         "divorced"), no*mp, prob = rep(0.20,3), replace=TRUE))) %>%
-#     select(id, date, var, val))
+# pop <- simulatR("match",
+#                n=n,
+#                match.cases = c) %>%
+#   mutate(byear = round(runif(n, 1955,1965),0),
+#          ethnic = sample(c("euro", "africa", "asia"), n, replace=TRUE))
+# #
+# set.seed(1)
+# covariates <- simulatR("covariates",
+#                        n=n+c)
+# set.seed(1)
+# covariates_long <- simulatR("covariates",
+#                             format = "long",
+#                             n=n+c)
+
+# tdf <-
+# matchR(data=pop,
+#        follow=follow,
+#        fixed.vars = c(byear, sex, ethnic),
+#        td.vars = c(education, cancer),
+#        exclude = c(skinc, imm_sup),
+#        exclude.length = 365.25*5,
+#        td.frame = covariates_df,
+#        n.controls=2,
+#        seed=1,
+#        cores = NULL,
+#        dt = T)
 #
-# ses_wide <- ses %>% arrange(id, date) %>%
-#   distinct(id, date, .keep_all = T) %>%
-#   pivot_wider(names_from=var, values_from = val) %>%
-#   fill(income, marital, region, education, cci, .direction = "down")
+
 #
-# t1 <- matchR(data=pop,
-#              case=case,
-#              pnr = id,
-#              fu=follow,
-#              index=index,
-#              td.date=date,
-#              fixed.vars=c(byear, sex),
-#              td.vars = c(education, income, cci, region, marital),
-#              exclude = c(skinc, imm_sup),
-#              td.frame = ses_wide,
-#              n.controls=4,
-#              seed=1)
-#
-# reportR(t1)
-#
-# (tdf <-
-#     t1 %>%
+# (tdf1 <-
+#     tdf %>%
 #     formatR(labels = list("case" = c("0" = "No CLL", "1"="CLL"))))
 #
 # tt <- tdf %>%
@@ -138,18 +87,15 @@ reportR <- function(data,
 
   type <- match.arg(type, c("simple", "full"))
 
-  report <- data %>% group_by(set) %>%
-    summarise(matches = n()-1) %>%
-    group_by(matches) %>%
-    summarise(count = n()) %>%
-    mutate(pct = paste0(round(count / sum(count)*100,1), "%")) %>%
-   print()
+  setDT(data)
+
+  report <- data[, .(matches = .N-1), by = set][, .N, by = matches][, pct := paste0(round(N / sum(N)*100,1), "%")] %>% print
 
   case_reuse <- sum(unique(data$pnr[data$case == 1]) %in% unique(data$pnr[data$case == 0]))
   counts <- as.data.table(data)[case == 0, .N, by = pnr][N > 1]
 
-  if(case_reuse > 0 | nrow(counts) > 0) cat("\nOBS\n")
-  if(case_reuse > 0) cat(paste0(case_reuse, " cases were reused\n"))
+  if(case_reuse > 0 | nrow(counts) > 0) cli::cli_alert_warning("OBS")
+  if(case_reuse > 0) cli::cli_text(paste0(case_reuse, " cases were reused"))
   if(nrow(counts) > 0) cat(paste0(nrow(counts), " controls were reused, max reuse: ", max(counts$N)))
 
 

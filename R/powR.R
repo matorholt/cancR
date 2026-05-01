@@ -49,7 +49,8 @@ powR <- function(text,
                                app = c(4113, 1034),
                                ok = c(3917, 1034),
                                local = c(623, 546)),
-                     laptop = list(rs = c(648,1572),
+                     laptop = list(pl = c(602,1577),
+                                   rs = c(214, 290),
                                    tool = c(381, 34),
                                    go = c(467, 404),
                                    code = c(1052, 589),
@@ -149,13 +150,11 @@ powR <- function(text,
 
   cat("\nChoosing screen to write and configuring R\n")
 
-
-
   Sys.sleep(mouse.sleep)
 
   #Select screen
   if(where == "laptop") {
-  KeyboardSimulator::mouse.move(coord.list[[where]][["rs"]][1],coord.list[[where]][["rs"]][2])
+  KeyboardSimulator::mouse.move(coord.list[[where]][["pl"]][1],coord.list[[where]][["pl"]][2])
   Sys.sleep(mouse.sleep)
   KeyboardSimulator::mouse.click("left")
   Sys.sleep(mouse.sleep)
@@ -211,7 +210,6 @@ powR <- function(text,
   # Sys.sleep(mouse.sleep)
   # KeyboardSimulator::mouse.click("left")
   # }
-
 
 Sys.sleep(1)
 

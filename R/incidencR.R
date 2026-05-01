@@ -68,7 +68,15 @@
 #   geom_smooth(se=F) +
 #   theme_classic()
 
-incidencR <- function(data, group, strata = list(c("year")), unit = 100000, ci.method = "lognormal", reference = "full", index, age = age, sex = sex) {
+incidencR <- function(data,
+                      group,
+                      strata = list(c("year")),
+                      unit = 100000,
+                      ci.method = "lognormal",
+                      reference = "full",
+                      index,
+                      age = age,
+                      sex = sex) {
 
   if(reference %nin% c("full", "partial")) cat("Error: Argument reference must be full or partial")
 
@@ -89,7 +97,15 @@ incidencR <- function(data, group, strata = list(c("year")), unit = 100000, ci.m
 
   }
 
-aggregate_df <- data %>%
+  #Removing NAs
+  if(sum(is.na(data$sex)) > 0 | sum(is.na(data$age)) > 0) {
+    cli::cli_alert_warning("NAs detected")
+    cli::cli_ul(c(paste0("Age: ", sum(is.na(data$age))), paste0("Sex: ", sum(is.na(data$sex)))))
+  }
+
+
+  aggregate_df <- data %>%
+    drop_na(sex, age) %>%
     mutate(year = str_extract(index, "\\d{4}"),
            sex = str_to_lower(str_extract(sex, "\\w"))) %>%
     cutR(age,
@@ -100,28 +116,30 @@ aggregate_df <- data %>%
     select(year, age_group, sex, !!sym(group_c)) %>%
     group_by(!!sym(group_c), year, age_group, sex) %>%
     summarise(count = n(), .groups = "drop") %>%
-  ungroup
+    ungroup
 
-#Prep for expand.grid. If full all unique levels in pop_DK, if partial only unique levels in data.
-grid_list <- c(lapply(c("sex", "age_group"), function(i) {
 
-  if(reference == "full") levels <- unique(population_denmark[[i]])
 
-  if(reference == "partial") levels <- unique(aggregate_df[[i]])
+  #Prep for expand.grid. If full all unique levels in pop_DK, if partial only unique levels in data.
+  grid_list <- c(lapply(c("sex", "age_group"), function(i) {
 
-  levels
+    if(reference == "full") levels <- unique(population_denmark[[i]])
 
-}),
-list(as.character(do.call(seq, as.list(range(as.numeric(aggregate_df[["year"]])))))),
-list(as.character(unique(aggregate_df[[group_c]])))) %>% set_names("sex", "age_group", "year", group_c)
+    if(reference == "partial") levels <- unique(aggregate_df[[i]])
 
-full_data <-
-  left_join(expand.grid(grid_list), aggregate_df, by = c("sex", "age_group", "year", group_c)) %>%
-  left_join(., population_denmark %>% rename(fu = population), by = c("sex", "age_group", "year")) %>%
-  left_join(., population_who, by = c("sex", "age_group"), relationship = "many-to-many") %>%
-  mutate(year = as.numeric(year)) %>%
-  rename(age = age_group) %>%
-  mutate(count = ifelse(is.na(count), 0, count))
+    levels
+
+  }),
+  list(as.character(do.call(seq, as.list(range(as.numeric(aggregate_df[["year"]])))))),
+  list(as.character(unique(aggregate_df[[group_c]])))) %>% set_names("sex", "age_group", "year", group_c)
+
+  full_data <-
+    left_join(expand.grid(grid_list), aggregate_df, by = c("sex", "age_group", "year", group_c)) %>%
+    left_join(., population_denmark %>% rename(fu = population), by = c("sex", "age_group", "year")) %>%
+    left_join(., population_who, by = c("sex", "age_group"), relationship = "many-to-many") %>%
+    mutate(year = as.numeric(year)) %>%
+    rename(age = age_group) %>%
+    mutate(count = ifelse(is.na(count), 0, count))
 
 
   get_rates <- function(data, strata=NULL) {
@@ -146,17 +164,17 @@ full_data <-
              wts=population/sum(population),
              weighted_rate = sum(wts*(rate)),
              weighted_var=sum(as.numeric((wts^2)*rate_var))
-             ) %>%
+      ) %>%
       ungroup() %>%
       distinct(!!!syms(strata), .keep_all = T)
 
     if(ci.method == "normal") {
 
       data <- data %>%
-      mutate(crude_lower=unit*(crude_rate+qnorm((1-0.95)/2)*sqrt(crude_var)),
-             crude_upper=unit*(crude_rate-qnorm((1-0.95)/2)*sqrt(crude_var)),
-             weighted_lower=unit*(weighted_rate+qnorm((1-0.95)/2)*sqrt(weighted_var)),
-             weighted_upper=unit*(weighted_rate-qnorm((1-0.95)/2)*sqrt(weighted_var)))
+        mutate(crude_lower=unit*(crude_rate+qnorm((1-0.95)/2)*sqrt(crude_var)),
+               crude_upper=unit*(crude_rate-qnorm((1-0.95)/2)*sqrt(crude_var)),
+               weighted_lower=unit*(weighted_rate+qnorm((1-0.95)/2)*sqrt(weighted_var)),
+               weighted_upper=unit*(weighted_rate-qnorm((1-0.95)/2)*sqrt(weighted_var)))
     }
 
     if(ci.method == "lognormal") {

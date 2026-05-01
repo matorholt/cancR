@@ -111,6 +111,7 @@ reference:
     Datasets for testing functions
   contents:
   - analysis_df
+  - cancR_codes
   - match_df
   - redcap_df
   - covariates_df

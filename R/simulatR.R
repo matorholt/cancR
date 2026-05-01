@@ -140,10 +140,29 @@ simulatR <- function(register,
                                          m = opr.diag.count,
                                          diagnoses = opr.codes,
                                          startDate = start.date) %>%
-      rename(opr = diag) %>%
-      select(pnr, opr, inddto) %>%
+      rename(opr = diag,
+             odto = inddto) %>%
+      select(pnr, opr, odto) %>%
       as.data.frame()
 
+
+  }
+
+  if("immune" %in% register) {
+
+    immune.codes <- paste0(sample(c("A", "B", "C", "D", "G", "H", "J", "L", "M", "N", "P", "R", "S", "V"), size = 20, replace=TRUE),
+                          str_pad(sample(seq(0,99), size = 20), width = 2, side = "left", pad = "0"),
+                          str_pad(sample(seq(0,999), size = 20), width = 2, side = "left", pad = "0"))
+
+    reglist[["immune"]] <-    simAdmissionData(n,
+                                               m = lpr.diag.count,
+                                               diagnoses = unlist(map(seq_len(10), ~ paste0(c("L04", "H02"), sample(LETTERS, 1), sample(LETTERS, 1), sample(seq(0,9),1), sample(seq(0,9),1)))),
+                                               startDate = start.date) %>%
+      rename(atc = diag,
+             date = inddto) %>%
+      select(pnr, atc, date) %>%
+
+      as.data.frame()
 
   }
 
@@ -380,8 +399,7 @@ simulatR <- function(register,
 
 
       })
-      ) %>%
-        mutate(across(matches(paste0("\\b",comorb)), ~ ifelse(is.na(.), "0", .)))
+      ) %>% mutate(across(matches(paste0("\\b",comorb)), ~ ifelse(is.na(.), "0", .)))
 
 
 
@@ -401,4 +419,3 @@ simulatR <- function(register,
   }
 
 }
-

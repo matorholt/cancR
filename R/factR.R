@@ -194,7 +194,7 @@ factR <- function(data,
         , c(v) := fct_relevel(get(v), reference[[v]])][
           , c(v) := fct_relevel(get(v), levels[[v]])])
 
-      if(v %in% names(labels)) {
+      if(v %in% names(labels) & any(labels[[v]] %in% levels(data[[v]]))) {
 
         data[, c(v) := fct_recode(get(v), !!!setNames(labels[[v]], as.character(names(labels[[v]]))))]
 

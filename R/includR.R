@@ -6,7 +6,9 @@
 #' @param exclusion.out vector of outcome variables that should not be present before index
 #' @param subgroup filter for subgroups in the format: "level %in% c('a', 'b')" Can also be applied as custom filter
 #' @param age.limit age limit for inclusion as numeric value
-#' @param period enrollement period in the format: c("1980-01-01", "2022-01-01")
+#' @param period character vector of length 2 specifying the enrollement period in the format c("1980-01-01", "2022-01-01")
+#' @param look.back look back in days period where exposure and outcomes are not allowed to happen (default is five years - 365.25*5)
+#' @param index.shift number of days before index where exposure and outcomes are allowed, default = 0
 #' @param fu name of the follow-up date (default: fu)
 #' @param birth name of the birth date variable (default: birth)
 #' @param export whether a data frame of the flowchart should be exported
@@ -23,6 +25,8 @@ includR <- function(data,
                     subgroup = NULL,
                     age.limit = NULL,
                     period = NULL,
+                    look.back = 365.25*5,
+                    index.shift = 0,
                     fu="fu",
                     birth = "birth",
                     remove = NULL,
@@ -40,7 +44,9 @@ includR <- function(data,
   fu_c <- data %>% select({{fu}}) %>% names()
   birth_c <- data %>% select({{birth}}) %>% names()
   case_c <- data %>% select(contains("case")) %>% names()
+  if(!is.null(remove)) {
   remove_c <- data %>% select(contains({{remove}})) %>% names
+  } else {remove_c <- NULL}
 
   flow_list <- list()
 
@@ -56,22 +62,25 @@ includR <- function(data,
 
   }
 
-  {
-
-    data[, index := do.call(pmin, c(.SD, list(na.rm=TRUE))),
+  data[, index := do.call(pmin, c(.SD, list(na.rm=TRUE))),
          .SDcols= c(case_c)][
            , byear := as.numeric(str_extract(get(birth_c), "\\d{4}"))][
            , case := ifelse(!is.na(index), 1, 0)]
 
+  cli::cli_h3("Inclusion Status (Excluded/Total)")
+
+  if(length(case_c) > 1) {
     for(i in case_c) {
 
       flow_list[["entry"]][["case"]][[i]] <- paste0("- / ", nrow(data[!is.na(data[[i]]),]))
 
+      cli::cli_bullets(c("*" = "Cases ({i}): {unlist(flow_list)[length(unlist(flow_list))]}"))
     }
   }
 
-
   flow_list[["entry"]][["total"]] <- paste0("- / ", nrow(data[!is.na(data[["index"]]),]))
+
+  cli::cli_bullets(c("*" = "Entry: {unlist(flow_list)[length(unlist(flow_list))]}"))
 
 
   #Split
@@ -83,6 +92,8 @@ includR <- function(data,
   cases <- cases[get(fu_c) > index,]
 
   flow_list[["entry"]][["autopsy"]] <- paste0(cur_n - nrow(cases), " / ", nrow(cases))
+
+  cli::cli_bullets(c("*" = "FU < Index: {unlist(flow_list)[length(unlist(flow_list))]}"))
 
   cur_n <- nrow(cases)
 
@@ -98,6 +109,8 @@ includR <- function(data,
 
       flow_list[["inclusion"]][[i]] <- paste0(cur_n - nrow(cases), " / ", nrow(cases))
 
+      cli::cli_bullets(c("*" = "Subgroup ({i}): {unlist(flow_list)[length(unlist(flow_list))]}"))
+
       cur_n <- nrow(cases)
     }
 
@@ -111,6 +124,8 @@ includR <- function(data,
 
     flow_list[["inclusion"]][["period"]] <- paste0(cur_n - nrow(cases), " / ", nrow(cases))
 
+    cli::cli_bullets(c("*" = "Inclusion Period: {unlist(flow_list)[length(unlist(flow_list))]}"))
+
     cur_n <- nrow(cases)
 
   }
@@ -122,6 +137,8 @@ includR <- function(data,
 
     flow_list[["inclusion"]][["age"]] <- paste0(cur_n - nrow(cases), " / ", nrow(cases))
 
+    cli::cli_bullets(c("*" = "Age < {age.limit}: {unlist(flow_list)[length(unlist(flow_list))]}"))
+
     cur_n <- nrow(cases)
 
   }
@@ -132,24 +149,29 @@ includR <- function(data,
 
     for(i in exo_c) {
 
-      cases <- cases[get(i) > index | is.na(get(i))]
+      cases <- cases[!data.table::between(as.numeric(index-get(i)), index.shift, look.back) | is.na(get(i))]
 
       flow_list[["exclusion"]][[i]] <- paste0(cur_n - nrow(cases), " / ", nrow(cases))
+
+      cli::cli_bullets(c("*" = "Previous Outcome ({i}): {unlist(flow_list)[length(unlist(flow_list))]}"))
 
       cur_n <- nrow(cases)
     }
 
   }
-  #
+
+
   # #Exclusions, exposure
   if(!missing(exclusion.ex)) {
 
     for(i in exe_c) {
 
 
-      cases <- cases[get(i) > index | is.na(get(i))]
+      cases <- cases[!data.table::between(as.numeric(index-get(i)), index.shift, look.back) | is.na(get(i))]
 
       flow_list[["exclusion"]][[i]] <- paste0(cur_n - nrow(cases), " / ", nrow(cases))
+
+      cli::cli_bullets(c("*" = "Previous Exposure ({i}): {unlist(flow_list)[length(unlist(flow_list))]}"))
 
       cur_n <- nrow(cases)
 
@@ -158,7 +180,9 @@ includR <- function(data,
 
   }
 
-  flow_list[["final"]][["pre_match"]] <- paste0("- / ", nrow(cases))
+  flow_list[["final"]][["matching"]] <- paste0("- / ", nrow(cases))
+
+  cli::cli_bullets(c("*" = "Final: {unlist(flow_list)[length(unlist(flow_list))]}"))
 
 
   print(flow_df <- rrapply::rrapply(flow_list, how = "melt") %>%
@@ -181,6 +205,10 @@ includR <- function(data,
   cli::cli_text("Total runtime:")
   cli::cli_text(tockR("diff", start))
 
-  bind_rows(cases, conts)[, (c(exe_c, case_c, remove_c)) := NULL]
+  if(cases_c == "case") cases_c <- NULL
+
+  out <- bind_rows(cases, conts)[, (c(exe_c, case_c, remove_c)) := NULL]
+
+  if(dt) out else as.data.frame(out)
 
 }
