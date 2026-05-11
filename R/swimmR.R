@@ -73,6 +73,7 @@ swimmR <- function(data,
                    table.cols = c("gainsboro", "grey", "#BCCFE8"),
                    cols = list(),
                    shapes = list(),
+                   table.text.size = 4,
                    labs,
                    id = "id") {
 
@@ -91,30 +92,31 @@ swimmR <- function(data,
     data <- data %>% mutate(grp = "g")
   }
 
-  all.events <- unique(sort(c(event, "follow", "death", "dsd")))
+  all.events <- rev(unique(c(event, "dsd", "death", "follow")))
 
-  f.index <- which(all.events == "follow")
+  #Customization shapes
+  spool <- c(23, 21, 22, 25,24,23, 21, 22, 25,24, 4, 3, 8, 0, 1, 2, 5, 6)
 
-  #Customization - shapes
-  shapes.default <- as.list(c(23,5,NA,24,22,25,20)[1:length(all.events)]) %>% set_names(all.events)
-
-  shapes.custom <- list(follow = NA,
+  shapes.default <- list(follow = NA,
+                         death = 21,
                         dsd = 23,
-                        death = 20,
                         rec = 21,
                         meta = 22,
                         lmeta = 25,
                         lrmeta = 24,
                         dmeta = 22)
 
+  #Keep only identified defaults
+  shapes.custom <- shapes.default[names(shapes.default) %in% c(all.events, "follow", "death", "dsd")]
 
-  shapes.default <- list_assign(shapes.default, !!!shapes.custom[names(shapes.custom) %in% all.events])
-  shapes <- unlist(list_assign(shapes.default, !!!shapes))
+  #Add from spool and merge
+  shapes.custom <- list_flatten(list(shapes.custom, (as.list(spool[spool %nin% shapes.custom][1:length(all.events[all.events %nin% names(shapes.custom)])]) %>% set_names(all.events[all.events %nin% names(shapes.custom)]))))
+
+  #Modification
+  shapes <- unlist(list_assign(shapes.custom, !!!shapes))
 
   #Customization - colors
-  cols.default <- as.list(cancR_palette[1:length(all.events)]) %>% set_names(all.events)
-
-  cols.custom <- list(follow = "grey",
+  cols.default <- list(follow = "grey",
                         dsd = "grey",
                         death = "grey",
                         rec = "#FFB347",
@@ -123,15 +125,21 @@ swimmR <- function(data,
                         lrmeta = "#252A6E",
                         dmeta = "#AB5CB8")
 
-  cols.default <- list_assign(cols.default, !!!cols.custom[names(cols.custom) %in% all.events])
+  #Keep only identified defaults
+  cols.custom <- cols.default[names(cols.default) %in% c(all.events, "follow", "death", "dsd")]
 
-  cols <- unlist(list_assign(cols.default, !!!cols))
+  #Add from cancR_palette and merge
+  cols.custom <- list_flatten(list(cols.custom, (as.list(cancR_palette[cancR_palette %nin% cols.custom][1:length(all.events[all.events %nin% names(cols.custom)])]) %>% set_names(all.events[all.events %nin% names(cols.custom)]))))
+
+  #Modification
+  cols <- unlist(list_assign(cols.custom, !!!cols))
 
   #Customization - labels
   if(!missing(labs)) {
-  labels <- str_replace_all(all.events[-f.index], unlist(names(labs)) %>% set_names(labs))
+  labels <- str_replace_all(all.events[all.events %nin% "follow"], unlist(names(labs)) %>% set_names(labs))
   } else {
     labels <- all.events
+    labs <- as.list(all.events[all.events %nin% "follow"]) %>% set_names(all.events[all.events %nin% "follow"])
   }
 
   split_df <- split(data, ~ grp)
@@ -139,12 +147,10 @@ swimmR <- function(data,
   #Tables
   height <- max(unlist(map(split_df, ~ nrow(.x))))
   n <- length(table.list)
-  seqs <- -seq(5, 5+(3*n), 3)
-  ymins <- seqs[1:n]
-  ymaxs <- seqs[2:(n+1)]
   l.events <- length(labs)
 
   #Legend
+  total1 <- length(unique(split_df[[1]][[id]]))
   legend.min <- horizon/4
   legend.max <- horizon-horizon/4
   legend.col <- 3
@@ -153,33 +159,42 @@ swimmR <- function(data,
                     T ~ 3)
 
 
-  # legend.x <- seq(legend.min+(legend.max - legend.min) / (legend.col + 1),
-  #                 legend.max-(legend.max - legend.min) / (legend.col + 1),
-  #                 (legend.max - legend.min) / (legend.col + 1))
-  legend.x <- c(20, 30, 40)
-  legend.y <- case_when(l.events <= 3 ~ 10,
-                        l.events > 3 ~ c(15-3.3, 5+3.3))
+
+  legend.x <- c(0.3333, 0.5, 0.6666) * horizon
+  legend.y <- case_when(l.events <= 3 ~ (total1+20-total1+5)/2,
+                        l.events > 3 ~ c(total1+20 - 5, total1+5+5))
 
 
-  legend.df <- data.frame(labs = names(labs),
-                          shapes = shapes[-f.index][match(names(labs), labels)],
-                          cols = cols[-f.index][match(names(labs), labels)],
+  legend.df <- data.frame(labs = rev(names(labs)),
+                          shapes = shapes[rev(names(labs))],
+                          cols = cols[rev(names(labs))],
+                          border = cols[rev(names(labs))],
                           x = rep(legend.x, legend.row)[1:l.events],
-                          y = rep(legend.y, each = legend.col)[1:l.events]+height) %>%
+                          y = rep(legend.y, each = legend.col)[1:l.events]) %>%
     mutate(symb = x - (str_count(labs))*0.2) %>%
     group_by(x) %>%
-    mutate(symb = min(symb))
-
-
+    mutate(symb = min(symb)) %>%
+    rollR(shapes, uni) %>%
+    group_by(uni) %>%
+    mutate(border = ifelse(row_number() == 1 & n() > 1, cols, "Black"),
+           cols = ifelse(row_number() == 1 & n() > 1, "White", cols)) %>%
+    ungroup()
 
   plot_list <-
     map(seq_along(split_df), function(i) {
 
-    data <- split_df[[i]]
+      data <- split_df[[i]]
 
+      seqs <- -seq(5, 5+(4*length(table.list[[i]])), 4)
+      ymins <- seqs[1:length(table.list[[i]])]
+      ymaxs <- seqs[2:(length(table.list[[i]])+1)]
+      total <- length(unique(data[[id]]))
+
+      if(i == 1) height <- total + 12 else height <- total
 
    plot_df <-
       map(seq_along(event), ~ {
+
 
         if(.x == length(event)) value <- c(0,1,2) else value <- 1
 
@@ -192,18 +207,17 @@ swimmR <- function(data,
 
       }) %>% discard(., ~ nrow(.x) == 0) %>% bind_rows %>%
       group_by(id) %>%
-      # filter(
-      #   outcome %in% event |
-      #     (outcome == "follow" & !any(c("death", "dsd") %in% outcome))
-      # ) %>%
       mutate(time = ifelse(time > horizon, time + 20, time)) %>%
-      arrange(desc(time)) %>%
-      mutate(end = pmax(0, lag(time), na.rm=T)) %>%
-      rollR(id, label = order)
+     filter(!time == lead(time) | row_number() == n()) %>%
+     arrange(time) %>%
+      mutate(end = pmax(0, lead(time), na.rm=T),
+             max = max(time)) %>%
+     ungroup() %>%
+     arrange(max) %>%
+      rollR(id, label = order) %>%
+     arrange(order, desc(time))
 
    cur.events <- sort(unique(plot_df$outcome))
-
-
 
     p <- ggplot(plot_df, aes(x=time, y=order, color = outcome, fill=outcome, shape = outcome)) +
       #Axes
@@ -211,11 +225,11 @@ swimmR <- function(data,
       annotate("text", x=seq(0,horizon,breaks), y=-2, label = seq(0, horizon, breaks)) +
       annotate("text", x=-5, y=-2, label = "Months", hjust = "left", fontface = 2, size = 5) +
       geom_segment(aes(x=time, xend=end, y=order), linewidth = 1) +
-      geom_point(size = 4, color = "black") +
+      geom_point(size = 4, color = "Black") +
       scale_color_manual(values=cols[which(all.events %in% cur.events)]) +
       scale_fill_manual(values=cols[which(all.events %in% cur.events)]) +
       scale_shape_manual(values = shapes[which(all.events %in% cur.events)]) +
-      coord_cartesian(xlim=c(-3,horizon), ylim = c(min(seqs), height+15)) +
+      coord_cartesian(xlim=c(-3,horizon), ylim = c(min(seqs), height+5)) +
       theme_classic() +
       theme(legend.position = "none",
             axis.text = element_blank(),
@@ -234,8 +248,8 @@ swimmR <- function(data,
       p <- p +
         annotate("rect", xmin = horizon/4,
                  xmax = horizon-horizon/4,
-                 ymin = height+5,
-                 ymax = height+15,
+                 ymin = total + 5,
+                 ymax = total+ 20,
                  color = "Black",
                  fill = "White",
                  linewidth = 1) +
@@ -243,16 +257,16 @@ swimmR <- function(data,
         annotate("point", x=legend.df$symb, y=legend.df$y,
                  shape = legend.df$shapes,
                  size = 5,
-                 fill = legend.df$cols)
+                 fill = rev(cols[names(cols) %nin% "follow"]))
 
     }
 
-    for(i in seq_len(n)) {
+    for(x in seq_len(length(table.list[[i]]))) {
 
       p <- p +
-        annotate("rect", xmin=-6, xmax=horizon+2, ymin = ymins[i], ymax = ymaxs[i], fill = table.cols[i], color = "black", linewidth = 0.8) +
-        annotate("text", x=-5, y=seqs[i]-1.5, label = names(table.list)[i], hjust = "left", size = 5) +
-        annotate("text", x=table.list[[i]], y=seqs[i]-1.5, label = "X", hjust = "left")
+        annotate("rect", xmin=-6, xmax=horizon+2, ymin = ymins[x], ymax = ymaxs[x], fill = table.cols[x], color = "black", linewidth = 0.8) +
+       annotate("text", x=-5, y=ymins[x]-2, label = names(table.list[[i]])[x], hjust = "left", size = table.text.size, fontface = 2) +
+      annotate("text", x=table.list[[i]][[x]], y=ymins[x]-2, label = "X", hjust = "left", size = table.text.size)
 
 
 
@@ -266,7 +280,32 @@ swimmR <- function(data,
 
  collectR(plot_list, ncol = 1, collect=F)
 
-
-
-
 }
+
+# swim_events <- c("local_relapse", "lm2", "rm", "dm", "dsd")
+#
+# swimmR(df_outcome,
+#        event = swim_events,
+#        horizon = 120,
+#        strata = fnclcc,
+#        strata.levels = c("Grade 1", "Grade 2", "Grade 3"),
+#        table.list = list("Grade 1" = list(clinical = seq(0,120, 6),
+#                                           mri = c(0,60),
+#                                           ct = c(50,76)),
+#                          "Grade 2" = list(clinical = seq(0,120, 12)),
+#                          "Grade 3" = list(mri = c(0,60,70))))
+
+# swimmR(df_outcome,
+#        event = swim_events,
+#        horizon = 60,
+#        strata = fnclcc,
+#        strata.levels = c("Grade 1", "Grade 2", "Grade 3"),
+#        labs = as.list(swim_events) %>% set_names(swim_events),
+#        shapes = list(recur = 21,
+#                      dm = 22,
+#                      rm = 23))
+# table.list = list("Grade 1" =
+#                     list(Clinical = seq(0,60,6),
+#                          MRI = seq(0,60,12),
+#                          CT = c(0,12,24,60)),
+#                   "Grade 2" = list("Clinical" = c(0,48,60))))

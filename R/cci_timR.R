@@ -21,17 +21,39 @@
 #
 # cci_time(lpr, structure = "full", format = "wide", comorb=T)
 
-cci_timR <- function(data, interval = 365.25/2, structure = "binned", format = "long", comorb=F) {
+cci_timR <- function(data, interval = 365.25/2, structure = "binned", format = "long", comorb=F, cores = 4) {
 
   structure <- match.arg(structure, c("binned", "full"))
   format <- match.arg(format, c("long", "wide"))
 
-  cci_total <- lapply(c(seq(as.Date("1977-01-01"), as.Date("2024-12-31"), by = interval)), function(x) {
+  period <- seq(as.Date("1977-01-01"), as.Date("2024-12-31"), by = interval)
+
+  if(!inherits(plan(), "multisession") & !is.null(cores)) {
+    multitaskR(cores = cores)
+  }
+
+  progressr::handlers(global = TRUE)
+  progressr::handlers("cli")
+  options(cli.progress_bar_style = "fillsquares")
+
+  p <- progressr::progressor(along = period)
+
+  cci_total <- future_map(period, function(x) {
+
+    tickR()
+
     df <- copy(data)[inddto <= x][,charlson.date := x]
     ci <- charlsonIndex(df,ptid="pnr",vars="diag",data.date="inddto",
                         charlson.date="charlson.date")
     lst <- list(ci[[1]], ci[[2]])
     names(lst) <- c("cci", "comorb")
+
+    p(message = paste0(
+      x, ":",
+      " complete: ", tockR("time"),
+      " - Runtime: ", tockR()
+    ))
+
     return(lst)
   })
 

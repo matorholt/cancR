@@ -193,7 +193,7 @@ matchR <- function(data,
                         on              = vars,
                         allow.cartesian = TRUE,
                         nomatch         = 0
-    ][itime >= from & itime < to]
+    ][itime >= from & itime < to & fu > itime]
 
     #Exclude criteria before index
     if(length(exclude) > 0L) {

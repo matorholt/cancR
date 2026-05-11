@@ -19,6 +19,7 @@
 #' @param digits number of digits on event times
 #' @param id name of the id column. If missing, autodetection is attempted
 #' @param check whether data check should be performed (default = T). Checks if dates are in the future and event times are zero or negative.
+#' @param remove whether dates before index should be removed (e.g. beyond look back period), default = F
 #'
 #' @return For each outcome, a status indicator of 0/1/2 and a time-to-event column are returned. If competing is missing, the levels are 0/1
 #' For the competing event, a status indicator of 0/1 and a time-to-event is returned.
@@ -57,23 +58,26 @@
 #
 # df <- df[c(1:(n-2)), ]
 #
-# structR(df,
-#         index = opdate,
-#         fu = follow,
-#         outcomes=c(recurrence_date, metastasis_date),
-#         competing = c(death_date, second_date),
-#         composite = list("pfs" = list("outcomes" = c("recurrence_date", "metastasis_date", "death_date")),
-#                          "relapse" = list("outcomes" = c("recurrence_date", "metastasis_date", "dsd_date"),
-#                                           "competing" = c("death_date")),
-#                          "test" = list("outcomes" = c("metastasis_date"),
-#                                        "competing" = c("recurrence_date", "death_date"))),
-#         keep.dates = T)
+# t <- structR(df,
+#              index = opdate,
+#              fu = follow,
+#              outcomes=c(recurrence_date, metastasis_date),
+#              competing = c(death_date, second_date),
+#              composite = list("pfs" = list("outcomes" = c("recurrence_date", "metastasis_date", "death_date")),
+#                               "relapse" = list("outcomes" = c("recurrence_date", "metastasis_date", "dsd_date"),
+#                                                "competing" = c("death_date")),
+#                               "test" = list("outcomes" = c("metastasis_date"),
+#                                             "competing" = c("recurrence_date", "death_date"))),
+#              keep.dates = T,
+#              check = T,
+#              remove = T)
+
 
 
 
 structR <- function(data,
-                    index,
-                    fu,
+                    index = "index",
+                    fu = "fu",
                     outcomes,
                     competing,
                     composite = list(),
@@ -82,8 +86,8 @@ structR <- function(data,
                     keep.dates=F,
                     digits = 2,
                     id,
-                    check = F)
-{
+                    check = F,
+                    remove = F) {
 
   #Convert to data.frame
   if(any(c("data.table", "tbl") %in% class(data))) {
@@ -91,7 +95,7 @@ structR <- function(data,
   }
 
   if(unit %nin% c("months", "years", "days")) {
-    cat("Error: Invalid choice of unit. Choose between days, months or years")
+    cli::cli_alert_danger("Error: Invalid choice of unit. Choose between days, months or years")
   }
 
   if(missing(id)) {
@@ -99,12 +103,13 @@ structR <- function(data,
     id_syn <- paste0("\\b", c("id", "ID", "pnr", "pt_id", "study_id", "record_id"), "\\b")
 
     if(sum(id_syn %in% colnames(data)) > 1) {
-      return(cat("Multiple ID columns detected - pick only one"))
+      return(cli::cli_alert_danger("Multiple ID columns detected - pick only one"))
     }
     id_c <- data %>% select(matches(id_syn)) %>% names()
   } else {
     id_c <- data %>% select({{id}}) %>% names()
   }
+
 
   out_c <- data %>% select({{outcomes}}) %>% names()
   com_c <- data %>% select({{competing}}) %>% names()
@@ -113,8 +118,10 @@ structR <- function(data,
   all_out <- c(out_c, com_c, names(composite))
 
   if(!all(str_detect(c(out_c, com_c), pattern))) {
-    return(cat(paste0("Wrong name pattern. All outcomes should include the pattern: ", pattern)))
+    return(cli::cli_alert_danger("Wrong name pattern. All outcomes should include the pattern: {pattern}"))
   }
+
+  setDT(data)
 
   if(check) {
 
@@ -125,19 +132,28 @@ structR <- function(data,
 
       if(sum(data[[i]] > Sys.Date(), na.rm=T) > 0) {
 
-        errors <- c(errors, data[which(replace_na(data[["opdate"]], as.Date(0)) > Sys.Date()), id_c])
+        errors <- c(errors, data[which(replace_na(data[["opdate"]], as.Date(0)) > Sys.Date()), get(id_c)])
       }
 
     }
 
     if(length(errors) > 0) {
 
-      cat(paste0("Error: Dates in the future found for ", length(errors), " individual(s). Vector of IDs returned"))
+      cli::cli_alert_danger("Error: Dates in the future found for {length(errors)} individual(s). Vector of IDs returned")
 
       return(errors)
 
     }
 
+  }
+
+  if(remove) {
+    for(i in out_c) {
+
+      data <- data[,substitute(i) := if_else(get(i) <= get(index_c), as.Date(NA), as.Date(get(i)))]
+
+
+    }
   }
 
   if(unit == "months"){
@@ -163,9 +179,15 @@ structR <- function(data,
     }
 
     if(v %nin% com_c) {
-      map_list[["event_cols"]] <- c(v, com_c, fu_c)
+      map_list[["event_cols"]] <- c(v, com_c)
     } else {
-      map_list[["event_cols"]] <- c(v, fu_c)
+      map_list[["event_cols"]] <- c(v)
+    }
+
+    if(v %in% names(composite)) {
+
+      map_list[["event_cols"]] <- c(v, composite[[v]]$competing)
+
     }
 
     map_list
@@ -173,24 +195,35 @@ structR <- function(data,
   }) %>% set_names(all_out)
 
   if(length(composite) > 0) {
+
     #Find minima in composite columns
-    for(v in seq_along(composite)) {
-      data[[names(composite)[[v]]]] <- suppressWarnings(pmap_vec(data[, composite[[v]]$outcomes], ~ if(all(is.na(c(...)))) NA else min(c(...), na.rm=TRUE)))
-    }
+    for(v in names(composite)) {
+
+      data <- rowR(data,
+                   composite[[v]]$outcomes,
+                   type = "pmin",
+                   label = v,
+                   dt=T)
+      }
   }
 
-  #return(data %>% str)
   #EVENT + TIME STRUCTURING
   for(v in seq_along(event_map)) {
 
+    evs <- event_map[[v]][["event_cols"]]
+
     #Time
-    data[[event_map[[v]][["time"]]]] <- round(as.numeric(pmap_vec(data[, event_map[[v]][["event_cols"]]], ~ min(c(...), na.rm = TRUE)) - data[, index_c])/t, digits)
+    data[, (event_map[[v]][["time"]]) := {
+      round(as.numeric(pmin(do.call(pmin, c(.SD, list(na.rm=T))), get(fu_c), na.rm=T) - get(index_c))/t, digits)
+
+    }, .SDcols= evs]
 
     #Event
-    data[[event_map[[v]][["name"]]]] <- ifelse((vec <- pmap_int(data[, event_map[[v]][["event_cols"]]], ~ which(c(...) == min(c(...), na.rm = TRUE))[1])) == length(event_map[[v]][["event_cols"]]), 0, vec)
-
-
-
+    data[, (event_map[[v]][["name"]]) := {
+      apply(.SD[, ..evs], 1, function(x) {
+        pmax(0,which(x == min(x, na.rm=T))[1], na.rm=T)
+          })
+      }]
   }
 
   if(check) {
@@ -209,9 +242,11 @@ structR <- function(data,
 
       }
 
+
+
       frame <- joinR(checklist, by = "id", type = "full")
 
-      cat(paste0("Error: ", nrow(frame), " ID(s) with blank, negative or zero times to event. Dataframe with errors returned:\n\n"))
+      cli::cli_alert_danger("Error: {nrow(frame)} ID(s) with blank, negative or zero times to event. Dataframe with errors returned:")
 
       return(frame %>% select(!!sym(id_c), everything()))
 

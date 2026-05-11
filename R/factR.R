@@ -190,6 +190,11 @@ factR <- function(data,
 
       }
 
+      if(is.factor(v)) {
+        levels(data[[v]])
+        data <- data[, c(v) := fct_drop(get(v))]
+      }
+
       suppressWarnings(data[, c(v) := fct_infreq(as.character(get(v)))][
         , c(v) := fct_relevel(get(v), reference[[v]])][
           , c(v) := fct_relevel(get(v), levels[[v]])])

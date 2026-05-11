@@ -12,7 +12,6 @@
 #' @param print.est Whether absolute risks at the time horizon should be printet. Defaults to TRUE
 #' @param contrast The type of contrast that should be provided. Includes risk difference ("rd", default), risk ratio ("rr"), hazard ratio ("hr") or "none".
 #' @param se whether the confidence interval should be shown
-#' @param border whether there should be borders around the results
 #' @param p.values whether p-values should be printed in the results, default = T
 #' @param style the formatting style of the contrast. Currently JAMA and italic
 #' @param linewidth thickness of the risk curve lines
@@ -31,7 +30,11 @@
 #' @param res.shift Vector of XY shifting of the results
 #' @param res.spacing Vertical spacing between results
 #' @param res.digits Number of digits on the risk estimates
-#' @param border.shift Horizontal shifting of right border
+#' @param box whether there should be a box around the results
+#' @param box.shift Horizontal shifting of the right end of the box
+#' @param box.fill fill color for the box
+#' @param box.color border color for the box
+#' @param box.linewidth Results box linewidth
 #' @param contrast.digits Number of digits on the contrasts
 #' @param table Which parts of the risk table should be provided ("event", "risk", "none"). Default is c("event", "risk")
 #' @param table.space Spacing between counts in risk table
@@ -39,7 +42,6 @@
 #' @param table.title.size Risk table titles size
 #' @param table.text.size Risk table text size
 #' @param table.linewidth Risk table linewidth
-#' @param border.linewidth Results box linewidth
 #' @param legend.pos XY vector of legend position in percentage
 #' @param tscale Global size scaler
 #' @param censur Whether values <= 3 should be censored. Default = FALSE
@@ -91,7 +93,6 @@ plotR <- function(list,
                   print.est = TRUE,
                   contrast = "rd",
                   se = T,
-                  border = T,
                   p.values = T,
                   style = NULL,
                   linewidth = 0.8,
@@ -110,7 +111,11 @@ plotR <- function(list,
                   res.shift = c(0,0),
                   res.spacing = 1,
                   res.digits = 1,
-                  border.shift = 0,
+                  box = T,
+                  box.shift = 0,
+                  box.fill = "White",
+                  box.color = "Black",
+                  box.linewidth = 0.8,
                   contrast.digits = 1,
                   table = c("event", "risk"),
                   table.space = 1,
@@ -118,7 +123,6 @@ plotR <- function(list,
                   table.title.size = 6,
                   table.text.size = 5,
                   table.linewidth = 0.8,
-                  border.linewidth = 0.8,
                   legend.pos = c(0.5,0.9),
                   legend.size = 16,
                   tscale = 1,
@@ -220,8 +224,10 @@ plotR <- function(list,
   p <-
     ggplot(plot, aes(x=time, y=est, color = !!sym(group), fill = !!sym(group))) +
     geom_step(linewidth = linewidth) +
-    geom_segment(x = -(horizon*0.01), xend=horizon*1.04, y=-(y*0.01), yend=-(y*0.01), color = "Black", linewidth = linewidth) +
-    geom_segment(x = 0, xend=0, y=-(y*0.03), yend=y, color = "Black", linewidth = linewidth) +
+    #X-axis
+    geom_segment(x = -(horizon*0.0075), xend=horizon*1.04, y=-(y*0.01), yend=-(y*0.01), color = "Black", linewidth = linewidth) +
+    #Y-axis
+    geom_segment(x = 0, xend=0, y=-(y*0.0375), yend=y, color = "Black", linewidth = linewidth) +
     scale_color_manual(values = c(col[1:length(levels)]), labels = labs) +
     scale_fill_manual(values = c(col[1:length(levels)]), labels = labs)
   if(se) p <- p + pammtools::geom_stepribbon(aes(ymin = lower, ymax = upper), alpha = 0.2, color = NA)
@@ -382,6 +388,28 @@ plotR <- function(list,
     rows <- rev(1-rows)
   }
 
+
+  #box settings customization
+  buttom <- rows[length(rows)] - (rows[1]-rows[2])
+  width<- ifelse(horizon == 60, 0.95, 1.9)
+  right <- max(str_count(p.labs))*width+res.shift[1]+box.shift
+  top <- rows[1] + (rows[1]-rows[2])
+  left <- (xstart*0.4)+res.shift[1]
+
+
+  if(box) {
+
+
+    if(!is.null(style)) right <- right + horizon/60
+
+    p <- p + annotate("segment", x=left, xend = right, y=top, yend = top, linewidth = box.linewidth) +
+      annotate("segment", x=left, xend = right, y=buttom, yend = buttom, linewidth = box.linewidth) +
+      annotate("segment", x=left, xend = left, y = top, yend = buttom, linewidth = box.linewidth) +
+      annotate("segment", x=right, xend = right, y = top, yend = buttom, linewidth = box.linewidth)
+
+    p <- p + annotate("rect", xmin = left, xmax = right, ymin = buttom, ymax = top, linewidth = box.linewidth, fill = box.fill, color = box.color)
+  }
+
   p <- p +
     annotate("text",
              x = xstart + res.shift[1],
@@ -401,25 +429,6 @@ plotR <- function(list,
                y=rows[i],
                yend=rows[i], color = col[i-1], linewidth = linewidth*1.5)
 
-  }
-
-        #Border settings customization
-        buttom <- rows[length(rows)] - (rows[1]-rows[2])
-        width<- ifelse(horizon == 60, 1.5, 1.9)
-        right <- max(str_count(p.labs))*width+res.shift[1]+border.shift
-        top <- rows[1] + (rows[1]-rows[2])
-        left <- (xstart*0.4)+res.shift[1]
-
-
-  if(border) {
-
-
-    if(!is.null(style)) right <- right + horizon/60
-
-    p <- p + annotate("segment", x=left, xend = right, y=top, yend = top, linewidth = border.linewidth) +
-      annotate("segment", x=left, xend = right, y=buttom, yend = buttom, linewidth = border.linewidth) +
-      annotate("segment", x=left, xend = left, y = top, yend = buttom, linewidth = border.linewidth) +
-      annotate("segment", x=right, xend = right, y = top, yend = buttom, linewidth = border.linewidth)
   }
 
   }

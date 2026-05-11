@@ -4,8 +4,8 @@
 #' Simple loading function of the most used registers including variable selection, regex filtering and id_list filtering.
 #'
 #' @param regs which registers should be loaded. Default is all (lpr, pop, pato, cancer, lmdb and opr)
-#' @param pattern.list list of vectors of diagnoses codes for each register in the format ("lpr" = c("DC92", "DC21"))
-#' @param pattern.list2 supplemental pattern if multiple columns should be filtered. Works the same way as pattern
+#' @param pattern.list named list of vectors of diagnoses codes for each register in the format ("lpr" = c("DC92", "DC21")). If multiple columns should be searched, an extra list layer is added ("lpr" = list("diag" = c("DC1"), "tildiag" = "DC2"))
+#' @param pattern.custom named list for custom filter expressions
 #' @param n number of observations that should be loaded
 #' @param id.filter optional possibility to limit the registers to a defined patient population of PNRs
 #' @param keep.list which variables should be kept provided as a list("lpr" = c("vars")).
@@ -29,7 +29,7 @@
 
 loadR <- function(regs,
                   pattern.list = NULL,
-                  pattern.list2 = NULL,
+                  pattern.custom = NULL,
                   n = NULL,
                   id.filter = NULL,
                   keep.list = NULL,
@@ -39,7 +39,7 @@ loadR <- function(regs,
                   simulation = F,
                   cores = 4,
                   dt = F,
-                  cancR.covariates = "all",
+                  cancR.covariates = "main",
                   ...) {
 
 
@@ -49,14 +49,10 @@ loadR <- function(regs,
 
   cli::cli_h2("Initializing loadR algorithm: {tockR(\'time\')}")
 
-  regs <- match.arg(regs, c("lpr", "lmdb", "pop", "pato", "cancer", "opr", "sc", "meta", "dsd", "ses", "covariates", "dcr", "immune"), several.ok = T)
+  regs <- match.arg(regs, c("lpr", "lmdb", "pop", "pato", "cancer", "opr", "sc", "meta", "dsd", "covariates", "dcr", "immune"), several.ok = T)
 
   if(!is.null(keep.list) & class(keep.list) != "list") {
     return(cli::cli_alert_danger("Error: Format the argument \'keep\' as a list with the structure list(lpr = c(\'vars\'), lmdb = c(\'vars\'))"))
-  }
-
-  if(!is.null(pattern.list) & class(pattern.list) != "list") {
-    return(cli::cli_alert_danger("Format the argument \'pattern.list\' as a list with the structure list(lpr = c(\'DC92\', \'DC239\'), lmdb = c(\'L04\', \'L01\'))"))
   }
 
   if(class(id.filter) %in% c("character", "numeric", "integer")) {
@@ -66,216 +62,217 @@ loadR <- function(regs,
   }
 
   if(missing(simulation) & str_detect(getwd(), "V:|X:|~", negate=T)) {
-    cli::cli_alert_warning("SIMULATION OF DATASETS")
     simulation <- T
+    cli::cli_alert_warning("SIMULATION OF DATASETS")
   }
 
-  if(simulation) {
 
-    if(is.null(n)) n <- 10
-    start.date <- "2000-01-01"
+    pathlist <-
+      list(
+        "cancer" = "V:/Data/Workdata/709545/Mathias Oerholt/DATASETS/CANCER.parquet",
+        "opr" = "V:/Data/Workdata/709545/Mathias Oerholt/DATASETS/OPR.parquet",
+        "lpr" = "V:/Data/Workdata/709545/Mathias Oerholt/DATASETS/LPR.parquet",
+        "pop" = "V:/Data/Workdata/709545/Mathias Oerholt/DATASETS/POPULATION.parquet",
+        "pato" = "V:/Data/Workdata/709545/Mathias Oerholt/DATASETS/PATOBANK.parquet",
+        "sc" = "V:/Data/Workdata/709545/Mathias Oerholt/DATASETS/SKIN_CANCER.parquet",
+        "meta" = "V:/Data/Workdata/709545/Mathias Oerholt/DATASETS/SKIN_METASTASIS.parquet",
+        "dsd" = "V:/Data/Workdata/709545/Mathias Oerholt/DATASETS/SKIN_DEATH.parquet",
+        "covariates" = "V:/Data/Workdata/709545/Mathias Oerholt/DATASETS/COVARIATES.parquet",
+        "dcr" = "V:/Data/Workdata/709545/Mathias Oerholt/DATASETS/DCR.parquet",
+        "immune" = "V:/Data/Workdata/709545/Mathias Oerholt/DATASETS/IMMUNE_DRUGS.parquet")
 
-    reglist <- list()
+      keep.default <-
+        list("pato" = c("pnr", "k_matnr", "D_MODTDATO", "C_SNOMEDKODE"),
+             "cancer" = c("pnr", "d_diagnosedato", "c_icd10", "c_morfo3"),
+             "lmdb" = c("pnr", "eksd", "apk", "atc", "strnum", "strunit", "PACKSIZE"))
 
-    for(i in regs) {
+
+
+      if("covariates" %in% regs) {
+        base <- c("pnr", "from", "to", "education", "income", "region", "degurba", "marital", "cci", "cci_exact")
+
+        switch(cancR.covariates,
+               "major" = {keep.default[["covariates"]] <- c(base, names(cancR_codes)[str_detect(names(cancR_codes), "major")])},
+               "main" = {keep.default[["covariates"]] <- c(base, names(cancR_codes)[str_detect(names(cancR_codes), "major", negate = T)])})
+      }
+
+        keep.vars <- list_assign(keep.default, !!!keep.list)
+
+    vars.default <-
+      list("lpr" = "diag",
+           "pato" = "snomed",
+           "cancer" = c("c_morfo3", "c_icd10"),
+           "lmdb" = "atc",
+           "opr" = "opr")
+      vars.select <- list_assign(vars.default, !!!vars.list)
+
+    #Patterns
+      if(length(regs) == 1) {
+        if(!is.null(pattern.list) & pluck_depth(pattern.list) < 3) {
+          pattern.list <- list(pattern.list) %>% set_names(regs)
+        }
+
+        if(!is.null(pattern.custom) & pluck_depth(pattern.custom) < 3) {
+          pattern.custom <- list(pattern.custom) %>% set_names(regs)
+        }
+
+
+      }
+
+
+    pattern.list <-
+      map(names(pattern.list), ~ {
+
+        #If multiple columns in list
+        if(pluck_depth(pattern.list[[.x]]) == 2) {
+
+          paste0(
+            map(names(pattern.list[[.x]]), function(i) {
+
+            paste0("str_detect(", i, ", \'", paste0(pattern.list[[.x]][[i]], collapse="|"), "\')")
+
+
+          }), collapse = " & ")
+
+
+
+        } else {
+
+        if(.x == "lmdb" & !simulation) {
+          paste0("prxmatch(\'/", paste0(pattern.list[[.x]], collapse="|"), "/\', ", vars.select[[.x]][1], ")")
+        } else {
+          paste0("str_detect(", vars.select[[.x]], ", \'", paste0(pattern.list[[.x]], collapse = "|"), "\')")
+        }
+        }
+
+
+
+      }) %>% set_names(names(pattern.list))
+
+
+    if(!is.null(cores)) multitaskR(pmin(length(regs[regs != "lmdb"]), cores))
+
+    #LOADING
+    reglist <- future_map(regs[regs != "lmdb"], ~ {
+
+      cli::cli_h3("Loading: {str_to_upper(.x)}")
 
       tickR()
 
-      cli::cli_h3("{str_to_upper(i)}:")
+      if(simulation) {
 
+        if(is.null(n)) n <- 10
 
-      reglist[[i]] <- simulatR(i,
-                               n = n,
-                               start.date = start.date,
-                               pattern.list,
-                               ...)
+        dat <- simulatR(.x, n = n)
 
-      cli::cli_alert_success("Completed - {tockR(\'time\')}")
-
-    }
-
-    cli::cli_h3("Loading complete!")
-    cli::cli_text("Total runtime:")
-    cli::cli_text(tockR("diff", start))
-
-    if(length(reglist) == 1) {
-
-      return(reglist[[1]])
-    } else {
-
-      return(reglist)
-    }
-
-  }
-
-  else {
-
-  pathlist <-
-    list("parquet" = list("lpr" = "V:/Data/Workdata/709545/Mathias Oerholt/DATASETS/LPR.parquet",
-                      "pop" = "V:/Data/Workdata/709545/Mathias Oerholt/DATASETS/POPULATION.parquet",
-                      "pato" = "V:/Data/Workdata/709545/Mathias Oerholt/DATASETS/PATOBANK.parquet",
-                      "cancer" = "V:/Data/Workdata/709545/Mathias Oerholt/DATASETS/CANCER.parquet",
-                      "opr" = "V:/Data/Workdata/709545/Mathias Oerholt/DATASETS/OPR.parquet",
-                      "sc" = "V:/Data/Workdata/709545/Mathias Oerholt/DATASETS/SKIN_CANCER.parquet",
-                      "meta" = "V:/Data/Workdata/709545/Mathias Oerholt/DATASETS/SKIN_METASTASIS.parquet",
-                      "dsd" = "V:/Data/Workdata/709545/Mathias Oerholt/DATASETS/SKIN_DEATH.parquet",
-                      "ses" = "V:/Data/Workdata/709545/Mathias Oerholt/DATASETS/SES_wide.parquet",
-                      "covariates" = "V:/Data/Workdata/709545/Mathias Oerholt/DATASETS/COVARIATES.parquet",
-                      "dcr" = "V:/Data/Workdata/709545/Mathias Oerholt/DATASETS/DCR.parquet",
-                      "immune" = "V:/Data/Workdata/709545/Mathias Oerholt/DATASETS/IMMUNE_DRUGS.parquet"),
-         "sas" = list("lpr" = "X:/Data/Rawdata_Hurtig/709545/Grunddata/LPR/diag_indl.sas7bdat",
-                      "cancer" = "X:/Data/Rawdata_Hurtig/709545/Grunddata/Cancer/t_tumor.sas7bdat",
-                      "opr" = "X:/Data/Rawdata_Hurtig/709545/Grunddata/LPR/opr.sas7bdat"))
-
-
-  keep.default <-
-    list("lpr" = c("pnr","diag","inddto"),
-         "pop" = c("v_pnr", "c_status", "c_kon", "d_foddato", "d_status_hen_start"),
-         "pato" = c("pnr", "k_matnr", "D_MODTDATO", "C_SNOMEDKODE"),
-         "cancer" = c("pnr", "d_diagnosedato", "c_icd10", "c_morfo3"),
-         "lmdb" = c("pnr", "eksd", "apk", "atc", "strnum", "strunit", "PACKSIZE"),
-         "opr" = c("pnr", "opr", "tilopr", "odto"))
-
-  vars.default <-
-    list("lpr" = "diag",
-         "pato" = "snomed",
-         "cancer" = c("c_morfo3", "c_icd10"),
-         "lmdb" = "atc",
-         "opr" = "opr")
-
-  if(!is.null(keep.list)) {
-    keep.vars <- modifyList(keep.default, keep.list)
-  } else {
-    keep.vars <- keep.default
-  }
-
-  if(!is.null(vars.list)) {
-    vars.select <- modifyList(vars.default, vars.list)
-  } else {
-    vars.select <- vars.default
-  }
-
-  reglist <- list()
-
-  for(i in regs) {
-
-    tickR()
-
-    cli::cli_h3("{str_to_upper(i)}:")
-
-    if(i %in% names(pattern.list2)) {
-      pattern <- paste0("prxmatch(\'/", paste0(pattern.list[[i]], collapse="|"), "/\', ", vars.select$cancer[1], ") OR prxmatch(\'/", paste0(pattern.list2[[i]], collapse="|"), "/\', ", vars.select[[i]][2], ")")
-    } else if(i %in% names(pattern.list)) {
-      pattern <- paste0("prxmatch(\'/", paste0(pattern.list[[i]], collapse="|"), "/\', ", vars.select[[i]][1], ")")
-    } else {
-      pattern <- NULL
-    }
-
-    if((is.null(n) & is.null(id.filter) & !(i %in% names(keep.list)) & !(i %in% names(pattern.list))) | i %in% c("pop", "sc", "meta", "dsd", "ses", "dcr", "immune")) {
-
-      if(dt) {
-        reglist[[i]] <- as.data.table(arrow::read_parquet(pathlist[["parquet"]][[i]]))
       } else {
-        reglist[[i]] <- as.data.frame(arrow::read_parquet(pathlist[["parquet"]][[i]]))
+
+        dat <- arrow::open_dataset(pathlist[[.x]])
+
       }
 
-    } else if(i == "pato") {
+        #SELECT
+        if(.x %in% names(keep.vars)) {
+          dat <- dat %>%
+            select(keep.vars[[.x]])
+        }
 
-      dat <- arrow::read_parquet(pathlist[["parquet"]][[i]])
+        #ID.FILTER
+        if(!is.null(id.filter)) {
 
-      setDT(dat)
+          dat <- dat %>%
+            filter(pnr %in% id.filter$pnr)
+        }
 
-      if(dt) {
-        reglist[[i]] <- dat[str_detect(snomed, paste0(pattern.list[[i]], collapse="|")),]
+        #Filter
+        if(.x %in% names(pattern.custom)) {
 
-      } else {
-      reglist[[i]] <- as.data.frame(dat[str_detect(snomed, paste0(pattern.list[[i]], collapse="|")),])
+          dat <- dat %>%
+            filter(eval(parse(text=pattern.custom[[.x]])))
+
+        } else {
+
+          if(.x %in% names(pattern.list)) {
+            dat <- dat %>%
+              filter(eval(parse(text=pattern.list[[.x]])))
+
+          }
+        }
+
+        #OBSERVATIONS
+        if(!is.null(n)) {
+
+          dat <- dat %>%
+            head(n = n)
+        }
+
+
+      cli::cli_alert_success("Complete: {tockR(\'time\')} - Runtime: {tockR()}")
+
+        if(dt) return(dat %>% collect %>% as.data.table) else return(dat %>% collect %>% as.data.frame)
+
+
+      }, .options = furrr_options(seed = 1)) %>% set_names(regs[regs != "lmdb"])
+
+    if("lmdb" %in% regs) {
+      if(!exists("reglist")) {
+        reglist <- list()
       }
 
 
-    } else if(i == "lmdb") {
+      tickR()
 
-      multitaskR(cores = cores)
+      cli::cli_h3("Loading: LMDB")
+
+      if(!is.null(cores)) multitaskR(cores = cores)
+
+      if(simulation) {
+
+        if(length(regs) == 1) cli::cli_alert_warning("SIMULATION OF DATASETS")
+
+        if(is.null(n)) n <- 10
+
+        lmdb_frame <- simulatR("lmdb", n = n) %>%
+          filter(eval(parse(text=pattern.list[["lmdb"]])))
+
+
+
+      } else {
 
       lmdb_frame <- rbindlist(future_map(seq(lmdb.start,lmdb.stop), function(year) {
 
-        importSAS(paste0("X:/Data/Rawdata_Hurtig/709545/Grunddata/medication/lmdb", year, "12.sas7bdat", sep=""),
+        importSAS(paste0("X:/Data/Rawdata/709545/Grunddata/medication/lmdb", year, "12.sas7bdat", sep=""),
                   obs = n,
-                  keep = keep.vars[[i]],
+                  keep = keep.vars[["lmdb"]],
                   filter = id.filter,
-                  where = pattern)
+                  where = pattern.list[["lmdb"]])
 
-      }))
-
-      if(dt) {
-        reglist[[i]] <- lmdb_frame
-      } else {
-
-        reglist[[i]] <- as.data.frame(lmdb_frame)
-      }
-
-
-    } else if(i == "covariates") {
-
-      if(cancR.covariates == "all") {
-        keep <- names(cancR_codes)
-
-      } else {
-       keep <- names(cancR_codes)[str_detect(names(cancR_codes), "major", negate=T)]
+      }, .options = furrr_options(seed = 1)))
       }
 
       if(dt) {
-        reglist[[i]] <- as.data.table(arrow::read_parquet(pathlist[["parquet"]][[i]]))[, ..keep]
+        reglist[["lmdb"]] <- lmdb_frame
       } else {
-        reglist[[i]] <- as.data.frame(arrow::read_parquet(pathlist[["parquet"]][[i]]))[, keep]
+
+        reglist[["lmdb"]] <- as.data.frame(lmdb_frame)
       }
 
 
-
-
-
-      } else {
-
-      i_frame <- importSAS(pathlist[["sas"]][[i]],
-                           obs = n,
-                           keep = keep.vars[[i]],
-                           filter = id.filter,
-                           where = pattern)
-
-      if(dt) {
-
-        reglist[[i]] <- i_frame
-
-      } else {
-
-        reglist[[i]] <- as.data.frame(i_frame)
-
-      }
-
+      cli::cli_alert_success("Complete: {tockR(\'time\')} - Runtime: {tockR()}")
     }
-
-    cli::cli_alert_success("Completed - {tockR(\'time\')}")
-
-  }
 
   cli::cli_h3("Loading complete!")
   cli::cli_text("Total runtime:")
   cli::cli_text(tockR("diff", start))
 
-  if(length(reglist) == 1) {
-
-    if(dt) {
-      return(as.data.table(reglist[[1]]))
-    } else {
-      return(as.data.frame(reglist[[1]]))
-    }
-
-
-  } else {
-
-    return(reglist)
-  }
-
-  }
+  if(length(reglist) == 1) reglist[[1]] else return(reglist)
 
 }
+
+t <- loadR(c("lpr", "lmdb"),
+      pattern.list = list("lpr" = list("diag" = c("DL", "DU"),
+                                  "pattype" = c("2")),
+                          "lmdb" = c("A3", "P3")),
+      cores = 4)
+
+#loadR("lmdb")

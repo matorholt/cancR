@@ -4,7 +4,7 @@
 #' Wrapper for ggsave with default settings and automatic saving of multiple formats
 #'
 #'
-#' @param object object to save
+#' @param object object to save. If object = "session" the sessionInfo will be exported as a flextable.
 #' @param name File name of saved object without extension
 #' @param width width
 #' @param height heigth. If missing autoscaling is performed
@@ -90,6 +90,18 @@ savR <- function(object,
                  folder = "Tables and Figures",
                  sep = ";") {
 
+  if(object == "session") {
+
+    object <- as.data.frame(capture.output(sessionInfo())) %>%
+      rename(temp = 1) %>%
+      mutate(temp = str_remove_all(temp, "\\[\\d+\\]"),
+             temp = str_replace_all(temp, "(?<=((-|\\.)\\d{1,5}))\\s+", "\n")) %>%
+      rename("Session Info" = temp) %>%
+      flextable %>%
+      autofit()
+
+  }
+
   if(any(format %nin% c("pdf", "svg", "tiff", "jpg", "png", "rds", "csv", "parquet"))) {
     return(cat("Error: Unvalid format. Supported formats are pdf, svg, tiff, jpg, png, rds, csv and parquet"))
   }
@@ -122,9 +134,9 @@ savR <- function(object,
 
     if("parquet" %in% format) {
 
-      write_parquet(
+      arrow::write_parquet(
         object,
-        name,
+        paste0(name, ".parquet"),
         compression = parquet.format,
         compression_level = parquet.compression
       )
@@ -162,7 +174,7 @@ savR <- function(object,
       width(width=table.width) %>%
       save_as_docx(path = paste0(getwd(), "/", folder, "/", name, ".docx", collapse=""))
 
-    cat("Done")
+    cli::cli_alert_success("Done")
   }
 
   if("ggplot" %in% class(object)) {
@@ -219,7 +231,7 @@ savR <- function(object,
 
       }
 
-      cat("Done")
+      cli::cli_alert_success("Done")
 
     }
   }
