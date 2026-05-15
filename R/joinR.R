@@ -30,6 +30,11 @@
 #                            v1 = c(1,3,3),
 #                            z = c(3,3,3)))
 #
+# df_2 <- data.frame(id = c(1,2,3),
+#                                               pnr = c(11,22,33),
+#                                               x = c(11,11,22),
+#                                               v1 = c(11,11,12))
+#
 # joinR(df_list, by = "id", type = "left", dt=T)
 # joinR(df_list[[1]], df_list[[3]], by=c("id", "v1"))
 # joinR(df_list, by = c("id", "v1"), type = "left", dt=T)
@@ -37,6 +42,7 @@
 # joinR(df_list, by = list(c("pnr", "pnr2", "pnr3"),
 #                          c("x", "x2", "x3")), type = "left", dt=T)
 # joinR(df_list[[1]], df_list[[3]], by = list(c("pnr", "pnr3")), type = "anti")
+# joinR(df_list, df_2, by = "id") #both list and df input
 
 
 
@@ -51,9 +57,15 @@ joinR <- function(..., by, type = "left", dt = F) {
 
   dfs <- list(...)
 
+  #return(flatten(dfs))
+  #return(list_assign(dfs[[1]], !!!dfs[[2]]))
+  #return(unlist(dfs))
   if(length(dfs) == 1) {
     dfs <- dfs[[1]]
   }
+
+  #Combine list and non-list inputs
+  dfs <- map(dfs, ~ if(class(.x) != "list") list(.x) else .x) %>% flatten
 
   if(class(by) == "list") {
 
@@ -72,6 +84,12 @@ joinR <- function(..., by, type = "left", dt = F) {
   dfs <- lapply(seq_along(dfs), function(i) {
 
   dt <- as.data.table(dfs[[i]])
+
+  if(nrow(dt) == 0) {
+
+    return(cli::cli_alert_danger("Error: Empty dataframe (df number {i})"))
+
+  }
 
   if(class(by) == "list") {
 
@@ -105,3 +123,4 @@ joinR <- function(..., by, type = "left", dt = F) {
   return(joined_data)
 
 }
+

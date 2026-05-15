@@ -155,8 +155,10 @@ matchR <- function(data,
 
   cli::cli_alert_success("Completed - {tockR(\'time\')}")
 
+  gb.limit <- as.numeric(object.size(split_df) / 10^9 * 1.10)
+
   if(!inherits(plan(), "multisession") & !is.null(cores)) {
-    multitaskR(cores = cores)
+    multitaskR(cores = cores, gb = gb.limit)
   }
 
   progressr::handlers(global = TRUE)

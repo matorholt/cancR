@@ -352,7 +352,15 @@ modeR <- function(x, ties = "first", na.rm=T) {
 #' @export
 #'
 
-multitaskR <- function(cores) {
+multitaskR <- function(cores, gb = NULL) {
+
+  #Increase gb in future.globals
+  if(!is.null(gb)) {
+
+    options(future.globals.maxSize = gb * 1024^3)
+
+  }
+
   # current plan
   current <- future::plan()
 
@@ -483,11 +491,13 @@ pvertR <- function(x, na = "NA") {
 #'
 #'
 
-tickR <- function() {
+tickR <- function(cli=T) {
 
   tickR.start <<- Sys.time()
 
-  paste0(lubridate::round_date(Sys.time(), "second"), "\n")
+  out <- paste0(lubridate::round_date(Sys.time(), "second"))
+
+  if(cli) cli::cli_text(out) else out
 
 }
 
@@ -505,7 +515,12 @@ tickR <- function() {
 #'
 #'
 
-tockR <- function(format = "diff", start, digits = 2) {
+#MANUAL FOR INSIDE FUTURE
+# TickR: tickR.start <- Sys.time()
+# paste0(lubridate::round_date(Sys.time(), "second"))
+# TockR: paste0(round(as.numeric(Sys.time() - tickR.start), 2), \' \', attr(Sys.time() - tickR.start, \'units\'))
+
+tockR <- function(format = "diff", start, digits = 2, cli = T) {
 
   if(format == "time") {
 
@@ -529,6 +544,8 @@ tockR <- function(format = "diff", start, digits = 2) {
   }
 
 
-  out
+  if(cli) cli::cli_text(out) else (out)
 
 }
+
+

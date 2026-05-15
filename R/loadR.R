@@ -13,6 +13,10 @@
 #' @param lmdb.start first year of LMDB
 #' @param lmdb.stop last year of LMDB
 #' @param simulation whether the registers should be simulated
+#' @param cores number of cores for parallel processing
+#' @param dt whether the returned data should be in data.table format
+#' @param gb max size for future options
+#' @param cancR.covariates which covariates that should be loaded. Options are: main (non-major), major (only major) and all.
 #' @param ... arguments passed to simulatR()
 #'
 #'
@@ -39,6 +43,7 @@ loadR <- function(regs,
                   simulation = F,
                   cores = 4,
                   dt = F,
+                  gb = NULL,
                   cancR.covariates = "main",
                   ...) {
 
@@ -73,7 +78,7 @@ loadR <- function(regs,
         "opr" = "V:/Data/Workdata/709545/Mathias Oerholt/DATASETS/OPR.parquet",
         "lpr" = "V:/Data/Workdata/709545/Mathias Oerholt/DATASETS/LPR.parquet",
         "pop" = "V:/Data/Workdata/709545/Mathias Oerholt/DATASETS/POPULATION.parquet",
-        "pato" = "V:/Data/Workdata/709545/Mathias Oerholt/DATASETS/PATOBANK.parquet",
+        "pato" = "V:/Data/Workdata/709545/Mathias Oerholt/DATASETS/PATO.parquet",
         "sc" = "V:/Data/Workdata/709545/Mathias Oerholt/DATASETS/SKIN_CANCER.parquet",
         "meta" = "V:/Data/Workdata/709545/Mathias Oerholt/DATASETS/SKIN_METASTASIS.parquet",
         "dsd" = "V:/Data/Workdata/709545/Mathias Oerholt/DATASETS/SKIN_DEATH.parquet",
@@ -150,14 +155,20 @@ loadR <- function(regs,
       }) %>% set_names(names(pattern.list))
 
 
-    if(!is.null(cores)) multitaskR(pmin(length(regs[regs != "lmdb"]), cores))
+    if(length(regs[regs != "lmdb"]) > 0) {
+
+    if(!inherits(plan(), "multisession") & !is.null(cores)) {
+
+      multitaskR(cores = pmin(length(regs[regs != "lmdb"]), cores, gb))
+
+      }
 
     #LOADING
     reglist <- future_map(regs[regs != "lmdb"], ~ {
 
       cli::cli_h3("Loading: {str_to_upper(.x)}")
 
-      tickR()
+      tickR.start <- Sys.time()
 
       if(simulation) {
 
@@ -207,12 +218,14 @@ loadR <- function(regs,
         }
 
 
-      cli::cli_alert_success("Complete: {tockR(\'time\')} - Runtime: {tockR()}")
+      cli::cli_alert_success("Complete: {tickR(cli=F)} - Runtime: {tockR(cli=F)}")
 
         if(dt) return(dat %>% collect %>% as.data.table) else return(dat %>% collect %>% as.data.frame)
 
 
       }, .options = furrr_options(seed = 1)) %>% set_names(regs[regs != "lmdb"])
+    }
+
 
     if("lmdb" %in% regs) {
       if(!exists("reglist")) {
@@ -220,26 +233,39 @@ loadR <- function(regs,
       }
 
 
-      tickR()
+
+      tickR.start <- Sys.time()
 
       cli::cli_h3("Loading: LMDB")
 
-      if(!is.null(cores)) multitaskR(cores = cores)
+      if(!inherits(plan(), "multisession") & !is.null(cores)) {
+
+        multitaskR(cores = cores)
+      }
 
       if(simulation) {
 
-        if(length(regs) == 1) cli::cli_alert_warning("SIMULATION OF DATASETS")
-
         if(is.null(n)) n <- 10
 
-        lmdb_frame <- simulatR("lmdb", n = n) %>%
-          filter(eval(parse(text=pattern.list[["lmdb"]])))
+        dat <- simulatR("lmdb", n = n)
 
+        if("lmdb" %in% names(pattern.custom)) {
 
+          dat <- dat %>%
+            filter(eval(parse(text=pattern.custom[["lmdb"]])))
+
+        } else {
+
+          if("lmdb" %in% names(pattern.list)) {
+            dat <- dat %>%
+              filter(eval(parse(text=pattern.list[["lmdb"]])))
+
+          }
+        }
 
       } else {
 
-      lmdb_frame <- rbindlist(future_map(seq(lmdb.start,lmdb.stop), function(year) {
+      dat <- rbindlist(future_map(seq(lmdb.start,lmdb.stop), function(year) {
 
         importSAS(paste0("X:/Data/Rawdata/709545/Grunddata/medication/lmdb", year, "12.sas7bdat", sep=""),
                   obs = n,
@@ -250,29 +276,22 @@ loadR <- function(regs,
       }, .options = furrr_options(seed = 1)))
       }
 
+
+
       if(dt) {
-        reglist[["lmdb"]] <- lmdb_frame
+        reglist[["lmdb"]] <- dat
       } else {
 
-        reglist[["lmdb"]] <- as.data.frame(lmdb_frame)
+        reglist[["lmdb"]] <- as.data.frame(dat)
       }
 
-
-      cli::cli_alert_success("Complete: {tockR(\'time\')} - Runtime: {tockR()}")
+      cli::cli_alert_success("Complete: {tickR(cli=F)} - Runtime: {tockR(cli=F)}")
     }
 
   cli::cli_h3("Loading complete!")
   cli::cli_text("Total runtime:")
   cli::cli_text(tockR("diff", start))
 
-  if(length(reglist) == 1) reglist[[1]] else return(reglist)
+ if(length(reglist) == 1) return(reglist[[1]]) else return(reglist)
 
 }
-
-t <- loadR(c("lpr", "lmdb"),
-      pattern.list = list("lpr" = list("diag" = c("DL", "DU"),
-                                  "pattype" = c("2")),
-                          "lmdb" = c("A3", "P3")),
-      cores = 4)
-
-#loadR("lmdb")

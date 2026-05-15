@@ -3,12 +3,14 @@
 #'
 #' @param reglist list of dataframe(s)
 #' @param search.list list with list(label = diagnosis code) structure.
+#' @param name.list list of labels for the main columns (e.g. list("case" = "diabetes))
 #' @param sub.list list of variables where the diagnosis code should be kept (e.g. list("KOL" = "subtype"))
 #' @param sub.labels list of labels for the diagnosis code colum (e.g. list("subtype" = list("a" = c("DC1", "DC2"))))
-#' @param name.list list of labels for the main columns (e.g. list("case" = "diabetes))
 #' @param exclusion.list list with same structure as search.list for exclusion codes
 #' @param slice which rows should be selected (first(default)/last/all)
 #' @param format whether selected rows should contain date or 1
+#' @param date.filter character date for filtering rows before this date
+#' @param register specification of register if input is a single data.frame
 #' @param match the match of the regex code (match, start, end or contains(default))
 #' @param casename the name of the case variable (default = "index")
 #' @param pnr name of the pnr column
@@ -46,6 +48,7 @@ searchR <- function(reglist,
                     slice = "first",
                     format = "date",
                     date.filter = NULL,
+                    register,
                     match = "start",
                     casename = "index",
                     pnr = "pnr",
@@ -63,11 +66,15 @@ searchR <- function(reglist,
   slice <- match.arg(slice, c("first", "last", "all"))
 
 
-  if(class(reglist) %in% "data.frame") {
+  if(length(reglist) == 1 & class(reglist) != "list") {
 
-    reglist <- lst(" " = reglist)
-    names(search.list) <- " "
-  } else {
+    reglist <- list(reglist) %>% set_names(register)
+
+    if(class(search.list) != "list") {
+    search.list <- list(search.list) %>% set_names(register)
+    }
+
+    } else {
 
     if(pluck_depth(search.list) != 3) {
       return(cli::cli_alert_danger("Error: search.list needs to have a depth of 3. Maybe the list is unnamed"))
