@@ -87,20 +87,33 @@ structR(df,
         fu = follow,
         outcomes=c(recurrence_date, metastasis_date, dsd_date),
         competing = c(death_date, second_date)) %>% head
-#>   id     opdate     follow t_recurrence recurrence t_metastasis metastasis
-#> 1  1 2000-01-01 2025-01-01       300.02          0       300.02          0
-#> 2  2 2000-01-01 2025-01-01        60.02          1       300.02          0
-#> 3  3 2000-01-01 2025-01-01        96.00          2        84.01          1
-#> 4  4 2000-01-01 2025-01-01       108.02          2       108.02          2
-#> 5  5 2000-01-01 2025-01-01        96.00          3        96.00          3
-#> 6  6 2000-01-01 2025-01-01        60.02          1        72.02          1
-#>    t_dsd dsd t_death death t_second second
-#> 1 300.02   0  300.02     0   300.02      0
-#> 2 300.02   0  300.02     0   300.02      0
-#> 3  96.00   1   96.00     1   300.02      0
-#> 4 108.02   1  108.02     1   300.02      0
-#> 5  96.00   3  300.02     0    96.00      1
-#> 6 120.02   2  120.02     1   300.02      0
+#> Warning in `[.data.table`(.SD, , ..evs): Both 'evs' and '..evs' exist in
+#> calling scope. Please remove the '..evs' variable in calling scope for clarity.
+#> Warning in min(x, na.rm = T): no non-missing arguments, returning NA
+#> Warning in `[.data.table`(.SD, , ..evs): Both 'evs' and '..evs' exist in
+#> calling scope. Please remove the '..evs' variable in calling scope for clarity.
+#> Warning in min(x, na.rm = T): no non-missing arguments, returning NA
+#> Warning in min(x, na.rm = T): no non-missing arguments, returning NA
+#> Warning in `[.data.table`(.SD, , ..evs): Both 'evs' and '..evs' exist in
+#> calling scope. Please remove the '..evs' variable in calling scope for clarity.
+#> Warning in min(x, na.rm = T): no non-missing arguments, returning NA
+#> Warning in min(x, na.rm = T): no non-missing arguments, returning NA
+#> Warning in `[.data.table`(.SD, , ..evs): Both 'evs' and '..evs' exist in
+#> calling scope. Please remove the '..evs' variable in calling scope for clarity.
+#> Warning in min(x, na.rm = T): no non-missing arguments, returning NA
+#> Warning in min(x, na.rm = T): no non-missing arguments, returning NA
+#> Warning in min(x, na.rm = T): no non-missing arguments, returning NA
+#> Warning in `[.data.table`(.SD, , ..evs): Both 'evs' and '..evs' exist in
+#> calling scope. Please remove the '..evs' variable in calling scope for clarity.
+#> Warning in min(x, na.rm = T): no non-missing arguments, returning NA
+#> Warning in min(x, na.rm = T): no non-missing arguments, returning NA
+#> Warning in min(x, na.rm = T): no non-missing arguments, returning NA
+#> Warning in min(x, na.rm = T): no non-missing arguments, returning NA
+#> Warning in min(x, na.rm = T): no non-missing arguments, returning NA
+#> Warning in min(x, na.rm = T): no non-missing arguments, returning NA
+#> Warning in min(x, na.rm = T): no non-missing arguments, returning NA
+#> Warning in min(x, na.rm = T): no non-missing arguments, returning NA
+#> [1]  TRUE  TRUE  TRUE FALSE FALSE FALSE
 ```
 
 Notice that for each specified outcome, we split the variable into two
@@ -122,28 +135,38 @@ structR(df,
         composite = list("pfs" = list("outcomes" = c("recurrence_date", "metastasis_date", "death_date")),
                          "relapse" = list("outcomes" = c("recurrence_date", "metastasis_date", "dsd_date"),
                                           "competing" = c("death_date"))))
-#>    id     opdate     follow pfs relapse t_recurrence recurrence t_metastasis
-#> 1   1 2000-01-01 2025-01-01   0       0       300.02          0       300.02
-#> 2   2 2000-01-01 2025-01-01   1       1        60.02          1       300.02
-#> 3   3 2000-01-01 2025-01-01   1       1        96.00          2        84.01
-#> 4   4 2000-01-01 2025-01-01   1       1       108.02          2       108.02
-#> 5   5 2000-01-01 2025-01-01   3       3        96.00          3        96.00
-#> 6   6 2000-01-01 2025-01-01   1       1        60.02          1        72.02
-#> 7   7 2000-01-01 2025-01-01   3       3        12.02          3        12.02
-#> 8   8 2000-01-01 2025-01-01   1       2       288.00          2       288.00
-#> 9   9 2000-01-01 2025-01-01   1       1        60.02          1       228.01
-#> 10 10 1990-01-01 2025-01-01   1       2       107.99          2       107.99
-#>    metastasis t_death death t_second second  t_pfs t_relapse
-#> 1           0  300.02     0   300.02      0 300.02    300.02
-#> 2           0  300.02     0   300.02      0  60.02     60.02
-#> 3           1   96.00     1   300.02      0  84.01     84.01
-#> 4           2  108.02     1   300.02      0 108.02    108.02
-#> 5           3  300.02     0    96.00      1  96.00     96.00
-#> 6           1  120.02     1   300.02      0  60.02     60.02
-#> 7           3  120.02     1    12.02      1  12.02     12.02
-#> 8           2  288.00     1   300.02      0 288.00    288.00
-#> 9           2  228.01     1   300.02      0  60.02     60.02
-#> 10          2  107.99     1   420.01      0 107.99    107.99
+#> Warning in `[.data.table`(.SD, , ..evs): Both 'evs' and '..evs' exist in
+#> calling scope. Please remove the '..evs' variable in calling scope for clarity.
+#> Warning in min(x, na.rm = T): no non-missing arguments, returning NA
+#> Warning in `[.data.table`(.SD, , ..evs): Both 'evs' and '..evs' exist in
+#> calling scope. Please remove the '..evs' variable in calling scope for clarity.
+#> Warning in min(x, na.rm = T): no non-missing arguments, returning NA
+#> Warning in min(x, na.rm = T): no non-missing arguments, returning NA
+#> Warning in `[.data.table`(.SD, , ..evs): Both 'evs' and '..evs' exist in
+#> calling scope. Please remove the '..evs' variable in calling scope for clarity.
+#> Warning in min(x, na.rm = T): no non-missing arguments, returning NA
+#> Warning in min(x, na.rm = T): no non-missing arguments, returning NA
+#> Warning in min(x, na.rm = T): no non-missing arguments, returning NA
+#> Warning in `[.data.table`(.SD, , ..evs): Both 'evs' and '..evs' exist in
+#> calling scope. Please remove the '..evs' variable in calling scope for clarity.
+#> Warning in min(x, na.rm = T): no non-missing arguments, returning NA
+#> Warning in min(x, na.rm = T): no non-missing arguments, returning NA
+#> Warning in min(x, na.rm = T): no non-missing arguments, returning NA
+#> Warning in min(x, na.rm = T): no non-missing arguments, returning NA
+#> Warning in min(x, na.rm = T): no non-missing arguments, returning NA
+#> Warning in min(x, na.rm = T): no non-missing arguments, returning NA
+#> Warning in min(x, na.rm = T): no non-missing arguments, returning NA
+#> Warning in min(x, na.rm = T): no non-missing arguments, returning NA
+#> Warning in `[.data.table`(.SD, , ..evs): Both 'evs' and '..evs' exist in
+#> calling scope. Please remove the '..evs' variable in calling scope for clarity.
+#> Warning in min(x, na.rm = T): no non-missing arguments, returning NA
+#> Warning in min(x, na.rm = T): no non-missing arguments, returning NA
+#> Warning in `[.data.table`(.SD, , ..evs): Both 'evs' and '..evs' exist in
+#> calling scope. Please remove the '..evs' variable in calling scope for clarity.
+#> Warning in min(x, na.rm = T): no non-missing arguments, returning NA
+#> Warning in min(x, na.rm = T): no non-missing arguments, returning NA
+#>  [1]  TRUE  TRUE  TRUE FALSE FALSE FALSE FALSE FALSE  TRUE  TRUE  TRUE  TRUE
+#> [13]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
 ```
 
 ## Time-to-event analysis
@@ -187,12 +210,16 @@ g1_res <- estimatR(
   data = df,
   timevar = ttt,
   event = event2)
+#> 2026-05-15 20:51:40
 #> 
-#> ── Initializing estimatR algorithm: 2026-05-01 08:43:33 ──
+#> ── Initializing estimatR algorithm:  ──
+#> 
+#> 2026-05-15 20:51:40
 #> 
 #> ── Estimation complete!
 #> Total runtime:
-#> 0.1 secs
+#> 0.09 secs
+#> 
 ```
 
 We extract the main results with `extractR`
@@ -240,12 +267,16 @@ g2_res <- estimatR(
   event = event2,
   group = g2
 )
+#> 2026-05-15 20:51:41
 #> 
-#> ── Initializing estimatR algorithm: 2026-05-01 08:43:34 ──
+#> ── Initializing estimatR algorithm:  ──
+#> 
+#> 2026-05-15 20:51:41
 #> 
 #> ── Estimation complete!
 #> Total runtime:
-#> 1.66 secs
+#> 1.91 secs
+#> 
 ```
 
 Again, we extract the main results with `extractR`. Now we also see a
@@ -282,12 +313,16 @@ g2_res <- estimatR(
   group = g2,
   vars = c(X6,X7,X8_bin)
 )
+#> 2026-05-15 20:51:44
 #> 
-#> ── Initializing estimatR algorithm: 2026-05-01 08:43:37 ──
+#> ── Initializing estimatR algorithm:  ──
+#> 
+#> 2026-05-15 20:51:44
 #> 
 #> ── Estimation complete!
 #> Total runtime:
-#> 1.99 secs
+#> 2.21 secs
+#> 
 ```
 
 We can see that all estimates are slightly different as these are now
@@ -319,24 +354,38 @@ g2_multires <- iteratR(
   group = "g2",
   method = "estimatR",
   labels = c("model1", "model2", "model3"))
+#> 2026-05-15 20:51:47
+#> 2026-05-15 20:51:47
 #> 
-#> ── Initializing estimatR algorithm: 2026-05-01 08:43:40 ──
+#> ── Initializing estimatR algorithm:  ──
 #> 
-#> ── Estimation complete!
-#> Total runtime:
-#> 0.79 secs
-#> 
-#> ── Initializing estimatR algorithm: 2026-05-01 08:43:40 ──
+#> 2026-05-15 20:51:47
 #> 
 #> ── Estimation complete!
 #> Total runtime:
-#> 0.64 secs
+#> 0.53 secs
 #> 
-#> ── Initializing estimatR algorithm: 2026-05-01 08:43:41 ──
+#> 2026-05-15 20:51:48
+#> 
+#> ── Initializing estimatR algorithm:  ──
+#> 
+#> 2026-05-15 20:51:48
 #> 
 #> ── Estimation complete!
 #> Total runtime:
-#> 1.05 secs
+#> 0.76 secs
+#> 
+#> 2026-05-15 20:51:48
+#> 
+#> ── Initializing estimatR algorithm:  ──
+#> 
+#> 2026-05-15 20:51:48
+#> 
+#> ── Estimation complete!
+#> Total runtime:
+#> 1.26 secs
+#> 
+#> 2.57 secs
 ```
 
 `g2_multires` is now a named list containing three `estimatR` objects
@@ -359,27 +408,28 @@ iteratR(
   g2_multires,
   method = "extractR"
 )
+#> 2026-05-15 20:51:50
 #> 
-#> iteratR initialized:  2026-05-01 08:43:42
-#>  
+#> iteratR initialized:  
 #> 
-#> Total runtime: 
+#> Total runtime:
 #> 0.07 secs
-#>   g2     counts                risks                     diff diff_p.value
-#> 1 T0 750 / 1595 61% (95%CI 58 to 65)                reference    reference
-#> 2 T1  186 / 404 65% (95%CI 58 to 72)  3.6% (95%CI -3.8 to 11)     p = 0.34
-#> 3 T0 735 / 1595 55% (95%CI 52 to 58)                reference    reference
-#> 4 T1  161 / 404 50% (95%CI 44 to 57) -4.9% (95%CI -12 to 2.2)     p = 0.17
-#> 5 T0 610 / 1595 36% (95%CI 33 to 38)                reference    reference
-#> 6 T1  156 / 404 36% (95%CI 31 to 41) 0.6% (95%CI -5.0 to 6.1)     p = 0.85
-#>    model
-#> 1 model1
-#> 2 model1
-#> 3 model2
-#> 4 model2
-#> 5 model3
-#> 6 model3
 ```
+
+    #>   g2     counts                risks                     diff diff_p.value
+    #> 1 T0 750 / 1595 61% (95%CI 58 to 65)                reference    reference
+    #> 2 T1  186 / 404 65% (95%CI 58 to 72)  3.6% (95%CI -3.8 to 11)     p = 0.34
+    #> 3 T0 735 / 1595 55% (95%CI 52 to 58)                reference    reference
+    #> 4 T1  161 / 404 50% (95%CI 44 to 57) -4.9% (95%CI -12 to 2.2)     p = 0.17
+    #> 5 T0 610 / 1595 36% (95%CI 33 to 38)                reference    reference
+    #> 6 T1  156 / 404 36% (95%CI 31 to 41) 0.6% (95%CI -5.0 to 6.1)     p = 0.85
+    #>    model
+    #> 1 model1
+    #> 2 model1
+    #> 3 model2
+    #> 4 model2
+    #> 5 model3
+    #> 6 model3
 
 We can also plot all three models by changing method to `"plotR"`
 
@@ -390,6 +440,8 @@ iteratR(
   title = c("m1", "m2", "m3"),
   method = "plotR"
 )
+#> 2026-05-15 20:51:50
+#> 0.4 secs
 ```
 
 ![](estimatR_files/figure-html/unnamed-chunk-21-1.png)![](estimatR_files/figure-html/unnamed-chunk-21-2.png)![](estimatR_files/figure-html/unnamed-chunk-21-3.png)

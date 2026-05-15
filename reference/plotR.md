@@ -235,12 +235,16 @@ Plot of the adjusted cumulative incidence or Kaplan-Meier curve
 estimatR(analysis_df,
 timevar = ttt,
 event = event)
+#> 2026-05-15 20:51:10
 #> 
-#> ── Initializing estimatR algorithm: 2026-05-01 08:43:06 ──
+#> ── Initializing estimatR algorithm:  ──
+#> 
+#> 2026-05-15 20:51:10
 #> 
 #> ── Estimation complete! 
 #> Total runtime:
-#> 0.07 secs
+#> 0.08 secs
+#> 
 #> $table
 #>     time n.risk n.event       est       se.est     lower     upper cumsum
 #> 1      0   2000       0 1.0000000 0.0000000000 1.0000000 1.0000000      0
@@ -542,9 +546,11 @@ estimatR(analysis_df,
 timevar = ttt,
 event = event,
 group = X2)
+#> 2026-05-15 20:51:10
 #> 
-#> ── Initializing estimatR algorithm: 2026-05-01 08:43:06 ──
+#> ── Initializing estimatR algorithm:  ──
 #> 
+#> 2026-05-15 20:51:10
 #> Error in select(., {    {        group    }}): Can't select columns that don't exist.
 #> ✖ Column `X2` doesn't exist.
 
