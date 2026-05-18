@@ -87,7 +87,8 @@ structR <- function(data,
                     digits = 2,
                     id,
                     check = F,
-                    remove = F) {
+                    remove = F,
+                    dt = F) {
 
   #Convert to data.frame
   if(any(c("data.table", "tbl") %in% class(data))) {
@@ -220,10 +221,10 @@ structR <- function(data,
 
     #Event
     data[, (event_map[[v]][["name"]]) := {
-      apply(.SD[, ..evs], 1, function(x) {
-        pmax(0,which(x == min(x, na.rm=T))[1], na.rm=T)
-          })
-      }]
+      apply(.SD, 1, function(x) {
+        suppressWarnings(pmax(0, which(x == min(x, na.rm=T))[1], na.rm=T))
+      })
+    }, .SDcols = evs]
   }
 
   if(check) {
@@ -256,8 +257,8 @@ structR <- function(data,
 
   if(!keep.dates) {
 
-    data <- data[, colnames(data) %nin% c(out_c, com_c, unlist(composite))]
+    data <- data[, unique(c(out_c, com_c, unlist(composite, use.names=F))) := NULL]
   }
 
-  return(data)
+  if(dt) return(data) else return(as.data.frame(data))
 }
