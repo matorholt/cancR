@@ -187,15 +187,15 @@ g1_res <- estimatR(
   data = df,
   timevar = ttt,
   event = event2)
-#> 2026-05-18 07:42:38
+#> 2026-05-20 08:22:48
 #> 
 #> ── Initializing estimatR algorithm:  ──
 #> 
-#> 2026-05-18 07:42:38
+#> 2026-05-20 08:22:49
 #> 
 #> ── Estimation complete!
 #> Total runtime:
-#> 0.08 secs
+#> 0.09 secs
 #> 
 ```
 
@@ -244,15 +244,15 @@ g2_res <- estimatR(
   event = event2,
   group = g2
 )
-#> 2026-05-18 07:42:39
+#> 2026-05-20 08:22:50
 #> 
 #> ── Initializing estimatR algorithm:  ──
 #> 
-#> 2026-05-18 07:42:39
+#> 2026-05-20 08:22:50
 #> 
 #> ── Estimation complete!
 #> Total runtime:
-#> 1.34 secs
+#> 1.7 secs
 #> 
 ```
 
@@ -290,15 +290,15 @@ g2_res <- estimatR(
   group = g2,
   vars = c(X6,X7,X8_bin)
 )
-#> 2026-05-18 07:42:41
+#> 2026-05-20 08:22:52
 #> 
 #> ── Initializing estimatR algorithm:  ──
 #> 
-#> 2026-05-18 07:42:41
+#> 2026-05-20 08:22:52
 #> 
 #> ── Estimation complete!
 #> Total runtime:
-#> 1.59 secs
+#> 2.06 secs
 #> 
 ```
 
@@ -331,38 +331,38 @@ g2_multires <- iteratR(
   group = "g2",
   method = "estimatR",
   labels = c("model1", "model2", "model3"))
-#> 2026-05-18 07:42:44
-#> 2026-05-18 07:42:44
+#> 2026-05-20 08:22:55
+#> 2026-05-20 08:22:55
 #> 
 #> ── Initializing estimatR algorithm:  ──
 #> 
-#> 2026-05-18 07:42:44
+#> 2026-05-20 08:22:55
 #> 
 #> ── Estimation complete!
 #> Total runtime:
-#> 0.65 secs
+#> 0.8 secs
 #> 
-#> 2026-05-18 07:42:44
+#> 2026-05-20 08:22:56
 #> 
 #> ── Initializing estimatR algorithm:  ──
 #> 
-#> 2026-05-18 07:42:44
+#> 2026-05-20 08:22:56
 #> 
 #> ── Estimation complete!
 #> Total runtime:
-#> 0.57 secs
+#> 0.63 secs
 #> 
-#> 2026-05-18 07:42:45
+#> 2026-05-20 08:22:57
 #> 
 #> ── Initializing estimatR algorithm:  ──
 #> 
-#> 2026-05-18 07:42:45
+#> 2026-05-20 08:22:57
 #> 
 #> ── Estimation complete!
 #> Total runtime:
-#> 0.72 secs
+#> 0.71 secs
 #> 
-#> 1.97 secs
+#> 2.15 secs
 ```
 
 `g2_multires` is now a named list containing three `estimatR` objects
@@ -385,7 +385,7 @@ iteratR(
   g2_multires,
   method = "extractR"
 )
-#> 2026-05-18 07:42:46
+#> 2026-05-20 08:22:57
 #> 
 #> iteratR initialized:  
 #> 
@@ -417,7 +417,7 @@ iteratR(
   title = c("m1", "m2", "m3"),
   method = "plotR"
 )
-#> 2026-05-18 07:42:46
+#> 2026-05-20 08:22:58
 #> 0.35 secs
 ```
 
