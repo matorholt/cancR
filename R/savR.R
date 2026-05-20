@@ -90,7 +90,7 @@ savR <- function(object,
                  folder = "Tables and Figures",
                  sep = ";") {
 
-  if(object == "session") {
+  if(substitute(object) == "session") {
 
     object <- as.data.frame(capture.output(sessionInfo())) %>%
       rename(temp = 1) %>%
@@ -98,7 +98,9 @@ savR <- function(object,
              temp = str_replace_all(temp, "(?<=((-|\\.)\\d{1,5}))\\s+", "\n")) %>%
       rename("Session Info" = temp) %>%
       flextable %>%
-      autofit()
+      width(width=7) %>%
+      fontsize(size = 9) %>%
+      save_as_docx(path = paste0(getwd(), "/", folder, "/session_info.docx", collapse=""))
 
   }
 
@@ -143,7 +145,7 @@ savR <- function(object,
 
     }
 
-    return(cat("Done"))
+    return(cli::cli_alert_success("Done"))
 
   }
 
@@ -238,5 +240,3 @@ savR <- function(object,
 
 
 }
-
-

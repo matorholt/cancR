@@ -135,16 +135,39 @@ swimmR <- function(data,
   cols <- unlist(list_assign(cols.custom, !!!cols))
 
   #Customization - labels
+  default.labs <- list(dsd = "Disease-Specific Death",
+                       death = "All-Cause Death",
+                       lmeta = "Local Metastasis",
+                       dmeta = "Distant Metastasis",
+                       dm = "Distant Metastasis",
+                       rm = "Regional Metastasis",
+                       lm = "Local Metastasis",
+                       lrmeta = "Loco-Regional Metastasis",
+                       meta = "Metastasis",
+                       rec = "Local Recurrence")
+
+  #return(default.labs[names(default.labs) %in% all.events])
+
+  default.labs <- list_modify(as.list(str_to_title(str_replace_all(all.events[all.events %nin% "follow"], "_", " "))) %>% set_names(all.events[all.events %nin% "follow"]), !!!default.labs[names(default.labs) %in% all.events])
+
   if(!missing(labs)) {
-  labels <- str_replace_all(all.events[all.events %nin% "follow"], unlist(names(labs)) %>% set_names(labs))
+
+    labs <- listR(list_assign(default.labs, !!!labs), "reverse")
   } else {
-    labels <- all.events
-    labs <- as.list(all.events[all.events %nin% "follow"]) %>% set_names(all.events[all.events %nin% "follow"])
+    labs <- listR(default.labs, "reverse")
   }
 
   split_df <- split(data, ~ grp)
 
   #Tables
+  #If only one table is specified, it is applied to all
+  if(!missing(strata) & pluck_depth(table.list) == 2) {
+
+      table.list <- map(1:length(levels(data$grp)), ~ table.list) %>% set_names(as.character(levels(data$grp)))
+
+  }
+
+
   height <- max(unlist(map(split_df, ~ nrow(.x))))
   n <- length(table.list)
   l.events <- length(labs)
@@ -166,18 +189,20 @@ swimmR <- function(data,
 
 
   legend.df <- data.frame(labs = rev(names(labs)),
-                          shapes = shapes[rev(names(labs))],
-                          cols = cols[rev(names(labs))],
-                          border = cols[rev(names(labs))],
+                          shapes = shapes[rev(unlist(labs))],
+                          cols = cols[rev(unlist(labs))],
+                          border = cols[rev(unlist(labs))],
                           x = rep(legend.x, legend.row)[1:l.events],
                           y = rep(legend.y, each = legend.col)[1:l.events]) %>%
     mutate(symb = x - (str_count(labs))*0.2) %>%
     group_by(x) %>%
     mutate(symb = min(symb)) %>%
+    ungroup() %>%
     rollR(shapes, uni) %>%
     group_by(uni) %>%
-    mutate(border = ifelse(row_number() == 1 & n() > 1, cols, "Black"),
-           cols = ifelse(row_number() == 1 & n() > 1, "White", cols)) %>%
+    #Flip border and fill for similar shapes
+    # mutate(border = ifelse(row_number() == 1 & n() > 1, cols, "Black"),
+    #        cols = ifelse(row_number() == 1 & n() > 1, "White", cols)) %>%
     ungroup()
 
   plot_list <-
@@ -245,6 +270,8 @@ swimmR <- function(data,
 
     if(i == 1) {
 
+      print(legend.df)
+
       p <- p +
         annotate("rect", xmin = horizon/4,
                  xmax = horizon-horizon/4,
@@ -257,7 +284,7 @@ swimmR <- function(data,
         annotate("point", x=legend.df$symb, y=legend.df$y,
                  shape = legend.df$shapes,
                  size = 5,
-                 fill = rev(cols[names(cols) %nin% "follow"]))
+                 fill = legend.df$cols)
 
     }
 
@@ -281,31 +308,3 @@ swimmR <- function(data,
  collectR(plot_list, ncol = 1, collect=F)
 
 }
-
-# swim_events <- c("local_relapse", "lm2", "rm", "dm", "dsd")
-#
-# swimmR(df_outcome,
-#        event = swim_events,
-#        horizon = 120,
-#        strata = fnclcc,
-#        strata.levels = c("Grade 1", "Grade 2", "Grade 3"),
-#        table.list = list("Grade 1" = list(clinical = seq(0,120, 6),
-#                                           mri = c(0,60),
-#                                           ct = c(50,76)),
-#                          "Grade 2" = list(clinical = seq(0,120, 12)),
-#                          "Grade 3" = list(mri = c(0,60,70))))
-
-# swimmR(df_outcome,
-#        event = swim_events,
-#        horizon = 60,
-#        strata = fnclcc,
-#        strata.levels = c("Grade 1", "Grade 2", "Grade 3"),
-#        labs = as.list(swim_events) %>% set_names(swim_events),
-#        shapes = list(recur = 21,
-#                      dm = 22,
-#                      rm = 23))
-# table.list = list("Grade 1" =
-#                     list(Clinical = seq(0,60,6),
-#                          MRI = seq(0,60,12),
-#                          CT = c(0,12,24,60)),
-#                   "Grade 2" = list("Clinical" = c(0,48,60))))
