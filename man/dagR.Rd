@@ -29,6 +29,7 @@ dagR(
   position.digits = 0,
   seed = 1,
   margin = c(-0.1, 0.1, -0.1, 0.1),
+  print = F,
   draw = F
 )
 }

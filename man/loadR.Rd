@@ -7,7 +7,7 @@
 loadR(
   regs,
   pattern.list = NULL,
-  pattern.list2 = NULL,
+  pattern.custom = NULL,
   n = NULL,
   id.filter = NULL,
   keep.list = NULL,
@@ -17,16 +17,17 @@ loadR(
   simulation = F,
   cores = 4,
   dt = F,
-  cancR.covariates = "all",
+  gb = NULL,
+  cancR.covariates = "main",
   ...
 )
 }
 \arguments{
 \item{regs}{which registers should be loaded. Default is all (lpr, pop, pato, cancer, lmdb and opr)}
 
-\item{pattern.list}{list of vectors of diagnoses codes for each register in the format ("lpr" = c("DC92", "DC21"))}
+\item{pattern.list}{named list of vectors of diagnoses codes for each register in the format ("lpr" = c("DC92", "DC21")). If multiple columns should be searched, an extra list layer is added ("lpr" = list("diag" = c("DC1"), "tildiag" = "DC2"))}
 
-\item{pattern.list2}{supplemental pattern if multiple columns should be filtered. Works the same way as pattern}
+\item{pattern.custom}{named list for custom filter expressions}
 
 \item{n}{number of observations that should be loaded}
 
@@ -41,6 +42,14 @@ loadR(
 \item{lmdb.stop}{last year of LMDB}
 
 \item{simulation}{whether the registers should be simulated}
+
+\item{cores}{number of cores for parallel processing}
+
+\item{dt}{whether the returned data should be in data.table format}
+
+\item{gb}{max size for future options}
+
+\item{cancR.covariates}{which covariates that should be loaded. Options are: main (non-major), major (only major) and all.}
 
 \item{...}{arguments passed to simulatR()}
 }

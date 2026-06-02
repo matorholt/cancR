@@ -4,7 +4,7 @@
 \alias{listR}
 \title{Routine modifications of lists}
 \usage{
-listR(input, type, layer, collapse = F, ...)
+listR(input, type, layer, chunks, collapse = F, ...)
 }
 \arguments{
 \item{input}{the list or vector}
@@ -12,6 +12,8 @@ listR(input, type, layer, collapse = F, ...)
 \item{type}{type of modification of the list. See details}
 
 \item{layer}{vector of integers indicating which layer to remove if type is "peel" or to keep if type is "pick". Layer 1 is the top layer}
+
+\item{chunks}{specifies the length of chunks for type = "chunk_inner" or "chunk_outer"}
 
 \item{collapse}{whether duplicated elements should be collapsed (defualt = F)}
 
@@ -28,6 +30,8 @@ The functions is also a wrapper for the rrapply and map_depth functions with the
 "reverse" reverses the values and names of a list which is used as inputs in functions such as str_replace.
 "vec2list" converts a vector to a list with names corresponding to the vector elements
 "peel" and "pick" depends on "layer" and either drops or keeps the specified vector.
+"chunk_inner" chunks a list into elements each of length = "chunks".
+"chunk_outer" chunks a list into length = "chunks"
 }
 \examples{
 

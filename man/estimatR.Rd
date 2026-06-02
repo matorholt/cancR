@@ -24,7 +24,8 @@ estimatR(
   proportions = F,
   conditional = F,
   diagnostics = F,
-  plot = T
+  plot = T,
+  verbose = T
 )
 }
 \arguments{
@@ -63,6 +64,8 @@ estimatR(
 \item{diagnostics}{whether Scaled Schoenfield residuals should be visualized (default = F)}
 
 \item{plot}{whether estimates for plotR should be performed (default = T)}
+
+\item{verbose}{whether status should be printed to the console (default = T)}
 
 \item{type}{Model specification, Can be univariate ("uni"), Age- and sex standardized ("age-sex"), Multivariate with variable selection ("select"). In this case vars should be a vector of the covariates. "custom" allows for free modelling where the form-argument contains the formula.}
 

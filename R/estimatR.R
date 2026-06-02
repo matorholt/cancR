@@ -24,6 +24,7 @@
 #' @param conditional Whether conditional risk at the time horizon should be calculated (default = F)
 #' @param diagnostics whether Scaled Schoenfield residuals should be visualized (default = F)
 #' @param plot whether estimates for plotR should be performed (default = T)
+#' @param verbose whether status should be printed to the console (default = T)
 #'
 #' @return
 #' List of class "estimatR" containing the following:
@@ -89,11 +90,10 @@ estimatR <- function(data,
                      proportions = F,
                      conditional = F,
                      diagnostics = F,
-                     plot=T) {
+                     plot=T,
+                     verbose = T) {
 
-  cli::cli_h2("Initializing estimatR algorithm: {tockR(\'time\')}")
-
-  tickR()
+  if(verbose) cli::cli_h2("Initializing estimatR algorithm: {tickR(cli = F)}")
 
   dat <- data
 
@@ -149,8 +149,8 @@ estimatR <- function(data,
   #Unique group levels
   group_levels <- levels(dat[,group_c])
 
-  if(length(group_levels) > 10) {
-    return(cli::cli_alert_danger("Error: Number of levels in group exceeding 10, wrong specification of the grouping variable?"))
+  if(length(group_levels) > 25) {
+    return(cli::cli_alert_danger("Error: Number of levels in group exceeding 25, wrong specification of the grouping variable?"))
   }
 
 
@@ -569,9 +569,11 @@ estimatR <- function(data,
     }
   }
 
+  if(verbose) {
   cli::cli_h3("Estimation complete!")
   cli::cli_text("Total runtime:")
-  cli::cli_text(tockR("diff", tickR.start))
+  tockR("diff", tickR.start)
+  }
 
   class(out.list) <- "estimatR"
 

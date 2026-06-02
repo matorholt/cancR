@@ -16,23 +16,23 @@
 #'
 
 # Matching codelist
-codelist_matching <- list(
-  case = list("lpr" = c("DA", "DB"),
-              "pato" = "M(83)"),
-  lpr = list(exclusion = list(immun_lpr = c("DC", "DD", "DE"),
-                              leukemia = c("DF", "DG")),
-             covariates = list(hiv = c("DH", "DI"))),
-  lmdb = list("cvd_atc" = c("A","B"),
-              "chemo" = "G"),
-  opr = list("procedures" = c("KA","KB")),
-  immune = list(immun_atc = c("L04W", "L04G")),
-  design = list(age.limit = 18,
-                period = c("2000-01-01", "2022-12-31"),
-                look.back = 5,
-                exclusion = c("sc_date"),
-                            matching = "all",
-                            controls = 4,
-                            interval = 5))
+# codelist_matching <- list(
+#   case = list("lpr" = c("DA", "DB"),
+#               "pato" = "M(83)"),
+#   lpr = list(exclusion = list(immun_lpr = c("DC", "DD", "DE"),
+#                               leukemia = c("DF", "DG")),
+#              covariates = list(hiv = c("DH", "DI"))),
+#   lmdb = list("cvd_atc" = c("A","B"),
+#               "chemo" = "G"),
+#   opr = list("procedures" = c("KA","KB")),
+#   immune = list(immun_atc = c("L04W", "L04G")),
+#   design = list(age.limit = 18,
+#                 period = c("2000-01-01", "2022-12-31"),
+#                 look.back = 5,
+#                 exclusion = c("sc_date"),
+#                             matching = "all",
+#                             controls = 4,
+#                             interval = 5))
 #
 # codelist_matching <- list(
 #   case = list("lpr" = c("DA", "DB"),
@@ -412,4 +412,5 @@ out.list[["searchR"]][["sub.labels"]] <- label_list
  return(out.list)
 
 }
+
 

@@ -65,7 +65,7 @@ joinR <- function(..., by, type = "left", dt = F) {
   }
 
   #Combine list and non-list inputs
-  dfs <- map(dfs, ~ if(class(.x) != "list") list(.x) else .x) %>% flatten
+  dfs <- map(dfs, ~ if(all(class(.x) %nin% "list")) list(.x) else .x) %>% flatten
 
   if(class(by) == "list") {
 

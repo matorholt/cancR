@@ -54,7 +54,7 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">loadR</span><span class="op">(</span></span>
 <span>  <span class="va">regs</span>,</span>
 <span>  pattern.list <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  pattern.list2 <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  pattern.custom <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  n <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  id.filter <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  keep.list <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -64,7 +64,8 @@
 <span>  simulation <span class="op">=</span> <span class="cn">F</span>,</span>
 <span>  cores <span class="op">=</span> <span class="fl">4</span>,</span>
 <span>  dt <span class="op">=</span> <span class="cn">F</span>,</span>
-<span>  cancR.covariates <span class="op">=</span> <span class="st">"all"</span>,</span>
+<span>  gb <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  cancR.covariates <span class="op">=</span> <span class="st">"main"</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -78,11 +79,11 @@
 
 
 <dt id="arg-pattern-list">pattern.list<a class="anchor" aria-label="anchor" href="#arg-pattern-list"></a></dt>
-<dd><p>list of vectors of diagnoses codes for each register in the format ("lpr" = c("DC92", "DC21"))</p></dd>
+<dd><p>named list of vectors of diagnoses codes for each register in the format ("lpr" = c("DC92", "DC21")). If multiple columns should be searched, an extra list layer is added ("lpr" = list("diag" = c("DC1"), "tildiag" = "DC2"))</p></dd>
 
 
-<dt id="arg-pattern-list-">pattern.list2<a class="anchor" aria-label="anchor" href="#arg-pattern-list-"></a></dt>
-<dd><p>supplemental pattern if multiple columns should be filtered. Works the same way as pattern</p></dd>
+<dt id="arg-pattern-custom">pattern.custom<a class="anchor" aria-label="anchor" href="#arg-pattern-custom"></a></dt>
+<dd><p>named list for custom filter expressions</p></dd>
 
 
 <dt id="arg-n">n<a class="anchor" aria-label="anchor" href="#arg-n"></a></dt>
@@ -111,6 +112,22 @@
 
 <dt id="arg-simulation">simulation<a class="anchor" aria-label="anchor" href="#arg-simulation"></a></dt>
 <dd><p>whether the registers should be simulated</p></dd>
+
+
+<dt id="arg-cores">cores<a class="anchor" aria-label="anchor" href="#arg-cores"></a></dt>
+<dd><p>number of cores for parallel processing</p></dd>
+
+
+<dt id="arg-dt">dt<a class="anchor" aria-label="anchor" href="#arg-dt"></a></dt>
+<dd><p>whether the returned data should be in data.table format</p></dd>
+
+
+<dt id="arg-gb">gb<a class="anchor" aria-label="anchor" href="#arg-gb"></a></dt>
+<dd><p>max size for future options</p></dd>
+
+
+<dt id="arg-cancr-covariates">cancR.covariates<a class="anchor" aria-label="anchor" href="#arg-cancr-covariates"></a></dt>
+<dd><p>which covariates that should be loaded. Options are: main (non-major), major (only major) and all.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>

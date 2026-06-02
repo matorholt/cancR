@@ -104,6 +104,7 @@ reference:
   - reportR
   - searchR
   - simulatR
+  - tumR
   - updatR
 
 - title: Built-in datasets
@@ -112,11 +113,12 @@ reference:
   contents:
   - analysis_df
   - cancR_codes
-  - match_df
-  - redcap_df
   - covariates_df
+  - match_df
   - population_denmark
   - population_who
+  - redcap_df
+  - t_codes
 
 - title: Miscellaneous functions
   desc: >

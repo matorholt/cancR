@@ -97,23 +97,30 @@
 
 iteratR <- function(data,
                     labels,
-                    method,
+                    cancR.method,
                     multivariable = F,
+                    verbose = F,
                     ...) {
 
-  cat("\niteratR initialized: ", tickR(), "\n")
+  cli::cli_h2("Initializing iteratR algorithm: {tickR(cli=F)}")
 
-  method_choices <- c("tablR", "extractR", "plotR", "estimatR", "incidencR", "inferencR", "clustR", "savR")
+  arg.list <- list(...)
 
-  if(method %nin% method_choices) {
-    return(cat(paste0("Error: Invalid choice of method. Choose between:\n", paste0(method_choices, collapse="\n"))))
+  cancR.method_choices <- c("tablR", "extractR", "plotR", "estimatR", "incidencR", "inferencR", "clustR", "savR")
+
+  if(missing(cancR.method)) return(cli::cli_alert_danger("Error: cancR.method not specified"))
+
+  if(cancR.method %nin% cancR.method_choices) {
+    cli::cli_alert_danger("Error: Invalid choice of method. Choose between:")
+    return(cli::cli_ul(cancR.method_choices))
   }
+
+  if(!verbose & cancR.method %in% c("estimatR")) arg.list[["verbose"]] <- F
 
   start <- tickR.start
 
-  if(method == "tablR") {
+  if(cancR.method == "tablR") {
 
-    arg.list <- list(...)
     if(any(class(data) %nin% "list")) {
       arg.list[["data"]] <- list(data)
     } else {
@@ -127,7 +134,7 @@ iteratR <- function(data,
                   tablR(...)
                 })
 
-  } else if(method == "extractR") {
+  } else if(cancR.method == "extractR") {
 
     labels <- NULL
 
@@ -138,9 +145,9 @@ iteratR <- function(data,
 
     }))
 
-  } else if(method == "plotR") {
+  } else if(cancR.method == "plotR") {
 
-    arg.list <- append(list(list = data), list(...))
+    arg.list <- append(list(list = data), arg.list)
 
     out <- pmap(arg.list,
                 function(...) {
@@ -150,13 +157,10 @@ iteratR <- function(data,
                 })
 
 
-  } else if(method == "savR") {
+  } else if(cancR.method == "savR") {
 
     labels <- NULL
 
-    #cat(paste0("Exporting: ", length(data), " objects"))
-
-    arg.list <- list(...)
 
     if("name" %in% names(arg.list)) {
       names <- arg.list$name
@@ -179,8 +183,6 @@ iteratR <- function(data,
     return(cat(""))
 
   } else {
-
-    arg.list <- list(...)
 
     if(missing(labels)) {
 
@@ -229,7 +231,7 @@ iteratR <- function(data,
 
 
 
-    if("timevar" %nin% names(arg.list) & method != "tablR") {
+    if("timevar" %nin% names(arg.list) & cancR.method != "tablR") {
 
       arg.list[["timevar"]] <- paste("t_", arg.list[["event"]], sep="")
     }
@@ -239,13 +241,13 @@ iteratR <- function(data,
     out <- pmap(arg.list,
                 function(...) {
 
-                  if(method == "estimatR") {
+                  if(cancR.method == "estimatR") {
                     estimatR(...)
-                  } else if(method == "incidencR") {
+                  } else if(cancR.method == "incidencR") {
                     incidencR(...)
-                  } else if(method == "inferencR") {
+                  } else if(cancR.method == "inferencR") {
                     inferencR(...)
-                  } else if(method == "tablR") {
+                  } else if(cancR.method == "tablR") {
                     tablR(...)
                   }
 
@@ -256,8 +258,9 @@ iteratR <- function(data,
   }
 
 
-  cat(paste0("\nTotal runtime: \n"))
-  cat(tockR("diff", start), "\n")
+  cli::cli_h3("Iteration complete!")
+  cli::cli_text("Total runtime:")
+  tockR("diff", start)
 
   return(out)
 }

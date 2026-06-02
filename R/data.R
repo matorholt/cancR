@@ -128,3 +128,24 @@
 #' @format A list of diagnosis codes divided into the ICD chapters including a sublist with major diseases only
 #'
 "cancR_codes"
+
+#' @title SNOMED Topography codes
+#'
+#' @description List of SNOMED topograhpy codes with dictionary
+#'
+#'
+#' @format A data.frame with 8 columns and 2205 rows:
+#' \describe{
+#'   \item{t.code}{SNOMED topography code}
+#'   \item{danish}{Danish translation of the topography code}
+#'   \item{exact}{Exact location}
+#'   \item{localisation}{Grouped localisation such as knee, temple, hand}
+#'   \item{cluster}{Related localisations}
+#'   \item{loc_spec}{Whether the localisation is specific (e.g. temple) or non-specific ("arm")}
+#'   \item{loc_skin}{Whether the code specifies skin, non-skin or uncertain}
+#'   \item{region}{Low-level grouped localisation (e.g. Head and Neck, Upper Extremity, Lower Extremity and Trunk)}
+#'
+#'   ...
+#' }
+#'
+"t_codes"

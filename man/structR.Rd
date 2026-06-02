@@ -6,8 +6,8 @@
 \usage{
 structR(
   data,
-  index,
-  fu,
+  index = "index",
+  fu = "fu",
   outcomes,
   competing,
   composite = list(),
@@ -16,7 +16,9 @@ structR(
   keep.dates = F,
   digits = 2,
   id,
-  check = F
+  check = F,
+  remove = F,
+  dt = F
 )
 }
 \arguments{
@@ -41,6 +43,8 @@ structR(
 \item{id}{name of the id column. If missing, autodetection is attempted}
 
 \item{check}{whether data check should be performed (default = T). Checks if dates are in the future and event times are zero or negative.}
+
+\item{remove}{whether dates before index should be removed (e.g. beyond look back period), default = F}
 
 \item{keep_dates}{Whether the original event dates should be kept.}
 }

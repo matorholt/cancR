@@ -85,17 +85,16 @@ matchR <- function(data,
     return(cat("Error: The pre_match dataframe cannot contain a variable named date"))
   }
 
-  tickR()
-
-  start <- tickR.start
-
   on.exit({
     cli::cli_h3("Matching complete!")
     cli::cli_text("Total runtime:")
     cli::cli_text(tockR("diff", start))
   })
 
-  cli::cli_h2("Initializing matchR algorithm: {tockR(\'time\')}")
+  cli::cli_h2("Initializing matchR algorithm: {tickR(cli=F)}")
+
+  start <- tickR.start
+
 
   case    <- data %>% select({{case}})    %>% names
   fu      <- data %>% select({{follow}})  %>% names

@@ -11,6 +11,8 @@ includR(
   subgroup = NULL,
   age.limit = NULL,
   period = NULL,
+  look.back = 365.25 * 5,
+  index.shift = 0,
   fu = "fu",
   birth = "birth",
   remove = NULL,
@@ -29,7 +31,11 @@ includR(
 
 \item{age.limit}{age limit for inclusion as numeric value}
 
-\item{period}{enrollement period in the format: c("1980-01-01", "2022-01-01")}
+\item{period}{character vector of length 2 specifying the enrollement period in the format c("1980-01-01", "2022-01-01")}
+
+\item{look.back}{look back in days period where exposure and outcomes are not allowed to happen (default is five years - 365.25*5)}
+
+\item{index.shift}{number of days before index where exposure and outcomes are allowed, default = 0}
 
 \item{fu}{name of the follow-up date (default: fu)}
 

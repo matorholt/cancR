@@ -8,6 +8,7 @@
 #' @param input the list or vector
 #' @param type type of modification of the list. See details
 #' @param layer vector of integers indicating which layer to remove if type is "peel" or to keep if type is "pick". Layer 1 is the top layer
+#' @param chunks specifies the length of chunks for type = "chunk_inner" or "chunk_outer"
 #' @param collapse whether duplicated elements should be collapsed (defualt = F)
 #' @param ... arguments for the rrapply function
 #'
@@ -15,7 +16,8 @@
 #' "reverse" reverses the values and names of a list which is used as inputs in functions such as str_replace.
 #' "vec2list" converts a vector to a list with names corresponding to the vector elements
 #' "peel" and "pick" depends on "layer" and either drops or keeps the specified vector.
-#'
+#' "chunk_inner" chunks a list into elements each of length = "chunks".
+#' "chunk_outer" chunks a list into length = "chunks"
 #'
 #' @returns returns a modified list based on the "type" argument
 #' @export
@@ -44,7 +46,7 @@
 # listR(peel_list, "pick", layer = c(1,3,4), collapse = F)
 
 
-listR <- function(input, type, layer, collapse = F, ...) {
+listR <- function(input, type, layer, chunks, collapse = F, ...) {
 
   if(type == "reverse") {
 
@@ -83,6 +85,9 @@ listR <- function(input, type, layer, collapse = F, ...) {
     return(rrapply(melted, how = "unmelt"))
 
   }
+
+  if(type == "chunk_inner") return(split(input, ceiling(seq_along(input) / chunks)))
+  if(type == "chunk_outer") return(split(input, cut(seq_along(input), chunks, labels = FALSE)))
 
   return(rrapply(input, ...))
 

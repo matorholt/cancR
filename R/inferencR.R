@@ -115,9 +115,7 @@ inferencR <- function(data,
                       weights.breaks = 1,
                       ...) {
 
-  cli::cli_h2("Initializing inferencR algorithm: {tockR(\'time\')}")
-
-  tickR()
+  cli::cli_h2("Initializing inferencR algorithm: {tickR()}")
 
   dat <- data %>%
     drop_na({{treatment}})

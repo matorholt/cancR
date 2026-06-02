@@ -24,7 +24,7 @@ savR(
 )
 }
 \arguments{
-\item{object}{object to save}
+\item{object}{object to save. If object = "session" the sessionInfo will be exported as a flextable.}
 
 \item{name}{File name of saved object without extension}
 

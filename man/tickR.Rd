@@ -4,7 +4,7 @@
 \alias{tickR}
 \title{First timestamp for taking time}
 \usage{
-tickR()
+tickR(cli = T)
 }
 \value{
 A timestamp

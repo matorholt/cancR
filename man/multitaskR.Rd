@@ -4,7 +4,7 @@
 \alias{multitaskR}
 \title{Start a multisession with automatic reset}
 \usage{
-multitaskR(cores)
+multitaskR(cores, gb = NULL)
 }
 \arguments{
 \item{cores}{number of cores/workers}

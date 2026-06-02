@@ -4,7 +4,7 @@
 \alias{tockR}
 \title{Last timestamp for taking time}
 \usage{
-tockR(format = "diff", start, digits = 2)
+tockR(format = "diff", start, digits = 2, cli = T)
 }
 \arguments{
 \item{format}{Whether date and time or a time difference should be returned}

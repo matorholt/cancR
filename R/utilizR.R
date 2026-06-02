@@ -518,7 +518,8 @@ tickR <- function(cli=T) {
 #MANUAL FOR INSIDE FUTURE
 # TickR: tickR.start <- Sys.time()
 # paste0(lubridate::round_date(Sys.time(), "second"))
-# TockR: paste0(round(as.numeric(Sys.time() - tickR.start), 2), \' \', attr(Sys.time() - tickR.start, \'units\'))
+# TockR: paste0(round(as.numeric(Sys.time() - tickR.start), 2), " ", attr(Sys.time() - tickR.start, "units"))
+# TockR: paste0(round(as.numeric(Sys.time() - tickR.start), 2), \' \', attr(Sys.time() - tickR.start, \'units\')) (cli)
 
 tockR <- function(format = "diff", start, digits = 2, cli = T) {
 

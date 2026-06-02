@@ -15,7 +15,6 @@ plotR(
   print.est = TRUE,
   contrast = "rd",
   se = T,
-  border = T,
   p.values = T,
   style = NULL,
   linewidth = 0.8,
@@ -34,7 +33,11 @@ plotR(
   res.shift = c(0, 0),
   res.spacing = 1,
   res.digits = 1,
-  border.shift = 0,
+  box = T,
+  box.shift = 0,
+  box.fill = "White",
+  box.color = "Black",
+  box.linewidth = 0.8,
   contrast.digits = 1,
   table = c("event", "risk"),
   table.space = 1,
@@ -42,7 +45,6 @@ plotR(
   table.title.size = 6,
   table.text.size = 5,
   table.linewidth = 0.8,
-  border.linewidth = 0.8,
   legend.pos = c(0.5, 0.9),
   legend.size = 16,
   tscale = 1,
@@ -69,8 +71,6 @@ plotR(
 \item{contrast}{The type of contrast that should be provided. Includes risk difference ("rd", default), risk ratio ("rr"), hazard ratio ("hr") or "none".}
 
 \item{se}{whether the confidence interval should be shown}
-
-\item{border}{whether there should be borders around the results}
 
 \item{p.values}{whether p-values should be printed in the results, default = T}
 
@@ -108,7 +108,15 @@ plotR(
 
 \item{res.digits}{Number of digits on the risk estimates}
 
-\item{border.shift}{Horizontal shifting of right border}
+\item{box}{whether there should be a box around the results}
+
+\item{box.shift}{Horizontal shifting of the right end of the box}
+
+\item{box.fill}{fill color for the box}
+
+\item{box.color}{border color for the box}
+
+\item{box.linewidth}{Results box linewidth}
 
 \item{contrast.digits}{Number of digits on the contrasts}
 
@@ -123,8 +131,6 @@ plotR(
 \item{table.text.size}{Risk table text size}
 
 \item{table.linewidth}{Risk table linewidth}
-
-\item{border.linewidth}{Results box linewidth}
 
 \item{legend.pos}{XY vector of legend position in percentage}
 
@@ -141,15 +147,19 @@ Autoplot for estimatR, inferencR and clustR
 \examples{
 #Risk in one group
 
-estimatR(analysis_df,
+t1 <- estimatR(analysis_df,
 timevar = ttt,
 event = event)
 
+plotR(t1)
+
 #Risks in multiple groups
-estimatR(analysis_df,
+t2 <- estimatR(analysis_df,
 timevar = ttt,
 event = event,
 group = X2)
+
+plotR(t2)
 
 
 }
