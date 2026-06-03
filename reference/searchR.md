@@ -15,6 +15,7 @@ searchR(
   slice = "first",
   format = "date",
   date.filter = NULL,
+  register,
   match = "start",
   casename = "index",
   pnr = "pnr",
@@ -58,6 +59,14 @@ searchR(
 - format:
 
   whether selected rows should contain date or 1
+
+- date.filter:
+
+  character date for filtering rows before this date
+
+- register:
+
+  specification of register if input is a single data.frame
 
 - match:
 

@@ -10,8 +10,8 @@ competing event, often death
 ``` r
 structR(
   data,
-  index,
-  fu,
+  index = "index",
+  fu = "fu",
   outcomes,
   competing,
   composite = list(),
@@ -20,7 +20,9 @@ structR(
   keep.dates = F,
   digits = 2,
   id,
-  check = F
+  check = F,
+  remove = F,
+  dt = F
 )
 ```
 
@@ -74,6 +76,11 @@ structR(
 
   whether data check should be performed (default = T). Checks if dates
   are in the future and event times are zero or negative.
+
+- remove:
+
+  whether dates before index should be removed (e.g. beyond look back
+  period), default = F
 
 - keep_dates:
 

@@ -5,7 +5,7 @@ tockR stops the clock and prints either a date/time or a time difference
 ## Usage
 
 ``` r
-tockR(format = "diff", start, digits = 2)
+tockR(format = "diff", start, digits = 2, cli = T)
 ```
 
 ## Arguments

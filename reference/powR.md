@@ -7,7 +7,7 @@ Automated keyboard strokes
 ``` r
 powR(
   text,
-  write.sleep = 0.02,
+  write.sleep = 0.05,
   mouse.sleep = 0.5,
   special.sleep = 0.05,
   where = "pc",

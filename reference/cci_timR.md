@@ -11,7 +11,8 @@ cci_timR(
   interval = 365.25/2,
   structure = "binned",
   format = "long",
-  comorb = F
+  comorb = F,
+  cores = 4
 )
 ```
 

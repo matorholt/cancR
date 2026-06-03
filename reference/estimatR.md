@@ -27,7 +27,8 @@ estimatR(
   proportions = F,
   conditional = F,
   diagnostics = F,
-  plot = T
+  plot = T,
+  verbose = T
 )
 ```
 
@@ -110,6 +111,10 @@ estimatR(
 - plot:
 
   whether estimates for plotR should be performed (default = T)
+
+- verbose:
+
+  whether status should be printed to the console (default = T)
 
 - type:
 

@@ -7,7 +7,7 @@ map_depth functions with the dots argument.
 ## Usage
 
 ``` r
-listR(input, type, layer, collapse = F, ...)
+listR(input, type, layer, chunks, collapse = F, ...)
 ```
 
 ## Arguments
@@ -24,6 +24,11 @@ listR(input, type, layer, collapse = F, ...)
 
   vector of integers indicating which layer to remove if type is "peel"
   or to keep if type is "pick". Layer 1 is the top layer
+
+- chunks:
+
+  specifies the length of chunks for type = "chunk_inner" or
+  "chunk_outer"
 
 - collapse:
 
@@ -43,6 +48,8 @@ returns a modified list based on the "type" argument
 inputs in functions such as str_replace. "vec2list" converts a vector to
 a list with names corresponding to the vector elements "peel" and "pick"
 depends on "layer" and either drops or keeps the specified vector.
+"chunk_inner" chunks a list into elements each of length = "chunks".
+"chunk_outer" chunks a list into length = "chunks"
 
 ## Examples
 

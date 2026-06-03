@@ -27,7 +27,7 @@ tablR(
   digits = 1,
   ama = T,
   simplify = list(),
-  simplify.remove = c("no", "0"),
+  simplify.remove = c("no", "No", "0"),
   print = F,
   flextable = F
 )

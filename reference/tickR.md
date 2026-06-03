@@ -6,7 +6,7 @@ environment
 ## Usage
 
 ``` r
-tickR()
+tickR(cli = T)
 ```
 
 ## Value

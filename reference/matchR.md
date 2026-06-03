@@ -16,7 +16,8 @@ matchR(
   fixed.vars = c(byear, sex),
   td.vars,
   exclude,
-  exclude.length = 365.25 * 100,
+  look.back = 365.25 * 100,
+  index.shift = 0,
   n.controls = 4,
   replace = T,
   seed = 1,
@@ -64,10 +65,15 @@ matchR(
 
   Vector of parameters that are not allowed to occur before index
 
-- exclude.length:
+- look.back:
 
-  Number of days before index where exclusions must not have occured.
-  Default: 50 years (=never)
+  look back in days period where exposure and outcomes are not allowed
+  to happen (default is 100 years - 365.25\*100)
+
+- index.shift:
+
+  number of days before index where exposure and outcomes are allowed,
+  default = 0
 
 - n.controls:
 

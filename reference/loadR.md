@@ -9,7 +9,7 @@ selection, regex filtering and id_list filtering.
 loadR(
   regs,
   pattern.list = NULL,
-  pattern.list2 = NULL,
+  pattern.custom = NULL,
   n = NULL,
   id.filter = NULL,
   keep.list = NULL,
@@ -19,7 +19,8 @@ loadR(
   simulation = F,
   cores = 4,
   dt = F,
-  cancR.covariates = "all",
+  gb = NULL,
+  cancR.covariates = "main",
   ...
 )
 ```
@@ -33,13 +34,14 @@ loadR(
 
 - pattern.list:
 
-  list of vectors of diagnoses codes for each register in the format
-  ("lpr" = c("DC92", "DC21"))
+  named list of vectors of diagnoses codes for each register in the
+  format ("lpr" = c("DC92", "DC21")). If multiple columns should be
+  searched, an extra list layer is added ("lpr" = list("diag" =
+  c("DC1"), "tildiag" = "DC2"))
 
-- pattern.list2:
+- pattern.custom:
 
-  supplemental pattern if multiple columns should be filtered. Works the
-  same way as pattern
+  named list for custom filter expressions
 
 - n:
 
@@ -70,6 +72,23 @@ loadR(
 - simulation:
 
   whether the registers should be simulated
+
+- cores:
+
+  number of cores for parallel processing
+
+- dt:
+
+  whether the returned data should be in data.table format
+
+- gb:
+
+  max size for future options
+
+- cancR.covariates:
+
+  which covariates that should be loaded. Options are: main (non-major),
+  major (only major) and all.
 
 - ...:
 

@@ -54,7 +54,7 @@ The functions is also a wrapper for the rrapply and map_depth functions with the
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">listR</span><span class="op">(</span><span class="va">input</span>, <span class="va">type</span>, <span class="va">layer</span>, collapse <span class="op">=</span> <span class="cn">F</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">listR</span><span class="op">(</span><span class="va">input</span>, <span class="va">type</span>, <span class="va">layer</span>, <span class="va">chunks</span>, collapse <span class="op">=</span> <span class="cn">F</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -73,6 +73,10 @@ The functions is also a wrapper for the rrapply and map_depth functions with the
 <dd><p>vector of integers indicating which layer to remove if type is "peel" or to keep if type is "pick". Layer 1 is the top layer</p></dd>
 
 
+<dt id="arg-chunks">chunks<a class="anchor" aria-label="anchor" href="#arg-chunks"></a></dt>
+<dd><p>specifies the length of chunks for type = "chunk_inner" or "chunk_outer"</p></dd>
+
+
 <dt id="arg-collapse">collapse<a class="anchor" aria-label="anchor" href="#arg-collapse"></a></dt>
 <dd><p>whether duplicated elements should be collapsed (defualt = F)</p></dd>
 
@@ -89,7 +93,9 @@ The functions is also a wrapper for the rrapply and map_depth functions with the
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>"reverse" reverses the values and names of a list which is used as inputs in functions such as str_replace.
 "vec2list" converts a vector to a list with names corresponding to the vector elements
-"peel" and "pick" depends on "layer" and either drops or keeps the specified vector.</p>
+"peel" and "pick" depends on "layer" and either drops or keeps the specified vector.
+"chunk_inner" chunks a list into elements each of length = "chunks".
+"chunk_outer" chunks a list into length = "chunks"</p>
     </div>
 
     <div class="section level2">

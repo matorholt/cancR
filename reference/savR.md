@@ -30,7 +30,8 @@ savR(
 
 - object:
 
-  object to save
+  object to save. If object = "session" the sessionInfo will be exported
+  as a flextable.
 
 - name:
 

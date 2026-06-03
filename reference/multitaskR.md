@@ -5,7 +5,7 @@ Start a multisession with automatic reset
 ## Usage
 
 ``` r
-multitaskR(cores)
+multitaskR(cores, gb = NULL)
 ```
 
 ## Arguments

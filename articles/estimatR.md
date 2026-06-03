@@ -187,16 +187,12 @@ g1_res <- estimatR(
   data = df,
   timevar = ttt,
   event = event2)
-#> 2026-05-20 08:22:48
 #> 
-#> ── Initializing estimatR algorithm:  ──
-#> 
-#> 2026-05-20 08:22:49
+#> ── Initializing estimatR algorithm: 2026-06-03 14:25:18 ──
 #> 
 #> ── Estimation complete!
 #> Total runtime:
-#> 0.09 secs
-#> 
+#> 0.28 secs
 ```
 
 We extract the main results with `extractR`
@@ -244,16 +240,12 @@ g2_res <- estimatR(
   event = event2,
   group = g2
 )
-#> 2026-05-20 08:22:50
 #> 
-#> ── Initializing estimatR algorithm:  ──
-#> 
-#> 2026-05-20 08:22:50
+#> ── Initializing estimatR algorithm: 2026-06-03 14:25:19 ──
 #> 
 #> ── Estimation complete!
 #> Total runtime:
-#> 1.7 secs
-#> 
+#> 1.71 secs
 ```
 
 Again, we extract the main results with `extractR`. Now we also see a
@@ -290,16 +282,12 @@ g2_res <- estimatR(
   group = g2,
   vars = c(X6,X7,X8_bin)
 )
-#> 2026-05-20 08:22:52
 #> 
-#> ── Initializing estimatR algorithm:  ──
-#> 
-#> 2026-05-20 08:22:52
+#> ── Initializing estimatR algorithm: 2026-06-03 14:25:22 ──
 #> 
 #> ── Estimation complete!
 #> Total runtime:
-#> 2.06 secs
-#> 
+#> 2.08 secs
 ```
 
 We can see that all estimates are slightly different as these are now
@@ -329,40 +317,14 @@ g2_multires <- iteratR(
   timevar = "ttt",
   event = c("event", "event2", "event3"),
   group = "g2",
-  method = "estimatR",
+  cancR.method = "estimatR",
   labels = c("model1", "model2", "model3"))
-#> 2026-05-20 08:22:55
-#> 2026-05-20 08:22:55
 #> 
-#> ── Initializing estimatR algorithm:  ──
+#> ── Initializing iteratR algorithm: 2026-06-03 14:25:25 ──
 #> 
-#> 2026-05-20 08:22:55
-#> 
-#> ── Estimation complete!
+#> ── Iteration complete!
 #> Total runtime:
-#> 0.8 secs
-#> 
-#> 2026-05-20 08:22:56
-#> 
-#> ── Initializing estimatR algorithm:  ──
-#> 
-#> 2026-05-20 08:22:56
-#> 
-#> ── Estimation complete!
-#> Total runtime:
-#> 0.63 secs
-#> 
-#> 2026-05-20 08:22:57
-#> 
-#> ── Initializing estimatR algorithm:  ──
-#> 
-#> 2026-05-20 08:22:57
-#> 
-#> ── Estimation complete!
-#> Total runtime:
-#> 0.71 secs
-#> 
-#> 2.15 secs
+#> 2.51 secs
 ```
 
 `g2_multires` is now a named list containing three `estimatR` objects
@@ -383,30 +345,29 @@ the main estimates
 
 iteratR(
   g2_multires,
-  method = "extractR"
+  cancR.method = "extractR"
 )
-#> 2026-05-20 08:22:57
 #> 
-#> iteratR initialized:  
+#> ── Initializing iteratR algorithm: 2026-06-03 14:25:27 ──
 #> 
+#> ── Iteration complete!
 #> Total runtime:
-#> 0.07 secs
+#> 0.08 secs
+#>   g2     counts                risks                     diff diff_p.value
+#> 1 T0 750 / 1595 61% (95%CI 58 to 65)                reference    reference
+#> 2 T1  186 / 404 65% (95%CI 58 to 72)  3.6% (95%CI -3.8 to 11)     p = 0.34
+#> 3 T0 735 / 1595 55% (95%CI 52 to 58)                reference    reference
+#> 4 T1  161 / 404 50% (95%CI 44 to 57) -4.9% (95%CI -12 to 2.2)     p = 0.17
+#> 5 T0 610 / 1595 36% (95%CI 33 to 38)                reference    reference
+#> 6 T1  156 / 404 36% (95%CI 31 to 41) 0.6% (95%CI -5.0 to 6.1)     p = 0.85
+#>    model
+#> 1 model1
+#> 2 model1
+#> 3 model2
+#> 4 model2
+#> 5 model3
+#> 6 model3
 ```
-
-    #>   g2     counts                risks                     diff diff_p.value
-    #> 1 T0 750 / 1595 61% (95%CI 58 to 65)                reference    reference
-    #> 2 T1  186 / 404 65% (95%CI 58 to 72)  3.6% (95%CI -3.8 to 11)     p = 0.34
-    #> 3 T0 735 / 1595 55% (95%CI 52 to 58)                reference    reference
-    #> 4 T1  161 / 404 50% (95%CI 44 to 57) -4.9% (95%CI -12 to 2.2)     p = 0.17
-    #> 5 T0 610 / 1595 36% (95%CI 33 to 38)                reference    reference
-    #> 6 T1  156 / 404 36% (95%CI 31 to 41) 0.6% (95%CI -5.0 to 6.1)     p = 0.85
-    #>    model
-    #> 1 model1
-    #> 2 model1
-    #> 3 model2
-    #> 4 model2
-    #> 5 model3
-    #> 6 model3
 
 We can also plot all three models by changing method to `"plotR"`
 
@@ -415,10 +376,14 @@ We can also plot all three models by changing method to `"plotR"`
 iteratR(
   g2_multires,
   title = c("m1", "m2", "m3"),
-  method = "plotR"
+  cancR.method = "plotR"
 )
-#> 2026-05-20 08:22:58
-#> 0.35 secs
+#> 
+#> ── Initializing iteratR algorithm: 2026-06-03 14:25:28 ──
+#> 
+#> ── Iteration complete!
+#> Total runtime:
+#> 0.37 secs
 ```
 
 ![](estimatR_files/figure-html/unnamed-chunk-21-1.png)![](estimatR_files/figure-html/unnamed-chunk-21-2.png)![](estimatR_files/figure-html/unnamed-chunk-21-3.png)

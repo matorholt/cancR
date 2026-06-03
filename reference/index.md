@@ -71,6 +71,7 @@ Functions customized for the danish registers
 - [`searchR()`](searchR.md) : Find covariates or outcomes from the
   registers
 - [`simulatR()`](simulatR.md) : Simulate danish health registers
+- [`tumR()`](tumR.md) : Map unique tumors
 - [`updatR()`](updatR.md) : Data reduction, updating and insertion of
   time-dependent covariates
 
@@ -80,13 +81,14 @@ Datasets for testing functions
 
 - [`analysis_df`](analysis_df.md) : Simulated dataset for model testing
 - [`cancR_codes`](cancR_codes.md) : ICD diagnosis codes
-- [`match_df`](match_df.md) : Simulated dataset for the matchR algorithm
-- [`redcap_df`](redcap_df.md) : Simulated Redcap dataset
 - [`covariates_df`](covariates_df.md) : Simulated time-dependent
   covariates dataset.
+- [`match_df`](match_df.md) : Simulated dataset for the matchR algorithm
 - [`population_denmark`](population_denmark.md) : Population table,
   Denmark
 - [`population_who`](population_who.md) : Population table, WHO
+- [`redcap_df`](redcap_df.md) : Simulated Redcap dataset
+- [`t_codes`](t_codes.md) : SNOMED Topography codes
 
 ## Miscellaneous functions
 

@@ -18,6 +18,7 @@ swimmR(
   table.cols = c("gainsboro", "grey", "#BCCFE8"),
   cols = list(),
   shapes = list(),
+  table.text.size = 4,
   labs,
   id = "id"
 )
