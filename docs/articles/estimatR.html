@@ -251,15 +251,12 @@ arguments <code>data</code>, <code>timevar</code> and
 <span>  data <span class="op">=</span> <span class="va">df</span>,</span>
 <span>  timevar <span class="op">=</span> <span class="va">ttt</span>,</span>
 <span>  event <span class="op">=</span> <span class="va">event2</span><span class="op">)</span></span>
-<span><span class="co">#&gt; 2026-06-02 09:41:34</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; ── <span style="font-weight: bold;">Initializing estimatR algorithm: </span> ──</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; 2026-06-02 09:41:34</span></span>
+<span><span class="co">#&gt; ── <span style="font-weight: bold;">Initializing estimatR algorithm: 2026-06-03 15:00:54</span> ──</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── Estimation complete!</span></span>
 <span><span class="co">#&gt; Total runtime:</span></span>
-<span><span class="co">#&gt; 0.07 secs</span></span></code></pre></div>
+<span><span class="co">#&gt; 0.2 secs</span></span></code></pre></div>
 <p>We extract the main results with <code>extractR</code></p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/extractR.html">extractR</a></span><span class="op">(</span><span class="va">g1_res</span><span class="op">)</span></span>
@@ -293,15 +290,12 @@ of groups.</p>
 <span>  event <span class="op">=</span> <span class="va">event2</span>,</span>
 <span>  group <span class="op">=</span> <span class="va">g2</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; 2026-06-02 09:41:35</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; ── <span style="font-weight: bold;">Initializing estimatR algorithm: </span> ──</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; 2026-06-02 09:41:35</span></span>
+<span><span class="co">#&gt; ── <span style="font-weight: bold;">Initializing estimatR algorithm: 2026-06-03 15:00:55</span> ──</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── Estimation complete!</span></span>
 <span><span class="co">#&gt; Total runtime:</span></span>
-<span><span class="co">#&gt; 0.99 secs</span></span></code></pre></div>
+<span><span class="co">#&gt; 1.21 secs</span></span></code></pre></div>
 <p>Again, we extract the main results with <code>extractR</code>. Now we
 also see a risk difference and a p-value as we can compare the two
 groups.</p>
@@ -328,15 +322,12 @@ groups.</p>
 <span>  group <span class="op">=</span> <span class="va">g2</span>,</span>
 <span>  vars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">X6</span>,<span class="va">X7</span>,<span class="va">X8_bin</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; 2026-06-02 09:41:37</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; ── <span style="font-weight: bold;">Initializing estimatR algorithm: </span> ──</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; 2026-06-02 09:41:37</span></span>
+<span><span class="co">#&gt; ── <span style="font-weight: bold;">Initializing estimatR algorithm: 2026-06-03 15:00:58</span> ──</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── Estimation complete!</span></span>
 <span><span class="co">#&gt; Total runtime:</span></span>
-<span><span class="co">#&gt; 1.31 secs</span></span></code></pre></div>
+<span><span class="co">#&gt; 1.7 secs</span></span></code></pre></div>
 <p>We can see that all estimates are slightly different as these are now
 standardized</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
@@ -359,43 +350,14 @@ group</p>
 <span>  timevar <span class="op">=</span> <span class="st">"ttt"</span>,</span>
 <span>  event <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"event"</span>, <span class="st">"event2"</span>, <span class="st">"event3"</span><span class="op">)</span>,</span>
 <span>  group <span class="op">=</span> <span class="st">"g2"</span>,</span>
-<span>  method <span class="op">=</span> <span class="st">"estimatR"</span>,</span>
+<span>  cancR.method <span class="op">=</span> <span class="st">"estimatR"</span>,</span>
 <span>  labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"model1"</span>, <span class="st">"model2"</span>, <span class="st">"model3"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; 2026-06-02 09:41:39</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; ── <span style="font-weight: bold;">Initializing iteratR algorithm: </span> ──</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; 2026-06-02 09:41:39</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; ── <span style="font-weight: bold;">Initializing estimatR algorithm: </span> ──</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; 2026-06-02 09:41:39</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; ── Estimation complete!</span></span>
-<span><span class="co">#&gt; Total runtime:</span></span>
-<span><span class="co">#&gt; 0.37 secs</span></span>
-<span><span class="co">#&gt; 2026-06-02 09:41:40</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; ── <span style="font-weight: bold;">Initializing estimatR algorithm: </span> ──</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; 2026-06-02 09:41:40</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; ── Estimation complete!</span></span>
-<span><span class="co">#&gt; Total runtime:</span></span>
-<span><span class="co">#&gt; 0.48 secs</span></span>
-<span><span class="co">#&gt; 2026-06-02 09:41:40</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; ── <span style="font-weight: bold;">Initializing estimatR algorithm: </span> ──</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; 2026-06-02 09:41:40</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; ── Estimation complete!</span></span>
-<span><span class="co">#&gt; Total runtime:</span></span>
-<span><span class="co">#&gt; 0.65 secs</span></span>
+<span><span class="co">#&gt; ── <span style="font-weight: bold;">Initializing iteratR algorithm: 2026-06-03 15:01:00</span> ──</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── Iteration complete!</span></span>
 <span><span class="co">#&gt; Total runtime:</span></span>
-<span><span class="co">#&gt; 0.65 secs</span></span></code></pre></div>
+<span><span class="co">#&gt; 1.8 secs</span></span></code></pre></div>
 <p><code>g2_multires</code> is now a named list containing three
 <code>estimatR</code> objects (model 1 to 3) which can be called
 separately</p>
@@ -409,15 +371,14 @@ on all models to extract the main estimates</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/iteratR.html">iteratR</a></span><span class="op">(</span></span>
 <span>  <span class="va">g2_multires</span>,</span>
-<span>  method <span class="op">=</span> <span class="st">"extractR"</span></span>
+<span>  cancR.method <span class="op">=</span> <span class="st">"extractR"</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; 2026-06-02 09:41:41</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; ── <span style="font-weight: bold;">Initializing iteratR algorithm: </span> ──</span></span>
+<span><span class="co">#&gt; ── <span style="font-weight: bold;">Initializing iteratR algorithm: 2026-06-03 15:01:02</span> ──</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── Iteration complete!</span></span>
 <span><span class="co">#&gt; Total runtime:</span></span>
-<span><span class="co">#&gt; 0.8 secs</span></span>
+<span><span class="co">#&gt; 0.05 secs</span></span>
 <span><span class="co">#&gt;   g2     counts                risks                     diff diff_p.value</span></span>
 <span><span class="co">#&gt; 1 T0 750 / 1595 61% (95%CI 58 to 65)                reference    reference</span></span>
 <span><span class="co">#&gt; 2 T1  186 / 404 65% (95%CI 58 to 72)  3.6% (95%CI -3.8 to 11)     p = 0.34</span></span>
@@ -438,15 +399,14 @@ on all models to extract the main estimates</p>
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/iteratR.html">iteratR</a></span><span class="op">(</span></span>
 <span>  <span class="va">g2_multires</span>,</span>
 <span>  title <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"m1"</span>, <span class="st">"m2"</span>, <span class="st">"m3"</span><span class="op">)</span>,</span>
-<span>  method <span class="op">=</span> <span class="st">"plotR"</span></span>
+<span>  cancR.method <span class="op">=</span> <span class="st">"plotR"</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; 2026-06-02 09:41:41</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; ── <span style="font-weight: bold;">Initializing iteratR algorithm: </span> ──</span></span>
+<span><span class="co">#&gt; ── <span style="font-weight: bold;">Initializing iteratR algorithm: 2026-06-03 15:01:02</span> ──</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── Iteration complete!</span></span>
 <span><span class="co">#&gt; Total runtime:</span></span>
-<span><span class="co">#&gt; 1.13 secs</span></span></code></pre></div>
+<span><span class="co">#&gt; 0.3 secs</span></span></code></pre></div>
 <p><img src="estimatR_files/figure-html/unnamed-chunk-21-1.png" width="700"><img src="estimatR_files/figure-html/unnamed-chunk-21-2.png" width="700"><img src="estimatR_files/figure-html/unnamed-chunk-21-3.png" width="700"></p>
 </div>
 </div>

@@ -32,7 +32,7 @@
 # ) %>%
 #   datR(date)
 #
-# df <- tumR(pato, tumor = c("m807", "m809", "m80", "m87", "m84"))
+# df <- tumR(pato, tumor = c("M807", "m809", "m80", "m87", "m84"))
 
 tumR <- function(data, tumor, loc.exact = F, cores = NULL, dt=F) {
 
@@ -49,8 +49,7 @@ tumR <- function(data, tumor, loc.exact = F, cores = NULL, dt=F) {
   if(loc.exact) loc.exact <- "exact" else loc.exact <- "cluster"
 
   #Extract prefixes for tumors ending on 3,4,9,x
-  tumor_regex <- paste0(map_chr(tumor, ~ paste0(.x, "(?=(", paste0(rep(".", 5-str_count(.x)), collapse=""), "[349x]))")), collapse = "|")
-
+  tumor_regex <- paste0(map_chr(tumor, ~ paste0(str_to_lower(.x), "(?=(", paste0(rep(".", 5-str_count(.x)), collapse=""), "[349x]))")), collapse = "|")
 
   if(all(class(data) %nin% "data.table")) setDT(data)
 
@@ -144,8 +143,6 @@ tumR <- function(data, tumor, loc.exact = F, cores = NULL, dt=F) {
 
     #Inner loop
     for(i in 1:nrow(tumor_frame)) {
-
-      Sys.sleep(1)
 
       tfx <- tumor_frame[i, ]
       tumor_i <- unlist(tfx$tumor)

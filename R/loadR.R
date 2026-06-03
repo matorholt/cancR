@@ -16,7 +16,7 @@
 #' @param cores number of cores for parallel processing
 #' @param dt whether the returned data should be in data.table format
 #' @param gb max size for future options
-#' @param cancR.covariates which covariates that should be loaded. Options are: main (non-major), major (only major) and all.
+#' @param cancR.covariates which covariates that should be loaded. Options are: main (non-major), major (only major), none (no comorbidities) and all.
 #' @param ... arguments passed to simulatR()
 #'
 #'
@@ -47,14 +47,15 @@ loadR <- function(regs,
                   cancR.covariates = "main",
                   ...) {
 
-
-  tickR()
+  cli::cli_h2("Initializing loadR algorithm: {tickR(cli=F)}")
 
   start <- tickR.start
 
-  cli::cli_h2("Initializing loadR algorithm: {tockR(\'time\')}")
-
   regs <- match.arg(regs, c("lpr", "lmdb", "pop", "pato", "cancer", "opr", "sc", "meta", "dsd", "covariates", "dcr", "immune"), several.ok = T)
+
+  cc_choices <- c("main", "major", "none", "all")
+
+  if(cancR.covariates %nin% cc_choices) return(cli::cli_alert_danger("Error: cancR.covariates needs to be main, major, all or none"))
 
   if(!is.null(keep.list) & class(keep.list) != "list") {
     return(cli::cli_alert_danger("Error: Format the argument \'keep\' as a list with the structure list(lpr = c(\'vars\'), lmdb = c(\'vars\'))"))
@@ -87,7 +88,7 @@ loadR <- function(regs,
         "immune" = "V:/Data/Workdata/709545/Mathias Oerholt/DATASETS/IMMUNE_DRUGS.parquet")
 
       keep.default <-
-        list("pato" = c("pnr", "k_matnr", "D_MODTDATO", "C_SNOMEDKODE"),
+        list("pato" = c("pnr", "date", "snomed"),
              "cancer" = c("pnr", "d_diagnosedato", "c_icd10", "c_morfo3"),
              "lmdb" = c("pnr", "eksd", "apk", "atc", "strnum", "strunit", "PACKSIZE"))
 
@@ -98,7 +99,8 @@ loadR <- function(regs,
 
         switch(cancR.covariates,
                "major" = {keep.default[["covariates"]] <- c(base, names(cancR_codes)[str_detect(names(cancR_codes), "major")])},
-               "main" = {keep.default[["covariates"]] <- c(base, names(cancR_codes)[str_detect(names(cancR_codes), "major", negate = T)])})
+               "main" = {keep.default[["covariates"]] <- c(base, names(cancR_codes)[str_detect(names(cancR_codes), "major", negate = T)])},
+               "none" = {keep.default[["covariates"]] <- base})
       }
 
         keep.vars <- list_assign(keep.default, !!!keep.list)
@@ -108,7 +110,8 @@ loadR <- function(regs,
            "pato" = "snomed",
            "cancer" = c("c_morfo3", "c_icd10"),
            "lmdb" = "atc",
-           "opr" = "opr")
+           "opr" = "opr",
+           "immune" = "atc")
       vars.select <- list_assign(vars.default, !!!vars.list)
 
     #Patterns
@@ -134,7 +137,7 @@ loadR <- function(regs,
           paste0(
             map(names(pattern.list[[.x]]), function(i) {
 
-            paste0("str_detect(", i, ", \'", paste0(pattern.list[[.x]][[i]], collapse="|"), "\')")
+            paste0("str_detect(", vars.select[[i]], ", \'", paste0(pattern.list[[.x]][[i]], collapse="|"), "\')")
 
 
           }), collapse = " & ")
@@ -157,9 +160,9 @@ loadR <- function(regs,
 
     if(length(regs[regs != "lmdb"]) > 0) {
 
-    if(!inherits(plan(), "multisession") & !is.null(cores)) {
+    if(!is.null(cores) & length(regs[regs != "lmdb"]) > 1) {
 
-      multitaskR(cores = pmin(length(regs[regs != "lmdb"]), cores, gb))
+      multitaskR(cores = pmin(length(regs[regs != "lmdb"]), cores), gb)
 
       }
 
@@ -218,7 +221,7 @@ loadR <- function(regs,
         }
 
 
-      cli::cli_alert_success("Complete: {tickR(cli=F)} - Runtime: {tockR(cli=F)}")
+      cli::cli_alert_success("Complete: {paste0(lubridate::round_date(Sys.time(), \'second\'))} - Runtime: {paste0(round(as.numeric(Sys.time() - tickR.start), 2), \' \', attr(Sys.time() - tickR.start, \'units\'))}")
 
         if(dt) return(dat %>% collect %>% as.data.table) else return(dat %>% collect %>% as.data.frame)
 
@@ -232,16 +235,11 @@ loadR <- function(regs,
         reglist <- list()
       }
 
-
-
       tickR.start <- Sys.time()
 
       cli::cli_h3("Loading: LMDB")
 
-      if(!inherits(plan(), "multisession") & !is.null(cores)) {
-
-        multitaskR(cores = cores)
-      }
+      multitaskR(cores = pmax(4, cores))
 
       if(simulation) {
 

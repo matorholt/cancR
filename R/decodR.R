@@ -397,20 +397,42 @@ out.list[["searchR"]][["sub.labels"]] <- label_list
 
   if(type == "rtmle") {
 
-    for(i in seq_along(main$exposure)) {
 
-      main$exposure[[i]]$period <- main$design$period
 
-      out.list[["exposure_atc"]] <- c(out.list[["exposure_atc"]], main$exposure[[i]]$atc)
+    #Exposure
+    out.list[["exposure"]] <- map(main$exposure, ~ {
+      .x$period <- main$design$period
+      .x
+    })
 
-    }
+  #loadR
+  out.list[["loadR"]][["regs"]] <- c(out.list[["loadR"]][["regs"]], "lmdb", "covariates")
+  out.list[["loadR"]][["pattern.list"]][["lmdb"]] <- unname(c(map_chr(main$exposure, ~ .x$atc),
+                                                       map_chr(main$td.vars, ~ .x$atc),
+                                                       unlist(main$interval.vars, use.names = F)))
 
-    out.list[["exposure"]] <- main$exposure
+  #Fixed.vars
+  names(out.list) <- str_replace(names(out.list), "searchR", "fixed.vars")
+
+  #Interval.vars
+  out.list[["interval.vars"]][["search.list"]][["lmdb"]] <- main$interval.vars
+
+  #TD.vars
+  out.list[["td.vars"]] <- map(main$td.vars, ~ {
+    .x$period <- main$design$period
+    .x
+  })
+
+
+  out.list[["design"]] <- main$design
 
   }
+
 
  return(out.list)
 
 }
+
+#decodR(codelist_rtmle, type = "rtmle") %>% str
 
 

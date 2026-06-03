@@ -55,11 +55,9 @@ searchR <- function(reglist,
                     cores = 4,
                     dt = F) {
 
-  tickR()
+  cli::cli_h2("Initializing searchR algorithm: {tickR(cli=F)}")
 
   start <- tickR.start
-
-  cli::cli_h2("Initializing searchR algorithm: {tockR(\'time\')}")
 
   match <- match.arg(match, c("start", "end", "exact", "contains"))
   format <- match.arg(format, c("categorical", "date", "code"))

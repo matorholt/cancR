@@ -190,7 +190,7 @@ g2_multires <- iteratR(
   timevar = "ttt",
   event = c("event", "event2", "event3"),
   group = "g2",
-  method = "estimatR",
+  cancR.method = "estimatR",
   labels = c("model1", "model2", "model3"))
   
 
@@ -208,7 +208,7 @@ We can also use `iteratR` to apply `extractR` on all models to extract the main 
 ```{r}
 iteratR(
   g2_multires,
-  method = "extractR"
+  cancR.method = "extractR"
 )
 ```
 
@@ -218,7 +218,7 @@ We can also plot all three models by changing method to `"plotR"`
 iteratR(
   g2_multires,
   title = c("m1", "m2", "m3"),
-  method = "plotR"
+  cancR.method = "plotR"
 )
 ```
 
