@@ -4,7 +4,17 @@
 \alias{rowR}
 \title{Perform rowwise operations}
 \usage{
-rowR(data, vars, type, label, na.rm = T, filter = NULL, direction, dt = F)
+rowR(
+  data,
+  vars,
+  type,
+  label,
+  collapse = "",
+  na.rm = T,
+  filter = NULL,
+  direction,
+  dt = F
+)
 }
 \arguments{
 \item{data}{dataset}

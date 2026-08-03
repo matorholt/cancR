@@ -375,7 +375,9 @@ out.list[["searchR"]][["sub.labels"]] <- label_list
     out.list[["includR"]][["look.back"]] <- out.list[["matchR"]][["look.back"]] <- main$design$look.back*365.25
     out.list[["updatR"]][["vars"]] <- c(out.list[["updatR"]][["vars"]], e_names)
 
+
     #Matching parametres
+    if("matching" %nin% names(main$design)) return(cli::cli_alert_danger("Error: matching parameters not specified"))
     switch(main$design$matching,
            "all" = {matching <- c("education", "income", "degurba", "martital", "cancer", "cvd", "connective", "endo", "gi", "hema", "infection", "lungs", "neuro", "psych", "skin", "urinary")},
            "none" = {matching <- NULL},
@@ -394,6 +396,7 @@ out.list[["searchR"]][["sub.labels"]] <- label_list
 
 
   }
+
 
   if(type == "rtmle") {
 

@@ -104,6 +104,12 @@ savR <- function(object,
 
   }
 
+  if(!dir.exists(paste0(getwd(), "/", folder))) {
+    cli::cli_alert_info("Directory not found")
+    cli::cli_text("Created: {paste0(getwd(), \'/\', folder)}")
+    dir.create(paste0(getwd(), "/", folder))
+  }
+
   if(any(format %nin% c("pdf", "svg", "tiff", "jpg", "png", "rds", "csv", "parquet"))) {
     return(cat("Error: Unvalid format. Supported formats are pdf, svg, tiff, jpg, png, rds, csv and parquet"))
   }
@@ -117,11 +123,12 @@ savR <- function(object,
       flextable()
   }
 
+
   if(all("data.frame" %in% class(object) & "extractR" %nin% class(object))) {
 
     if("csv" %in% format) {
       fwrite(object,
-             paste0(name, ".csv", collapse=""),
+             paste0(folder, "/", name, ".csv", collapse=""),
              sep = sep,
              bom=T)
 
@@ -147,10 +154,6 @@ savR <- function(object,
 
     return(cli::cli_alert_success("Done"))
 
-  }
-
-  if(!dir.exists(paste0(getwd(), "/", folder))) {
-    dir.create(paste0(getwd(), "/", folder))
   }
 
   if("summary.tableby" %in% class(object)) {
@@ -240,3 +243,4 @@ savR <- function(object,
 
 
 }
+

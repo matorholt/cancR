@@ -42,11 +42,12 @@
 # joinR(df_list, by = list(c("pnr", "pnr2", "pnr3"),
 #                          c("x", "x2", "x3")), type = "left", dt=T)
 # joinR(df_list[[1]], df_list[[3]], by = list(c("pnr", "pnr3")), type = "anti")
-# joinR(df_list, df_2, by = "id") #both list and df input
+#joinR(df_list, as.data.table(df_2), by = "id") #both list and df input
 
 
 
-joinR <- function(..., by, type = "left", dt = F) {
+
+joinR <- function(..., by, type = "left", dt = F, cartesian = TRUE) {
 
 
   switch(type,
@@ -64,10 +65,17 @@ joinR <- function(..., by, type = "left", dt = F) {
     dfs <- dfs[[1]]
   }
 
+
+
   #Combine list and non-list inputs
   dfs <- map(dfs, ~ if(all(class(.x) %nin% "list")) list(.x) else .x) %>% flatten
 
-  if(class(by) == "list") {
+  #Return DT if any input is DT and dt is not specified
+  if(any(map_lgl(dfs, ~ is.data.table(.x))) & missing(dt)) dt <- T
+
+  #return(is.list(by))
+
+  if(is.list(by)) {
 
     by_vec <- map_chr(by, 1)
 
@@ -76,27 +84,27 @@ joinR <- function(..., by, type = "left", dt = F) {
       map(by, i) %>% set_names(by_vec)
     })
 
-    } else {
-    by_vec <- by
-    }
+  } else {
+    by_vec <- defusR(by)
+  }
 
   #Aligning by names and set as key
   dfs <- lapply(seq_along(dfs), function(i) {
 
-  dt <- as.data.table(dfs[[i]])
+    dt <- as.data.table(dfs[[i]])
 
-  if(nrow(dt) == 0) {
+    if(nrow(dt) == 0) {
 
-    return(cli::cli_alert_danger("Error: Empty dataframe (df number {i})"))
+      return(cli::cli_alert_danger("Error: Empty dataframe (df number {i})"))
 
-  }
+    }
 
-  if(class(by) == "list") {
+    if(is.list(by)) {
 
-  setnames(dt, unlist(by_list[[i]]), names(by_list[[i]]))
-  }
+      setnames(dt, unlist(by_list[[i]]), names(by_list[[i]]))
+    }
 
-  setkeyv(dt, by_vec)
+    setkeyv(dt, by_vec)
 
     dt
   })
@@ -111,8 +119,8 @@ joinR <- function(..., by, type = "left", dt = F) {
 
   } else {
 
-  joined_data <- Reduce(function(x,y) #Running full-join merge
-    merge(x, y, by = by_vec, all.x = dx, all.y = dy), dfs)
+    joined_data <- Reduce(function(x,y) #Running full-join merge
+      merge(x, y, by = by_vec, all.x = dx, all.y = dy, allow.cartesian = cartesian), dfs)
   }
 
   #Remove key
@@ -123,4 +131,3 @@ joinR <- function(..., by, type = "left", dt = F) {
   return(joined_data)
 
 }
-

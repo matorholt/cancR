@@ -1,337 +1,211 @@
 #' Automated keyboard strokes
 #'
-#' @param text single-quote enclosed text to automate
-#' @param write.sleep delay between text chunks (default = 0.025 secs)
+#' @param text single-quote enclosed text
+#' @param path path to r-script
+#' @param start.delay delay (secs) before automated typing (default = 5 seconds)
+#' @param chunk.delay delay (secs) between blocks of text (default = 0 seconds)
+#' @param chunks chunk length of the text in number of lines (default = 10)
 #' @param mouse.sleep delay between mouse actions (default = 0.15 secs)
-#' @param special.sleep delay betweem alt-hold and alt code (default = 0.1)
-#' @param where enviroment, pc, laptop or iw containing customised coordinates
-#' @param server.language whether the language on the server should be changed (default = T)
-#' @param server.automate whether automatic parenthesis and quotes should be disabled (default = T)
+#' @param screens number of screens that is being used
+#' @param automate whether automatic parenthesis and code indention should be disabled (default = T)
+#' @param debug whether the code output should be printed to the console instead of automated
 #'
-#' @return a keyboard and mouse automation that transfers the assigned text
+#' @details
+#' If the command is aborted abruptly, the keyboard can malfunction due to pressed alt. Release with shift-alt to toggle back to danish
+#'
+#'
+#' @return a keyboard and mouse automation that automatically types the assigned text
 #' @export
 #'
 #'
 
-
-powR <- function(text,
-                 write.sleep = 0.05,
+powR <- function(text = NULL,
+                 path = NULL,
+                 trim.start = 0,
+                 trim.end = 0,
+                 start.delay = 3,
+                 chunk_delay = 0,
+                 chunks = 20,
                  mouse.sleep = 0.5,
-                 special.sleep = 0.05,
-                  where = "pc",
-                 server.language = T,
-                 server.options = T,
-                 toggle.options = T) {
+                 screens = 2,
+                 automate = TRUE,
+                 debug = FALSE) {
 
-  tickR()
+  cli::cli_h2("Initializing powR algorithm: {tickR(cli = F)}")
 
-  # return(    str_replace_all(text, c('(?<!(\\s{3}))\n(?=("))' = "NEW",
-  #                                    '(?<=("))\n(?!(\\s{3}))' = "NEW",
-  #                                    "\n" = "xsplitxenterxsplitx",
-  #                                    "NEW" = "xsplitxNEWxsplitx",
-  #                                    "\\\\" = "xsplitxdbackslashxsplitx",
-  #                                    "," = "xsplitxcommaxsplitx",
-  #                                    "<" = "xsplitxarrowxsplitx",
-  #                                    "-" = "xsplitxlinexsplitx",
-  #                                    "≤" = "xsplitxlessxsplitx",
-  #                                    "_" = "xsplitxunsxsplitx",
-  #                                    ":" = "xsplitxcolonxsplitx",
-  #                                    ";" = "xsplitxsemcol",
-  #                                    "~" = "xsplitxtildexsplitx",
-  #                                    "`" = "xsplitxffxsplitx")) %>% str_split(., "xsplitx"))
-
-  #Coordinates
-  coord.list <- list(pc = list(rs = c(2665, 167),
-                               tool = c(2944, 31),
-                               go = c(2993, 401),
-                               code = c(3569, 483),
-                               match = c(3688, 575),
-                               app = c(4113, 1034),
-                               ok = c(3917, 1034),
-                               local = c(623, 546)),
-                     laptop = list(pl = c(602,1577),
-                                   rs = c(214, 290),
-                                   tool = c(381, 34),
-                                   go = c(467, 404),
-                                   code = c(1052, 589),
-                                   match = c(1144, 676),
-                                   app = c(1528, 1095),
-                                   ok = c(1349, 1095),
-                                   local = c(3917, 546)))
-
-
-  #Define current and on.exits
-
-  #Current cursor location
-  current <- KeyboardSimulator::mouse.get_cursor()
-
-  on.exit({
-    #Release ALT
-    KeyboardSimulator::keybd.release("alt")
-    #Toggle matching parens/quotes
-    if(toggle.options) {
-      KeyboardSimulator::mouse.move(coord.list[[where]][["rs"]][1],coord.list[[where]][["rs"]][2])
-      Sys.sleep(mouse.sleep)
-      KeyboardSimulator::mouse.click("left")
-      Sys.sleep(0.5)
-      KeyboardSimulator::keybd.press("ctrl", hold = T)
-      KeyboardSimulator::keybd.press("shift", hold = T)
-      KeyboardSimulator::keybd.press("p", hold = T)
-      KeyboardSimulator::keybd.release("ctrl")
-      KeyboardSimulator::keybd.release("shift")
-      KeyboardSimulator::keybd.release("p")
-      Sys.sleep(0.5)
-      KeyboardSimulator::keybd.type_string("parentheses and")
-      Sys.sleep(0.5)
-      KeyboardSimulator::keybd.press("enter")
-      KeyboardSimulator::keybd.press("esc")
-      # cat("\nReturning to standard settings\n")
-      # KeyboardSimulator::mouse.move(coord.list[[where]][["tool"]][1], coord.list[[where]][["tool"]][2])
-      # Sys.sleep(mouse.sleep)
-      # KeyboardSimulator::mouse.click("left")
-      # KeyboardSimulator::mouse.move(coord.list[[where]][["go"]][1],coord.list[[where]][["go"]][2])
-      # Sys.sleep(mouse.sleep)
-      # KeyboardSimulator::mouse.click("left")
-      # KeyboardSimulator::mouse.move(coord.list[[where]][["code"]][1],coord.list[[where]][["code"]][2])
-      # Sys.sleep(mouse.sleep)
-      # KeyboardSimulator::mouse.click("left")
-      # KeyboardSimulator::mouse.move(coord.list[[where]][["match"]][1],coord.list[[where]][["match"]][2])
-      # Sys.sleep(mouse.sleep)
-      # KeyboardSimulator::mouse.click("left")
-      # KeyboardSimulator::mouse.move(coord.list[[where]][["app"]][1],coord.list[[where]][["app"]][2])
-      # Sys.sleep(mouse.sleep)
-      # KeyboardSimulator::mouse.click("left")
-      # KeyboardSimulator::mouse.move(coord.list[[where]][["ok"]][1],coord.list[[where]][["ok"]][2])
-      # Sys.sleep(mouse.sleep)
-      # KeyboardSimulator::mouse.click("left")
-    }
-
-    #Change language back server
-    if(server.language){
-      cat("\nReturning to standard language on server\n")
-      Sys.sleep(0.5)
-      KeyboardSimulator::keybd.press("win", hold = T)
-      KeyboardSimulator::keybd.press(" ")
-      KeyboardSimulator::keybd.release("win")
-      KeyboardSimulator::mouse.click("left")
-    }
-
-    #Close window
-    if(where == "laptop") {
-      KeyboardSimulator::mouse.move(1485,13)
-      Sys.sleep(mouse.sleep)
-      KeyboardSimulator::mouse.click("left")
-      Sys.sleep(mouse.sleep)
-    }
-
-    #Change language back main computer
-    cat("\nReturning to standard language on local\n")
-    KeyboardSimulator::mouse.move(coord.list[[where]][["local"]][1],coord.list[[where]][["local"]][2])
-    Sys.sleep(mouse.sleep)
-    KeyboardSimulator::mouse.click("left")
-    Sys.sleep(mouse.sleep)
-    KeyboardSimulator::keybd.press("win", hold = T)
-    KeyboardSimulator::keybd.press(" ")
-    KeyboardSimulator::keybd.release("win")
-
-    #Default cursor location
-    KeyboardSimulator::mouse.move(current[1], current[2])
-
-    cat(paste0("\nTotal runtime: \n"))
-    cat(tockR("diff"))
-
-  }, add=TRUE)
-
-  cat("\nConverting to US keyboard\n")
-  Sys.sleep(0.5)
-  KeyboardSimulator::keybd.press("win", hold = T)
-  KeyboardSimulator::keybd.press(" ")
-  KeyboardSimulator::keybd.release("win")
-
-  cat("\nChoosing screen to write and configuring R\n")
-
-  Sys.sleep(mouse.sleep)
-
-  #Select screen
-  if(where == "laptop") {
-  KeyboardSimulator::mouse.move(coord.list[[where]][["pl"]][1],coord.list[[where]][["pl"]][2])
-  Sys.sleep(mouse.sleep)
-  KeyboardSimulator::mouse.click("left")
-  Sys.sleep(mouse.sleep)
+  if(debug) {
+    start.delay <- 0
+    if(missing(automate)) automate <- F
   }
 
-  KeyboardSimulator::mouse.move(coord.list[[where]][["rs"]][1],coord.list[[where]][["rs"]][2])
-  Sys.sleep(mouse.sleep)
-  KeyboardSimulator::mouse.click("left")
-
-  #Select US keyboard if on server
-  if(server.language){
-    Sys.sleep(0.5)
-    KeyboardSimulator::keybd.press("win", hold = T)
-    KeyboardSimulator::keybd.press(" ")
-    KeyboardSimulator::keybd.release("win")
-    KeyboardSimulator::mouse.click("left")
+  #load text
+  if (!is.null(path)) {
+    if (!file.exists(path)) return({cli::cli_alert_danger("Error: File not found"); invisible(NULL)})
+    text <- readLines(path, warn = FALSE)
+    text <- str_replace_all(text, "\\\\\\\\", "\\\\")  # Escape \\
+  } else {
+    text <- str_split(text, "\n")[[1]]
   }
+  if(is.null(text)) return({cli::cli_alert_danger("Error: No path or text provided"); invisible(NULL)})
 
-  #Toggle matching parens/quotes
-  if(toggle.options) {
-    KeyboardSimulator::mouse.move(coord.list[[where]][["rs"]][1],coord.list[[where]][["rs"]][2])
+  if(any(c(trim.start, trim.end) %nin% 0)) text <- text[c((1+trim.start):(length(text)-trim.end))]
+
+  #coordinates
+  coord.list <- list(c(214, 290), c(2700, 250))
+
+  #Custom toggle function
+  toggle_option <- function(search_term) {
+    KeyboardSimulator::mouse.move(coord.list[[screens]][1], coord.list[[screens]][2])
     Sys.sleep(mouse.sleep)
     KeyboardSimulator::mouse.click("left")
     Sys.sleep(0.5)
-    KeyboardSimulator::keybd.press("ctrl", hold = T)
-    KeyboardSimulator::keybd.press("shift", hold = T)
-    KeyboardSimulator::keybd.press("p", hold = T)
+    KeyboardSimulator::keybd.press("ctrl",  hold = TRUE)
+    KeyboardSimulator::keybd.press("shift", hold = TRUE)
+    KeyboardSimulator::keybd.press("p",     hold = TRUE)
     KeyboardSimulator::keybd.release("ctrl")
     KeyboardSimulator::keybd.release("shift")
     KeyboardSimulator::keybd.release("p")
     Sys.sleep(0.5)
-    KeyboardSimulator::keybd.type_string("parentheses and")
+    KeyboardSimulator::keybd.type_string(search_term)
     Sys.sleep(0.5)
     KeyboardSimulator::keybd.press("enter")
+    Sys.sleep(0.2)
     KeyboardSimulator::keybd.press("esc")
-}
-  # KeyboardSimulator::mouse.move(coord.list[[where]][["tool"]][1], coord.list[[where]][["tool"]][2])
-  # Sys.sleep(mouse.sleep)
-  # KeyboardSimulator::mouse.click("left")
-  # KeyboardSimulator::mouse.move(coord.list[[where]][["go"]][1],coord.list[[where]][["go"]][2])
-  # Sys.sleep(mouse.sleep)
-  # KeyboardSimulator::mouse.click("left")
-  # KeyboardSimulator::mouse.move(coord.list[[where]][["code"]][1],coord.list[[where]][["code"]][2])
-  # Sys.sleep(mouse.sleep)
-  # KeyboardSimulator::mouse.click("left")
-  # KeyboardSimulator::mouse.move(coord.list[[where]][["match"]][1],coord.list[[where]][["match"]][2])
-  # Sys.sleep(mouse.sleep)
-  # KeyboardSimulator::mouse.click("left")
-  # KeyboardSimulator::mouse.move(coord.list[[where]][["app"]][1],coord.list[[where]][["app"]][2])
-  # Sys.sleep(mouse.sleep)
-  # KeyboardSimulator::mouse.click("left")
-  # KeyboardSimulator::mouse.move(coord.list[[where]][["ok"]][1],coord.list[[where]][["ok"]][2])
-  # Sys.sleep(mouse.sleep)
-  # KeyboardSimulator::mouse.click("left")
-  # }
-
-Sys.sleep(1)
-
-  cat("\nPasting text\n")
-  split_list <-
-    str_replace_all(text, c("\n(?=(\\s{2,20}))" = "xsplitxenterxsplitx",
-                            '(?<=(cat\\((.|\n){0,5}"(.|\n){0,150}))\n(?=((.|\n){0,150}"(.|\n){0,5}\\))(?!(\\s{2,20})))' = "NEW",
-                            "\n" = "xsplitxenterxsplitx",
-                            "NEW" = "xsplitxNEWxsplitx",
-                            "," = "xsplitxcommaxsplitx",
-                            "\\\\" = "xsplitxdbackslashxsplitx",
-                            "<" = "xsplitxarrowxsplitx",
-                            "-" = "xsplitxlinexsplitx",
-                            "≤" = "xsplitxlessxsplitx",
-                            "_" = "xsplitxunsxsplitx",
-                            ":" = "xsplitxcolonxsplitx",
-                            ";" = "xsplitxsemcolxsplitx",
-                            "~" = "xsplitxtildexsplitx",
-                            "`" = "xsplitxffxsplitx")) %>% str_split(., "xsplitx")
-
-
-
-  for(i in split_list[[1]]) {
-    if(i == "enter") {
-      KeyboardSimulator::keybd.press("enter")
-    }  else if(i == "comma") {
-      KeyboardSimulator::keybd.press("alt", hold = T)
-      Sys.sleep(special.sleep)
-      KeyboardSimulator::keybd.press("num4") #alt codes
-      KeyboardSimulator::keybd.press("num4")
-      KeyboardSimulator::keybd.release("alt")
-      KeyboardSimulator::keybd.press(" ")
-    }
-    else if(i == "arrow") {
-      KeyboardSimulator::keybd.press("alt", hold = T)
-      Sys.sleep(special.sleep)
-      KeyboardSimulator::keybd.press("num6")
-      KeyboardSimulator::keybd.press("num0")
-      KeyboardSimulator::keybd.release("alt")
-    }
-    else if(i == "line") {
-      KeyboardSimulator::keybd.press("alt", hold = T)
-      Sys.sleep(special.sleep)
-      KeyboardSimulator::keybd.press("num4")
-      KeyboardSimulator::keybd.press("num5")
-      KeyboardSimulator::keybd.release("alt")
-    }
-    else if(i == "less") {
-      KeyboardSimulator::keybd.press("alt", hold = T)
-      Sys.sleep(special.sleep)
-      KeyboardSimulator::keybd.press("num9")
-      KeyboardSimulator::keybd.press("num2")
-      KeyboardSimulator::keybd.release("alt")
-      KeyboardSimulator::keybd.type_string("u2264 3")
-    }
-    else if(i == "uns") {
-      KeyboardSimulator::keybd.press("alt", hold = T)
-      Sys.sleep(special.sleep)
-      KeyboardSimulator::keybd.press("num9")
-      KeyboardSimulator::keybd.press("num5")
-      KeyboardSimulator::keybd.release("alt")
-    }
-    else if(i == "dbackslash") {
-      KeyboardSimulator::keybd.press("alt", hold = T)
-      Sys.sleep(special.sleep)
-      KeyboardSimulator::keybd.press("num9")
-      KeyboardSimulator::keybd.press("num2")
-      KeyboardSimulator::keybd.release("alt")
-      KeyboardSimulator::keybd.press("alt", hold = T)
-      Sys.sleep(special.sleep)
-      KeyboardSimulator::keybd.press("num9")
-      KeyboardSimulator::keybd.press("num2")
-      KeyboardSimulator::keybd.release("alt")
-
-    }
-    else if(i == "colon"){
-      KeyboardSimulator::keybd.press("alt", hold = T)
-      Sys.sleep(special.sleep)
-      KeyboardSimulator::keybd.press("num5")
-      KeyboardSimulator::keybd.press("num8")
-      KeyboardSimulator::keybd.release("alt")
-    }
-    else if(i == "semcol"){
-      KeyboardSimulator::keybd.press("alt", hold = T)
-      Sys.sleep(special.sleep)
-      KeyboardSimulator::keybd.press("num5")
-      KeyboardSimulator::keybd.press("num9")
-      KeyboardSimulator::keybd.release("alt")
-    }
-    else if (i == "tilde"){
-      KeyboardSimulator::keybd.press("alt", hold = T)
-      Sys.sleep(special.sleep)
-      KeyboardSimulator::keybd.press("num1")
-      KeyboardSimulator::keybd.press("num2")
-      KeyboardSimulator::keybd.press("num6")
-      KeyboardSimulator::keybd.release("alt")
-    }
-    else if(i == "ff"){
-      KeyboardSimulator::keybd.press("alt", hold = T)
-      Sys.sleep(special.sleep)
-      KeyboardSimulator::keybd.press("num9")
-      KeyboardSimulator::keybd.press("num6")
-      KeyboardSimulator::keybd.release("alt")
-    }
-    else if(i == "NEW"){
-      KeyboardSimulator::keybd.press("alt", hold = T)
-      KeyboardSimulator::keybd.press("num9")
-      KeyboardSimulator::keybd.press("num2")
-      KeyboardSimulator::keybd.release("alt")
-      Sys.sleep(special.sleep)
-      KeyboardSimulator::keybd.press("n")
-
-    }
-    else if(i == "") {
-      next
-    } else {
-      KeyboardSimulator::keybd.type_string(str_trim(i, side = "both"))
-    }
-    Sys.sleep(write.sleep)
   }
 
-  cat("\nPrinting Done\n")
+  #Original cursor position
+  current <- KeyboardSimulator::mouse.get_cursor()
 
+  #Restore on.exit
+  on.exit({
 
+    if (automate) {
+      cli::cli_alert_info("Restoring options")
+      toggle_option("parentheses and")
+    }
+
+    # Close laptop window if needed
+    if (screens == 1 & automate) {
+      KeyboardSimulator::mouse.move(1485, 13)
+      Sys.sleep(mouse.sleep)
+      KeyboardSimulator::mouse.click("left")
+      Sys.sleep(mouse.sleep)
+    }
+
+    # Restore cursor position
+    KeyboardSimulator::mouse.move(current[1], current[2])
+
+    cli::cli_alert_success("Typing complete!")
+    cli::cli_text("Total runtime: {tockR(\'diff\', cli=F)}")
+
+  }, add = TRUE)
+
+  #Countdown
+  if (start.delay > 0) {
+    for (i in start.delay:0) {
+      cli::cli_progress_message("Typing in: {i}")
+      Sys.sleep(1)
+    }
+    cli::cli_progress_done()
+  }
+
+  #Open remote server
+  if (screens == 1 & automate) {
+    KeyboardSimulator::mouse.move(602, 1577)
+    Sys.sleep(mouse.sleep)
+    KeyboardSimulator::mouse.click("left")
+    Sys.sleep(mouse.sleep)
+  }
+
+  #Toggle options
+  if (automate) {
+    cli::cli_alert_info("Disabling RStudio options")
+    toggle_option("parentheses and")
+  }
+
+  #Custom escape function
+  escape_line <- function(line) {
+
+    # Strip leading whitespace — RStudio auto-indent handles indentation
+    line <- str_trim(line, side = "left")
+
+    # Replace quotes with placeholders before SendKeys escaping
+    line_esc <- str_replace_all(line, c('"' = "DQUOTE",
+                                        "'" = "SQUOTE"))
+
+    # SendKeys escaping
+    line_esc <- str_replace_all(line_esc, c(
+      "\\{"   = "x{x",        # temporarily mask { to avoid SendKeys syntax conflict
+      "\\}"   = "x}x",        # temporarily mask }
+      "\\\\"  = "\\\\\\\\",   # escape backslashes
+      "\\("   = "{\\(}",      # ( is special in SendKeys (group modifier)
+      "\\)"   = "{\\)}",      # ) is special in SendKeys
+      "\\+"   = "{\\+}",      # + is special in SendKeys (Shift modifier)
+      "\\%"   = "{\\%}",      # % is special in SendKeys (Alt modifier)
+      "\\~"   = "{\\~}",      # ~ is special in SendKeys (Enter)
+      "\\^"   = "+¨",         # ^ on Danish keyboard is typed as +¨
+      "x\\{x" = "{{}",        # restore { as SendKeys literal
+      "x\\}x" = "{}}",        # restore } as SendKeys literal
+      "\\s+"  = " "           # normalise multiple spaces to single space
+    ))
+
+    #Replace double and single quotes
+    line_esc <- str_replace_all(line_esc, c(
+      "DQUOTE" = "'+[char]34+'",
+      "SQUOTE" = "'+[char]39+'"
+    ))
+
+    # Strip empty string artifacts at boundaries
+    line_esc <- str_remove(line_esc,  "^'\\+")
+    line_esc <- str_replace(line_esc, "(\\[char\\]\\d+)\\+'$", "\\1")
+    line_esc <- str_replace(line_esc, "(\\[char\\]\\d+)'$",    "\\1")
+    line_esc <- str_remove(line_esc,  "\\+'$")
+
+    # Ensure valid PowerShell string
+    if (!str_starts(line_esc, "'") && !str_detect(line_esc, "\\[char\\]")) {
+      line_esc <- paste0("'", line_esc, "'")  # no [char] — wrap fully
+    } else if (!str_starts(line_esc, "'") && !str_starts(line_esc, fixed("[char]"))) {
+      line_esc <- paste0("'", line_esc)        # has [char] — opening quote only
+    }
+    if (!str_ends(line_esc, "'") && !str_detect(line_esc, "\\[char\\]\\d+$")) {
+      line_esc <- paste0(line_esc, "'")        # add closing quote if needed
+    }
+
+    line_esc
+  }
+
+  ########
+  #TYPING#
+  ########
+cli::cli_text("Typing {length(text)} lines...")
+
+  chunk_groups <- split(text, ceiling(seq_along(text) / chunks))
+
+  cli::cli_progress_bar(
+    format = "{cli::pb_spin} ({round((cli::pb_current/cli::pb_total)*100,0)}%)",
+    total = length(chunk_groups),
+    clear = T
+  )
+
+  for (i in seq_along(chunk_groups)) {
+    group <- chunk_groups[[i]]
+    escaped_lines <- sapply(group, escape_line)
+    full_escaped <- paste(escaped_lines, collapse = "+'+{ENTER}'+")
+    if (debug) {
+      cli::cli_text("CHUNK {i} of {length(chunk_groups)}")
+      for (j in seq_along(group)) {
+        cli::cli_text("Line:    {group[j]}")
+        cli::cli_text("Escaped: {escaped_lines[j]}")
+      }
+    } else {
+      system2("powershell", args = c("-Command", paste0(
+        "Add-Type -AssemblyName System.Windows.Forms; ",
+        "[System.Windows.Forms.SendKeys]::SendWait(", full_escaped, "+'+{ENTER}')"
+      )))
+    }
+    Sys.sleep(chunk_delay)
+    cli::cli_progress_update()
+  }
+
+  cli::cli_progress_done()
 }

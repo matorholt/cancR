@@ -9,7 +9,6 @@ Description: Package for time-to-event analysis and auxillary functions for regi
 License: GPL (>= 3)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.3
 Depends: 
     arsenal,
     data.table,
@@ -38,9 +37,13 @@ Imports:
     pammtools,
     progressr,
     survminer,
-    tibble
+    tibble,
+    timereg
 LazyData: true
 Config/Needs/website: rmarkdown, quarto
 URL: https://matorholt.github.io/cancR/
 Suggests: 
-    quarto
+    quarto,
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
+Config/roxygen2/version: 8.0.0

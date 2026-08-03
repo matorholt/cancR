@@ -170,48 +170,6 @@ cpR <- function(data, cpr=cpr,extract=F, remove.cpr = F, return.cpr = F) {
   return(data)
 }
 
-
-
-
-#' @title Convert dates from character to date format
-#' @description
-#' Convert dates easily without specifying format. The format is identified automatically and converted to standard Year-month-day.
-#' @param data data frame
-#' @param vars vector of character vars to convert to date format
-#'
-#' @returns the input data frame with correctly formatted date variables
-#' @export
-#'
-#
-
-# redcap_df %>%
-#   datR(c(birth, date_of_surgery, followup, death_date)) %>%
-#   str
-
-datR <- function(data, vars) {
-
-  vars_c <- data %>% select({{vars}}) %>% names()
-
-  formats <- list()
-
-  for(v in vars_c) {
-
-    #Automatic formatting
-    formats[[v]] <- case_when(str_detect(first(data %>% pull(!!sym(v)), na_rm=T), "\\b\\d{2}-\\d{2}-\\d{4}\\b") ~ "%d-%m-%Y",
-                              T ~ "%Y-%m-%d")
-
-    if(any(class(data[[v]]) %nin% "Date")) {
-      data[[v]] <- as.Date(data[[v]], format = formats[[v]])
-
-    }
-
-
-  }
-
-  data
-
-}
-
 #' @title Assessment of distribution of continuous variables with histograms, QQ-plots and the Shapiro-Wilks test
 #' @param data dataframe
 #' @param vars variables to test. If not specified all numeric variables with more than 5 unique values are assessed
@@ -406,39 +364,6 @@ numbR <- function(numbers, digits = 1, nsmall, ama = F) {
 
 }
 
-
-#' @title Assign rolling ID.
-#' @description
-#' Useful after sorting a dataset, which changes the ID order. Works with piping
-#'
-#'
-#' @param data dataset
-#' @param vars column(s) which unique ids should be based on
-#' @param label label for new unique id column
-#' @param dt whether a data.table should be returned
-#'
-#' @return adds a new column to the dataset with unique ids based on original id conditional on a sorting
-#' @export
-#'
-#'
-# data.frame(id=c(1,1,1,1,2,2,2,3,3,3,4,4,4,4),
-#            x=c(5,5,6,6,7,8,9,1,2,1,4,1,2,4)) %>%
-#   arrange(x) %>%
-#   rollR()
-
-
-rollR <- function(data, vars = id, label = order, dt = F) {
-
-  vars <- names(dplyr::select(data, {{ vars }}))
-  label_name <- deparse(substitute(label))
-
-  if(dt) {
-    return(as.data.table(data)[, (label_name) := .GRP, by = vars])
-  } else {
-    return(as.data.table(data)[, (label_name) := .GRP, by = vars] %>% as.data.frame)
-  }
-}
-
 #' @title Format p-values to AMA manual of style
 #' @param x A p-value
 #' @param na the print of NA values, default = "NA.
@@ -485,19 +410,25 @@ pvertR <- function(x, na = "NA") {
 #' @description
 #' tickR starts the clock by adding the timestamp "start" to global environment
 #'
+#' @param print whether the current time should be printet (default = F)
+#' @param cli whether the output should be as cli_text (default = T)
 #'
 #' @return A timestamp
 #' @export
 #'
 #'
 
-tickR <- function(cli=T) {
+tickR <- function(cli=T, print = F) {
 
   tickR.start <<- Sys.time()
 
-  out <- paste0(lubridate::round_date(Sys.time(), "second"))
+  if(print) {
 
-  if(cli) cli::cli_text(out) else out
+    out <- paste0(lubridate::round_date(Sys.time(), "second"))
+
+    if(cli) cli::cli_text(out) else out
+
+  }
 
 }
 

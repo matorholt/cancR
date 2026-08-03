@@ -4,22 +4,38 @@
 \alias{tumR}
 \title{Map unique tumors}
 \usage{
-tumR(data, tumor, loc.exact = F, cores = NULL, dt = F)
+tumR(
+  data,
+  tumor,
+  loc.exact = F,
+  pnr = pnr,
+  date = date,
+  dt = F,
+  verbose = F,
+  tumor_distance = c(-90, 365.25 * 5),
+  meta_distance = 365.25 * 2
+)
 }
 \arguments{
 \item{data}{dataframe of data from the Danish National Pathology Register}
 
-\item{tumor}{character vector containing prefixes for tumors of interest (e.g. m807)}
+\item{tumor}{named list of tumors with vectors of snomed codes (e.g. list("pcc" = c("m0703", "m805"), "bcc" = "m809"))}
 
 \item{loc.exact}{whether tumors should match on exact location to be considered linked}
 
-\item{cores}{number of cores for parallel processing}
-
 \item{dt}{whether a data.table should be returned (default = F)}
+
+\item{verbose}{whether detailed status for each patient should be printed (for debugging)}
+
+\item{tumor_distance}{the interval where a metastasis is considered relevant}
+
+\item{meta_distance}{the distance between metastases that classifies a cluster}
+
+\item{id}{name of the main identifier, default = pnr}
 }
 \value{
 a data.frame of unique tumors with date, diagnosis and location
 }
 \description{
-Customized function for the Danish Pathology Register to map unique tumors taking reexcisions and changes in diagnosis into account.
+Customized function for the Danish Pathology Register to map unique tumors and outcomes taking reexcisions and changes in diagnosis into account.
 }

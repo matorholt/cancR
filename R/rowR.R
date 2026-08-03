@@ -41,6 +41,8 @@
 #
 # df %>%
 #   rowR(type = "fill", direction = "leftright")
+# df %>%
+#   rowR(vars = c(x,y), type = "paste", collapse = "|")
 
 
 
@@ -50,21 +52,25 @@ rowR <- function(data,
                  vars,
                  type,
                  label,
+                 collapse = "",
                  na.rm = T,
                  filter = NULL,
                  direction,
                  dt=F) {
 
-  type <- match.arg(type, c("pmin", "pmax", "sum", "all.na", "any.na", "sum.na", "fill"))
+  type <- match.arg(type, c("pmin", "pmax", "sum", "all.na", "any.na", "sum.na", "fill", "paste"))
+
+  #Return DT if input is DT and dt is not specified
+  if(is.data.table(data) & missing(dt)) dt <- T
 
   if(missing(vars)) {
     vars_c <- names(data)
   } else {
-  vars_c <- data %>% select({{vars}}) %>% names()
+    vars_c <- defusR(vars)
   }
 
   if(!missing(label)) {
-  label <- as.character(label)
+  label <- defusR(label)
   } else {
     label <- type
   }
@@ -133,6 +139,15 @@ rowR <- function(data,
 
     dat[, substitute(label) := rowSums(is.na(.SD)), .SDcols = vars_c]
 
+  }
+
+  if(type == "paste") {
+
+    dat[, substitute(label) := pmap_chr(.SD, function(...) {
+      vals <- c(...)
+      if (na.rm) vals <- vals[!is.na(vals)]
+      paste(vals, collapse = collapse)
+    }), .SDcols = vars_c]
   }
 
   if(type == "fill") {

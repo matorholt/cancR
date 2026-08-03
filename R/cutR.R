@@ -58,8 +58,10 @@ cutR <- function(data,
                  digits = 0,
                  dt=F) {
 
-  vars <-
-    data %>% select({{vars}}) %>% names()
+  #Return DT if input is DT and dt is not specified
+  if(is.data.table(data) & missing(dt)) dt <- T
+
+  vars <- defusR(vars)
 
   #Format checking
   for(v in vars) {

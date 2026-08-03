@@ -110,9 +110,8 @@ factR <- function(data,
                   auto.format = F,
                   dt = F) {
 
-  if(any("data.table" %in% class(data))) {
-    data <- as.data.frame(data)
-  }
+  #Return DT if input is DT and dt is not specified
+  if(is.data.table(data) & missing(dt)) dt <- T
 
   num_c <-
     data %>% select({{num.vars}}) %>% names()

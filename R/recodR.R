@@ -102,7 +102,9 @@ recodR <- function(data, namelist, match = "exact", replace=F, dt=F) {
          "boundary" = {regex <- c("\\b", "\\b")}
   )
 
-  #data <- copy(data)
+  #Return DT if input is DT and dt is not specified
+  if(is.data.table(data) & missing(dt)) dt <- T
+
   setDT(data)
 
   #Paste diagnosis codes

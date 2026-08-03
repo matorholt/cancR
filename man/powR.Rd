@@ -5,34 +5,44 @@
 \title{Automated keyboard strokes}
 \usage{
 powR(
-  text,
-  write.sleep = 0.05,
+  text = NULL,
+  path = NULL,
+  trim.start = 0,
+  trim.end = 0,
+  start.delay = 3,
+  chunk_delay = 0,
+  chunks = 20,
   mouse.sleep = 0.5,
-  special.sleep = 0.05,
-  where = "pc",
-  server.language = T,
-  server.options = T,
-  toggle.options = T
+  screens = 2,
+  automate = TRUE,
+  debug = FALSE
 )
 }
 \arguments{
-\item{text}{single-quote enclosed text to automate}
+\item{text}{single-quote enclosed text}
 
-\item{write.sleep}{delay between text chunks (default = 0.025 secs)}
+\item{path}{path to r-script}
+
+\item{start.delay}{delay (secs) before automated typing (default = 5 seconds)}
+
+\item{chunks}{chunk length of the text in number of lines (default = 10)}
 
 \item{mouse.sleep}{delay between mouse actions (default = 0.15 secs)}
 
-\item{special.sleep}{delay betweem alt-hold and alt code (default = 0.1)}
+\item{screens}{number of screens that is being used}
 
-\item{where}{enviroment, pc, laptop or iw containing customised coordinates}
+\item{automate}{whether automatic parenthesis and code indention should be disabled (default = T)}
 
-\item{server.language}{whether the language on the server should be changed (default = T)}
+\item{debug}{whether the code output should be printed to the console instead of automated}
 
-\item{server.automate}{whether automatic parenthesis and quotes should be disabled (default = T)}
+\item{chunk.delay}{delay (secs) between blocks of text (default = 0 seconds)}
 }
 \value{
-a keyboard and mouse automation that transfers the assigned text
+a keyboard and mouse automation that automatically types the assigned text
 }
 \description{
 Automated keyboard strokes
+}
+\details{
+If the command is aborted abruptly, the keyboard can malfunction due to pressed alt. Release with shift-alt to toggle back to danish
 }

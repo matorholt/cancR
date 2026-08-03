@@ -62,8 +62,7 @@ extractR <- function(list,
 
   grps <- list$info$group_levels
 
-  if(class(list) %in% c("clustR") | length(grps) == 1) outcome <- c("counts", "risks")
-  if("ratio" %in% outcome & list$info$method == "aalen") cat("Error: Risk ratios not implemented for method = aalen")
+  if(length(grps) == 1) outcome <- c("counts", "risks")
 
   if(censur) {
     list$counts <- list$counts %>%
@@ -308,4 +307,3 @@ class(tab) <- c("extractR", "data.frame")
 tab
 
 }
-

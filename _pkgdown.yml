@@ -64,6 +64,7 @@ reference:
   - readR
   - recodR
   - redcapR
+  - rollR
   - rowR
   - summarisR
 
@@ -137,7 +138,6 @@ reference:
   - rollR
   - tickR
   - tockR
-  - viewR
 
 
 

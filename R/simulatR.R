@@ -1,12 +1,13 @@
-#' Simulate danish health registers
+#' Function for simulating data
 #'
 #' @description
-#' A wrapper for the simulation functions in the heaven package.
+#' Includes the simulation functions in the heaven package.
 #'
 #'
-#' @param register vector of the registers to simulate. Choose between "lpr", "lmdb", "opr", "pop", "pato", "match" and "covariates".
+#' @param simulate Character vector of what to simulate (see details).
 #' @param n number of unique pnrs to simulate
-#' @param start.date starting date of the register
+#' @param start.date starting date of the register/dates
+#' @param end.date end.date of the register/dates
 #' @param pattern.list list of vectors of diagnoses codes for each register in the format ("lpr" = c("DC92", "DC21"))
 #' @param lpr.diag.count maximum number of diagnoses per patient in LPR
 #' @param lmdb.max.prescriptions maximum number of prescriptions per patient in LMDB
@@ -22,13 +23,20 @@
 #' @param covariates.period vector of length 2 withrange of dates for covariate status
 #' @param seed for reproducibility
 #'
+#' @details
+#' The following types of data can be simulated:
+#' \itemize{
+#'   \item Dates (\code{"dates"})
+#'   \item Registers (lpr, lmdb, opr, immune, pop, pato, match, covariates)
+#' }
+#'
 #' @returns a single data frame or named list of data frames with simulated registers
 #' @export
 #'
 #'
 
 # #Simple
-#simulatR(c("lpr", "lmdb"))
+# simulatR(c("lpr", "lmdb"))
 #
 # simulatR(c("lpr", "lmdb", "opr", "pato"),
 #          n = 20,
@@ -38,9 +46,10 @@
 #                              "pato" = list("t.codes" = c("T123", "T234"),
 #                                            "m.codes" = c("M80"))))
 
-simulatR <- function(register,
+simulatR <- function(simulate,
                       n = 10,
                       start.date = "2000-01-01",
+                     end.date = "2025-12-31",
                       pattern.list = list(),
                       lpr.diag.count = 5,
                       lmdb.max.prescriptions = 20,
@@ -55,16 +64,20 @@ simulatR <- function(register,
                       match.index = c("1990-01-01", "2010-01-01"),
                       covariates.period = c("1980-01-01", "2025-01-01"),
                      format = "wide",
-                      seed = 1) {
+                      seed = 1)  {
 
 
   set.seed(seed)
 
+  if("dates" %in% simulate) {
+
+    return(sample(c(sample(seq(as.Date(start.date), as.Date(end.date), by="day"))), size = n, replace=TRUE))
+
+  }
+
   reglist <- list()
 
-
-
-  if("lpr" %in% register) {
+  if("lpr" %in% simulate) {
 
     if("lpr" %in% names(pattern.list)) {
       lpr.codes <- pattern.list[["lpr"]]
@@ -83,7 +96,7 @@ simulatR <- function(register,
 
 
 
-  if("lmdb" %in% register) {
+  if("lmdb" %in% simulate) {
 
     if("lmdb" %in% names(pattern.list)) {
       lmdb.vector <- pattern.list[["lmdb"]]
@@ -127,7 +140,7 @@ simulatR <- function(register,
 
 
 
-  if("opr" %in% register) {
+  if("opr" %in% simulate) {
 
     if("opr" %in% names(pattern.list)) {
       opr.codes <- pattern.list[["opr"]]
@@ -148,7 +161,7 @@ simulatR <- function(register,
 
   }
 
-  if("immune" %in% register) {
+  if("immune" %in% simulate) {
 
     immune.codes <- paste0(sample(c("A", "B", "C", "D", "G", "H", "J", "L", "M", "N", "P", "R", "S", "V"), size = 20, replace=TRUE),
                           str_pad(sample(seq(0,99), size = 20), width = 2, side = "left", pad = "0"),
@@ -168,7 +181,7 @@ simulatR <- function(register,
 
 
 
-  if("pop" %in% register) {
+  if("pop" %in% simulate) {
 
     reglist[["pop"]] <- simPop(n,
                                min.age = pop.min.age,
@@ -182,7 +195,7 @@ simulatR <- function(register,
 
 
 
-  if("pato" %in% register) {
+  if("pato" %in% simulate) {
 
     code_cnt=100
 
@@ -249,7 +262,7 @@ simulatR <- function(register,
 
   }
 
-  if("match" %in% register) {
+  if("match" %in% simulate) {
 
     (c <- data.frame(pnr = seq(1,match.cases),
                      case = 1,
@@ -279,7 +292,7 @@ simulatR <- function(register,
 
   }
 
-  if("covariates" %in% register) {
+  if("covariates" %in% simulate) {
 
     intervals <- seq(as.Date(covariates.period[1]), as.Date(covariates.period[2]), by=365.25/2)
 

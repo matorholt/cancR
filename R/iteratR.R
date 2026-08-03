@@ -47,20 +47,19 @@
 #           group = "X3",
 #           time = 60,
 #           names = c("m1", "m2", "m3"),
-#           method = "incidencR")
+#           cancR.method = "incidencR")
 #
 # #estimatR
 # est <-
 #   iteratR(analysis_df,
 #           timevar = "ttt",
 #           event = c("event", "event", "event2"),
-#           group = "X3",
+#           group = "g2",
 #           survscale = c("OS", "OS", "AM"),
 #           time = list(60,60,120),
-#           names = c("m1", "m2", "m3"),
-#           type = "select",
+#           labels = c("m1", "m2", "m3"),
 #           vars = c("X6", "X7"),
-#           method = "estimatR")
+#           cancR.method = "estimatR")
 #
 # Est as multivariable
 # est <-
@@ -68,7 +67,7 @@
 #           timevar = "ttt",
 #           event = "event",
 #           group = c("X1", "X2", "X3", "X4", "X5"),
-#           method = "estimatR",
+#           cancR.method = "estimatR",
 #           multivariable = T)
 # #plotR
 # iteratR(est, method = "plotR",

@@ -49,7 +49,7 @@ loadR(
 
 \item{gb}{max size for future options}
 
-\item{cancR.covariates}{which covariates that should be loaded. Options are: main (non-major), major (only major) and all.}
+\item{cancR.covariates}{which covariates that should be loaded. Options are: main (non-major), major (only major), none (no comorbidities) and all.}
 
 \item{...}{arguments passed to simulatR()}
 }

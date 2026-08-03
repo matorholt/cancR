@@ -96,7 +96,7 @@ Absolute risk estimation and comparison of two or more groups with a time-to-eve
 Wrapper for the prodlim and ate-functions in riskRegression.
 }
 \examples{
-estimatR(analysis_df, ttt, event, X1, type = "select", vars = c(X6,X7))
+estimatR(analysis_df, ttt, event, g2, vars = c(X4, X5))
 
 
 }

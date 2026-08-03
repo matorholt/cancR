@@ -4,7 +4,7 @@
 \alias{joinR}
 \title{Join two or more dataframes}
 \usage{
-joinR(..., by, type = "left", dt = F)
+joinR(..., by, type = "left", dt = F, cartesian = TRUE)
 }
 \arguments{
 \item{...}{dataframes or list of dataframes to be joined}

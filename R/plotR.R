@@ -13,6 +13,8 @@
 #' @param contrast The type of contrast that should be provided. Includes risk difference ("rd", default), risk ratio ("rr"), hazard ratio ("hr") or "none".
 #' @param se whether the confidence interval should be shown
 #' @param p.values whether p-values should be printed in the results, default = T
+#' @param time.to.event type of time to event line, choose between "vertical", "horizontal", "both" or "none" (default)
+#' @param cens.lines whether censoring points should be printed
 #' @param style the formatting style of the contrast. Currently JAMA and italic
 #' @param linewidth thickness of the risk curve lines
 #' @param title Plot title
@@ -94,6 +96,8 @@ plotR <- function(list,
                   contrast = "rd",
                   se = T,
                   p.values = T,
+                  time.to.event = "none",
+                  cens.lines = F,
                   style = NULL,
                   linewidth = 0.8,
                   title = "",
@@ -231,6 +235,28 @@ plotR <- function(list,
     scale_color_manual(values = c(col[1:length(levels)]), labels = labs) +
     scale_fill_manual(values = c(col[1:length(levels)]), labels = labs)
   if(se) p <- p + pammtools::geom_stepribbon(aes(ymin = lower, ymax = upper), alpha = 0.2, color = NA)
+
+  if(time.to.event != "none") {
+    tte <- list$time_to_event %>%
+      rename(time = median) %>%
+      joinR(., plot, by = c(group, "time")) %>%
+      select(group, time, est)
+
+    if(time.to.event %in% c("both", "vertical")) p <- p + geom_segment(data=tte, aes(x=time, xend = time, y=0, yend = est, color = !!sym(group)), linetype = "dashed")
+    if(time.to.event %in% c("both", "horizontal")) p <- p + geom_segment(data=tte, aes(x=0, xend = time, y=est, yend = est, color = !!sym(group)), linetype = "dashed")
+
+  }
+
+  if(cens.lines) {
+  cens.tab <- plot %>%
+    filter(n.lost > 0) %>%
+    select(group, time, est)
+
+  p <- p + geom_point(data=cens.tab, aes(x=time, y=est), shape = 3, size = 1)
+  }
+
+
+
   p <- p +
     coord_cartesian(xlim=c(horizon*-0.1-y.title.shift,horizon), ylim = c(zmin,1.2*y+pmax(res.shift[2],0))) +
     theme_classic() +
