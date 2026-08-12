@@ -39,12 +39,12 @@
 #   rollR(by=id, order = c(id, x), sort = c(1,1), type = "interval", interval = c(1,2), vars = x, lag = 1)
 
 
-rollR <- function(data, by, order, sort = 1L, label = grp, type = "roll", dt = F, vars, interval, lag = 1) {
+rollR <- function(data, by = NULL, order, sort = 1L, label = grp, type = "roll", dt = F, vars, interval, lag = 1) {
 
   #Return DT if input is DT and dt is not specified
   if(is.data.table(data) & missing(dt)) dt <- T
 
-  if(!missing(by)) by_c <- defusR(by) else by_c <- NULL
+  by_c <- defusR(by)
 
   if(any(type %in% c("interval"))) {
     if(missing(interval)) return({cli::cli_alert_danger("Error: interval not specified"); invisible(NULL)})

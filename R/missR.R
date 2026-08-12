@@ -3,8 +3,16 @@
 #'
 #' @param data data frame
 #' @param vars vars where the na check should be beformed. If missing the whole data frame is analysed
-#' @param id name of the id-column. If missing a guess at the most common names is attempted.
-#' @param print whether the NA check should be printed in the console
+#' @param drop.rows whether to remove rows containing all NA values, default = F
+#' @param drop.cols  whether to remove columns contain all NA values, default = F
+#' @param return.id whether rows with any NA should be returned, default = F
+#' @param dt whether the data.frame should be returned as a data.table, default = F
+#' @param print whether the NA check should be printed in the console, default = T
+#' @param verbose whether cli messages should be printed, default = T
+#'
+#' @details
+#' If drop.cols or drop.rows are TRUE, the data.frame is returned as modified. Otherwise the table of missing data is returned.
+#'
 #'
 #' @return Prints whether any NAs are detected and returns a data frame with IDs and columns with NA
 #' @export
@@ -31,66 +39,69 @@
 #
 # missR(df)
 
-missR <- function(data, vars, id, print=T) {
 
-  if(missing(id)) {
+missR <- function(data,
+                  vars,
+                  drop.rows = F,
+                  drop.cols = F,
+                  return.id = F,
+                  dt = F,
+                  print = T,
+                  verbose = T) {
 
-    id_syn <- paste0("\\b", c("id", "ID", "pnr", "pt_id", "study_id", "record_id"), "\\b")
+  #Return DT if input is DT and dt is not specified
+  if(is.data.table(data) && missing(dt)) dt <- T
 
-    if(sum(id_syn %in% colnames(data)) > 1) {
-      return(cat("Multiple ID columns detected - pick only one"))
-    }
-    id_c <- data %>% select(matches(id_syn)) %>% names()
+  dat <- as.data.table(data)
+
+  if(missing(vars)) {
+    vars_c <- names(dat)
   } else {
-    id_c <- data %>% select({{id}}) %>% names()
+    vars_c <- defusR(vars)
   }
 
-  if(!missing(vars)) {
-    vars_c <- data %>% select({{vars}}, -!!sym(id_c)) %>% names()
+  total <- nrow(dat)
 
-  } else {
-    vars_c <- data %>% select(-!!sym(id_c)) %>% names()
+  miss_df <- dat[, map(.SD, ~ sum(is.na(.x))), .SDcols = vars_c] %>%
+    melt(measure.vars = vars_c, value.name = "count") %>%
+    .[, pct := round((count/total) * 100,1)] %>%
+    setorder(-pct)
+
+  vars_z <- as.character(miss_df[pct == 100]$variable)
+
+  if(return.id) {
+
+    cli::cli_text("Returning IDS with missing values")
+    return(rowR(dat,
+                vars_c,
+                type = "any.na",
+                filter = "keep"))
+
   }
 
-  #Counts
-  d <- data.frame(variable = vars_c,
-                  NAs = 0)
+  if(drop.cols || drop.rows) {
 
-  for(v in 1:length(vars_c)) {
-    d[v, "NAs"] <- sum(is.na(data[,vars_c[v]]))
-  }
+    if(verbose) cli::cli_text("Missing variables")
+    if(print) print(miss_df)
 
-  d <- d %>% filter(NAs > 0) %>% arrange(desc(NAs))
+    drops <- c()
 
+    if(drop.cols) {
 
-  #Invididual data frame
-  ind <- data %>% select(!!sym(id_c)) %>% drop_na(!!sym(id_c))
-
-  for(v in vars_c) {
-    ind <- left_join(ind,
-                     data %>%
-                       select(!!sym(id_c), !!sym(v)) %>%
-                       filter(is.na(!!sym(v))) %>%
-                       mutate(!!sym(v) := v),
-                     by= id_c)
-  }
-
-  ind <- ind %>% rowR(vars = vars_c, type = "all.na", filter = "remove")
-
-  if(nrow(d) == 0) {
-    if(print) {
-      cat("No NAs detected")
+      dat <- dat[, c(vars_z) := NULL]
+      drops <- c("columns")
     }
-    invisible(NULL)
-  } else {
-    if(print) {
-      cat("Nas detected in the following variables:\n\n")
-      print(d)
+
+    if(drop.rows) {
+
+      dat <- rowR(dat, vars_c[vars_c %nin% vars_z], type = "all.na", filter = "remove")
+      drops <- c(drops, "rows")
     }
-    invisible(list(counts=d, idframe=ind, ids = ind %>% select(!!sym(id_c)) %>% pull(!!sym(id_c))))
+
+    if(verbose) cli::cli_text("Returning dataset {if(length(drops) > 0) paste0(\'with \', paste0(drops, collapse = \' and \'), \' removed\')}")
+
+    if(dt) return(dat) else return(as.data.frame(dat))
+  } else {
+    return(miss_df)
   }
-
-
-
 }
-

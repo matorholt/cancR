@@ -5,6 +5,8 @@
 #'
 #'
 #' @param path path for the file to load.
+#' @param leading.zeros whether leading zeros should be kept (default = T)
+#' @param na character vector specifying NA strings (default = "")
 #' @param ... arguments passes to subfunctions
 #'
 #' @returns the given path imported as a data frame
@@ -13,9 +15,9 @@
 #'
 
 
-readR <- function(path, extension = "", leading.zeros = T, na = "", ...) {
+readR <- function(path, leading.zeros = T, na = "", ...) {
 
-  if(str_detect(path, ".(csv|txt|rds|xls|parquet)", negate=T)) {
+  if(str_detect(path, ".(csv|txt|rds|xls|parquet|sas7bdat)", negate=T)) {
 
 
     path <- fs::dir_ls("../", recurse=2)[str_detect(fs::dir_ls("../", recurse=2), paste0("\\b", path, "\\."))]
@@ -42,37 +44,44 @@ readR <- function(path, extension = "", leading.zeros = T, na = "", ...) {
     return(fread(path,
                  keepLeadingZeros = leading.zeros,
                  na.strings=na,
-                 data.table = FALSE, ...))
+                 data.table = FALSE, ...) %>% as.data.frame)
 
   }
 
-  if(any(str_detect(path, "rds") | extension == "rds")) {
+  if(any(str_detect(path, "rds"))) {
 
-    return(readRDS(path, ...))
-
-  }
-
-  if(any(str_detect(path, ".xlsx") | extension == "xlsx")) {
-
-    return(as.data.frame(readxl::read_xlsx(path,
-                                           na = na,
-                                           ...)))
+    return(readRDS(path, ...) %>% as.data.frame)
 
   }
 
-  if(any(str_detect(path, ".xls") | extension == "xls")) {
+  if(any(str_detect(path, ".sas7bdat"))) {
 
-    return(as.data.frame(readxl::read_xls(path,
-                                          na = na,
-                                          ...)))
+    return(haven::read_sas(path,
+                           ...) %>% as.data.frame)
 
   }
 
-  if(any(str_detect(path, ".parquet") | extension == "parquet")) {
+  if(any(str_detect(path, ".xlsx"))) {
 
-    return(as.data.frame(arrow::read_parquet(path,
-                                      as_data_frame = T,
-                                      ...)))
+    return(readxl::read_xlsx(path,
+                             na = na,
+                             ...) %>% as.data.frame)
+
+  }
+
+  if(any(str_detect(path, ".xls"))) {
+
+    return(readxl::read_xls(path,
+                            na = na,
+                            ...) %>% as.data.frame)
+
+  }
+
+  if(any(str_detect(path, ".parquet"))) {
+
+    return(arrow::read_parquet(path,
+                               as_data_frame = T,
+                               ...) %>% as.data.frame)
 
   }
 

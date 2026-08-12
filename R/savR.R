@@ -14,6 +14,12 @@
 #' @param device cairo for special occasions
 #' @param compression for tiff
 #' @param format choose between pdf, svg, tiff, jpg and png
+#' @param parquet.format format for parquet files, default = "zstd"
+#' @param parquet.compression compression amount for parquet files, default = 19
+#' @param size text size for flextables, default = 9
+#' @param table.width table width for flextables, default = 1 (full width)
+#' @param folder optional subfolder location, default is working directory
+#' @param sep separator for csv files, default = ";"
 #'
 #' @return Saves object automatically in current project folder
 #' @export
@@ -74,7 +80,7 @@
 # savR(name="table1")
 
 savR <- function(object,
-                 name,
+                 name = NULL,
                  width = 154,
                  height,
                  unit = "mm",
@@ -82,13 +88,47 @@ savR <- function(object,
                  dpi=900,
                  device= NULL,
                  compression="lzw",
-                 format = c("pdf"),
+                 format = NULL,
                  parquet.format = "zstd",
                  parquet.compression = 19,
                  size = 9,
                  table.width = 1,
-                 folder = "Tables and Figures",
+                 folder = NULL,
                  sep = ";") {
+
+  formats <- c("pdf", "svg", "tiff", "jpg", "png", "rds", "csv", "parquet")
+
+  if(is.null(name)) {
+    name <- paste0(substitute(object))
+  }
+
+  if(is.null(format)) {
+
+    format_pat <- paste0(".", formats, collapse = "|")
+
+    if(str_detect(name, format_pat)) {
+
+      format <- str_extract(name, str_remove_all(format_pat, "\\."))
+      name <- str_remove(name, format_pat)
+    }
+  }
+
+  if(is.null(folder)) {
+    if(all(format %nin% c("csv", "parquet", "rds"))) folder <- "Tables and Figures" else folder <- getwd()
+  }
+
+  if(folder != getwd()) {
+
+    if(!dir.exists(paste0(getwd(), "/", folder))) {
+      cli::cli_alert_info("Directory not found")
+      cli::cli_text("Created: {paste0(getwd(), \'/\', folder)}")
+      dir.create(paste0(getwd(), "/", folder))
+    }
+  }
+
+  if(any(format %nin% formats)) {
+    return(cli::cli_text("Error: Unvalid format. Supported formats are {formats}"))
+  }
 
   if(substitute(object) == "session") {
 
@@ -102,20 +142,6 @@ savR <- function(object,
       fontsize(size = 9) %>%
       save_as_docx(path = paste0(getwd(), "/", folder, "/session_info.docx", collapse=""))
 
-  }
-
-  if(!dir.exists(paste0(getwd(), "/", folder))) {
-    cli::cli_alert_info("Directory not found")
-    cli::cli_text("Created: {paste0(getwd(), \'/\', folder)}")
-    dir.create(paste0(getwd(), "/", folder))
-  }
-
-  if(any(format %nin% c("pdf", "svg", "tiff", "jpg", "png", "rds", "csv", "parquet"))) {
-    return(cat("Error: Unvalid format. Supported formats are pdf, svg, tiff, jpg, png, rds, csv and parquet"))
-  }
-
-  if(missing(name)) {
-    name <- paste0(substitute(object))
   }
 
   if("tablR" %in% class(object)) {
@@ -156,11 +182,6 @@ savR <- function(object,
 
   }
 
-  if("summary.tableby" %in% class(object)) {
-
-
-
-  }
 
   if("extractR" %in% class(object)) {
 
@@ -241,6 +262,6 @@ savR <- function(object,
     }
   }
 
-
 }
+
 

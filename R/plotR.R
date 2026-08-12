@@ -162,6 +162,7 @@ plotR <- function(list,
     contrast <- "none"
     tab <- tab %>% mutate(grp = " ")
     plot <- plot %>% mutate(grp = " ")
+    levels <- " "
 
   }
 

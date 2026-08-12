@@ -760,7 +760,6 @@ estimatR <- function(data,
   if(length(group_levels) == 1) {
 
     elements <- names(out.list)[names(out.list) %in% c("conditional",
-                                                       "proportions",
                                                        "table",
                                                        "risks",
                                                        "time_to_event",
@@ -770,7 +769,7 @@ estimatR <- function(data,
 
 
     for(i in elements) {
-      out.list[[i]] <- out.list[[i]][, c("grp") := NULL]
+      out.list[[i]] <- as.data.table(out.list[[i]])[, c("grp") := NULL]
 
     }
   }

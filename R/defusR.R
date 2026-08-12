@@ -36,8 +36,6 @@
 
 defusR <- function(input, data = NULL) {
 
-  if(is.null(input)) return(NULL)
-
   #Tidyselect commands
   tidys <- c("contains", "matches", "starts_with", "ends_with", "everything", ":")
 
@@ -68,7 +66,7 @@ defusR <- function(input, data = NULL) {
     if (length(as.character(input_expr)) > 1) as.character(input_expr)[-1] else as.character(input_expr)
   }
 
-  #class(out) <- c("def_ex", class(out))
+  if(length(out) == 0) out <- NULL
+
   out
 }
-

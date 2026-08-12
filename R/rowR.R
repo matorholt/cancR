@@ -8,6 +8,8 @@
 #' @param na.rm whether NAs should be removed (default = T)
 #' @param filter whether rows with all.na or any.na should be removed
 #' @param direction the direction of the rowwise fill. Can be "left", "rigth", "leftright" and "rightleft". Corresponds to "updown".
+#' @param drop whether vars should be dropped after the rowwise operation
+#' @param dt whether the dataframe should be returned as data.table
 #'
 #' @return the parent data frame with a new variable based on the selected rowwise operator or a filtered dataset
 #' @export
@@ -56,6 +58,7 @@ rowR <- function(data,
                  na.rm = T,
                  filter = NULL,
                  direction,
+                 drop = F,
                  dt=F) {
 
   type <- match.arg(type, c("pmin", "pmax", "sum", "all.na", "any.na", "sum.na", "fill", "paste"))
@@ -190,6 +193,8 @@ rowR <- function(data,
 
 
   }
+
+  if(drop) dat <- dat[, c(vars_c) := NULL]
 
  if(dt) return(dat) else return(as.data.frame(dat))
 
