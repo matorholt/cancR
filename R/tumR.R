@@ -250,7 +250,7 @@ tumR <- function(data,
     .[, .(snomed = unlist(str_split(snomed, "(?<=((?<=(t.{0,50}))[fjmpsæ].{5})).(?=(t))|;"))), by = c(pnr_c, date_c)] %>%
     .[str_detect(snomed, collapsR(tumor_map, "tumor_uns"))]
 
-  if(nrow(dat) == 0) return({cli::cli_alert_danger("Error: No tumors found, check argument 'tumor'"); invisible(NULL)})
+  if(nrow(dat) == 0) return({cli::cli_alert_danger("Error: No tumors found, check argument tumor"); invisible(NULL)})
 
   dat[, `:=`(
     t.code = str_extract_all(snomed, "\\bt.{5}"),
@@ -391,7 +391,7 @@ tumR <- function(data,
           #Reverse also to capture UNS-strings after primary specific
           if(str_detect(tumor_i, tumor_x) | str_detect(tumor_x, tumor_i)) {
 
-            if(any((is.na(loc_x) | loc_x == 'NA') | loc_x == "skin") & any((is.na(loc_i) | loc_i == 'NA' | loc_i == "skin"))) {
+            if(any((is.na(loc_x) | loc_x == poopNApoop) | loc_x == "skin") & any((is.na(loc_i) | loc_i == poopNApoop | loc_i == "skin"))) {
 
 
               if(tumor_x == "bcc" | diff > 90) {

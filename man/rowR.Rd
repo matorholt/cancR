@@ -13,6 +13,7 @@ rowR(
   na.rm = T,
   filter = NULL,
   direction,
+  drop = F,
   dt = F
 )
 }
@@ -30,6 +31,10 @@ rowR(
 \item{filter}{whether rows with all.na or any.na should be removed}
 
 \item{direction}{the direction of the rowwise fill. Can be "left", "rigth", "leftright" and "rightleft". Corresponds to "updown".}
+
+\item{drop}{whether vars should be dropped after the rowwise operation}
+
+\item{dt}{whether the dataframe should be returned as data.table}
 }
 \value{
 the parent data frame with a new variable based on the selected rowwise operator or a filtered dataset

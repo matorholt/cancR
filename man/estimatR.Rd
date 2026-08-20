@@ -11,6 +11,7 @@ estimatR(
   group,
   survscale = "AM",
   method = "cox",
+  strata = T,
   vars,
   event.form = NULL,
   time = 120,
@@ -21,29 +22,38 @@ estimatR(
   event.digits = 2,
   alpha = 0.05,
   survtime = T,
-  proportions = F,
-  conditional = F,
+  proportions = T,
+  conditional = T,
   diagnostics = F,
+  diag.method = "supremum",
   plot = T,
-  verbose = T
+  unique.events = T,
+  verbose = T,
+  dt = F
 )
 }
 \arguments{
-\item{data}{dataset}
+\item{data}{data.frame}
 
-\item{timevar}{Time variable}
+\item{timevar}{time to event column}
 
-\item{event}{Status indicator}
+\item{event}{event column}
 
-\item{group}{Grouping variable}
+\item{group}{grouping variable (optional)}
 
-\item{survscale}{Whether overall survial should be estimated as survival or all-cause mortality (1-survival)}
+\item{survscale}{Whether results should be presented as cumulative incidences or overall survival (1-risk)}
 
-\item{vars}{Only applicable when "select" is chosen as type. The variables are added to the model as an additive model}
+\item{method}{whether the estimator should be Aalen-Johansen or cause specific Cox regression. If no groups, AJ i automatically chosen.}
 
-\item{time}{Time horizon of interest. Defaults to 60 (e.g. 5-years)}
+\item{strata}{whether the grouping variable should be stratified for separate baseline hazards between groups}
 
-\item{breaks}{Interim time points of interest. Defaults to 12 months (1-year gaps)}
+\item{vars}{vector containing variables to adjust for in the Cox models}
+
+\item{event.form}{character string for custom right-hand side formula in the Cox models}
+
+\item{time}{time horizon of interest. Defaults to 60 (e.g. 5-years)}
+
+\item{breaks}{interim time points of interest. Defaults to 12 months (1-year gaps)}
 
 \item{cause}{cause of interest, default = 1}
 
@@ -51,52 +61,64 @@ estimatR(
 
 \item{digits}{number of digits risk estimates in the returned results}
 
-\item{event.digits}{Rounding of event times. Default is 2 to preserve exact times}
+\item{event.digits}{rounding of event times. Default is 2 to preserve exact times}
 
 \item{alpha}{alpha level for the estimation of confidence intervals and p-values. Default = 0.05}
 
-\item{survtime}{Whether median time to event should be calculated (default = T)}
+\item{survtime}{whether median time to event should be calculated (default = T)}
 
-\item{proportions}{Whether risk of event in different windows should be estimated (default = F)}
+\item{proportions}{whether risk of event in different windows should be estimated (default = T)}
 
-\item{conditional}{Whether conditional risk at the time horizon should be calculated (default = F)}
+\item{conditional}{whether conditional risk at the time horizon should be calculated (default = T)}
 
-\item{diagnostics}{whether Scaled Schoenfield residuals should be visualized (default = F)}
+\item{diagnostics}{whether model diagnostics should be beformed}
+
+\item{diag.method}{the diagnostic method. Choose between "supremum" (default) for the Lin, Wei, Ying test for proportionality or "schoenfeld"}
 
 \item{plot}{whether estimates for plotR should be performed (default = T)}
 
+\item{unique.events}{whether only unique event times should be kept for each group (default = T)}
+
 \item{verbose}{whether status should be printed to the console (default = T)}
 
-\item{type}{Model specification, Can be univariate ("uni"), Age- and sex standardized ("age-sex"), Multivariate with variable selection ("select"). In this case vars should be a vector of the covariates. "custom" allows for free modelling where the form-argument contains the formula.}
-
-\item{form}{Only applicable when "custom" is chosen as type. Free specification of the model as the right-hand side of the formula.}
+\item{dt}{whether data.tables should be returned (default = F)}
 }
 \value{
-List of class "estimatR" containing the following:
-table: Event table \cr
-models: Model objects (cause1 and cause2) \cr
-risks: Absolute risk estimates at the specified time points \cr
-plot_data: Data for plotting CIF curves \cr
-time_to_event: Median survival time \cr
-hr: Hazard ratio between the groups \cr
-difference: Absolute risk difference at the specified time horizons \cr
-ratio: Absolute risk ratios at the the specified time horizon \cr
-counts: Event and group counts in the contrasted groups \cr
-info: information on arguments for extraction
-Optional:
-diag: Diagnostics for assessing proportionality \cr
-proportions: \cr
-"Before" estimates the risk of event within a certain timepoint (e.g. x\% of the events occurred within). \cr
-"After" estimates the risk of residual events between timepoint x and ten years. \cr
-"Window" estimates the percentage of events within six month windows (e.g. x\% of the events occurred between t1 and t2) \cr
-conditional: Conditional risk estimates \cr
+List of class "estimatR" containing risk estimates, see details for content.
 }
 \description{
 Absolute risk estimation and comparison of two or more groups with a time-to-event outcome.
 Wrapper for the prodlim and ate-functions in riskRegression.
 }
+\details{
+The function returns a named list with the following elements:
+\itemize{
+\item \strong{table}: Life table
+\item \strong{models}: Cause-specific model objects
+\item \strong{risks}: Absolute risk estimates at the specified time points
+\item \strong{plot_data}: Data for plotting CIF/OS curves
+\item \strong{time_to_event}: Median survival time
+\item \strong{hr}: Hazard ratio between the groups
+\item \strong{difference}: Absolute risk difference at the specified time horizons
+\item \strong{ratio}: Absolute risk ratio at the specified time horizon
+\item \strong{counts}: Event and group counts in the contrasted groups
+\item \strong{info}: Information on arguments for extraction
+}
+Optionally, the following elements may also be present:
+\itemize{
+\item \strong{diagnostics}: Diagnostics for assessing proportionality
+\item \strong{proportions}: Timing of events, with four sub-elements:
+\itemize{
+\item \strong{before}: Risk of event within a certain timepoint (e.g. x\\% of events occurred within)
+\item \strong{after}: Risk of residual events between timepoint x and ten years
+\item \strong{window}: Percentage of events within six month windows (e.g. x\\% of events occurred between t1 and t2)
+\item \strong{residual}: Residual event estimates
+}
+\item \strong{conditional}: Conditional risk estimates
+}
+}
 \examples{
-estimatR(analysis_df, ttt, event, g2, vars = c(X4, X5))
+estimatR(analysis_df, t_event, event, g2, vars = c(x4, x5))
 
 
 }

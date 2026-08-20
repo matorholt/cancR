@@ -13,7 +13,8 @@ tumR(
   dt = F,
   verbose = F,
   tumor_distance = c(-90, 365.25 * 5),
-  meta_distance = 365.25 * 2
+  meta_distance = 365.25 * 2,
+  exclude = NULL
 )
 }
 \arguments{

@@ -6,7 +6,7 @@
 \usage{
 savR(
   object,
-  name,
+  name = NULL,
   width = 154,
   height,
   unit = "mm",
@@ -14,12 +14,12 @@ savR(
   dpi = 900,
   device = NULL,
   compression = "lzw",
-  format = c("pdf"),
+  format = NULL,
   parquet.format = "zstd",
   parquet.compression = 19,
   size = 9,
   table.width = 1,
-  folder = "Tables and Figures",
+  folder = NULL,
   sep = ";"
 )
 }
@@ -43,6 +43,18 @@ savR(
 \item{compression}{for tiff}
 
 \item{format}{choose between pdf, svg, tiff, jpg and png}
+
+\item{parquet.format}{format for parquet files, default = "zstd"}
+
+\item{parquet.compression}{compression amount for parquet files, default = 19}
+
+\item{size}{text size for flextables, default = 9}
+
+\item{table.width}{table width for flextables, default = 1 (full width)}
+
+\item{folder}{optional subfolder location, default is working directory}
+
+\item{sep}{separator for csv files, default = ";"}
 }
 \value{
 Saves object automatically in current project folder

@@ -16,6 +16,8 @@ plotR(
   contrast = "rd",
   se = T,
   p.values = T,
+  time.to.event = "none",
+  cens.lines = F,
   style = NULL,
   linewidth = 0.8,
   title = "",
@@ -73,6 +75,10 @@ plotR(
 \item{se}{whether the confidence interval should be shown}
 
 \item{p.values}{whether p-values should be printed in the results, default = T}
+
+\item{time.to.event}{type of time to event line, choose between "vertical", "horizontal", "both" or "none" (default)}
+
+\item{cens.lines}{whether censoring points should be printed}
 
 \item{style}{the formatting style of the contrast. Currently JAMA and italic}
 

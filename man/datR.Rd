@@ -4,12 +4,14 @@
 \alias{datR}
 \title{Convert dates from character to date format}
 \usage{
-datR(data, vars = contains("date"), dt = F)
+datR(data, vars = contains(c("date", "dato")), HMS = F, dt = FALSE)
 }
 \arguments{
 \item{data}{data frame or vector of dates}
 
-\item{vars}{character vector for specifying variables to convert to date format. Default is all columns containing "date"}
+\item{vars}{character vector for specifying variables to convert to date format. Default is all columns containing "date|dato"}
+
+\item{HMS}{whether hours, minutes and seconds should be kept (default = F)}
 
 \item{dt}{whether a data.table should be returned}
 }
@@ -21,9 +23,6 @@ Convert dates easily without specifying format. The format is identified automat
 }
 \examples{
 
-redcap_df \%>\%
-datR(c(birth, date_of_surgery, followup, death_date)) \%>\%
- str
 
 datR(c("2001-02-01", "03-02-2002", 12345))
 

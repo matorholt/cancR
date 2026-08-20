@@ -8,12 +8,13 @@ redcapR(
   data,
   dictionary,
   namelist = list(),
+  keep.raw = NULL,
   date.vars = NULL,
   autoformat = T,
   formatlist = NULL,
   cprlist = NULL,
-  index,
-  id = study_id
+  id,
+  dt = F
 )
 }
 \arguments{
@@ -31,7 +32,7 @@ redcapR(
 
 \item{cprlist}{optional dataframe containing cpr numbers for extraction of birth and sex}
 
-\item{index}{optional index date for calculation of age at index}
+\item{id}{name of id in cprlist (should have the same name as in data)}
 }
 \value{
 relabelled redcap dataset with correctly formatted dates

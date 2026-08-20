@@ -4,20 +4,40 @@
 \alias{missR}
 \title{Overview of NAs in a dataframe}
 \usage{
-missR(data, vars, id, print = T)
+missR(
+  data,
+  vars,
+  drop.rows = F,
+  drop.cols = F,
+  return.id = F,
+  dt = F,
+  print = T,
+  verbose = T
+)
 }
 \arguments{
 \item{data}{data frame}
 
 \item{vars}{vars where the na check should be beformed. If missing the whole data frame is analysed}
 
-\item{id}{name of the id-column. If missing a guess at the most common names is attempted.}
+\item{drop.rows}{whether to remove rows containing all NA values, default = F}
 
-\item{print}{whether the NA check should be printed in the console}
+\item{drop.cols}{whether to remove columns contain all NA values, default = F}
+
+\item{return.id}{whether rows with any NA should be returned, default = F}
+
+\item{dt}{whether the data.frame should be returned as a data.table, default = F}
+
+\item{print}{whether the NA check should be printed in the console, default = T}
+
+\item{verbose}{whether cli messages should be printed, default = T}
 }
 \value{
 Prints whether any NAs are detected and returns a data frame with IDs and columns with NA
 }
 \description{
 Overview of NAs in a dataframe
+}
+\details{
+If drop.cols or drop.rows are TRUE, the data.frame is returned as modified. Otherwise the table of missing data is returned.
 }

@@ -2,12 +2,13 @@
 % Please edit documentation in R/simulatR.R
 \name{simulatR}
 \alias{simulatR}
-\title{Simulate danish health registers}
+\title{Function for simulating data}
 \usage{
 simulatR(
-  register,
+  simulate,
   n = 10,
   start.date = "2000-01-01",
+  end.date = "2025-12-31",
   pattern.list = list(),
   lpr.diag.count = 5,
   lmdb.max.prescriptions = 20,
@@ -26,11 +27,13 @@ simulatR(
 )
 }
 \arguments{
-\item{register}{vector of the registers to simulate. Choose between "lpr", "lmdb", "opr", "pop", "pato", "match" and "covariates".}
+\item{simulate}{Character vector of what to simulate (see details).}
 
 \item{n}{number of unique pnrs to simulate}
 
-\item{start.date}{starting date of the register}
+\item{start.date}{starting date of the register/dates}
+
+\item{end.date}{end.date of the register/dates}
 
 \item{pattern.list}{list of vectors of diagnoses codes for each register in the format ("lpr" = c("DC92", "DC21"))}
 
@@ -64,5 +67,12 @@ simulatR(
 a single data frame or named list of data frames with simulated registers
 }
 \description{
-A wrapper for the simulation functions in the heaven package.
+Includes the simulation functions in the heaven package.
+}
+\details{
+The following types of data can be simulated:
+\itemize{
+\item Dates (\code{"dates"})
+\item Registers (lpr, lmdb, opr, immune, pop, pato, match, covariates)
+}
 }

@@ -4,10 +4,14 @@
 \alias{readR}
 \title{Load csv, excel, rds and parquet files}
 \usage{
-readR(path, extension = "", leading.zeros = T, na = "", ...)
+readR(path, leading.zeros = T, na = "", ...)
 }
 \arguments{
 \item{path}{path for the file to load.}
+
+\item{leading.zeros}{whether leading zeros should be kept (default = T)}
+
+\item{na}{character vector specifying NA strings (default = "")}
 
 \item{...}{arguments passes to subfunctions}
 }

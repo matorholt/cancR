@@ -4,7 +4,12 @@
 \alias{tickR}
 \title{First timestamp for taking time}
 \usage{
-tickR(cli = T)
+tickR(cli = T, print = F)
+}
+\arguments{
+\item{cli}{whether the output should be as cli_text (default = T)}
+
+\item{print}{whether the current time should be printet (default = F)}
 }
 \value{
 A timestamp

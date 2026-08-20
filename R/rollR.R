@@ -39,58 +39,48 @@
 #   rollR(by=id, order = c(id, x), sort = c(1,1), type = "interval", interval = c(1,2), vars = x, lag = 1)
 
 
-rollR <- function(data, by = NULL, order, sort = 1L, label = grp, type = "roll", dt = F, vars, interval, lag = 1) {
-
-  #Return DT if input is DT and dt is not specified
-  if(is.data.table(data) & missing(dt)) dt <- T
-
+rollR <- function (data, by = NULL, order, sort = 1L, label = grp, type = "roll",
+                   dt = F, vars, interval, lag = 1)
+{
+  if (is.data.table(data) & missing(dt))
+    dt <- T
   by_c <- defusR(by)
-
-  if(any(type %in% c("interval"))) {
-    if(missing(interval)) return({cli::cli_alert_danger("Error: interval not specified"); invisible(NULL)})
-    if(missing(vars)) return({cli::cli_alert_danger("Error: interval vars not specified"); invisible(NULL)})
-
+  if (any(type %in% c("interval"))) {
+    if (missing(interval))
+      return({
+        cli::cli_alert_danger("Error: interval not specified")
+        invisible(NULL)
+      })
+    if (missing(vars))
+      return({
+        cli::cli_alert_danger("Error: interval vars not specified")
+        invisible(NULL)
+      })
     vars_c <- defusR(vars)
   }
-
-
-
-  label_name <- deparse(substitute(label))
-
+  label_name <- defusR(label)
   dat <- as.data.table(data)
-
-  if(!missing(order)) {
+  if (!missing(order)) {
     order_c <- defusR(order)
     setorderv(dat, order_c, order = sort)
   }
-
-
-
-
-  if(type == "roll") {
-
-    dat[, (label_name) := .GRP, by = by_c]
-
+  if (type == "roll") {
+    dat[, `:=`((label_name), .GRP), by = by_c]
   }
-
-  if(type == "count") {
-
-    dat[, (label_name) := seq_len(.N), by = by_c]
-
+  if (type == "count") {
+    dat[, `:=`((label_name), seq_len(.N)), by = by_c]
   }
-
-  if(type == "interval") {
-
-    dat[, (label_name) := {
+  if (type == "interval") {
+    dat[, `:=`((label_name), {
       val <- get(vars_c)
       diff_val <- as.numeric(diff(val, lag = lag))
-      #Adds NA to fill out lag values > 1 and respect original length
-      diff_val <- c(rep(NA, length(val)-length(diff_val)), diff_val)
-      cumsum(ifelse(is.na(diff_val) | !(diff_val >= interval[1] & diff_val <= interval[2]), 0, 1))
-    }, by = by_c]
-
+      diff_val <- c(rep(NA, length(val) - length(diff_val)),
+                    diff_val)
+      cumsum(ifelse(is.na(diff_val) | !(diff_val >= interval[1] &
+                                          diff_val <= interval[2]), 0, 1))
+    }), by = by_c]
   }
-
-  if(dt) return(dat) else return(as.data.frame(dat))
-
+  if (dt)
+    return(dat)
+  else return(as.data.frame(dat))
 }

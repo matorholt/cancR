@@ -6,7 +6,7 @@
 \usage{
 rollR(
   data,
-  by,
+  by = NULL,
   order,
   sort = 1L,
   label = grp,
