@@ -18,6 +18,7 @@
 #' @param levels List of variables with the corresponding levels (e.g. list("v1" = "c("a","b","c","d","e")))
 #' @param labels List of variables with the corresponding labels (e.g. list("v3" = c("e" = "epsilon", "d" = "delta")))
 #' @param lab_to_lev Whether changing labels should change levels if these are not specified (defaults to TRUE)
+#' @param na.level whether NAs should be added as a separate level named "missing" (default = F)
 #' @param reverse Whether the levels should be reversed (default is FALSE)
 #' @param auto.format whether no/yes and 0/1 should be autoformatted with no as reference
 #' @param dt whether the data frame should be returned as data.table (default = F)
@@ -25,7 +26,7 @@
 #' @return Returns the inputted dataframe with modified factor variables
 #' @export
 #'
-#'
+
 #
 # set.seed(1)
 #
@@ -101,11 +102,12 @@
 
 factR <- function(data,
                   vars,
-                  num.vars,
+                  num.vars = NULL,
                   reference = list(),
                   levels = list(),
                   labels = list(),
                   lab_to_lev = FALSE,
+                  na.level = FALSE,
                   reverse = F,
                   auto.format = F,
                   dt = F) {
@@ -113,14 +115,9 @@ factR <- function(data,
   #Return DT if input is DT and dt is not specified
   if(is.data.table(data) & missing(dt)) dt <- T
 
-  num_c <-
-    data %>% select({{num.vars}}) %>% names()
+  num_c <- defusR(num.vars)
 
-  vars_c <-
-    data %>% select({{vars}}, matches(c(names(labels), names(reference), names(levels), "xemptyx"))) %>% names
-
-  vars_c <- vars_c[vars_c %nin% num_c]
-
+  vars_c <- defusR(vars)
 
 
   #Allow unnamed lists
@@ -158,17 +155,16 @@ factR <- function(data,
     names(reference) <- vars_c
   }
 
-
+  vars_c <- unique(c(vars_c, names(labels), names(reference), names(levels)))
 
   data <- copy(data)
   setDT(data)
-
 
   if(length(vars_c) > 0) {
 
     map(vars_c, function(v) {
 
-      if(lab_to_lev & v %in% names(labels)) {
+      if(lab_to_lev && v %in% names(labels) && v %nin% num_c) {
 
         levels[[v]] <- labels[[v]]
       }
@@ -190,8 +186,27 @@ factR <- function(data,
       }
 
       if(is.factor(v)) {
-        levels(data[[v]])
         data <- data[, c(v) := fct_drop(get(v))]
+      }
+
+      if(v %in% num_c) {
+
+        nlevs <- levels(data[[v]])
+
+        mods <- as.numeric(str_extract(nlevs, "\\d+\\.?(\\d+)?"))+case_when(str_detect(nlevs, "\\<") ~ -1000000,
+                                                                            str_detect(nlevs, "\\>") ~ 1000000,
+                                                                            T ~ 0)
+
+        val_list <- as.list(mods) %>% set_names(nlevs)
+        val_list <- val_list[order(as.numeric(val_list))]
+
+        levels[[v]] <- names(val_list)
+        labs <- as.list(levels[[v]]) %>% set_names(as.list(levels[[v]]))
+
+        labels[[v]] <- list_modify(listR(labs, type = "reverse"),
+                                   !!!listR(labels[[v]], type = "reverse")) %>% listR(., type = "reverse")
+
+
       }
 
       suppressWarnings(data[, c(v) := fct_infreq(as.character(get(v)))][
@@ -212,41 +227,15 @@ factR <- function(data,
 
       }
 
+      if(na.level && sum(is.na(data[[v]]) > 0)) {
+        data[, c(v) := fct_na_value_to_level(get(v), level = "Missing")]
+      }
+
 
     })
 
   }
 
-  for(v in num_c) {
-
-    vals <- lapply(data[[v]], function(x) {
-
-      if(str_detect(x, "\\<")) y <- -1000000
-      else if(str_detect(x, "\\>")) y <- 1000000
-      else y <- 0
-
-      #Take first value Including decimal
-      as.numeric(str_extract(x, "\\d+\\.?(\\d+)?"))+y
-
-    })
-
-    val_list <- as.list(as.character(unique(data[[v]]))) %>% set_names(unique(vals))
-    val_list <- val_list[order(as.numeric(names(val_list)))]
-
-    if(v %nin% names(levels)) {
-
-      levels[[v]] <- unlist(val_list)
-
-    }
-
-    data[, substitute(v) := fct_relevel(get(v), levels[[v]])]
-
-    if(v %in% names(labels)) {
-
-      data[, substitute(v) := fct_recode(get(v), !!!setNames(labels[[v]], as.character(names(labels[[v]]))))]
-
-    }
-  }
 
   if(dt) return(data) else return(as.data.frame(data))
 

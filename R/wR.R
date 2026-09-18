@@ -33,7 +33,8 @@
 #' }
 #' @export
 #'
-
+#
+# set.seed(1)
 # sim_dat <-
 #   tribble(
 #     ~ id, ~event, ~ event_time, ~allocation,
@@ -43,7 +44,7 @@
 #     1, 1, 40,"trt",
 #     2, 2, 20,"ctrl",
 #     2, 0, 30,"ctrl",
-#     3, 0, 10,"trt",
+#     3, 0, 70,"trt",
 #     4, 0, 50,"ctrl",
 #     5, 2, 20, "ctrl",
 #     5, 2, 30, "ctrl",
@@ -54,19 +55,14 @@
 #     8, 3, 5, "trt",
 #     9, 4, 10, "ctrl",
 #     10, 4, 5, "trt",
-#     11, 3, 5, "ctrl") %>%
+#     11, 3, 80, "ctrl",
+#     12, 0, 90, "trt") %>%
 #   mutate(event_time = pmax(0, event_time + rnorm(n(), 0, 0.05)))
-
-# wR(sim_dat,
-#    hierarchy = list("dsd" = 1,
-#                     "distant" = 2,
-#                     "nodal" = 3,
-#                     "local" = 4),
-#    verbose = F)
 
 wR <- function(data,
                hierarchy,
-               max.time = 60,
+               plot = T,
+               max.time = NA,
                digits = 4,
                alpha = 0.05,
                verbose = T) {
@@ -93,21 +89,19 @@ wR <- function(data,
   all_ids <- c(trt_ids, ctrl_ids)
   n_trt <- length(trt_ids)
   n_ctrl <- length(ctrl_ids)
-  n_all <- n_trt + n_ctrl
 
 
-  verbosR(trt_ids)
-
-  follow_dt <- dat[, .(max_time = max(event_time)), by = id]
+  follow_dt <- dat[, event_time := round(event_time, digits)] %>%
+    .[, .(max_time = max(event_time)), by = id]
 
   verbosR(follow_dt)
 
   #Pairs
-  grid <- CJ(idx = all_ids, idy = all_ids) %>%
-    joinR(., follow_dt, by = list(c("idx", "id"))) %>%
+  grid <- CJ(idy = all_ids, idx = all_ids) %>%
+    .[idx < idy,] %>%
     joinR(., follow_dt, by = list(c("idy", "id"))) %>%
-    .[idx != idy,] %>%
-    .[, shared := round(pmin(pmin(max_time.x, max_time.y), max.time),digits)] %>%
+    joinR(., follow_dt, by = list(c("idx", "id")))%>%
+    .[, shared := pmin(pmin(max_time.x, max_time.y), max.time, na.rm=T)] %>%
     .[, c("max_time.x", "max_time.y") := NULL]
 
   verbosR(grid)
@@ -118,8 +112,6 @@ wR <- function(data,
            value.name = "id")[, .(id, shared)]) %>% setorderv(., c("id", "shared"))
 
   verbosR(s_times)
-
-
 
   dat_t <- joinR(s_times, dat, by = "id")[event %in% unlist(hierarchy)]
 
@@ -143,8 +135,6 @@ wR <- function(data,
 
     })
 
-
-
   check.empty <- sapply(event_list, nrow)
 
   if(0 %in% check.empty) {
@@ -161,22 +151,12 @@ wR <- function(data,
 
   verbosR(event_frame)
 
-
-  all_grid <-
-    joinR(grid, event_frame, by = list(c("idx", "id"),
-                                       c("shared", "shared"))) %>%
-    joinR(., event_frame, by = list(c("idy", "id"),
-                                    c("shared", "shared"))) %>%
+  event_grid <- merge(grid, event_frame, by.x = c("idx", "shared"), by.y = c("id", "shared")) %>%
+    merge(., event_frame, by.x = c("idy", "shared"), by.y = c("id", "shared")) %>%
     setcolorder(c("idx", "idy")) %>%
-    rowR(vars = names(.)[-c(1:3)], type = "all.na", label = all.tie)
-
-  tie_grid <- all_grid[all.tie == 1]
-
-  verbosR(all_grid)
-
-  event_grid <- all_grid[all.tie == 0] %>%
-    .[, overall := NA_integer_] %>%
-    .[, all.tie := NULL]
+    rowR(vars = names(.)[-c(1:3)], type = "all.na", label = all.tie) %>%
+    setkeyv(., c("idx", "shared")) %>%
+    .[, overall := NA_integer_]
 
   walk(names(hierarchy), ~ {
 
@@ -199,45 +179,44 @@ wR <- function(data,
 
       #Otherwise NA
       default = NA_real_
-    )][, overall := fcoalesce(as.double(overall), get(.x))] #%>%
-    #.[, c(x, y, tx, ty) := NULL]
+    )][, overall := fcoalesce(as.double(overall), get(.x))] %>%
+      .[, c(x, y, tx, ty) := NULL]
 
   })
 
   verbosR(event_grid)
 
-  tc_grid <- CJ(idx = trt_ids, idy = ctrl_ids)
-
-  win_grid <- event_grid[tc_grid, on = .(idx, idy), nomatch = 0]
-  tie_grid_tc <- tie_grid[tc_grid, on = .(idx, idy), nomatch = 0]
+  win_grid <- event_grid[idx %in% trt_ids & idy %in% ctrl_ids | idy %in% trt_ids & idx %in% ctrl_ids]
 
   verbosR(win_grid)
 
   win_counts <-
     map(c(names(hierarchy), "overall"), ~ {
 
-      x <- win_grid[[.x]]
+      #Treatment as
+      x <- ifelse(win_grid[["idx"]] %in% trt_ids, win_grid[[.x]], -win_grid[[.x]])
 
       list(component = .x,
            wins = sum(x > 0, na.rm=T),
            losses = sum(x < 0, na.rm = T))
 
     }) %>% rbindlist %>%
-    .[, `:=`(wl = wins + losses, total = sum(nrow(tie_grid_tc), nrow(win_grid)))] %>%
+    .[, `:=`(wl = wins + losses,
+             total = sum(n_trt * n_ctrl - nrow(win_grid), nrow(win_grid)))] %>%
     .[, ties := ifelse(component != "overall", total - cumsum(wl), total - wl)] %>%
     .[, total := ifelse(component != "overall", wl + ties, total)] %>%
     .[, .(component, wins, losses, ties, total)] %>%
-    .[, `:=`(
-      p_win  = wins  / total,
-      p_loss = losses / total,
-      p_ties = ties  / total
-    )]
+    .[, (c("p_win", "p_loss", "p_ties")) := lapply(.SD, `/`, n_trt * n_ctrl),
+      .SDcols = c("wins", "losses", "ties")]
 
-  fs_test <- function(component) {
+  verbosR(win_counts)
 
-    #Sum of wins/losses as idx and as idy (-sum) as x is reference
-    U <- rbind(event_grid[, .(score = sum(get(component), na.rm = TRUE)), by = .(i = idx)],
-               event_grid[, .(score = -sum(get(component), na.rm = TRUE)), by = .(i = idy)]) %>%
+  fs_test <- map(c(names(hierarchy),"overall"), function(h) {
+
+    #sum of wins/losses - inverse sign if IDy
+    U <-
+      rbindlist(imap(c("idx", "idy"), ~ event_grid[, .(score = c(1,-1)[.y]*sum(get(h), na.rm=TRUE)), by = c(i = .x)])
+      ) %>%
       .[, .(U = sum(score)), by = i] %>%
       .[, trt := fifelse(i %in% trt_ids, 1, 0)] %>%
       setorder(i)
@@ -250,13 +229,14 @@ wR <- function(data,
 
     p_value <- 2 * pnorm(-abs(Z))
 
-    lst(component, Z, p_value)
+    lst(component = h, Z, p_value)
 
-  }
+  }) %>% rbindlist
+
+  verbosR(fs_test)
 
   #Add fs values
-  win_counts <- win_counts[map(c(names(hierarchy), "overall"), fs_test) %>%
-                             rbindlist(), on = "component"]
+  win_counts <- win_counts[fs_test, on = "component"]
 
   verbosR(win_counts)
 
@@ -290,8 +270,99 @@ wR <- function(data,
 
   verbosR(win_diff)
 
-  return(list(counts = win_counts,
+  out <- list(counts = win_counts,
               ratio = win_ratio,
-              diff = win_diff))
+              diff = win_diff)
 
+  if(plot) {
+
+    rows <- length(hierarchy) + 1
+
+    wlt <- c("Wins", "Losses", "Ties")
+
+    labs <- map(seq_len(rows), function(i) {
+
+      map(seq_len(3)+1, ~  {
+
+        paste0(wlt[.x-1], ": ", as.data.frame(win_counts)[i,.x],"\n(",round(as.data.frame(win_counts)[i, .x + 4]*100,1), "%)")
+
+      }) %>% set_names()
+
+    }) %>% unlist
+
+    vert_mid <- data.frame(
+      x    = 2,
+      xend = 2,
+      y    = rows + 1.5,
+      yend = 2
+    )
+
+    vert_lat <- data.frame(
+      x=c(1,1),
+      xend=c(1,1),
+      y=c(2,3),
+      yend = c(2.5,3.5)
+    )
+
+    vert_lat <-
+      data.frame(x=c(rep(1, rows-1), rep(3, rows-1)),
+                 xend = c(rep(1, rows-1), rep(3, rows-1)),
+                 y = rep(seq(2,rows), 2),
+                 yend = rep(seq(2,rows)+0.5,2))
+
+    horiz <-
+      data.frame(
+        x    = 1,
+        xend = 3,
+        y    = seq(2.5, rows + 0.5),
+        yend = seq(2.5, rows + 0.5)
+      ) %>%
+      rbind(c(1.5,2.5, rep(rows + 1.5,2)))
+
+    lines_df <- rbind(vert_mid, vert_lat, horiz)
+
+    text_size <- 5
+    out[["plot"]] <- data.frame(x = c(rep(c(1,3,2), rows), 2),
+               y = c(rep(rev(seq_len(rows)), each = 3), rows+1),
+               labels = c(labs, paste0("Total comparisons \n (n = ", win_counts[rows, 5], ")"))) %>%
+
+     ggplot(aes(x=x, y=y, label = labels, fill = as.factor(x))) +
+      scale_fill_manual(values = c(cancR_palette[c(4, 8)], "#C75D5D")) +
+      geom_segment(data=lines_df, aes(x=x, y=y, xend = xend, yend = yend), inherit.aes = FALSE, linewidth = 1) +
+      geom_label(label.padding = unit(1.5, "lines"), size = text_size) +
+      annotate("label", x = c(1.5,2.5), y = rows + 1.5, label = c(paste0("Intervention \n (n = ", n_trt, ")"),
+                                                                  paste0("Control \n (n = ", n_ctrl, ")")),
+               fill = cancR_palette[8],
+               label.padding = unit(1.5, "lines"),
+               size = text_size) +
+      annotate("text", x = 0, y = rev(seq_len(rows)), label = str_to_title(win_counts$component), size = text_size+1, fontface = 2, hjust = "left") +
+      annotate("text", x = c(3.8,4.5), y = rows + 0.5, label = c("Win Ratio", "Win Difference"), size = text_size+1, fontface = 2) +
+      annotate("label",
+               x = 3.8,
+               y = rev(seq_len(rows)),
+               label = paste0(round(win_ratio$WR,1), "\n(95%CI ", round(win_ratio$lower,1), " to ", round(win_ratio$lower,2), ")"),
+               label.padding = unit(1.5, "lines"),
+               size = text_size) +
+      annotate("label",
+               x = 4.5,
+               y = rev(seq_len(rows)),
+               label = paste0(round(win_diff$win_diff*100,1), "\n(95%CI ", round(win_diff$lower*100,1), " to ", round(win_diff$upper*100,1), ")"),
+               label.padding = unit(1.5, "lines"),
+               size = text_size) +
+      theme_void() +
+      theme(legend.position = "none") +
+      coord_cartesian(xlim = c(0,4.7))
+
+
+
+  }
+  return(out)
 }
+
+# res <- wR(sim_dat,
+#           hierarchy = list("dsd" = 1,
+#                            "distant" = 2,
+#                            "nodal" = 3,
+#                            "Local Recurrence" = 4),
+#           verbose = F,
+#           plot = F)

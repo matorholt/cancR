@@ -12,12 +12,14 @@
 #' @param numeric Selection of the type of stats for numerical variables.
 #' Options include: median, q1q3, medianq1q3 (default), iqr, range, mean, sd, meansd, min, max)
 #' @param direction Direction for percentages (colwise or rowwise)
-#' @param labels List specifying labels of the specific labels for each variable
-#' @param reference List specifying reference group for each variable
-#' @param labs.headings List specifying labels for variable names
+#' @param reference see factR
+#' @param labs.groups List specifying labels for group variables, see factR
+#' @param labs.headings List specifying labels for variable names, see factR
+#' @param labs.subheadings List specifying labels for variable levels. Automatically assigns order, see factR
+#' @param keep.raw vector of variables that should not be automatically formatted
 #' @param reverse whether the order of groups should start with the highest level (default = T)
 #' @param test.stats Vector of length 2 containing statistical tests that should be performed
-#' @param show.na Whether NAs should be presented
+#' @param show.na whether NAs should be displayed ("count") or included in proportions ("pct"), default = NULL
 #' @param censur whether counts <= 3 should be censored
 #' @param weights optional name of the column containing weights for weighted summaries
 #' @param digits number of digits
@@ -30,6 +32,7 @@
 #'
 #' @return Returns a table as a dataframe or flextable
 #' @export
+#'
 #'
 #' @examples
 #' tablR(population_denmark,
@@ -74,7 +77,7 @@
 tablR <- function(data,
                   group,
                   vars,
-                  num.vars,
+                  num.vars = NULL,
                   test=FALSE,
                   total=FALSE,
                   numeric = c("medianq1q3", "range"),
@@ -84,9 +87,10 @@ tablR <- function(data,
                   labs.groups = list(),
                   labs.headings = list(),
                   labs.subheadings= list(),
+                  keep.raw = NULL,
                   reverse = F,
                   test.stats = c("kwt", "chisq"),
-                  show.na = FALSE,
+                  show.na = NULL,
                   censur=F,
                   weights,
                   digits = 1,
@@ -104,6 +108,10 @@ tablR <- function(data,
 
   }
 
+  na.choices <- c("pct", "count")
+
+  if(!is.null(show.na) && show.na %nin% na.choices) return(cli::cli_alert_danger("Error: show.na must be \'pct\' or \'count\'"))
+
   direction <- match.arg(direction, c("colwise", "rowwise"))
   test.stats <- match.arg(test.stats, c("kwt", "chisq", "anova"), several.ok = T)
 
@@ -115,20 +123,18 @@ tablR <- function(data,
     categorical <- "countpct"
   }
 
-  if(show.na) {
-    numeric <- c("Nmiss", numeric)
-    categorical <- c("Nmiss", categorical)
-  }
+  vars_c <- defusR(vars)
+  num_c <- defusR(num.vars)
 
+  #Categorical vars
+  vars_cat <- vars_c[map_lgl(vars_c, ~ {all(df[[.x]] %>% class %in% c("character", "factor"))})]
 
-  vars_c <- data %>% select({{vars}}) %>% names
-  #In case you forgot
-  vars_c <- unique(c(vars_c, names(labs.subheadings)))
-  vars_cat <- data %>% select(where(is.factor) | where(is.character)) %>% names
-  num_c <- data %>% select({{num.vars}}) %>% names
+  keep_c <- defusR(keep.raw)
+
+  keep_vars <- c(keep_c, map(keep_c, ~ {as.character(na.omit(unique(df[[.x]])))}) %>% unlist)
 
   if(!missing(weights)) {
-    weights_c <- data %>% select({{weights}}) %>% names
+    weights_c <- defusR(weights)
   } else {
     weights_c <- ""
   }
@@ -136,7 +142,7 @@ tablR <- function(data,
   #Group formatting
   if(!missing(group)) {
 
-    group_c <- data %>% select({{group}}) %>% names
+    group_c <- defusR(group)
 
     if(all(class(data[, group_c]) %nin% c("factor", "character"))) {
       return(cat("Error: Group is not a factor or character"))
@@ -154,7 +160,6 @@ tablR <- function(data,
     }
 
 
-
     if(pluck_depth(labs.groups) == 2) {
 
       labs.groups <-
@@ -170,32 +175,33 @@ tablR <- function(data,
 
   }
 
-  for(v in vars_c[vars_c %in% vars_cat]) {
+  if(!is.null(show.na)) {
 
-    if(v %in% c(names(labs.subheadings), names(levels), names(reference)) | is.character(data[[v]])) {
+    numeric <- c("Nmiss", numeric)
+    categorical <- c("Nmiss", categorical)
 
-      data <- data %>%
-        factR(vars=v,
-              num.vars = num_c,
-              labels = labs.subheadings,
-              levels = levels,
-              reference = reference,
-              lab_to_lev=T)
+    if(show.na == "pct") show.na <- TRUE else show.na <- FALSE
 
-    }
+  } else {
+    show.na <- FALSE
   }
 
-
-  #Format pseudonumerical levels
   data <- data %>%
-    factR(num.vars = num_c)
+    factR(vars=vars_cat,
+          num.vars = num_c,
+          labels = labs.subheadings,
+          levels = levels,
+          reference = reference,
+          na.level = show.na,
+          lab_to_lev=T,
+          dt = F)
 
   #Table controls
   c <- tableby.control(test=test, total=total,
                        numeric.test=test.stats[1], cat.test=test.stats[2],
                        numeric.stats=numeric,
                        cat.stats=categorical,
-                       numeric.simplify = T,
+                       numeric.simplify = F,
                        stats.labels=list(median="Median",
                                          medianq1q3 = "Median (Q1, Q3)",
                                          meansd = "Mean (SD)",
@@ -206,7 +212,6 @@ tablR <- function(data,
                                          range = "Range",
                                          Nmiss = "Missing")
   )
-
 
   if(missing(group)) {
     form <- paste0(" ~ ", paste0(vars_c, collapse="+"))
@@ -232,6 +237,8 @@ tablR <- function(data,
                  digits = digits) %>%
     as.data.frame() %>%
     dplyr::rename("var" = 1)
+
+
 
   if(censur) {
 
@@ -316,7 +323,6 @@ tablR <- function(data,
       mutate(`P-value` = pvertR(`P-value`, na= " "))
   }
 
-
   #Formatting
   tab <- tab %>%
     #Pad all cells
@@ -325,10 +331,16 @@ tablR <- function(data,
            #Remove -
            var = str_remove(var, "-\\s{2}"),
            #Autoformat to upper case
-           var = ifelse(str_detect(var, paste0("\\b", c(names(labs.headings), "xzx"), "\\b", collapse="|")), var, str_to_title(str_replace_all(var, "_", " "))),
-           var = case_when(str_detect(var, "\\bSd\\b") ~ str_replace(var, "\\bSd\\b", "SD"),
-                           str_detect(var, "\\bIqr\\b") ~ str_replace(var, "\\bIqr\\b", "IQR"),
-                           T ~ var),
+           var = case_when(#Keep roman
+             str_detect(var, "\\b(V|X)?I{1,3}(V|X)?\\b") ~ var,
+             #Keep mean/sd/iqr
+             str_detect(var, "Mean|SD|IQR") ~ var,
+             var %in% names(labs.headings) ~ var,
+             #Remove xzx (indentions) from headings
+             str_detect(var, paste0("\\b", c(names(labs.headings), "xzx"), "\\b", collapse="|")) ~ var,
+             var %in% keep_vars ~ var,
+             #Else autoformat
+             T ~ str_to_title(str_replace_all(var, "_", " "))),
            var = ifelse(row_number() %in% headings_index, paste0("xzx", var), var),
            var = str_pad(str_trim(var), width = max(str_count(str_trim(var))), side = "right"),
            var = str_remove(var, "xzx")) %>%
@@ -344,6 +356,12 @@ tablR <- function(data,
     return(tab %>% flextable %>%
              padding(i = c(headings_index), j=1, padding.left = 15) %>%
              align(j=c(2:ncol(tab)), align = "center", part = "all") %>%
+             bold(i = setdiff(1:nrow(tab), headings_index)) %>%
+             bold(part = "header") %>%
+             border_remove %>%
+             hline(part = "header",
+                   j = 2:ncol(tab),
+                   border = officer::fp_border(color = "black", width = 1.5)) %>%
              width(width=2))
 
   } else {

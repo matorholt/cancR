@@ -150,7 +150,7 @@ savR <- function(object,
   }
 
 
-  if(all("data.frame" %in% class(object) & "extractR" %nin% class(object))) {
+  if(any(format %in% c("csv", "rds", "parquet")) && "extractR" %nin% class(object)) {
 
     if("csv" %in% format) {
       fwrite(object,
@@ -263,5 +263,3 @@ savR <- function(object,
   }
 
 }
-
-

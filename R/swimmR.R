@@ -198,7 +198,7 @@ swimmR <- function(data,
     group_by(x) %>%
     mutate(symb = min(symb)) %>%
     ungroup() %>%
-    rollR(shapes, uni) %>%
+    rollR(shapes, label = uni) %>%
     group_by(uni) %>%
     #Flip border and fill for similar shapes
     # mutate(border = ifelse(row_number() == 1 & n() > 1, cols, "Black"),
