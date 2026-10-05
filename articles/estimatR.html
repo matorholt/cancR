@@ -229,17 +229,17 @@ such as the <code>extractR</code> function for extraction of results,
 estimating the median follow-up time</p>
 <p>We use the built-in dataset <code>analysis_df</code> for all
 examples:</p>
-<pre><code><span><span class="co">#&gt;     g2 g3 g4 event event2 event3  ttt       X6       X7          X8_bin</span></span>
-<span><span class="co">#&gt; 1 &lt;NA&gt; T0 T1     1      1      1 33.6 67.84900 55.30447  -4.303--0.6914</span></span>
-<span><span class="co">#&gt; 2   T0 T1 T1     1      1      2 30.0 74.90331 66.96832  -4.303--0.6914</span></span>
-<span><span class="co">#&gt; 3   T0 T0 T1     0      0      1 90.0 64.10606 68.12907  -4.303--0.6914</span></span>
-<span><span class="co">#&gt; 4   T0 T1 T1     0      2      1 37.2 49.57621 62.04501  -4.303--0.6914</span></span>
-<span><span class="co">#&gt; 5   T0 T0 T1     1      1      2 81.6 49.22925 59.53721 -0.6914--0.0393</span></span>
-<span><span class="co">#&gt; 6   T0 T1 T1     0      1      0 39.6 58.47016 61.03049 -0.6914--0.0393</span></span></code></pre>
-<p><code>event2</code> is our event of interest and <code>ttt</code> is
-our time-to variable. <code>g2</code> to <code>g4</code> are different
-groups with 2,3 and 4 levels resp. <code>X6</code> to
-<code>X8_bin</code> are covariates for later adjustment.</p>
+<pre><code><span><span class="co">#&gt;   g2 g3 g4 event event2 event3 t_event        x6 x1 x2</span></span>
+<span><span class="co">#&gt; 1 T1 T2 T3     1      1      1  28.581  5.055129  0  c</span></span>
+<span><span class="co">#&gt; 2 T0 T0 T0     0      2      2  84.275  2.576219  0  d</span></span>
+<span><span class="co">#&gt; 3 T0 T0 T0     0      0      0  38.056 11.083184  1  d</span></span>
+<span><span class="co">#&gt; 4 T1 T1 T1     0      2      2  56.773  2.183576  0  a</span></span>
+<span><span class="co">#&gt; 5 T1 T2 T3     0      0      3   4.813 10.799597  1  a</span></span>
+<span><span class="co">#&gt; 6 T1 T1 T1     0      2      2   3.913 10.658211  0  b</span></span></code></pre>
+<p><code>event2</code> is our event of interest and <code>t_event</code>
+is our time-to variable. <code>g2</code> to <code>g4</code> are
+different groups with 2,3 and 4 levels resp. <code>x6</code> to
+<code>x1</code> are covariates for later adjustment.</p>
 <div class="section level3">
 <h3 id="analysis-of-one-group">Analysis of one group<a class="anchor" aria-label="anchor" href="#analysis-of-one-group"></a>
 </h3>
@@ -249,19 +249,36 @@ arguments <code>data</code>, <code>timevar</code> and
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">g1_res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/estimatR.html">estimatR</a></span><span class="op">(</span></span>
 <span>  data <span class="op">=</span> <span class="va">df</span>,</span>
-<span>  timevar <span class="op">=</span> <span class="va">ttt</span>,</span>
+<span>  timevar <span class="op">=</span> <span class="va">t_event</span>,</span>
 <span>  event <span class="op">=</span> <span class="va">event2</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; ── <span style="font-weight: bold;">Initializing estimatR algorithm: 2026-06-03 14:25:18</span> ──</span></span>
+<span><span class="co">#&gt; ── <span style="font-weight: bold;">Initializing estimatR algorithm: 2026-10-05 11:43:57</span> ──</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; ── Estimation complete!</span></span>
-<span><span class="co">#&gt; Total runtime:</span></span>
-<span><span class="co">#&gt; 0.28 secs</span></span></code></pre></div>
+<span><span class="co">#&gt; Preparing data:</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Preparing data: Complete 2026-10-05 11:43:57, Runtime = 0 secs</span></span>
+<span><span class="co">#&gt; Preparing data:Life-tables:</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Life-tables: Complete 2026-10-05 11:43:57, Runtime = 0.02 secs</span></span>
+<span><span class="co">#&gt; Life-tables:Modelling:</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Modelling: Complete 2026-10-05 11:43:57, Runtime = 0 secs</span></span>
+<span><span class="co">#&gt; Modelling:Plot data:</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Plot data: Complete 2026-10-05 11:43:57, Runtime = 0.02 secs</span></span>
+<span><span class="co">#&gt; Plot data:Time-to-event:</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Time-to-event: Complete 2026-10-05 11:43:57, Runtime = 0.01 secs</span></span>
+<span><span class="co">#&gt; Time-to-event:Event proportions:</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Event proportions: Complete 2026-10-05 11:43:57, Runtime = 0.07 secs</span></span>
+<span><span class="co">#&gt; Event proportions:Conditional risk:</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Conditional risk: Complete 2026-10-05 11:43:57, Runtime = 0.01 secs</span></span>
+<span><span class="co">#&gt; Conditional risk:</span></span>
+<span><span class="co">#&gt; Conditional risk:── Estimation complete! </span></span>
+<span><span class="co">#&gt; Conditional risk:Total runtime:</span></span>
+<span><span class="co">#&gt; Conditional risk:0.32 secs</span></span>
+<span><span class="co">#&gt; Conditional risk:</span></span>
+<span><span class="co">#&gt; Conditional risk:</span></span></code></pre></div>
 <p>We extract the main results with <code>extractR</code></p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/extractR.html">extractR</a></span><span class="op">(</span><span class="va">g1_res</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   grp     counts                risks</span></span>
-<span><span class="co">#&gt; 1     897 / 2000 54% (95%CI 51 to 57)</span></span></code></pre></div>
+<span><span class="co">#&gt; 1 grp 268 / 2000 15% (95%CI 13 to 17)</span></span></code></pre></div>
 <p>We can plot the corresponding cumulative incidence curve with
 <code>plotR</code>:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
@@ -274,8 +291,8 @@ console. The plot can be saved using <code>savR</code> such as
 to event:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">g1_res</span><span class="op">$</span><span class="va">time_to_event</span></span>
-<span><span class="co">#&gt;   quantile lower upper</span></span>
-<span><span class="co">#&gt; 1       54  49.2  57.6</span></span></code></pre></div>
+<span><span class="co">#&gt;            q median lower upper</span></span>
+<span><span class="co">#&gt; 1 0.07519348  40.58 30.87 53.08</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="analysis-of-two-groups">Analysis of two groups<a class="anchor" aria-label="anchor" href="#analysis-of-two-groups"></a>
@@ -286,24 +303,46 @@ of groups.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">g2_res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/estimatR.html">estimatR</a></span><span class="op">(</span></span>
 <span>  <span class="va">df</span>,</span>
-<span>  timevar <span class="op">=</span> <span class="va">ttt</span>,</span>
+<span>  timevar <span class="op">=</span> <span class="va">t_event</span>,</span>
 <span>  event <span class="op">=</span> <span class="va">event2</span>,</span>
 <span>  group <span class="op">=</span> <span class="va">g2</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; ── <span style="font-weight: bold;">Initializing estimatR algorithm: 2026-06-03 14:25:19</span> ──</span></span>
+<span><span class="co">#&gt; ── <span style="font-weight: bold;">Initializing estimatR algorithm: 2026-10-05 11:43:58</span> ──</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; ── Estimation complete!</span></span>
-<span><span class="co">#&gt; Total runtime:</span></span>
-<span><span class="co">#&gt; 1.71 secs</span></span></code></pre></div>
+<span><span class="co">#&gt; Preparing data:</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Preparing data: Complete 2026-10-05 11:43:58, Runtime = 0 secs</span></span>
+<span><span class="co">#&gt; Preparing data:Life-tables:</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Life-tables: Complete 2026-10-05 11:43:59, Runtime = 0.02 secs</span></span>
+<span><span class="co">#&gt; Life-tables:Modelling:</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Modelling: Complete 2026-10-05 11:44:00, Runtime = 1.59 secs</span></span>
+<span><span class="co">#&gt; Modelling:Plot data:</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Plot data: Complete 2026-10-05 11:44:01, Runtime = 1.23 secs</span></span>
+<span><span class="co">#&gt; Plot data:Time-to-event:</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Time-to-event: Complete 2026-10-05 11:44:01, Runtime = 0 secs</span></span>
+<span><span class="co">#&gt; Time-to-event:Contrasts:</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Contrasts: Complete 2026-10-05 11:44:01, Runtime = 0.02 secs</span></span>
+<span><span class="co">#&gt; Contrasts:Event proportions:</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Event proportions: Complete 2026-10-05 11:44:01, Runtime = 0.02 secs</span></span>
+<span><span class="co">#&gt; Event proportions:Conditional risk:</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Conditional risk: Complete 2026-10-05 11:44:01, Runtime = 0.01 secs</span></span>
+<span><span class="co">#&gt; Conditional risk:</span></span>
+<span><span class="co">#&gt; Conditional risk:── Estimation complete! </span></span>
+<span><span class="co">#&gt; Conditional risk:Total runtime:</span></span>
+<span><span class="co">#&gt; Conditional risk:2.94 secs</span></span>
+<span><span class="co">#&gt; Conditional risk:</span></span>
+<span><span class="co">#&gt; Conditional risk:</span></span></code></pre></div>
 <p>Again, we extract the main results with <code>extractR</code>. Now we
 also see a risk difference and a p-value as we can compare the two
 groups.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/extractR.html">extractR</a></span><span class="op">(</span><span class="va">g2_res</span><span class="op">)</span></span>
-<span><span class="co">#&gt;   g2     counts                risks                     diff diff_p.value</span></span>
-<span><span class="co">#&gt; 1 T0 735 / 1595 55% (95%CI 52 to 58)                reference    reference</span></span>
-<span><span class="co">#&gt; 2 T1  161 / 404 50% (95%CI 44 to 57) -4.9% (95%CI -12 to 2.2)     p = 0.17</span></span></code></pre></div>
+<span><span class="co">#&gt;   g2     counts                   risks                          diff</span></span>
+<span><span class="co">#&gt; 1 T1 221 / 1188    24% (95%CI 21 to 27)                     reference</span></span>
+<span><span class="co">#&gt; 2 T0   47 / 812 4.3% (95%CI 2.7 to 5.9) -19.6% (95%CI -23.0 to -16.2)</span></span>
+<span><span class="co">#&gt;   diff_p.value</span></span>
+<span><span class="co">#&gt; 1    reference</span></span>
+<span><span class="co">#&gt; 2    p &lt; 0.001</span></span></code></pre></div>
 <p>And we can plot the curves.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plotR.html">plotR</a></span><span class="op">(</span><span class="va">g2_res</span><span class="op">)</span></span></code></pre></div>
@@ -317,17 +356,36 @@ groups.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">g2_res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/estimatR.html">estimatR</a></span><span class="op">(</span></span>
 <span>  <span class="va">df</span>,</span>
-<span>  timevar <span class="op">=</span> <span class="va">ttt</span>,</span>
+<span>  timevar <span class="op">=</span> <span class="va">t_event</span>,</span>
 <span>  event <span class="op">=</span> <span class="va">event2</span>,</span>
 <span>  group <span class="op">=</span> <span class="va">g2</span>,</span>
-<span>  vars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">X6</span>,<span class="va">X7</span>,<span class="va">X8_bin</span><span class="op">)</span></span>
+<span>  vars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">x6</span>,<span class="va">x1</span>,<span class="va">x2</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; ── <span style="font-weight: bold;">Initializing estimatR algorithm: 2026-06-03 14:25:22</span> ──</span></span>
+<span><span class="co">#&gt; ── <span style="font-weight: bold;">Initializing estimatR algorithm: 2026-10-05 11:44:02</span> ──</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; ── Estimation complete!</span></span>
-<span><span class="co">#&gt; Total runtime:</span></span>
-<span><span class="co">#&gt; 2.08 secs</span></span></code></pre></div>
+<span><span class="co">#&gt; Preparing data:</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Preparing data: Complete 2026-10-05 11:44:02, Runtime = 0 secs</span></span>
+<span><span class="co">#&gt; Preparing data:Life-tables:</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Life-tables: Complete 2026-10-05 11:44:03, Runtime = 0.02 secs</span></span>
+<span><span class="co">#&gt; Life-tables:Modelling:</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Modelling: Complete 2026-10-05 11:44:04, Runtime = 1.33 secs</span></span>
+<span><span class="co">#&gt; Modelling:Plot data:</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Plot data: Complete 2026-10-05 11:44:06, Runtime = 1.73 secs</span></span>
+<span><span class="co">#&gt; Plot data:Time-to-event:</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Time-to-event: Complete 2026-10-05 11:44:06, Runtime = 0 secs</span></span>
+<span><span class="co">#&gt; Time-to-event:Contrasts:</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Contrasts: Complete 2026-10-05 11:44:06, Runtime = 0.01 secs</span></span>
+<span><span class="co">#&gt; Contrasts:Event proportions:</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Event proportions: Complete 2026-10-05 11:44:06, Runtime = 0.02 secs</span></span>
+<span><span class="co">#&gt; Event proportions:Conditional risk:</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Conditional risk: Complete 2026-10-05 11:44:06, Runtime = 0.01 secs</span></span>
+<span><span class="co">#&gt; Conditional risk:</span></span>
+<span><span class="co">#&gt; Conditional risk:── Estimation complete! </span></span>
+<span><span class="co">#&gt; Conditional risk:Total runtime:</span></span>
+<span><span class="co">#&gt; Conditional risk:3.17 secs</span></span>
+<span><span class="co">#&gt; Conditional risk:</span></span>
+<span><span class="co">#&gt; Conditional risk:</span></span></code></pre></div>
 <p>We can see that all estimates are slightly different as these are now
 standardized</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
@@ -347,25 +405,25 @@ group</p>
 <code class="sourceCode R"><span></span>
 <span><span class="va">g2_multires</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/iteratR.html">iteratR</a></span><span class="op">(</span></span>
 <span>  data<span class="op">=</span><span class="va">df</span>,</span>
-<span>  timevar <span class="op">=</span> <span class="st">"ttt"</span>,</span>
+<span>  timevar <span class="op">=</span> <span class="st">"t_event"</span>,</span>
 <span>  event <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"event"</span>, <span class="st">"event2"</span>, <span class="st">"event3"</span><span class="op">)</span>,</span>
 <span>  group <span class="op">=</span> <span class="st">"g2"</span>,</span>
 <span>  cancR.method <span class="op">=</span> <span class="st">"estimatR"</span>,</span>
 <span>  labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"model1"</span>, <span class="st">"model2"</span>, <span class="st">"model3"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; ── <span style="font-weight: bold;">Initializing iteratR algorithm: 2026-06-03 14:25:25</span> ──</span></span>
+<span><span class="co">#&gt; ── <span style="font-weight: bold;">Initializing iteratR algorithm: </span> ──</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── Iteration complete!</span></span>
 <span><span class="co">#&gt; Total runtime:</span></span>
-<span><span class="co">#&gt; 2.51 secs</span></span></code></pre></div>
+<span><span class="co">#&gt; 5.34 secs</span></span></code></pre></div>
 <p><code>g2_multires</code> is now a named list containing three
 <code>estimatR</code> objects (model 1 to 3) which can be called
 separately</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">g2_multires</span><span class="op">$</span><span class="va">model1</span><span class="op">$</span><span class="va">time_to_event</span></span>
-<span><span class="co">#&gt;   g2 quantile lower upper</span></span>
-<span><span class="co">#&gt; 1 T0     78.0    72  81.6</span></span>
-<span><span class="co">#&gt; 2 T1     79.2    66  91.2</span></span></code></pre></div>
+<span><span class="co">#&gt;   g2   quantile median lower  upper</span></span>
+<span><span class="co">#&gt; 1 T1 0.17308183  56.79 36.49  69.94</span></span>
+<span><span class="co">#&gt; 2 T0 0.02852238  58.49 22.91 112.06</span></span></code></pre></div>
 <p>We can also use <code>iteratR</code> to apply <code>extractR</code>
 on all models to extract the main estimates</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
@@ -374,27 +432,27 @@ on all models to extract the main estimates</p>
 <span>  cancR.method <span class="op">=</span> <span class="st">"extractR"</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; ── <span style="font-weight: bold;">Initializing iteratR algorithm: 2026-06-03 14:25:27</span> ──</span></span>
+<span><span class="co">#&gt; ── <span style="font-weight: bold;">Initializing iteratR algorithm: </span> ──</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── Iteration complete!</span></span>
 <span><span class="co">#&gt; Total runtime:</span></span>
 <span><span class="co">#&gt; 0.08 secs</span></span>
-<span><span class="co">#&gt;   g2     counts                risks                     diff diff_p.value</span></span>
-<span><span class="co">#&gt; 1 T0 750 / 1595 61% (95%CI 58 to 65)                reference    reference</span></span>
-<span><span class="co">#&gt; 2 T1  186 / 404 65% (95%CI 58 to 72)  3.6% (95%CI -3.8 to 11)     p = 0.34</span></span>
-<span><span class="co">#&gt; 3 T0 735 / 1595 55% (95%CI 52 to 58)                reference    reference</span></span>
-<span><span class="co">#&gt; 4 T1  161 / 404 50% (95%CI 44 to 57) -4.9% (95%CI -12 to 2.2)     p = 0.17</span></span>
-<span><span class="co">#&gt; 5 T0 610 / 1595 36% (95%CI 33 to 38)                reference    reference</span></span>
-<span><span class="co">#&gt; 6 T1  156 / 404 36% (95%CI 31 to 41) 0.6% (95%CI -5.0 to 6.1)     p = 0.85</span></span>
-<span><span class="co">#&gt;    model</span></span>
-<span><span class="co">#&gt; 1 model1</span></span>
-<span><span class="co">#&gt; 2 model1</span></span>
-<span><span class="co">#&gt; 3 model2</span></span>
-<span><span class="co">#&gt; 4 model2</span></span>
-<span><span class="co">#&gt; 5 model3</span></span>
-<span><span class="co">#&gt; 6 model3</span></span></code></pre></div>
+<span><span class="co">#&gt;   g2     counts                   risks                          diff</span></span>
+<span><span class="co">#&gt; 1 T1 221 / 1188    35% (95%CI 30 to 39)                     reference</span></span>
+<span><span class="co">#&gt; 2 T0   47 / 812 5.7% (95%CI 3.6 to 7.8) -28.9% (95%CI -34.0 to -23.8)</span></span>
+<span><span class="co">#&gt; 3 T1 221 / 1188    24% (95%CI 21 to 27)                     reference</span></span>
+<span><span class="co">#&gt; 4 T0   47 / 812 4.3% (95%CI 2.7 to 5.9) -19.6% (95%CI -23.0 to -16.2)</span></span>
+<span><span class="co">#&gt; 5 T1 221 / 1188    22% (95%CI 19 to 25)                     reference</span></span>
+<span><span class="co">#&gt; 6 T0   47 / 812 4.1% (95%CI 2.6 to 5.7) -18.0% (95%CI -21.1 to -14.8)</span></span>
+<span><span class="co">#&gt;   diff_p.value  model</span></span>
+<span><span class="co">#&gt; 1    reference model1</span></span>
+<span><span class="co">#&gt; 2    p &lt; 0.001 model1</span></span>
+<span><span class="co">#&gt; 3    reference model2</span></span>
+<span><span class="co">#&gt; 4    p &lt; 0.001 model2</span></span>
+<span><span class="co">#&gt; 5    reference model3</span></span>
+<span><span class="co">#&gt; 6    p &lt; 0.001 model3</span></span></code></pre></div>
 <p>We can also plot all three models by changing method to
-<code>"plotR"</code></p>
+<code>plotR</code></p>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/iteratR.html">iteratR</a></span><span class="op">(</span></span>
 <span>  <span class="va">g2_multires</span>,</span>
@@ -402,11 +460,11 @@ on all models to extract the main estimates</p>
 <span>  cancR.method <span class="op">=</span> <span class="st">"plotR"</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; ── <span style="font-weight: bold;">Initializing iteratR algorithm: 2026-06-03 14:25:28</span> ──</span></span>
+<span><span class="co">#&gt; ── <span style="font-weight: bold;">Initializing iteratR algorithm: </span> ──</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── Iteration complete!</span></span>
 <span><span class="co">#&gt; Total runtime:</span></span>
-<span><span class="co">#&gt; 0.37 secs</span></span></code></pre></div>
+<span><span class="co">#&gt; 0.39 secs</span></span></code></pre></div>
 <p><img src="estimatR_files/figure-html/unnamed-chunk-21-1.png" class="r-plt" alt="" width="700"><img src="estimatR_files/figure-html/unnamed-chunk-21-2.png" class="r-plt" alt="" width="700"><img src="estimatR_files/figure-html/unnamed-chunk-21-3.png" class="r-plt" alt="" width="700"></p>
 </div>
 </div>
@@ -421,7 +479,7 @@ on all models to extract the main estimates</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
     </footer>

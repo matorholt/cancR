@@ -21,11 +21,12 @@ remaining variables
 factR(
   data,
   vars,
-  num.vars,
+  num.vars = NULL,
   reference = list(),
   levels = list(),
   labels = list(),
   lab_to_lev = FALSE,
+  na.level = FALSE,
   reverse = F,
   auto.format = F,
   dt = F
@@ -65,6 +66,11 @@ factR(
 
   Whether changing labels should change levels if these are not
   specified (defaults to TRUE)
+
+- na.level:
+
+  whether NAs should be added as a separate level named "missing"
+  (default = F)
 
 - reverse:
 

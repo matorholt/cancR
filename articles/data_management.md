@@ -137,16 +137,26 @@ And to exploit the number of missing values we use the missR() function
 ``` r
 
 missR(redcap_df)
-#> Nas detected in the following variables:
-#> 
-#>          variable NAs
-#> 1 metastasis_date 339
-#> 2      death_date 314
-#> 3 recurrence_date 254
-#> 4        necrosis 172
-#> 5            cd10 162
-#> 6           sox10 162
-#> 7              ck 157
+#> Index: <pct>
+#>            variable count   pct
+#>              <fctr> <int> <num>
+#>  1: metastasis_date   339  67.8
+#>  2:      death_date   314  62.8
+#>  3: recurrence_date   254  50.8
+#>  4:        necrosis   172  34.4
+#>  5:            cd10   162  32.4
+#>  6:           sox10   162  32.4
+#>  7:              ck   157  31.4
+#>  8:              id     0   0.0
+#>  9:             sex     0   0.0
+#> 10:             age     0   0.0
+#> 11:           birth     0   0.0
+#> 12:        followup     0   0.0
+#> 13: date_of_surgery     0   0.0
+#> 14:            size     0   0.0
+#> 15:            type     0   0.0
+#> 16:    localisation     0   0.0
+#> 17:         margins     0   0.0
 ```
 
 We can also check if numerical variables are normally distributed with
@@ -624,20 +634,30 @@ redcap_df %>%
   cutR(size,
        seq(0,50,10)) %>%
   head
-#>   id sex  age      birth   followup date_of_surgery  size type localisation
-#> 1  1   1 79.1 20-09-1929 03-04-2023      2008-11-03  0-10    1            3
-#> 2  2   2 38.1 12-10-1953 18-12-2025      1991-11-13 20-30    1            1
-#> 3  3   1 60.6 11-05-1948 21-09-2025      2008-12-17 40-50    1            2
-#> 4  4   1 45.2 22-04-1949 11-02-2022      1994-07-17 20-30    1            3
-#> 5  5   2 39.5 18-01-1966 21-04-2022      2005-07-16 20-30    2            1
-#> 6  6   1 81.2 06-11-1925 17-07-2023      2007-02-02 40-50    2            3
-#>   necrosis margins cd10 sox10 ck death_date recurrence_date metastasis_date
-#> 1       NA       0    1     1  1       <NA>      2015-03-22            <NA>
-#> 2       NA       0    0     0 NA       <NA>            <NA>            <NA>
-#> 3        0       1   NA    NA  0 2017-09-02            <NA>            <NA>
-#> 4        1       0    0     0  0 2018-10-04      2011-12-31            <NA>
-#> 5       NA       0    0    NA  0       <NA>            <NA>            <NA>
-#> 6        1       1    1     1  0       <NA>            <NA>            <NA>
+#>       id   sex   age      birth   followup date_of_surgery   size  type
+#>    <int> <num> <num>     <char>     <char>          <char> <fctr> <int>
+#> 1:     1     1  79.1 20-09-1929 03-04-2023      2008-11-03    <10     1
+#> 2:     2     2  38.1 12-10-1953 18-12-2025      1991-11-13  20-29     1
+#> 3:     3     1  60.6 11-05-1948 21-09-2025      2008-12-17    ≥40     1
+#> 4:     4     1  45.2 22-04-1949 11-02-2022      1994-07-17  20-29     1
+#> 5:     5     2  39.5 18-01-1966 21-04-2022      2005-07-16  20-29     2
+#> 6:     6     1  81.2 06-11-1925 17-07-2023      2007-02-02    ≥40     2
+#>    localisation necrosis margins  cd10 sox10    ck death_date recurrence_date
+#>           <int>    <num>  <char> <num> <num> <num>     <char>          <char>
+#> 1:            3       NA       0     1     1     1       <NA>      2015-03-22
+#> 2:            1       NA       0     0     0    NA       <NA>            <NA>
+#> 3:            2        0       1    NA    NA     0 2017-09-02            <NA>
+#> 4:            3        1       0     0     0     0 2018-10-04      2011-12-31
+#> 5:            1       NA       0     0    NA     0       <NA>            <NA>
+#> 6:            3        1       1     1     1     0       <NA>            <NA>
+#>    metastasis_date
+#>             <char>
+#> 1:            <NA>
+#> 2:            <NA>
+#> 3:            <NA>
+#> 4:            <NA>
+#> 5:            <NA>
+#> 6:            <NA>
 ```
 
 Multiple splits can also be performed with cutR() with name assigning.
@@ -651,27 +671,30 @@ redcap_df %>%
                       size = "quartile"),
        name.list = list(age_group = "age",
                         size_bin = "size")) %>% head
-#>   id sex  age      birth   followup date_of_surgery      size type localisation
-#> 1  1   1 79.1 20-09-1929 03-04-2023      2008-11-03  7.302734    1            3
-#> 2  2   2 38.1 12-10-1953 18-12-2025      1991-11-13 20.043036    1            1
-#> 3  3   1 60.6 11-05-1948 21-09-2025      2008-12-17 42.412003    1            2
-#> 4  4   1 45.2 22-04-1949 11-02-2022      1994-07-17 27.853775    1            3
-#> 5  5   2 39.5 18-01-1966 21-04-2022      2005-07-16 25.587530    2            1
-#> 6  6   1 81.2 06-11-1925 17-07-2023      2007-02-02 49.415904    2            3
-#>   necrosis margins cd10 sox10 ck death_date recurrence_date metastasis_date
-#> 1       NA       0    1     1  1       <NA>      2015-03-22            <NA>
-#> 2       NA       0    0     0 NA       <NA>            <NA>            <NA>
-#> 3        0       1   NA    NA  0 2017-09-02            <NA>            <NA>
-#> 4        1       0    0     0  0 2018-10-04      2011-12-31            <NA>
-#> 5       NA       0    0    NA  0       <NA>            <NA>            <NA>
-#> 6        1       1    1     1  0       <NA>            <NA>            <NA>
-#>   age_group size_bin
-#> 1     70-80     2-14
-#> 2     30-40    14-24
-#> 3     60-70    38-50
-#> 4     40-50    24-38
-#> 5     40-50    24-38
-#> 6     80-90    38-50
+#>       id   sex   age      birth   followup date_of_surgery      size  type
+#>    <int> <num> <num>     <char>     <char>          <char>     <num> <int>
+#> 1:     1     1  79.1 20-09-1929 03-04-2023      2008-11-03  7.302734     1
+#> 2:     2     2  38.1 12-10-1953 18-12-2025      1991-11-13 20.043036     1
+#> 3:     3     1  60.6 11-05-1948 21-09-2025      2008-12-17 42.412003     1
+#> 4:     4     1  45.2 22-04-1949 11-02-2022      1994-07-17 27.853775     1
+#> 5:     5     2  39.5 18-01-1966 21-04-2022      2005-07-16 25.587530     2
+#> 6:     6     1  81.2 06-11-1925 17-07-2023      2007-02-02 49.415904     2
+#>    localisation necrosis margins  cd10 sox10    ck death_date recurrence_date
+#>           <int>    <num>  <char> <num> <num> <num>     <char>          <char>
+#> 1:            3       NA       0     1     1     1       <NA>      2015-03-22
+#> 2:            1       NA       0     0     0    NA       <NA>            <NA>
+#> 3:            2        0       1    NA    NA     0 2017-09-02            <NA>
+#> 4:            3        1       0     0     0     0 2018-10-04      2011-12-31
+#> 5:            1       NA       0     0    NA     0       <NA>            <NA>
+#> 6:            3        1       1     1     1     0       <NA>            <NA>
+#>    metastasis_date age_group size_bin
+#>             <char>    <fctr>   <fctr>
+#> 1:            <NA>     70-79     2-13
+#> 2:            <NA>     30-39    14-23
+#> 3:            <NA>     60-69    38-49
+#> 4:            <NA>     40-49    24-37
+#> 5:            <NA>     40-49    24-37
+#> 6:            <NA>     80-89    38-49
 ```
 
 The new variables can also be given the same name pattern if the input
@@ -686,27 +709,32 @@ redcap_df %>%
        seq.list = "10y",
        name.pattern = "_bin") %>% 
   head
-#>   id sex  age      birth   followup date_of_surgery      size type localisation
-#> 1  1   1 79.1 20-09-1929 03-04-2023      2008-11-03  7.302734    1            3
-#> 2  2   2 38.1 12-10-1953 18-12-2025      1991-11-13 20.043036    1            1
-#> 3  3   1 60.6 11-05-1948 21-09-2025      2008-12-17 42.412003    1            2
-#> 4  4   1 45.2 22-04-1949 11-02-2022      1994-07-17 27.853775    1            3
-#> 5  5   2 39.5 18-01-1966 21-04-2022      2005-07-16 25.587530    2            1
-#> 6  6   1 81.2 06-11-1925 17-07-2023      2007-02-02 49.415904    2            3
-#>   necrosis margins cd10 sox10 ck death_date recurrence_date metastasis_date
-#> 1       NA       0    1     1  1       <NA>      2015-03-22            <NA>
-#> 2       NA       0    0     0 NA       <NA>            <NA>            <NA>
-#> 3        0       1   NA    NA  0 2017-09-02            <NA>            <NA>
-#> 4        1       0    0     0  0 2018-10-04      2011-12-31            <NA>
-#> 5       NA       0    0    NA  0       <NA>            <NA>            <NA>
-#> 6        1       1    1     1  0       <NA>            <NA>            <NA>
-#>   recurrence_date_bin metastasis_date_bin
-#> 1           2010-2020                <NA>
-#> 2                <NA>                <NA>
-#> 3                <NA>                <NA>
-#> 4           2010-2020                <NA>
-#> 5                <NA>                <NA>
-#> 6                <NA>                <NA>
+#> Warning in .f(.x[[i]], ...): NAs introduced by coercion
+#> Warning in .f(.x[[i]], ...): NAs introduced by coercion
+#>       id   sex   age      birth   followup date_of_surgery      size  type
+#>    <int> <num> <num>     <char>     <char>          <Date>     <num> <int>
+#> 1:     1     1  79.1 20-09-1929 03-04-2023      2008-11-03  7.302734     1
+#> 2:     2     2  38.1 12-10-1953 18-12-2025      1991-11-13 20.043036     1
+#> 3:     3     1  60.6 11-05-1948 21-09-2025      2008-12-17 42.412003     1
+#> 4:     4     1  45.2 22-04-1949 11-02-2022      1994-07-17 27.853775     1
+#> 5:     5     2  39.5 18-01-1966 21-04-2022      2005-07-16 25.587530     2
+#> 6:     6     1  81.2 06-11-1925 17-07-2023      2007-02-02 49.415904     2
+#>    localisation necrosis margins  cd10 sox10    ck death_date recurrence_date
+#>           <int>    <num>  <char> <num> <num> <num>     <Date>          <Date>
+#> 1:            3       NA       0     1     1     1       <NA>      2015-03-22
+#> 2:            1       NA       0     0     0    NA       <NA>            <NA>
+#> 3:            2        0       1    NA    NA     0 2017-09-02            <NA>
+#> 4:            3        1       0     0     0     0 2018-10-04      2011-12-31
+#> 5:            1       NA       0     0    NA     0       <NA>            <NA>
+#> 6:            3        1       1     1     1     0       <NA>            <NA>
+#>    metastasis_date recurrence_date_bin metastasis_date_bin
+#>             <Date>              <fctr>              <fctr>
+#> 1:            <NA>           2010-2019                <NA>
+#> 2:            <NA>                <NA>                <NA>
+#> 3:            <NA>                <NA>                <NA>
+#> 4:            <NA>           2010-2019                <NA>
+#> 5:            <NA>                <NA>                <NA>
+#> 6:            <NA>                <NA>                <NA>
 ```
 
 ### Conversion to factor
@@ -723,7 +751,7 @@ factor.
 redcap_df %>% 
   factR(type) %>% 
   str
-#> 'data.frame':    500 obs. of  17 variables:
+#> Classes 'data.table' and 'data.frame':   500 obs. of  17 variables:
 #>  $ id             : int  1 2 3 4 5 6 7 8 9 10 ...
 #>  $ sex            : num  1 2 1 1 2 1 1 1 2 2 ...
 #>  $ age            : num  79.1 38.1 60.6 45.2 39.5 81.2 74.9 38.8 31.8 51.3 ...
@@ -741,6 +769,7 @@ redcap_df %>%
 #>  $ death_date     : chr  NA NA "2017-09-02" "2018-10-04" ...
 #>  $ recurrence_date: chr  "2015-03-22" NA NA "2011-12-31" ...
 #>  $ metastasis_date: chr  NA NA NA NA ...
+#>  - attr(*, ".internal.selfref")=<pointer: 0x5623cd0aff20>
 ```
 
 The reference group is specified using the reference argument
@@ -751,7 +780,7 @@ redcap_df %>%
   factR(type,
         reference = "0") %>% 
   str
-#> 'data.frame':    500 obs. of  17 variables:
+#> Classes 'data.table' and 'data.frame':   500 obs. of  17 variables:
 #>  $ id             : int  1 2 3 4 5 6 7 8 9 10 ...
 #>  $ sex            : num  1 2 1 1 2 1 1 1 2 2 ...
 #>  $ age            : num  79.1 38.1 60.6 45.2 39.5 81.2 74.9 38.8 31.8 51.3 ...
@@ -769,6 +798,7 @@ redcap_df %>%
 #>  $ death_date     : chr  NA NA "2017-09-02" "2018-10-04" ...
 #>  $ recurrence_date: chr  "2015-03-22" NA NA "2011-12-31" ...
 #>  $ metastasis_date: chr  NA NA NA NA ...
+#>  - attr(*, ".internal.selfref")=<pointer: 0x5623cd0aff20>
 ```
 
 Levels can be manually assigned
@@ -779,7 +809,7 @@ redcap_df %>%
   factR(type,
         levels = c("2","1","0")) %>%
   str
-#> 'data.frame':    500 obs. of  17 variables:
+#> Classes 'data.table' and 'data.frame':   500 obs. of  17 variables:
 #>  $ id             : int  1 2 3 4 5 6 7 8 9 10 ...
 #>  $ sex            : num  1 2 1 1 2 1 1 1 2 2 ...
 #>  $ age            : num  79.1 38.1 60.6 45.2 39.5 81.2 74.9 38.8 31.8 51.3 ...
@@ -797,6 +827,7 @@ redcap_df %>%
 #>  $ death_date     : chr  NA NA "2017-09-02" "2018-10-04" ...
 #>  $ recurrence_date: chr  "2015-03-22" NA NA "2011-12-31" ...
 #>  $ metastasis_date: chr  NA NA NA NA ...
+#>  - attr(*, ".internal.selfref")=<pointer: 0x5623cd0aff20>
 ```
 
 New labels can also be assigned and automatically specify levels
@@ -811,7 +842,7 @@ redcap_df %>%
                                     "malignant" = "2")),
         lab_to_lev = T) %>%
   str
-#> 'data.frame':    500 obs. of  17 variables:
+#> Classes 'data.table' and 'data.frame':   500 obs. of  17 variables:
 #>  $ id             : int  1 2 3 4 5 6 7 8 9 10 ...
 #>  $ sex            : num  1 2 1 1 2 1 1 1 2 2 ...
 #>  $ age            : num  79.1 38.1 60.6 45.2 39.5 81.2 74.9 38.8 31.8 51.3 ...
@@ -829,6 +860,7 @@ redcap_df %>%
 #>  $ death_date     : chr  NA NA "2017-09-02" "2018-10-04" ...
 #>  $ recurrence_date: chr  "2015-03-22" NA NA "2011-12-31" ...
 #>  $ metastasis_date: chr  NA NA NA NA ...
+#>  - attr(*, ".internal.selfref")=<pointer: 0x5623cd0aff20>
 ```
 
 Lastly, all the arguments can be specified for multiple variables at
@@ -846,7 +878,7 @@ redcap_df %>%
                       "intermediate" = "1",
                       "malignant" = "2"))) %>% 
   str
-#> 'data.frame':    500 obs. of  17 variables:
+#> Classes 'data.table' and 'data.frame':   500 obs. of  17 variables:
 #>  $ id             : int  1 2 3 4 5 6 7 8 9 10 ...
 #>  $ sex            : Factor w/ 2 levels "m","f": 2 1 2 2 1 2 2 2 1 1 ...
 #>  $ age            : num  79.1 38.1 60.6 45.2 39.5 81.2 74.9 38.8 31.8 51.3 ...
@@ -864,6 +896,7 @@ redcap_df %>%
 #>  $ death_date     : chr  NA NA "2017-09-02" "2018-10-04" ...
 #>  $ recurrence_date: chr  "2015-03-22" NA NA "2011-12-31" ...
 #>  $ metastasis_date: chr  NA NA NA NA ...
+#>  - attr(*, ".internal.selfref")=<pointer: 0x5623cd0aff20>
 ```
 
 ### Subset rows (filters)
@@ -1116,7 +1149,26 @@ To get a quick overview of missing data in the dataset we use missR()
 
 redcap_df %>% 
   missR()
-#> No NAs detected
+#> Index: <pct>
+#>            variable count   pct
+#>              <fctr> <int> <num>
+#>  1: metastasis_date   339  67.8
+#>  2:      death_date   314  62.8
+#>  3: recurrence_date   254  50.8
+#>  4:        necrosis   172  34.4
+#>  5:            cd10   162  32.4
+#>  6:           sox10   162  32.4
+#>  7:              ck   157  31.4
+#>  8:              id     0   0.0
+#>  9:             sex     0   0.0
+#> 10:             age     0   0.0
+#> 11:           birth     0   0.0
+#> 12:        followup     0   0.0
+#> 13: date_of_surgery     0   0.0
+#> 14:            size     0   0.0
+#> 15:            type     0   0.0
+#> 16:    localisation     0   0.0
+#> 17:         margins     0   0.0
 ```
 
 Missing values can be dropped with drop_na()
@@ -1162,20 +1214,30 @@ redcap_df %>%
        type = "any.na",
        filter = "remove") %>% 
   head
-#>   id sex  age      birth   followup date_of_surgery      size type localisation
-#> 1  1   1 79.1 20-09-1929 03-04-2023      2008-11-03  7.302734    1            3
-#> 2  4   1 45.2 22-04-1949 11-02-2022      1994-07-17 27.853775    1            3
-#> 3  6   1 81.2 06-11-1925 17-07-2023      2007-02-02 49.415904    2            3
-#> 4  7   1 74.9 16-06-1921 15-11-2023      1996-05-23 41.732124    0            2
-#> 5  9   2 31.8 11-11-1958 11-03-2025      1990-08-29 10.726850    0            3
-#> 6 10   2 51.3 18-08-1953 28-11-2021      2004-12-08 21.547746    2            1
-#>   necrosis margins cd10 sox10 ck death_date recurrence_date metastasis_date
-#> 1       NA       0    1     1  1       <NA>      2015-03-22            <NA>
-#> 2        1       0    0     0  0 2018-10-04      2011-12-31            <NA>
-#> 3        1       1    1     1  0       <NA>            <NA>            <NA>
-#> 4        0       1    0     1  0       <NA>      2012-08-30            <NA>
-#> 5       NA       1    1     1  0       <NA>      2014-02-16            <NA>
-#> 6       NA       1    1     1  1       <NA>      2014-08-15            <NA>
+#>       id   sex   age      birth   followup date_of_surgery      size  type
+#>    <int> <num> <num>     <char>     <char>          <char>     <num> <int>
+#> 1:     1     1  79.1 20-09-1929 03-04-2023      2008-11-03  7.302734     1
+#> 2:     4     1  45.2 22-04-1949 11-02-2022      1994-07-17 27.853775     1
+#> 3:     6     1  81.2 06-11-1925 17-07-2023      2007-02-02 49.415904     2
+#> 4:     7     1  74.9 16-06-1921 15-11-2023      1996-05-23 41.732124     0
+#> 5:     9     2  31.8 11-11-1958 11-03-2025      1990-08-29 10.726850     0
+#> 6:    10     2  51.3 18-08-1953 28-11-2021      2004-12-08 21.547746     2
+#>    localisation necrosis margins  cd10 sox10    ck death_date recurrence_date
+#>           <int>    <num>  <char> <num> <num> <num>     <char>          <char>
+#> 1:            3       NA       0     1     1     1       <NA>      2015-03-22
+#> 2:            3        1       0     0     0     0 2018-10-04      2011-12-31
+#> 3:            3        1       1     1     1     0       <NA>            <NA>
+#> 4:            2        0       1     0     1     0       <NA>      2012-08-30
+#> 5:            3       NA       1     1     1     0       <NA>      2014-02-16
+#> 6:            1       NA       1     1     1     1       <NA>      2014-08-15
+#>    metastasis_date
+#>             <char>
+#> 1:            <NA>
+#> 2:            <NA>
+#> 3:            <NA>
+#> 4:            <NA>
+#> 5:            <NA>
+#> 6:            <NA>
 ```
 
 We can also flag the rows into a new variable
@@ -1187,27 +1249,30 @@ redcap_df %>%
        type = "any.na",
        label = "flag") %>% 
   head
-#>   id sex  age      birth   followup date_of_surgery      size type localisation
-#> 1  1   1 79.1 20-09-1929 03-04-2023      2008-11-03  7.302734    1            3
-#> 2  2   2 38.1 12-10-1953 18-12-2025      1991-11-13 20.043036    1            1
-#> 3  3   1 60.6 11-05-1948 21-09-2025      2008-12-17 42.412003    1            2
-#> 4  4   1 45.2 22-04-1949 11-02-2022      1994-07-17 27.853775    1            3
-#> 5  5   2 39.5 18-01-1966 21-04-2022      2005-07-16 25.587530    2            1
-#> 6  6   1 81.2 06-11-1925 17-07-2023      2007-02-02 49.415904    2            3
-#>   necrosis margins cd10 sox10 ck death_date recurrence_date metastasis_date
-#> 1       NA       0    1     1  1       <NA>      2015-03-22            <NA>
-#> 2       NA       0    0     0 NA       <NA>            <NA>            <NA>
-#> 3        0       1   NA    NA  0 2017-09-02            <NA>            <NA>
-#> 4        1       0    0     0  0 2018-10-04      2011-12-31            <NA>
-#> 5       NA       0    0    NA  0       <NA>            <NA>            <NA>
-#> 6        1       1    1     1  0       <NA>            <NA>            <NA>
-#>   flag
-#> 1    0
-#> 2    1
-#> 3    1
-#> 4    0
-#> 5    1
-#> 6    0
+#>       id   sex   age      birth   followup date_of_surgery      size  type
+#>    <int> <num> <num>     <char>     <char>          <char>     <num> <int>
+#> 1:     1     1  79.1 20-09-1929 03-04-2023      2008-11-03  7.302734     1
+#> 2:     2     2  38.1 12-10-1953 18-12-2025      1991-11-13 20.043036     1
+#> 3:     3     1  60.6 11-05-1948 21-09-2025      2008-12-17 42.412003     1
+#> 4:     4     1  45.2 22-04-1949 11-02-2022      1994-07-17 27.853775     1
+#> 5:     5     2  39.5 18-01-1966 21-04-2022      2005-07-16 25.587530     2
+#> 6:     6     1  81.2 06-11-1925 17-07-2023      2007-02-02 49.415904     2
+#>    localisation necrosis margins  cd10 sox10    ck death_date recurrence_date
+#>           <int>    <num>  <char> <num> <num> <num>     <char>          <char>
+#> 1:            3       NA       0     1     1     1       <NA>      2015-03-22
+#> 2:            1       NA       0     0     0    NA       <NA>            <NA>
+#> 3:            2        0       1    NA    NA     0 2017-09-02            <NA>
+#> 4:            3        1       0     0     0     0 2018-10-04      2011-12-31
+#> 5:            1       NA       0     0    NA     0       <NA>            <NA>
+#> 6:            3        1       1     1     1     0       <NA>            <NA>
+#>    metastasis_date  flag
+#>             <char> <int>
+#> 1:            <NA>     0
+#> 2:            <NA>     1
+#> 3:            <NA>     1
+#> 4:            <NA>     0
+#> 5:            <NA>     1
+#> 6:            <NA>     0
 ```
 
 ### Join multiple data frames
@@ -1231,46 +1296,38 @@ If we want to join two data frames, we use left_join().
 
 left_join(redcap_df, analysis_df, by = "id") %>% 
   tail
-#>       id   sex   age      birth   followup date_of_surgery     size  type
-#>    <int> <num> <num>     <char>     <char>          <char>    <num> <int>
-#> 1:   498     1  66.4 02-11-1931 11-08-2023      1998-03-16 34.90951     1
-#> 2:   498     1  66.4 02-11-1931 11-08-2023      1998-03-16 34.90951     1
-#> 3:   499     2  63.4 24-04-1944 05-09-2021      2007-09-12 34.17819     1
-#> 4:   499     2  63.4 24-04-1944 05-09-2021      2007-09-12 34.17819     1
-#> 5:   500     2  66.3 06-03-1942 21-11-2022      2008-06-07 17.15191     1
-#> 6:   500     2  66.3 06-03-1942 21-11-2022      2008-06-07 17.15191     1
+#>       id   sex   age      birth   followup date_of_surgery      size  type
+#>    <int> <num> <num>     <char>     <char>          <char>     <num> <int>
+#> 1:   495     2  20.8 19-06-1973 03-04-2024      1994-03-29  9.893873     0
+#> 2:   496     1  19.0 01-07-1972 03-11-2025      1991-07-04  6.770677     1
+#> 3:   497     1  26.5 18-09-1965 29-01-2023      1992-03-14 44.410869     0
+#> 4:   498     1  66.4 02-11-1931 11-08-2023      1998-03-16 34.909506     1
+#> 5:   499     2  63.4 24-04-1944 05-09-2021      2007-09-12 34.178187     1
+#> 6:   500     2  66.3 06-03-1942 21-11-2022      2008-06-07 17.151914     1
 #>    localisation necrosis margins  cd10 sox10    ck death_date recurrence_date
 #>           <int>    <num>  <char> <num> <num> <num>     <char>          <char>
-#> 1:            2        0       0     1    NA     0       <NA>      2010-08-06
-#> 2:            2        0       0     1    NA     0       <NA>      2010-08-06
-#> 3:            4        0       1     1     0     1 2018-12-24            <NA>
-#> 4:            4        0       1     1     0     1 2018-12-24            <NA>
-#> 5:            2        0       0     0     0     1 2017-05-12      2013-04-08
+#> 1:            3       NA       1     0     0     0 2016-03-23      2012-09-10
+#> 2:            3        0       1     0     0    NA       <NA>            <NA>
+#> 3:            3       NA       1     0     1     0 2016-05-09      2015-01-16
+#> 4:            2        0       0     1    NA     0       <NA>      2010-08-06
+#> 5:            4        0       1     1     0     1 2018-12-24            <NA>
 #> 6:            2        0       0     0     0     1 2017-05-12      2013-04-08
-#>    metastasis_date     g2     g3     g4  event     time2 event2 event3   ttt
-#>             <char> <fctr> <fctr> <fctr> <fctr>     <num>  <int>  <int> <num>
-#> 1:            <NA>     T0     T1     T2      1  45.69178      0      1  45.6
-#> 2:            <NA>     T0     T0     T0      1  29.23996      1      1  31.2
-#> 3:            <NA>     T0     T1     T1      1  37.94604      0      2  38.4
-#> 4:            <NA>     T0     T1     T2      0 112.30125      1      2 111.6
-#> 5:            <NA>     T0     T1     T3      1  67.67122      1      1  68.4
-#> 6:            <NA>     T0     T1     T1      0  77.77137      1      0  79.2
-#>        X4     X5       X6       X7          X8         X9           X10
-#>    <fctr> <fctr>    <num>    <num>       <num>      <num>         <num>
-#> 1:      0      0 79.22632 69.48043  0.60780995 -0.1979622 -0.4777380905
-#> 2:      0      1 69.18390 56.43559  0.27807728  0.2576562 -0.0004995857
-#> 3:      0      0 72.04143 65.04619  1.12128619 -0.4119376 -1.7279929020
-#> 4:      0      0 62.73922 69.93294  0.03873169  0.2315320  1.5706418077
-#> 5:      1      1 79.15920 56.84905  1.22170047  3.0933951  0.1448792263
-#> 6:      1      1 42.89253 66.82167 -2.33802589 -0.3303149 -0.3499702771
-#>         X6_bin      X7_bin         X8_bin         X9_bin         X10_bin
-#>         <fctr>      <fctr>         <fctr>         <fctr>          <fctr>
-#> 1: 69.28-111.5 63.27-78.64 -0.0393-0.6773 -0.648--0.0061 -0.7032--0.0023
-#> 2: 59.21-69.28 42.59-56.53 -0.0393-0.6773 -0.0061-0.6478  -0.0023-0.6628
-#> 3: 69.28-111.5 63.27-78.64   0.6773-3.248 -0.648--0.0061  -3.147--0.7032
-#> 4: 59.21-69.28 63.27-78.64 -0.0393-0.6773 -0.0061-0.6478    0.6628-3.624
-#> 5: 69.28-111.5 56.53-59.87   0.6773-3.248   0.6478-3.377  -0.0023-0.6628
-#> 6: 13.04-49.26 63.27-78.64 -4.303--0.6914 -0.648--0.0061 -0.7032--0.0023
+#>    metastasis_date     g4     g3     g2 event event2 event3 t_event     x1
+#>             <char> <fctr> <fctr> <fctr> <int>  <num>  <num>   <num> <fctr>
+#> 1:      2013-04-02     T0     T0     T0     0      0      0  15.914      0
+#> 2:            <NA>     T0     T0     T0     0      2      2  55.915      0
+#> 3:            <NA>     T0     T0     T0     0      0      0  69.808      1
+#> 4:            <NA>     T0     T0     T0     0      0      0  73.042      0
+#> 5:            <NA>     T1     T1     T1     1      1      1 120.050      0
+#> 6:            <NA>     T1     T1     T1     0      2      2   8.621      0
+#>        x2     x3    x4    x5         x6
+#>    <fctr> <fctr> <num> <num>      <num>
+#> 1:      d    yes    94  49.1 2.52650444
+#> 2:      a     no    88  65.6 0.09737633
+#> 3:      b     no    11  54.9 4.55232924
+#> 4:      a     no     1  45.4 0.90829759
+#> 5:      b     no    90  38.7 0.43224097
+#> 6:      c     no     5  41.8 3.04040053
 ```
 
 We see that some of the patients do not have any rows, as the redcap_df
@@ -1288,34 +1345,20 @@ analysis_df %>%
             redcap_df %>% select(id, contains("date")),
             by = "id") %>% 
   tail
-#>       id g2 g3 g4 event      time2 event2 event3   ttt X4 X5       X6       X7
-#> 1995 699 T1 T0 T1     0  83.381203      0      2  82.8  1  1 62.01363 63.79883
-#> 1996 699 T0 T2 T0     1  65.333673      0      2  66.0  1  0 70.51616 57.21866
-#> 1997 700 T0 T0 T1     0 106.431362      1      2 108.0  0  0 56.99678 67.86019
-#> 1998 700 T0 T0 T1     1   6.453561      2      0   7.2  0  0 65.64964 61.30690
-#> 1999 700 T1 T1 T2     0  36.921561      1      2  37.2  0  0 59.42960 54.43404
-#> 2000 700 T0 T2 T2     1  55.081230      2      1  54.0  1  1 75.57838 61.25391
-#>              X8         X9        X10      X6_bin      X7_bin         X8_bin
-#> 1995 -1.9614177 -1.4622170 -0.3086787 59.21-69.28 63.27-78.64 -4.303--0.6914
-#> 1996  0.7279976  1.3383747 -0.3191904 69.28-111.5 56.53-59.87   0.6773-3.248
-#> 1997 -1.0301311  0.2263709 -0.2585555 49.26-59.21 63.27-78.64 -4.303--0.6914
-#> 1998  0.4803880 -0.3543401 -0.8057751 59.21-69.28 59.87-63.27 -0.0393-0.6773
-#> 1999  0.9419636  0.2164167  0.2947857 59.21-69.28 42.59-56.53   0.6773-3.248
-#> 2000 -0.8727381  1.0000862  0.8911216 69.28-111.5 59.87-63.27 -4.303--0.6914
-#>              X9_bin         X10_bin date_of_surgery death_date recurrence_date
-#> 1995   -3.45--0.648 -0.7032--0.0023            <NA>       <NA>            <NA>
-#> 1996   0.6478-3.377 -0.7032--0.0023            <NA>       <NA>            <NA>
-#> 1997 -0.0061-0.6478 -0.7032--0.0023            <NA>       <NA>            <NA>
-#> 1998 -0.648--0.0061  -3.147--0.7032            <NA>       <NA>            <NA>
-#> 1999 -0.0061-0.6478  -0.0023-0.6628            <NA>       <NA>            <NA>
-#> 2000   0.6478-3.377    0.6628-3.624            <NA>       <NA>            <NA>
-#>      metastasis_date
-#> 1995            <NA>
-#> 1996            <NA>
-#> 1997            <NA>
-#> 1998            <NA>
-#> 1999            <NA>
-#> 2000            <NA>
+#>        id g4 g3 g2 event event2 event3 t_event x1 x2  x3 x4   x5         x6
+#> 1995 1995 T1 T1 T1     1      1      1   9.289  1  c  no 87 54.8  1.1371462
+#> 1996 1996 T1 T1 T1     0      2      2  18.968  1  c yes 76 47.9  0.6523124
+#> 1997 1997 T0 T0 T0     0      2      2  22.794  1  d yes 33 43.5 15.0854107
+#> 1998 1998 T2 T2 T1     0      2      2  10.712  0  a yes 92 42.3  0.6097104
+#> 1999 1999 T0 T0 T0     1      1      1 165.301  1  d  no 79 48.8  4.6187505
+#> 2000 2000 T0 T0 T0     0      0      3  77.540  0  c yes 51 36.2  0.2824569
+#>      date_of_surgery death_date recurrence_date metastasis_date
+#> 1995            <NA>       <NA>            <NA>            <NA>
+#> 1996            <NA>       <NA>            <NA>            <NA>
+#> 1997            <NA>       <NA>            <NA>            <NA>
+#> 1998            <NA>       <NA>            <NA>            <NA>
+#> 1999            <NA>       <NA>            <NA>            <NA>
+#> 2000            <NA>       <NA>            <NA>            <NA>
 ```
 
 #### Full join
@@ -1329,27 +1372,20 @@ analysis_df %>%
             redcap_df %>% select(id, contains("date")),
             by = "id") %>% 
   tail
-#>       id   g2   g3   g4 event time2 event2 event3 ttt   X4   X5 X6 X7 X8 X9 X10
-#> 2016 318 <NA> <NA> <NA>  <NA>    NA     NA     NA  NA <NA> <NA> NA NA NA NA  NA
-#> 2017 364 <NA> <NA> <NA>  <NA>    NA     NA     NA  NA <NA> <NA> NA NA NA NA  NA
-#> 2018 419 <NA> <NA> <NA>  <NA>    NA     NA     NA  NA <NA> <NA> NA NA NA NA  NA
-#> 2019 459 <NA> <NA> <NA>  <NA>    NA     NA     NA  NA <NA> <NA> NA NA NA NA  NA
-#> 2020 461 <NA> <NA> <NA>  <NA>    NA     NA     NA  NA <NA> <NA> NA NA NA NA  NA
-#> 2021 492 <NA> <NA> <NA>  <NA>    NA     NA     NA  NA <NA> <NA> NA NA NA NA  NA
-#>      X6_bin X7_bin X8_bin X9_bin X10_bin date_of_surgery death_date
-#> 2016   <NA>   <NA>   <NA>   <NA>    <NA>      1992-08-06 2020-03-16
-#> 2017   <NA>   <NA>   <NA>   <NA>    <NA>      2002-09-08       <NA>
-#> 2018   <NA>   <NA>   <NA>   <NA>    <NA>      2003-11-18       <NA>
-#> 2019   <NA>   <NA>   <NA>   <NA>    <NA>      1999-12-16       <NA>
-#> 2020   <NA>   <NA>   <NA>   <NA>    <NA>      1996-05-10       <NA>
-#> 2021   <NA>   <NA>   <NA>   <NA>    <NA>      2004-06-24 2016-03-14
-#>      recurrence_date metastasis_date
-#> 2016            <NA>            <NA>
-#> 2017      2013-07-16      2010-08-08
-#> 2018      2010-03-27            <NA>
-#> 2019      2014-11-24            <NA>
-#> 2020            <NA>            <NA>
-#> 2021      2014-04-12            <NA>
+#>        id g4 g3 g2 event event2 event3 t_event x1 x2  x3 x4   x5         x6
+#> 1995 1995 T1 T1 T1     1      1      1   9.289  1  c  no 87 54.8  1.1371462
+#> 1996 1996 T1 T1 T1     0      2      2  18.968  1  c yes 76 47.9  0.6523124
+#> 1997 1997 T0 T0 T0     0      2      2  22.794  1  d yes 33 43.5 15.0854107
+#> 1998 1998 T2 T2 T1     0      2      2  10.712  0  a yes 92 42.3  0.6097104
+#> 1999 1999 T0 T0 T0     1      1      1 165.301  1  d  no 79 48.8  4.6187505
+#> 2000 2000 T0 T0 T0     0      0      3  77.540  0  c yes 51 36.2  0.2824569
+#>      date_of_surgery death_date recurrence_date metastasis_date
+#> 1995            <NA>       <NA>            <NA>            <NA>
+#> 1996            <NA>       <NA>            <NA>            <NA>
+#> 1997            <NA>       <NA>            <NA>            <NA>
+#> 1998            <NA>       <NA>            <NA>            <NA>
+#> 1999            <NA>       <NA>            <NA>            <NA>
+#> 2000            <NA>       <NA>            <NA>            <NA>
 ```
 
 Here we se missing data for dataset X and complete data for dataset Y as

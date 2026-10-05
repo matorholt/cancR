@@ -18,7 +18,7 @@ tablR(redcap_df,
       vars = c(age, sex, type))
 #>                        Overall (N=500)
 #> 1 Age                                 
-#> 2    Median (Q1, Q3) 49.7 (34.1, 64.5)
+#> 2    Median (Q1, Q3) 49.6 (34.0, 64.6)
 #> 3    Range              10.8 - 88.8   
 #> 4 Sex                                 
 #> 5    Median (Q1, Q3)  1.0 (1.0, 2.0)  
@@ -42,7 +42,7 @@ redcap_df %>%
   tablR(vars = c(age, sex, type))
 #>                         Overall (N=500)
 #> 1  Age                                 
-#> 2     Median (Q1, Q3) 49.7 (34.1, 64.5)
+#> 2     Median (Q1, Q3) 49.6 (34.0, 64.6)
 #> 3     Range              10.8 - 88.8   
 #> 4  Sex                                 
 #> 5     1                   256 (51%)    
@@ -92,12 +92,12 @@ redcap_df %>%
 #> 4 Sex                                                                     
 #> 5    1                   66 (58%)          131 (52%)         59 (44%)     
 #> 6    2                   47 (42%)          123 (48%)         74 (56%)     
-#>       Total (N=500)  P-value
-#> 1                   p = 0.94
-#> 2 49.7 (34.1, 64.5)         
-#> 3    10.8 - 88.8            
-#> 4                   p = 0.09
-#> 5     256 (51%)             
+#>       Total (N=500) P-value
+#> 1                     0.938
+#> 2 49.6 (34.0, 64.6)        
+#> 3    10.8 - 88.8           
+#> 4                     0.088
+#> 5     256 (51%)            
 #> 6     244 (49%)
 ```
 
@@ -169,11 +169,11 @@ redcap_df %>%
 #> 5     Female              47 (42%)          123 (48%)         74 (56%)     
 #> 6     Male                66 (58%)          131 (52%)         59 (44%)     
 #> 7  Localisation                                                            
-#> 8     Trunk               47 (42%)          74 (29%)          46 (35%)     
-#> 9     Upper Extremity     30 (26%)          94 (37%)          35 (26%)     
-#> 10    Lower Extremity     20 (18%)          45 (18%)          23 (17%)     
-#> 11    Head                9 (8.0%)          31 (12%)          24 (18%)     
-#> 12    Neck                6 (5.3%)          8 (3.1%)          1 (0.8%)     
+#> 8     Neck                6 (5.3%)          8 (3.1%)          1 (0.8%)     
+#> 9     Head                9 (8.0%)          31 (12%)          24 (18%)     
+#> 10    Trunk               47 (42%)          74 (29%)          46 (35%)     
+#> 11    Upper Extremity     30 (27%)          94 (37%)          35 (26%)     
+#> 12    Lower Extremity     20 (18%)          45 (18%)          23 (17%)     
 #> 13    Unspecified         1 (0.9%)          2 (0.8%)          4 (3.0%)
 ```
 
@@ -186,7 +186,7 @@ interquartile range and range. This can be specified in the
 ``` r
 
 redcap_df %>%
-  factR(c(type, sex, localisation)) %>%
+  factR(c(type, sex, localisation)) %>% 
   tablR(
     group = type,
     vars=c(age, sex, localisation),
@@ -212,11 +212,11 @@ redcap_df %>%
 #> 5     Female                47 (42%)       123 (48%)          74 (56%)
 #> 6     Male                  66 (58%)       131 (52%)          59 (44%)
 #> 7  Localisation                                                       
-#> 8     Trunk                 47 (42%)       74 (29%)           46 (35%)
-#> 9     Upper Extremity       30 (26%)       94 (37%)           35 (26%)
-#> 10    Lower Extremity       20 (18%)       45 (18%)           23 (17%)
-#> 11    Head                  9 (8.0%)       31 (12%)           24 (18%)
-#> 12    Neck                  6 (5.3%)       8 (3.1%)           1 (0.8%)
+#> 8     Neck                  6 (5.3%)       8 (3.1%)           1 (0.8%)
+#> 9     Head                  9 (8.0%)       31 (12%)           24 (18%)
+#> 10    Trunk                 47 (42%)       74 (29%)           46 (35%)
+#> 11    Upper Extremity       30 (27%)       94 (37%)           35 (26%)
+#> 12    Lower Extremity       20 (18%)       45 (18%)           23 (17%)
 #> 13    Unspecified           1 (0.9%)       2 (0.8%)           4 (3.0%)
 ```
 

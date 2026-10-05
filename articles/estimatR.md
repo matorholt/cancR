@@ -164,17 +164,17 @@ for estimating the median follow-up time
 
 We use the built-in dataset `analysis_df` for all examples:
 
-    #>     g2 g3 g4 event event2 event3  ttt       X6       X7          X8_bin
-    #> 1 <NA> T0 T1     1      1      1 33.6 67.84900 55.30447  -4.303--0.6914
-    #> 2   T0 T1 T1     1      1      2 30.0 74.90331 66.96832  -4.303--0.6914
-    #> 3   T0 T0 T1     0      0      1 90.0 64.10606 68.12907  -4.303--0.6914
-    #> 4   T0 T1 T1     0      2      1 37.2 49.57621 62.04501  -4.303--0.6914
-    #> 5   T0 T0 T1     1      1      2 81.6 49.22925 59.53721 -0.6914--0.0393
-    #> 6   T0 T1 T1     0      1      0 39.6 58.47016 61.03049 -0.6914--0.0393
+    #>   g2 g3 g4 event event2 event3 t_event        x6 x1 x2
+    #> 1 T1 T2 T3     1      1      1  28.581  5.055129  0  c
+    #> 2 T0 T0 T0     0      2      2  84.275  2.576219  0  d
+    #> 3 T0 T0 T0     0      0      0  38.056 11.083184  1  d
+    #> 4 T1 T1 T1     0      2      2  56.773  2.183576  0  a
+    #> 5 T1 T2 T3     0      0      3   4.813 10.799597  1  a
+    #> 6 T1 T1 T1     0      2      2   3.913 10.658211  0  b
 
-`event2` is our event of interest and `ttt` is our time-to variable.
-`g2` to `g4` are different groups with 2,3 and 4 levels resp. `X6` to
-`X8_bin` are covariates for later adjustment.
+`event2` is our event of interest and `t_event` is our time-to variable.
+`g2` to `g4` are different groups with 2,3 and 4 levels resp. `x6` to
+`x1` are covariates for later adjustment.
 
 ### Analysis of one group
 
@@ -185,14 +185,31 @@ arguments `data`, `timevar` and `event`:
 
 g1_res <- estimatR(
   data = df,
-  timevar = ttt,
+  timevar = t_event,
   event = event2)
 #> 
-#> ── Initializing estimatR algorithm: 2026-06-03 14:25:18 ──
+#> ── Initializing estimatR algorithm: 2026-10-05 11:43:57 ──
 #> 
-#> ── Estimation complete!
-#> Total runtime:
-#> 0.28 secs
+#> Preparing data:
+#> ✔ Preparing data: Complete 2026-10-05 11:43:57, Runtime = 0 secs
+#> Preparing data:Life-tables:
+#> ✔ Life-tables: Complete 2026-10-05 11:43:57, Runtime = 0.02 secs
+#> Life-tables:Modelling:
+#> ✔ Modelling: Complete 2026-10-05 11:43:57, Runtime = 0 secs
+#> Modelling:Plot data:
+#> ✔ Plot data: Complete 2026-10-05 11:43:57, Runtime = 0.02 secs
+#> Plot data:Time-to-event:
+#> ✔ Time-to-event: Complete 2026-10-05 11:43:57, Runtime = 0.01 secs
+#> Time-to-event:Event proportions:
+#> ✔ Event proportions: Complete 2026-10-05 11:43:57, Runtime = 0.07 secs
+#> Event proportions:Conditional risk:
+#> ✔ Conditional risk: Complete 2026-10-05 11:43:57, Runtime = 0.01 secs
+#> Conditional risk:
+#> Conditional risk:── Estimation complete! 
+#> Conditional risk:Total runtime:
+#> Conditional risk:0.32 secs
+#> Conditional risk:
+#> Conditional risk:
 ```
 
 We extract the main results with `extractR`
@@ -201,7 +218,7 @@ We extract the main results with `extractR`
 
 extractR(g1_res)
 #>   grp     counts                risks
-#> 1     897 / 2000 54% (95%CI 51 to 57)
+#> 1 grp 268 / 2000 15% (95%CI 13 to 17)
 ```
 
 We can plot the corresponding cumulative incidence curve with `plotR`:
@@ -223,8 +240,8 @@ event:
 ``` r
 
 g1_res$time_to_event
-#>   quantile lower upper
-#> 1       54  49.2  57.6
+#>            q median lower upper
+#> 1 0.07519348  40.58 30.87 53.08
 ```
 
 ### Analysis of two groups
@@ -236,16 +253,35 @@ This will automatically detect the number of groups.
 
 g2_res <- estimatR(
   df,
-  timevar = ttt,
+  timevar = t_event,
   event = event2,
   group = g2
 )
 #> 
-#> ── Initializing estimatR algorithm: 2026-06-03 14:25:19 ──
+#> ── Initializing estimatR algorithm: 2026-10-05 11:43:58 ──
 #> 
-#> ── Estimation complete!
-#> Total runtime:
-#> 1.71 secs
+#> Preparing data:
+#> ✔ Preparing data: Complete 2026-10-05 11:43:58, Runtime = 0 secs
+#> Preparing data:Life-tables:
+#> ✔ Life-tables: Complete 2026-10-05 11:43:59, Runtime = 0.02 secs
+#> Life-tables:Modelling:
+#> ✔ Modelling: Complete 2026-10-05 11:44:00, Runtime = 1.59 secs
+#> Modelling:Plot data:
+#> ✔ Plot data: Complete 2026-10-05 11:44:01, Runtime = 1.23 secs
+#> Plot data:Time-to-event:
+#> ✔ Time-to-event: Complete 2026-10-05 11:44:01, Runtime = 0 secs
+#> Time-to-event:Contrasts:
+#> ✔ Contrasts: Complete 2026-10-05 11:44:01, Runtime = 0.02 secs
+#> Contrasts:Event proportions:
+#> ✔ Event proportions: Complete 2026-10-05 11:44:01, Runtime = 0.02 secs
+#> Event proportions:Conditional risk:
+#> ✔ Conditional risk: Complete 2026-10-05 11:44:01, Runtime = 0.01 secs
+#> Conditional risk:
+#> Conditional risk:── Estimation complete! 
+#> Conditional risk:Total runtime:
+#> Conditional risk:2.94 secs
+#> Conditional risk:
+#> Conditional risk:
 ```
 
 Again, we extract the main results with `extractR`. Now we also see a
@@ -254,9 +290,12 @@ risk difference and a p-value as we can compare the two groups.
 ``` r
 
 extractR(g2_res)
-#>   g2     counts                risks                     diff diff_p.value
-#> 1 T0 735 / 1595 55% (95%CI 52 to 58)                reference    reference
-#> 2 T1  161 / 404 50% (95%CI 44 to 57) -4.9% (95%CI -12 to 2.2)     p = 0.17
+#>   g2     counts                   risks                          diff
+#> 1 T1 221 / 1188    24% (95%CI 21 to 27)                     reference
+#> 2 T0   47 / 812 4.3% (95%CI 2.7 to 5.9) -19.6% (95%CI -23.0 to -16.2)
+#>   diff_p.value
+#> 1    reference
+#> 2    p < 0.001
 ```
 
 And we can plot the curves.
@@ -277,17 +316,36 @@ argument
 
 g2_res <- estimatR(
   df,
-  timevar = ttt,
+  timevar = t_event,
   event = event2,
   group = g2,
-  vars = c(X6,X7,X8_bin)
+  vars = c(x6,x1,x2)
 )
 #> 
-#> ── Initializing estimatR algorithm: 2026-06-03 14:25:22 ──
+#> ── Initializing estimatR algorithm: 2026-10-05 11:44:02 ──
 #> 
-#> ── Estimation complete!
-#> Total runtime:
-#> 2.08 secs
+#> Preparing data:
+#> ✔ Preparing data: Complete 2026-10-05 11:44:02, Runtime = 0 secs
+#> Preparing data:Life-tables:
+#> ✔ Life-tables: Complete 2026-10-05 11:44:03, Runtime = 0.02 secs
+#> Life-tables:Modelling:
+#> ✔ Modelling: Complete 2026-10-05 11:44:04, Runtime = 1.33 secs
+#> Modelling:Plot data:
+#> ✔ Plot data: Complete 2026-10-05 11:44:06, Runtime = 1.73 secs
+#> Plot data:Time-to-event:
+#> ✔ Time-to-event: Complete 2026-10-05 11:44:06, Runtime = 0 secs
+#> Time-to-event:Contrasts:
+#> ✔ Contrasts: Complete 2026-10-05 11:44:06, Runtime = 0.01 secs
+#> Contrasts:Event proportions:
+#> ✔ Event proportions: Complete 2026-10-05 11:44:06, Runtime = 0.02 secs
+#> Event proportions:Conditional risk:
+#> ✔ Conditional risk: Complete 2026-10-05 11:44:06, Runtime = 0.01 secs
+#> Conditional risk:
+#> Conditional risk:── Estimation complete! 
+#> Conditional risk:Total runtime:
+#> Conditional risk:3.17 secs
+#> Conditional risk:
+#> Conditional risk:
 ```
 
 We can see that all estimates are slightly different as these are now
@@ -314,17 +372,17 @@ group
 
 g2_multires <- iteratR(
   data=df,
-  timevar = "ttt",
+  timevar = "t_event",
   event = c("event", "event2", "event3"),
   group = "g2",
   cancR.method = "estimatR",
   labels = c("model1", "model2", "model3"))
 #> 
-#> ── Initializing iteratR algorithm: 2026-06-03 14:25:25 ──
+#> ── Initializing iteratR algorithm:  ──
 #> 
 #> ── Iteration complete!
 #> Total runtime:
-#> 2.51 secs
+#> 5.34 secs
 ```
 
 `g2_multires` is now a named list containing three `estimatR` objects
@@ -333,9 +391,9 @@ g2_multires <- iteratR(
 ``` r
 
 g2_multires$model1$time_to_event
-#>   g2 quantile lower upper
-#> 1 T0     78.0    72  81.6
-#> 2 T1     79.2    66  91.2
+#>   g2   quantile median lower  upper
+#> 1 T1 0.17308183  56.79 36.49  69.94
+#> 2 T0 0.02852238  58.49 22.91 112.06
 ```
 
 We can also use `iteratR` to apply `extractR` on all models to extract
@@ -348,28 +406,28 @@ iteratR(
   cancR.method = "extractR"
 )
 #> 
-#> ── Initializing iteratR algorithm: 2026-06-03 14:25:27 ──
+#> ── Initializing iteratR algorithm:  ──
 #> 
 #> ── Iteration complete!
 #> Total runtime:
 #> 0.08 secs
-#>   g2     counts                risks                     diff diff_p.value
-#> 1 T0 750 / 1595 61% (95%CI 58 to 65)                reference    reference
-#> 2 T1  186 / 404 65% (95%CI 58 to 72)  3.6% (95%CI -3.8 to 11)     p = 0.34
-#> 3 T0 735 / 1595 55% (95%CI 52 to 58)                reference    reference
-#> 4 T1  161 / 404 50% (95%CI 44 to 57) -4.9% (95%CI -12 to 2.2)     p = 0.17
-#> 5 T0 610 / 1595 36% (95%CI 33 to 38)                reference    reference
-#> 6 T1  156 / 404 36% (95%CI 31 to 41) 0.6% (95%CI -5.0 to 6.1)     p = 0.85
-#>    model
-#> 1 model1
-#> 2 model1
-#> 3 model2
-#> 4 model2
-#> 5 model3
-#> 6 model3
+#>   g2     counts                   risks                          diff
+#> 1 T1 221 / 1188    35% (95%CI 30 to 39)                     reference
+#> 2 T0   47 / 812 5.7% (95%CI 3.6 to 7.8) -28.9% (95%CI -34.0 to -23.8)
+#> 3 T1 221 / 1188    24% (95%CI 21 to 27)                     reference
+#> 4 T0   47 / 812 4.3% (95%CI 2.7 to 5.9) -19.6% (95%CI -23.0 to -16.2)
+#> 5 T1 221 / 1188    22% (95%CI 19 to 25)                     reference
+#> 6 T0   47 / 812 4.1% (95%CI 2.6 to 5.7) -18.0% (95%CI -21.1 to -14.8)
+#>   diff_p.value  model
+#> 1    reference model1
+#> 2    p < 0.001 model1
+#> 3    reference model2
+#> 4    p < 0.001 model2
+#> 5    reference model3
+#> 6    p < 0.001 model3
 ```
 
-We can also plot all three models by changing method to `"plotR"`
+We can also plot all three models by changing method to `plotR`
 
 ``` r
 
@@ -379,11 +437,11 @@ iteratR(
   cancR.method = "plotR"
 )
 #> 
-#> ── Initializing iteratR algorithm: 2026-06-03 14:25:28 ──
+#> ── Initializing iteratR algorithm:  ──
 #> 
 #> ── Iteration complete!
 #> Total runtime:
-#> 0.37 secs
+#> 0.39 secs
 ```
 
 ![](estimatR_files/figure-html/unnamed-chunk-21-1.png)![](estimatR_files/figure-html/unnamed-chunk-21-2.png)![](estimatR_files/figure-html/unnamed-chunk-21-3.png)

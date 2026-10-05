@@ -5,7 +5,18 @@ Perform rowwise operations
 ## Usage
 
 ``` r
-rowR(data, vars, type, label, na.rm = T, filter = NULL, direction, dt = F)
+rowR(
+  data,
+  vars,
+  type,
+  label,
+  collapse = "",
+  na.rm = T,
+  filter = NULL,
+  direction,
+  drop = F,
+  dt = F
+)
 ```
 
 ## Arguments
@@ -39,6 +50,14 @@ rowR(data, vars, type, label, na.rm = T, filter = NULL, direction, dt = F)
 
   the direction of the rowwise fill. Can be "left", "rigth", "leftright"
   and "rightleft". Corresponds to "updown".
+
+- drop:
+
+  whether vars should be dropped after the rowwise operation
+
+- dt:
+
+  whether the dataframe should be returned as data.table
 
 ## Value
 

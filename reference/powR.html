@@ -52,14 +52,17 @@
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">powR</span><span class="op">(</span></span>
-<span>  <span class="va">text</span>,</span>
-<span>  write.sleep <span class="op">=</span> <span class="fl">0.05</span>,</span>
+<span>  text <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  path <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  trim.start <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  trim.end <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  start.delay <span class="op">=</span> <span class="fl">3</span>,</span>
+<span>  chunk_delay <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  chunks <span class="op">=</span> <span class="fl">20</span>,</span>
 <span>  mouse.sleep <span class="op">=</span> <span class="fl">0.5</span>,</span>
-<span>  special.sleep <span class="op">=</span> <span class="fl">0.05</span>,</span>
-<span>  where <span class="op">=</span> <span class="st">"pc"</span>,</span>
-<span>  server.language <span class="op">=</span> <span class="cn">T</span>,</span>
-<span>  server.options <span class="op">=</span> <span class="cn">T</span>,</span>
-<span>  toggle.options <span class="op">=</span> <span class="cn">T</span></span>
+<span>  screens <span class="op">=</span> <span class="fl">2</span>,</span>
+<span>  automate <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  debug <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -68,36 +71,48 @@
 
 
 <dl><dt id="arg-text">text<a class="anchor" aria-label="anchor" href="#arg-text"></a></dt>
-<dd><p>single-quote enclosed text to automate</p></dd>
+<dd><p>single-quote enclosed text</p></dd>
 
 
-<dt id="arg-write-sleep">write.sleep<a class="anchor" aria-label="anchor" href="#arg-write-sleep"></a></dt>
-<dd><p>delay between text chunks (default = 0.025 secs)</p></dd>
+<dt id="arg-path">path<a class="anchor" aria-label="anchor" href="#arg-path"></a></dt>
+<dd><p>path to r-script</p></dd>
+
+
+<dt id="arg-start-delay">start.delay<a class="anchor" aria-label="anchor" href="#arg-start-delay"></a></dt>
+<dd><p>delay (secs) before automated typing (default = 5 seconds)</p></dd>
+
+
+<dt id="arg-chunks">chunks<a class="anchor" aria-label="anchor" href="#arg-chunks"></a></dt>
+<dd><p>chunk length of the text in number of lines (default = 10)</p></dd>
 
 
 <dt id="arg-mouse-sleep">mouse.sleep<a class="anchor" aria-label="anchor" href="#arg-mouse-sleep"></a></dt>
 <dd><p>delay between mouse actions (default = 0.15 secs)</p></dd>
 
 
-<dt id="arg-special-sleep">special.sleep<a class="anchor" aria-label="anchor" href="#arg-special-sleep"></a></dt>
-<dd><p>delay betweem alt-hold and alt code (default = 0.1)</p></dd>
+<dt id="arg-screens">screens<a class="anchor" aria-label="anchor" href="#arg-screens"></a></dt>
+<dd><p>number of screens that is being used</p></dd>
 
 
-<dt id="arg-where">where<a class="anchor" aria-label="anchor" href="#arg-where"></a></dt>
-<dd><p>enviroment, pc, laptop or iw containing customised coordinates</p></dd>
+<dt id="arg-automate">automate<a class="anchor" aria-label="anchor" href="#arg-automate"></a></dt>
+<dd><p>whether automatic parenthesis and code indention should be disabled (default = T)</p></dd>
 
 
-<dt id="arg-server-language">server.language<a class="anchor" aria-label="anchor" href="#arg-server-language"></a></dt>
-<dd><p>whether the language on the server should be changed (default = T)</p></dd>
+<dt id="arg-debug">debug<a class="anchor" aria-label="anchor" href="#arg-debug"></a></dt>
+<dd><p>whether the code output should be printed to the console instead of automated</p></dd>
 
 
-<dt id="arg-server-automate">server.automate<a class="anchor" aria-label="anchor" href="#arg-server-automate"></a></dt>
-<dd><p>whether automatic parenthesis and quotes should be disabled (default = T)</p></dd>
+<dt id="arg-chunk-delay">chunk.delay<a class="anchor" aria-label="anchor" href="#arg-chunk-delay"></a></dt>
+<dd><p>delay (secs) between blocks of text (default = 0 seconds)</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>a keyboard and mouse automation that transfers the assigned text</p>
+    <p>a keyboard and mouse automation that automatically types the assigned text</p>
+    </div>
+    <div class="section level2">
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+    <p>If the command is aborted abruptly, the keyboard can malfunction due to pressed alt. Release with shift-alt to toggle back to danish</p>
     </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
@@ -109,7 +124,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
     </footer></div>

@@ -9,7 +9,7 @@ tablR(
   data,
   group,
   vars,
-  num.vars,
+  num.vars = NULL,
   test = FALSE,
   total = FALSE,
   numeric = c("medianq1q3", "range"),
@@ -19,13 +19,15 @@ tablR(
   labs.groups = list(),
   labs.headings = list(),
   labs.subheadings = list(),
+  keep.raw = NULL,
   reverse = F,
   test.stats = c("kwt", "chisq"),
-  show.na = FALSE,
+  show.na = NULL,
   censur = F,
   weights,
   digits = 1,
   ama = T,
+  style = NULL,
   simplify = list(),
   simplify.remove = c("no", "No", "0"),
   print = F,
@@ -71,11 +73,24 @@ tablR(
 
 - reference:
 
-  List specifying reference group for each variable
+  see factR
+
+- labs.groups:
+
+  List specifying labels for group variables, see factR
 
 - labs.headings:
 
-  List specifying labels for variable names
+  List specifying labels for variable names, see factR
+
+- labs.subheadings:
+
+  List specifying labels for variable levels. Automatically assigns
+  order, see factR
+
+- keep.raw:
+
+  vector of variables that should not be automatically formatted
 
 - reverse:
 
@@ -89,7 +104,8 @@ tablR(
 
 - show.na:
 
-  Whether NAs should be presented
+  whether NAs should be displayed ("count") or included in proportions
+  ("pct"), default = NULL
 
 - censur:
 
@@ -107,6 +123,10 @@ tablR(
 
   whether percentages \>10 should be without digits per AMA journal of
   style. Default = T.
+
+- style:
+
+  character vector specifiying journal stiles. Supported: "lancet".
 
 - simplify:
 
@@ -127,10 +147,6 @@ tablR(
 - flextable:
 
   whether the table should be returned as a flextable
-
-- labels:
-
-  List specifying labels of the specific labels for each variable
 
 ## Value
 

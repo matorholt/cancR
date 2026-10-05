@@ -75,11 +75,12 @@ The order of effects is:</p><ol><li><p>Set as factor (fct_infreq setting levels 
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">factR</span><span class="op">(</span></span>
 <span>  <span class="va">data</span>,</span>
 <span>  <span class="va">vars</span>,</span>
-<span>  <span class="va">num.vars</span>,</span>
+<span>  num.vars <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  reference <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  lab_to_lev <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  na.level <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  reverse <span class="op">=</span> <span class="cn">F</span>,</span>
 <span>  auto.format <span class="op">=</span> <span class="cn">F</span>,</span>
 <span>  dt <span class="op">=</span> <span class="cn">F</span></span>
@@ -118,6 +119,10 @@ The order of effects is:</p><ol><li><p>Set as factor (fct_infreq setting levels 
 <dd><p>Whether changing labels should change levels if these are not specified (defaults to TRUE)</p></dd>
 
 
+<dt id="arg-na-level">na.level<a class="anchor" aria-label="anchor" href="#arg-na-level"></a></dt>
+<dd><p>whether NAs should be added as a separate level named "missing" (default = F)</p></dd>
+
+
 <dt id="arg-reverse">reverse<a class="anchor" aria-label="anchor" href="#arg-reverse"></a></dt>
 <dd><p>Whether the levels should be reversed (default is FALSE)</p></dd>
 
@@ -144,7 +149,7 @@ The order of effects is:</p><ol><li><p>Set as factor (fct_infreq setting levels 
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
     </footer></div>

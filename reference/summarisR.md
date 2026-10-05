@@ -88,26 +88,11 @@ df <- analysis_df %>%
 mutate(event_date = sample(c(seq(as.Date("1980-01-01"), as.Date("2000-01-01"), by = "years"), NA), size = n(), replace = TRUE))
 
 summarisR(df, vars = c(X6, X7, event_date))
-#> Registered S3 method overwritten by 'broom':
-#>   method        from          
-#>   nobs.multinom riskRegression
-#> Warning: Removed 96 rows containing non-finite outside the scale range
-#> (`stat_boxplot()`).
-#> Warning: Removed 96 rows containing non-finite outside the scale range
-#> (`stat_boxplot()`).
-#> Warning: Removed 96 rows containing non-finite outside the scale range
-#> (`stat_boxplot()`).
-#> Warning: Removed 96 rows containing non-finite outside the scale range
-#> (`stat_boxplot()`).
-#> Warning: Removed 96 rows containing non-finite outside the scale range
-#> (`stat_boxplot()`).
-#> Warning: Removed 96 rows containing non-finite outside the scale range
-#> (`stat_boxplot()`).
-#> Warning: Removed 96 rows containing non-finite outside the scale range (`stat_bin()`).
-
+#> Error in select(., {    {        vars    }}): Can't select columns that don't exist.
+#> ✖ Column `X6` doesn't exist.
 summarisR(data=df,vars=c(X6, X7, X1, X3), group = X2)
 #> Error in select(., {    {        vars    }}): Can't select columns that don't exist.
-#> ✖ Column `X1` doesn't exist.
+#> ✖ Column `X6` doesn't exist.
 summarisR(df, exclude = "time|event|t_", group = X2)
 #> Error in select(., {    {        group    }}): Can't select columns that don't exist.
 #> ✖ Column `X2` doesn't exist.

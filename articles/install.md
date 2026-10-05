@@ -32,15 +32,15 @@ Open R (not R studio)
 
 ### Step 2
 
-Install the package “installr” by typing install.packages(“installr”) in
-R.
+Install the package “installr” by typing `install.packages("installr")`
+in R.
 
 ![](figures/u_2.png)
 
 ### Step 3
 
 Once the package has been installed, use the function “updateR()” by
-typing installr::updateR()
+typing `installr::updateR()`
 
 ![](figures/u_3.png)
 
@@ -57,10 +57,8 @@ the version in the upper right corner
 
 ![](figures/u_10.png)
 
-You have now successfully updated R
+You have now successfully updated R!
 
-### Step 6
-
-If the latest version of R is not showing correctly in Rstudio, close
-Rstudio. Now open Rstudio by holding down ctrl while clicking on the
-Rstudio logo. Now you can choose the correct version of R.
+NB: If the latest version of R is not showing correctly in Rstudio,
+close Rstudio. Now open Rstudio by holding down ctrl while clicking on
+the Rstudio logo. Now you can choose the correct version of R.

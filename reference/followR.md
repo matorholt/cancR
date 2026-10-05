@@ -36,5 +36,5 @@ groupwise
 
 ``` r
 followR(analysis_df, time2, event, group = X2)
-#> Error in FUN(X[[i]], ...): object 'X2' not found
+#> Error in FUN(X[[i]], ...): object 'time2' not found
 ```

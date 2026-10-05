@@ -17,6 +17,8 @@ plotR(
   contrast = "rd",
   se = T,
   p.values = T,
+  time.to.event = "none",
+  cens.lines = F,
   style = NULL,
   linewidth = 0.8,
   title = "",
@@ -30,6 +32,7 @@ plotR(
   y.title.size = 6,
   y.title.shift = 0,
   y.text.size = 6,
+  y.breaks = NULL,
   res.size = 5,
   res.shift = c(0, 0),
   res.spacing = 1,
@@ -41,6 +44,8 @@ plotR(
   box.linewidth = 0.8,
   contrast.digits = 1,
   table = c("event", "risk"),
+  event.title = "Cumulative Events",
+  risk.title = "Number at Risk",
   table.space = 1,
   table.padding = 1,
   table.title.size = 6,
@@ -104,6 +109,15 @@ plotR(
 
   whether p-values should be printed in the results, default = T
 
+- time.to.event:
+
+  type of time to event line, choose between "vertical", "horizontal",
+  "both" or "none" (default)
+
+- cens.lines:
+
+  whether censoring points should be printed
+
 - style:
 
   the formatting style of the contrast. Currently JAMA and italic
@@ -156,6 +170,11 @@ plotR(
 
   Y-axis text.size
 
+- y.breaks:
+
+  break size for the y-axis in percent (e.g. y.breaks = 2.5 equals 2.5%
+  increments)
+
 - res.size:
 
   Size of the results
@@ -200,6 +219,14 @@ plotR(
 
   Which parts of the risk table should be provided ("event", "risk",
   "none"). Default is c("event", "risk")
+
+- event.title:
+
+  title of the cumulative events table
+
+- risk.title:
+
+  title of the number at risk table
 
 - table.space:
 
@@ -246,14 +273,21 @@ t1 <- estimatR(analysis_df,
 timevar = ttt,
 event = event)
 #> 
-#> ── Initializing estimatR algorithm: 2026-06-03 14:24:49 ──
+#> ── Initializing estimatR algorithm: 2026-10-05 11:43:31 ──
 #> 
+#> Preparing data:
+#> Error in get(timevar_c): object 'ttt' not found
 #> ── Estimation complete! 
+#> Preparing data:
 #> Total runtime:
-#> 0.2 secs
+#> Preparing data:
+#> 0.02 secs
+#> Preparing data:
+#> 
+#> Preparing data:
 
 plotR(t1)
-
+#> Error: object 't1' not found
 
 #Risks in multiple groups
 t2 <- estimatR(analysis_df,
@@ -261,12 +295,23 @@ timevar = ttt,
 event = event,
 group = X2)
 #> 
-#> ── Initializing estimatR algorithm: 2026-06-03 14:24:49 ──
+#> ── Initializing estimatR algorithm: 2026-10-05 11:43:31 ──
 #> 
-#> Error in select(., {    {        group    }}): Can't select columns that don't exist.
-#> ✖ Column `X2` doesn't exist.
+#> Preparing data:
+#> ✖ Error: X2 is not a factor. Convert using the factR() function
+#> Preparing data:
+#> 
+#> Preparing data:
+#> ── Estimation complete! 
+#> Preparing data:
+#> Total runtime:
+#> Preparing data:
+#> 0.01 secs
+#> Preparing data:
+#> 
+#> Preparing data:
 
 plotR(t2)
-#> Error: object 't2' not found
+#> Data not generated with the functions estimatR, inferencR or clustR from the cancR package
 
 ```

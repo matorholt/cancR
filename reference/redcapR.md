@@ -12,12 +12,13 @@ redcapR(
   data,
   dictionary,
   namelist = list(),
+  keep.raw = NULL,
   date.vars = NULL,
   autoformat = T,
   formatlist = NULL,
   cprlist = NULL,
-  index,
-  id = study_id
+  id,
+  dt = F
 )
 ```
 
@@ -55,9 +56,9 @@ redcapR(
   optional dataframe containing cpr numbers for extraction of birth and
   sex
 
-- index:
+- id:
 
-  optional index date for calculation of age at index
+  vector of length 1 or 2 with name(s) of ids in dataframe and cprlist
 
 ## Value
 

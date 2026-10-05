@@ -6,8 +6,18 @@ environment
 ## Usage
 
 ``` r
-tickR(cli = T)
+tickR(cli = T, print = F)
 ```
+
+## Arguments
+
+- cli:
+
+  whether the output should be as cli_text (default = T)
+
+- print:
+
+  whether the current time should be printet (default = F)
 
 ## Value
 

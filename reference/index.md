@@ -20,6 +20,7 @@ Functions for typical data management tasks
 - [`readR()`](readR.md) : Load csv, excel, rds and parquet files
 - [`recodR()`](recodR.md) : Recode multiple variables
 - [`redcapR()`](redcapR.md) : Autoformatting of redcap exports
+- [`rollR()`](rollR.md) : Perform rolling operations
 - [`rowR()`](rowR.md) : Perform rowwise operations
 - [`summarisR()`](summarisR.md) : Graphical overview of an entire
   dataset
@@ -39,6 +40,7 @@ Functions that perform statistical analysis
 - [`inferencR()`](inferencR.md) : Causal inference of time-to-event data
 - [`iteratR()`](iteratR.md) : Perform multiple estimatR analyses
 - [`weightR()`](weightR.md) : Weight diagnostics for IPTW
+- [`wR()`](wR.md) : Win ratio/Win difference analysis
 
 ## Tables and figures
 
@@ -70,7 +72,7 @@ Functions customized for the danish registers
 - [`reportR()`](reportR.md) : Overview of matched and unmatched cases
 - [`searchR()`](searchR.md) : Find covariates or outcomes from the
   registers
-- [`simulatR()`](simulatR.md) : Simulate danish health registers
+- [`simulatR()`](simulatR.md) : Function for simulating data
 - [`tumR()`](tumR.md) : Map unique tumors
 - [`updatR()`](updatR.md) : Data reduction, updating and insertion of
   time-dependent covariates
@@ -100,6 +102,8 @@ Small utility functions
 - [`colR()`](colR.md) : Set default color palette
 - [`combinR()`](combinR.md) : Generate all possible
   cominations/permutations
+- [`defusR()`](defusR.md) : Defuse arguments to character string
+  regardless of quoted or non-quoted in functions.
 - [`formatR()`](formatR.md) : Auto-formatting of a data frame with
   layout option for typical levels and labels
 - [`listR()`](listR.md) : Routine modifications of lists
@@ -108,8 +112,6 @@ Small utility functions
   reset
 - [`numbR()`](numbR.md) : Format numeric vectors
 - [`powR()`](powR.md) : Automated keyboard strokes
-- [`rollR()`](rollR.md) : Assign rolling ID.
+- [`rollR()`](rollR.md) : Perform rolling operations
 - [`tickR()`](tickR.md) : First timestamp for taking time
 - [`tockR()`](tockR.md) : Last timestamp for taking time
-- [`viewR()`](viewR.md) : Graphical overview of the structure of a
-  multilevel list

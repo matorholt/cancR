@@ -1,14 +1,15 @@
-# Simulate danish health registers
+# Function for simulating data
 
-A wrapper for the simulation functions in the heaven package.
+Includes the simulation functions in the heaven package.
 
 ## Usage
 
 ``` r
 simulatR(
-  register,
+  simulate,
   n = 10,
   start.date = "2000-01-01",
+  end.date = "2025-12-31",
   pattern.list = list(),
   lpr.diag.count = 5,
   lmdb.max.prescriptions = 20,
@@ -29,10 +30,9 @@ simulatR(
 
 ## Arguments
 
-- register:
+- simulate:
 
-  vector of the registers to simulate. Choose between "lpr", "lmdb",
-  "opr", "pop", "pato", "match" and "covariates".
+  Character vector of what to simulate (see details).
 
 - n:
 
@@ -40,7 +40,11 @@ simulatR(
 
 - start.date:
 
-  starting date of the register
+  starting date of the register/dates
+
+- end.date:
+
+  end.date of the register/dates
 
 - pattern.list:
 
@@ -104,3 +108,11 @@ simulatR(
 
 a single data frame or named list of data frames with simulated
 registers
+
+## Details
+
+The following types of data can be simulated:
+
+- Dates (`"dates"`)
+
+- Registers (lpr, lmdb, opr, immune, pop, pato, match, covariates)

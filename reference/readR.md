@@ -6,7 +6,7 @@ automatic detection of file extension.
 ## Usage
 
 ``` r
-readR(path, extension = "", leading.zeros = T, na = "", ...)
+readR(path, leading.zeros = T, na = "", ...)
 ```
 
 ## Arguments
@@ -14,6 +14,14 @@ readR(path, extension = "", leading.zeros = T, na = "", ...)
 - path:
 
   path for the file to load.
+
+- leading.zeros:
+
+  whether leading zeros should be kept (default = T)
+
+- na:
+
+  character vector specifying NA strings (default = "")
 
 - ...:
 

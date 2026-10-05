@@ -6,14 +6,17 @@ Automated keyboard strokes
 
 ``` r
 powR(
-  text,
-  write.sleep = 0.05,
+  text = NULL,
+  path = NULL,
+  trim.start = 0,
+  trim.end = 0,
+  start.delay = 3,
+  chunk_delay = 0,
+  chunks = 20,
   mouse.sleep = 0.5,
-  special.sleep = 0.05,
-  where = "pc",
-  server.language = T,
-  server.options = T,
-  toggle.options = T
+  screens = 2,
+  automate = TRUE,
+  debug = FALSE
 )
 ```
 
@@ -21,33 +24,48 @@ powR(
 
 - text:
 
-  single-quote enclosed text to automate
+  single-quote enclosed text
 
-- write.sleep:
+- path:
 
-  delay between text chunks (default = 0.025 secs)
+  path to r-script
+
+- start.delay:
+
+  delay (secs) before automated typing (default = 5 seconds)
+
+- chunks:
+
+  chunk length of the text in number of lines (default = 10)
 
 - mouse.sleep:
 
   delay between mouse actions (default = 0.15 secs)
 
-- special.sleep:
+- screens:
 
-  delay betweem alt-hold and alt code (default = 0.1)
+  number of screens that is being used
 
-- where:
+- automate:
 
-  enviroment, pc, laptop or iw containing customised coordinates
+  whether automatic parenthesis and code indention should be disabled
+  (default = T)
 
-- server.language:
+- debug:
 
-  whether the language on the server should be changed (default = T)
+  whether the code output should be printed to the console instead of
+  automated
 
-- server.automate:
+- chunk.delay:
 
-  whether automatic parenthesis and quotes should be disabled (default =
-  T)
+  delay (secs) between blocks of text (default = 0 seconds)
 
 ## Value
 
-a keyboard and mouse automation that transfers the assigned text
+a keyboard and mouse automation that automatically types the assigned
+text
+
+## Details
+
+If the command is aborted abruptly, the keyboard can malfunction due to
+pressed alt. Release with shift-alt to toggle back to danish

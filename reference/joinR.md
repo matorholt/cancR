@@ -6,7 +6,7 @@ dataframes can be provided separately or as a list.
 ## Usage
 
 ``` r
-joinR(..., by, type = "left", dt = F)
+joinR(..., by, type = "left", dt = F, cartesian = TRUE)
 ```
 
 ## Arguments

@@ -88,7 +88,7 @@ loadR(
 - cancR.covariates:
 
   which covariates that should be loaded. Options are: main (non-major),
-  major (only major) and all.
+  major (only major), none (no comorbidities) and all.
 
 - ...:
 

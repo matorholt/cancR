@@ -63,6 +63,8 @@
 <span>  contrast <span class="op">=</span> <span class="st">"rd"</span>,</span>
 <span>  se <span class="op">=</span> <span class="cn">T</span>,</span>
 <span>  p.values <span class="op">=</span> <span class="cn">T</span>,</span>
+<span>  time.to.event <span class="op">=</span> <span class="st">"none"</span>,</span>
+<span>  cens.lines <span class="op">=</span> <span class="cn">F</span>,</span>
 <span>  style <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  linewidth <span class="op">=</span> <span class="fl">0.8</span>,</span>
 <span>  title <span class="op">=</span> <span class="st">""</span>,</span>
@@ -76,6 +78,7 @@
 <span>  y.title.size <span class="op">=</span> <span class="fl">6</span>,</span>
 <span>  y.title.shift <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  y.text.size <span class="op">=</span> <span class="fl">6</span>,</span>
+<span>  y.breaks <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  res.size <span class="op">=</span> <span class="fl">5</span>,</span>
 <span>  res.shift <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>,</span>
 <span>  res.spacing <span class="op">=</span> <span class="fl">1</span>,</span>
@@ -87,6 +90,8 @@
 <span>  box.linewidth <span class="op">=</span> <span class="fl">0.8</span>,</span>
 <span>  contrast.digits <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  table <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"event"</span>, <span class="st">"risk"</span><span class="op">)</span>,</span>
+<span>  event.title <span class="op">=</span> <span class="st">"Cumulative Events"</span>,</span>
+<span>  risk.title <span class="op">=</span> <span class="st">"Number at Risk"</span>,</span>
 <span>  table.space <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  table.padding <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  table.title.size <span class="op">=</span> <span class="fl">6</span>,</span>
@@ -147,6 +152,14 @@
 <dd><p>whether p-values should be printed in the results, default = T</p></dd>
 
 
+<dt id="arg-time-to-event">time.to.event<a class="anchor" aria-label="anchor" href="#arg-time-to-event"></a></dt>
+<dd><p>type of time to event line, choose between "vertical", "horizontal", "both" or "none" (default)</p></dd>
+
+
+<dt id="arg-cens-lines">cens.lines<a class="anchor" aria-label="anchor" href="#arg-cens-lines"></a></dt>
+<dd><p>whether censoring points should be printed</p></dd>
+
+
 <dt id="arg-style">style<a class="anchor" aria-label="anchor" href="#arg-style"></a></dt>
 <dd><p>the formatting style of the contrast. Currently JAMA and italic</p></dd>
 
@@ -199,6 +212,10 @@
 <dd><p>Y-axis text.size</p></dd>
 
 
+<dt id="arg-y-breaks">y.breaks<a class="anchor" aria-label="anchor" href="#arg-y-breaks"></a></dt>
+<dd><p>break size for the y-axis in percent (e.g. y.breaks = 2.5 equals 2.5% increments)</p></dd>
+
+
 <dt id="arg-res-size">res.size<a class="anchor" aria-label="anchor" href="#arg-res-size"></a></dt>
 <dd><p>Size of the results</p></dd>
 
@@ -241,6 +258,14 @@
 
 <dt id="arg-table">table<a class="anchor" aria-label="anchor" href="#arg-table"></a></dt>
 <dd><p>Which parts of the risk table should be provided ("event", "risk", "none"). Default is c("event", "risk")</p></dd>
+
+
+<dt id="arg-event-title">event.title<a class="anchor" aria-label="anchor" href="#arg-event-title"></a></dt>
+<dd><p>title of the cumulative events table</p></dd>
+
+
+<dt id="arg-risk-title">risk.title<a class="anchor" aria-label="anchor" href="#arg-risk-title"></a></dt>
+<dd><p>title of the number at risk table</p></dd>
 
 
 <dt id="arg-table-space">table.space<a class="anchor" aria-label="anchor" href="#arg-table-space"></a></dt>
@@ -288,14 +313,21 @@
 <span class="r-in"><span>timevar <span class="op">=</span> <span class="va">ttt</span>,</span></span>
 <span class="r-in"><span>event <span class="op">=</span> <span class="va">event</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> ── <span style="font-weight: bold;">Initializing estimatR algorithm: 2026-06-03 14:24:49</span> ──</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> ── <span style="font-weight: bold;">Initializing estimatR algorithm: 2026-10-05 11:43:31</span> ──</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Preparing data:</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(timevar_c):</span> object 'ttt' not found</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ── Estimation complete! </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Preparing data:</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Total runtime:</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 0.2 secs</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Preparing data:</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 0.02 secs</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Preparing data:</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Preparing data:</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">plotR</span><span class="op">(</span><span class="va">t1</span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="plotR-1.png" alt="" width="700" height="433"></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 't1' not found</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">#Risks in multiple groups</span></span></span>
 <span class="r-in"><span><span class="va">t2</span> <span class="op">&lt;-</span> <span class="fu"><a href="estimatR.html">estimatR</a></span><span class="op">(</span><span class="va">analysis_df</span>,</span></span>
@@ -303,13 +335,24 @@
 <span class="r-in"><span>event <span class="op">=</span> <span class="va">event</span>,</span></span>
 <span class="r-in"><span>group <span class="op">=</span> <span class="va">X2</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> ── <span style="font-weight: bold;">Initializing estimatR algorithm: 2026-06-03 14:24:49</span> ──</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> ── <span style="font-weight: bold;">Initializing estimatR algorithm: 2026-10-05 11:43:31</span> ──</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in select(., {    {        group    }}):</span> Can't select columns that don't exist.</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span style="color: #BB0000;">✖</span> Column `X2` doesn't exist.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Preparing data:</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #BB0000;">✖</span> Error: X2 is not a factor. Convert using the factR() function</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Preparing data:</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Preparing data:</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> ── Estimation complete! </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Preparing data:</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Total runtime:</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Preparing data:</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 0.01 secs</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Preparing data:</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Preparing data:</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">plotR</span><span class="op">(</span><span class="va">t2</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 't2' not found</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Data not generated with the functions estimatR, inferencR or clustR from the cancR package</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
@@ -323,7 +366,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
     </footer></div>

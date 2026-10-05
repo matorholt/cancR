@@ -53,7 +53,7 @@ df %>%
                             "Astma" = c("DC123", "DC234"),
                             "AMI" = list("DG123", "DG234"))),
          match = "exact")
-#> Error in UseMethod("select"): no applicable method for 'select' applied to an object of class "function"
+#> Error in setDT(data): Argument 'x' to 'setDT' should be a 'list', 'data.frame' or 'data.table'
 
 df %>%
   recodR(list("split" = list("one" = "1",
