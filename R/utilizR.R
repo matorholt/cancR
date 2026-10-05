@@ -391,7 +391,7 @@ pvertR <- function(pval,
                    style = "ama") {
 
   if(is.character(pval)) {
-    p_val <- case_when(is.na(pval) | str_detect(x, "\\d", negate=T) ~ na,
+    p_val <- case_when(is.na(pval) | str_detect(pval, "\\d", negate=T) ~ na,
                        str_detect(pval, "\\<\\s?0.001") ~ "p < 0.001",
                        T ~ pval)
   } else {

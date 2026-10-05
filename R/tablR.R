@@ -250,7 +250,7 @@ tablR <- function(data,
   }
 
   #Rounding and AMA style
-  tab <- tab %>% mutate(across(c(2:ncol(tab)), ~ ifelse(str_detect(., "%"),
+  tab <- tab %>% mutate(across(c(2:(ncol(tab)-test)), ~ ifelse(str_detect(., "%"),
                                                         str_replace(., "\\d+\\.\\d*(?=(%))", ~ numbR(as.numeric(.x), digits = digits, ama = ama)),
                                                         str_replace_all(., "\\d+\\.\\d+", ~ numbR(as.numeric(.x), digits = digits))
   )))
