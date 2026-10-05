@@ -119,7 +119,7 @@ The default summary measures for continuous variables are median, interquartile 
 
 ```{r}
 redcap_df %>%
-  factR(c(type, sex, localisation)) %>%
+  factR(c(type, sex, localisation)) %>% 
   tablR(
     group = type,
     vars=c(age, sex, localisation),

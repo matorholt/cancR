@@ -80,6 +80,7 @@ reference:
   - inferencR
   - iteratR
   - weightR
+  - wR
 
 - title: Tables and figures
   desc: >
@@ -129,6 +130,7 @@ reference:
   - closR
   - colR
   - combinR
+  - defusR
   - formatR
   - listR
   - modeR

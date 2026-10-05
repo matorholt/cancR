@@ -1,0 +1,189 @@
+![](reference/figures/logo.png)
+
+## Purpose
+
+The cancR package is developed for conducting registry-based
+epidemiological cancer research with R. The package functions span
+across the entire project workflow, from data management to plotting the
+results. Many of the functions can also be applied in a non-registry
+setting as they are useful for common data management tasks.
+
+## Installation
+
+A detailed walkthrough on how to install the cancR package is provided
+in the article “Install cancR” in the “Get started” section.
+
+## Functions
+
+The functions are divided into the chapters:  
+- Data management  
+- Statistical analyses  
+- Tables and figures  
+- Register-specific functions  
+- Miscellaneous utility functions
+
+Furthermore the package offers internal simulated dataset for testing
+the functions.
+
+## Articles
+
+The website includes numerous articles both related directly to the
+package and with more general R-guides. Each chapter above has separate
+articles with thorough examples of all functions.
+
+## Maintenance
+
+The package is regularly maintained and updated. Issues and suggestions
+should be sent to the package developer. It is recommended to update the
+cancR package often as it is still in the development phase.
+
+## Acknowledgements
+
+The package developer wishes to thank the developers of prodlim,
+riskRegression, heaven, mets, rrapply and tidyverse for their incredible
+work. This package is merely just highlighting the qualities of those
+packages. Thank you to Linda Gudjonsdottir for design of the logo.
+
+#### 
+
+##### The small print
+
+The cancR package is mainly for internal use for the Research Group at
+the Department of Plastic Surgery, Rigshospitalet, Copenhagen, Denmark.
+All use of the cancR package must be consulted with the developer of the
+package. We do not take responsibility for any use of the package
+without prior consultation with us, nor for any consequences that may
+result from such use.
+
+# Package index
+
+## Data management functions
+
+Functions for typical data management tasks
+
+- [`cpR()`](cpR.md) : Fix CPR numbers with removed leading zeros
+- [`cutR()`](cutR.md) : Cut numeric variables into intervals
+- [`datR()`](datR.md) : Convert dates from character to date format
+- [`distributR()`](distributR.md) : Assessment of distribution of
+  continuous variables with histograms, QQ-plots and the Shapiro-Wilks
+  test
+- [`factR()`](factR.md) : Factorize variables
+- [`groupR()`](groupR.md) : Extract first n groups in data frame
+- [`joinR()`](joinR.md) : Join two or more dataframes
+- [`missR()`](missR.md) : Overview of NAs in a dataframe
+- [`pvertR()`](pvertR.md) : Format p-values to AMA manual of style
+- [`structR()`](structR.md) : Convert dates to status indicator and
+  time-to-event
+- [`readR()`](readR.md) : Load csv, excel, rds and parquet files
+- [`recodR()`](recodR.md) : Recode multiple variables
+- [`redcapR()`](redcapR.md) : Autoformatting of redcap exports
+- [`rollR()`](rollR.md) : Perform rolling operations
+- [`rowR()`](rowR.md) : Perform rowwise operations
+- [`summarisR()`](summarisR.md) : Graphical overview of an entire
+  dataset
+
+## Statistical Analyses
+
+Functions that perform statistical analysis
+
+- [`estimatR()`](estimatR.md) : Absolute risk estimation of
+  time-to-event data with competing risks
+- [`extractR()`](extractR.md) : Extraction of key results from the
+  estimatR function
+- [`followR()`](followR.md) : Calculate median follow-up time using the
+  inverse Kaplan-Meier method
+- [`incidencR()`](incidencR.md) : Directly standardized incidence rates
+  using the WHO standard population
+- [`inferencR()`](inferencR.md) : Causal inference of time-to-event data
+- [`iteratR()`](iteratR.md) : Perform multiple estimatR analyses
+- [`weightR()`](weightR.md) : Weight diagnostics for IPTW
+- [`wR()`](wR.md) : Win ratio/Win difference analysis
+
+## Tables and figures
+
+Functions for producing and formatting tables and figures
+
+- [`collectR()`](collectR.md) : Collection of multiple plots into one.
+  Wrapper for ggarrange. Input must be a list of plots.
+- [`dagR()`](dagR.md) : Draw directed acyclic graphs (DAGS)
+- [`plotR()`](plotR.md) : Autoplot for estimatR, inferencR and clustR
+- [`savR()`](savR.md) : Save plots and tables
+- [`swimmR()`](swimmR.md) : Plot individual patient trajectories from
+  time-to-event data (Swimmer plot)
+- [`tablR()`](tablR.md) : Create frequency tables
+
+## Register-specific functions
+
+Functions customized for the danish registers
+
+- [`cci_timR()`](cci_timR.md) : Generation of time-dependent CCI and
+  comorbidities from the Charlson Comorbidity Index
+- [`decodR()`](decodR.md) : Decoding of the main codelist for loading
+  and searching in registries
+- [`formatR()`](formatR.md) : Auto-formatting of a data frame with
+  layout option for typical levels and labels
+- [`includR()`](includR.md) : Inclusion criteria for registry-studies
+- [`loadR()`](loadR.md) : Load registers
+- [`matchR()`](matchR.md) : Perform exposure-density matching for
+  multilevel data
+- [`reportR()`](reportR.md) : Overview of matched and unmatched cases
+- [`searchR()`](searchR.md) : Find covariates or outcomes from the
+  registers
+- [`simulatR()`](simulatR.md) : Function for simulating data
+- [`tumR()`](tumR.md) : Map unique tumors
+- [`updatR()`](updatR.md) : Data reduction, updating and insertion of
+  time-dependent covariates
+
+## Built-in datasets
+
+Datasets for testing functions
+
+- [`analysis_df`](analysis_df.md) : Simulated dataset for model testing
+- [`cancR_codes`](cancR_codes.md) : ICD diagnosis codes
+- [`covariates_df`](covariates_df.md) : Simulated time-dependent
+  covariates dataset.
+- [`match_df`](match_df.md) : Simulated dataset for the matchR algorithm
+- [`population_denmark`](population_denmark.md) : Population table,
+  Denmark
+- [`population_who`](population_who.md) : Population table, WHO
+- [`redcap_df`](redcap_df.md) : Simulated Redcap dataset
+- [`t_codes`](t_codes.md) : SNOMED Topography codes
+
+## Miscellaneous functions
+
+Small utility functions
+
+- [`checkR()`](checkR.md) : Detection of positivity violations (empty
+  levels)
+- [`closR()`](closR.md) : Pick the closest value from a range in vector.
+- [`colR()`](colR.md) : Set default color palette
+- [`combinR()`](combinR.md) : Generate all possible
+  cominations/permutations
+- [`defusR()`](defusR.md) : Defuse arguments to character string
+  regardless of quoted or non-quoted in functions.
+- [`formatR()`](formatR.md) : Auto-formatting of a data frame with
+  layout option for typical levels and labels
+- [`listR()`](listR.md) : Routine modifications of lists
+- [`modeR()`](modeR.md) : Get the mode (most common value) of a vector.
+- [`multitaskR()`](multitaskR.md) : Start a multisession with automatic
+  reset
+- [`numbR()`](numbR.md) : Format numeric vectors
+- [`powR()`](powR.md) : Automated keyboard strokes
+- [`rollR()`](rollR.md) : Perform rolling operations
+- [`tickR()`](tickR.md) : First timestamp for taking time
+- [`tockR()`](tockR.md) : Last timestamp for taking time
+
+# Articles
+
+### All vignettes
+
+- [Basic R](basic.md):
+- [Install and UpdatR the cancR package](cancR.md):
+- [Data Management](data_management.md):
+- [Analysis of time-to-event data](estimatR.md):
+- [Import data to R](import.md):
+- [Install and Update R](install.md):
+- [Redcap and R](redcap.md):
+- [Statistical Analysis Plan](sap.md):
+- [Setup and New Projects](setup.md):
+- [Tables](tables.md):

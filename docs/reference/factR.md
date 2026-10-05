@@ -1,0 +1,89 @@
+# Factorize variables
+
+Convenience function for levelling, labelling and referencing multiple
+factors in one step. Works with piping. The order of effects is:
+
+1.  Set as factor (fct_infreq setting levels based on frequency, most
+    common is reference)
+
+2.  Set reference levels
+
+3.  Set levels manually
+
+4.  Set labels
+
+The list can be non-complete if no modifications should be passed to the
+remaining variables
+
+## Usage
+
+``` r
+factR(
+  data,
+  vars,
+  num.vars = NULL,
+  reference = list(),
+  levels = list(),
+  labels = list(),
+  lab_to_lev = FALSE,
+  na.level = FALSE,
+  reverse = F,
+  auto.format = F,
+  dt = F
+)
+```
+
+## Arguments
+
+- data:
+
+  dataframe
+
+- vars:
+
+  Vector of variables that should be factorized. The names from the
+  lists "reference", "labels" and "levels" are automatically registered.
+
+- num.vars:
+
+  vector of variables with pseudonumeric ordering
+
+- reference:
+
+  List of variables with the reference level (e.g. list("v1" = "a"))
+
+- levels:
+
+  List of variables with the corresponding levels (e.g. list("v1" =
+  "c("a","b","c","d","e")))
+
+- labels:
+
+  List of variables with the corresponding labels (e.g. list("v3" =
+  c("e" = "epsilon", "d" = "delta")))
+
+- lab_to_lev:
+
+  Whether changing labels should change levels if these are not
+  specified (defaults to TRUE)
+
+- na.level:
+
+  whether NAs should be added as a separate level named "missing"
+  (default = F)
+
+- reverse:
+
+  Whether the levels should be reversed (default is FALSE)
+
+- auto.format:
+
+  whether no/yes and 0/1 should be autoformatted with no as reference
+
+- dt:
+
+  whether the data frame should be returned as data.table (default = F)
+
+## Value
+
+Returns the inputted dataframe with modified factor variables

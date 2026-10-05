@@ -95,11 +95,11 @@ The `estimatR` function also comes with natural extension such as the `extractR`
 We use the built-in dataset `analysis_df` for all examples:
 
 ```{r, echo = F}
-df <- analysis_df %>% select(g2, g3, g4, event, event2, event3, ttt, X6,X7,X8_bin)
+df <- analysis_df %>% select(g2, g3, g4, event, event2, event3, t_event, x6,x1, x2)
 df %>% head
 ```
 
-`event2` is our event of interest and `ttt` is our time-to variable. `g2` to `g4` are different groups with 2,3 and 4 levels resp. `X6` to `X8_bin` are covariates for later adjustment.
+`event2` is our event of interest and `t_event` is our time-to variable. `g2` to `g4` are different groups with 2,3 and 4 levels resp. `x6` to `x1` are covariates for later adjustment.
 
 ### Analysis of one group
 
@@ -108,7 +108,7 @@ For the analysis of a single group, we only need to specify the arguments `data`
 ```{r}
 g1_res <- estimatR(
   data = df,
-  timevar = ttt,
+  timevar = t_event,
   event = event2)
 ```
 
@@ -139,7 +139,7 @@ For the analysis of two groups we need to specify the `group` argument. This wil
 ```{r, results = "hide"}
 g2_res <- estimatR(
   df,
-  timevar = ttt,
+  timevar = t_event,
   event = event2,
   group = g2
 )
@@ -164,10 +164,10 @@ If we need to adjust for potential confounders we specify the `vars` argument
 ```{r, results = "hide"}
 g2_res <- estimatR(
   df,
-  timevar = ttt,
+  timevar = t_event,
   event = event2,
   group = g2,
-  vars = c(X6,X7,X8_bin)
+  vars = c(x6,x1,x2)
 )
 ```
 
@@ -187,7 +187,7 @@ Here we evalute the outcomes event, event2 and event3 with the same group
 
 g2_multires <- iteratR(
   data=df,
-  timevar = "ttt",
+  timevar = "t_event",
   event = c("event", "event2", "event3"),
   group = "g2",
   cancR.method = "estimatR",
@@ -212,7 +212,7 @@ iteratR(
 )
 ```
 
-We can also plot all three models by changing method to `"plotR"`
+We can also plot all three models by changing method to `plotR`
 
 ```{r, results = "hide"}
 iteratR(

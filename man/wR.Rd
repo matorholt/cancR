@@ -3,17 +3,6 @@
 \name{wR}
 \alias{wR}
 \title{Win ratio/Win difference analysis}
-\format{
-A data frame with four columns:
-\describe{
-\item{id}{ID column with multiple rows per subject}
-\item{event}{Event type; \code{0} = censoring}
-\item{event_time}{Time to event}
-\item{allocation}{Treatment arm; \code{"trt"} = treatment, \code{"ctrl"} = control}
-}
-The last row per \code{id} must include either a terminal event or censoring,
-with the corresponding \code{event_time} representing the maximum follow-up date.
-}
 \usage{
 wR(
   data,
@@ -26,7 +15,15 @@ wR(
 )
 }
 \arguments{
-\item{data}{Dataset; see \code{format}.}
+\item{data}{A data frame with four columns:
+\describe{
+\item{id}{ID column with multiple rows per subject}
+\item{event}{Event type; \code{0} = censoring}
+\item{event_time}{Time to event}
+\item{allocation}{Treatment arm; \code{"trt"} = treatment, \code{"ctrl"} = control}
+}
+The last row per \code{id} must include either a terminal event or censoring,
+with the corresponding \code{event_time} representing the maximum follow-up date.}
 
 \item{hierarchy}{Named list of outcomes with corresponding event numbers
 (e.g. \code{list("death" = 1, "recurrence" = 2)}). The order determines
@@ -45,10 +42,10 @@ allowing for slightly faster computation.}
 }
 \value{
 A list containing the following elements:
-\describe{
-\item{win_counts}{Wins, losses, ties and proportions — overall and per component}
-\item{win_ratio}{Win ratio with 95\\% CI, SE, Z-statistic and p-value — overall and per component}
-\item{win_difference}{Win difference with 95\\% CI, SE, Z-statistic and p-value — overall and per component}
+\itemize{
+\item \code{win_counts}: Wins, losses, ties and proportions, overall and per component
+\item \code{win_ratio}: Win ratio with 95\\% CI, SE, Z-statistic and p-value, overall and per component
+\item \code{win_difference}: Win difference with 95\\% CI, SE, Z-statistic and p-value, overall and per component
 }
 }
 \description{

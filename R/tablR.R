@@ -129,11 +129,11 @@ tablR <- function(data,
   num_c <- defusR(num.vars)
 
   #Categorical vars
-  vars_cat <- vars_c[map_lgl(vars_c, ~ {all(df[[.x]] %>% class %in% c("character", "factor"))})]
+  vars_cat <- vars_c[map_lgl(vars_c, ~ {all(data[[.x]] %>% class %in% c("character", "factor"))})]
 
   keep_c <- defusR(keep.raw)
 
-  keep_vars <- c(keep_c, map(keep_c, ~ {as.character(na.omit(unique(df[[.x]])))}) %>% unlist)
+  keep_vars <- c(keep_c, map(keep_c, ~ {as.character(na.omit(unique(data[[.x]])))}) %>% unlist)
 
   if(!missing(weights)) {
     weights_c <- defusR(weights)
