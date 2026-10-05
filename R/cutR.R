@@ -10,6 +10,7 @@
 #' @param name.list list of names for new variables in the format: list("new" = "old"). Names can also be provided as a vector of same length as vars.
 #' @param name.pattern naming pattern that should automatically be pasted on the end of all the specified variable names in "vars".
 #' @param simplify whether date intervals should be simplified
+#' @param autoformat whether > and < should be inserted at the min/max levels and the right limits should be subtracted 0.1/1 (default = T)
 #' @param digits number of digits for label formatting
 #' @param dt whether a data.table should be returned (default = F)
 #'
@@ -55,6 +56,7 @@ cutR <- function(data,
                  name.list = list(),
                  name.pattern = NULL,
                  simplify = T,
+                 autoformat = T,
                  digits = 0,
                  dt=F) {
 
@@ -88,7 +90,7 @@ cutR <- function(data,
 
       if(length(name.list) == length(vars)) {
 
-      name.list <- as.list(vars) %>% set_names(name.list)
+        name.list <- as.list(vars) %>% set_names(name.list)
       } else {
         return(cli::cli_alert_danger("Error: Length of vars.list not equal to length of variables"))
 
@@ -137,7 +139,7 @@ cutR <- function(data,
                                               paste0(c(1800:2100), "-05-01"),
                                               paste0(c(1800:2100), "-09-01")))))
 
-  nlist <- list(bmi = c(0,18, 25, 30, 35, 100))
+  nlist <- list(bmi = c(0,18.5, 25, 30, 35, 40, 100))
 
   #Update seq.list
   seq.vecs <- map(vars, function(v) {
@@ -148,7 +150,7 @@ cutR <- function(data,
 
     } else if(any(seq.list[[v]] %in% names(tlist))) {
 
-      if(class(dat[[v]]) %in% c("Date")) {
+      if(any(class(dat[[v]]) %in% c("Date"))) {
 
         tlist[[seq.list[[v]]]][["date"]]
 
@@ -164,6 +166,7 @@ cutR <- function(data,
     }
 
   }) %>% set_names(vars)
+
 
   map(vars, function(v) {
 
@@ -207,6 +210,33 @@ cutR <- function(data,
                                 str_detect(get(label), "\\d{4}-04"), paste0(str_extract(get(label), "\\d{4}"), ", q2"),
                                 default = paste0(str_extract(get(label), "\\d{4}"), ", q1"))]
       }
+
+      if(autoformat & all(seq.vecs[[v]] %nin% c("quarter", "third", "half"))) {
+        min <- min(seq.vecs[[v]])
+        max <- max(seq.vecs[[v]])
+
+        levs <- as.list(na.omit(unique(dat[[label]])))
+
+        levs <- levs %>% set_names(map_vec(levs, ~ {
+
+          #Insert > and < at ends
+          .x <- str_replace(.x, paste0("^", min, "-"), "<") %>%
+            str_replace(., paste0("(.*)-",max, "$"), "≥\\1")
+
+          #Extract remaining ends and retract 1/0.1
+          right <- str_extract(.x, "(?<=(-)).*")
+
+          right_rep <- as.character(as.numeric(right) - ifelse(str_count(right) == 1, 0.1, 1))
+
+          if(!is.na(right_rep)) str_replace(.x, right, right_rep) else .x
+
+        })
+        )
+
+        dat <- recodR(dat,
+                      list(levs) %>% set_names(label))
+      }
+
     }
 
     dat[, c(label) := ifelse(str_detect(get(label), "NA"), NA, get(label))]

@@ -24,6 +24,7 @@
 #' @param weights optional name of the column containing weights for weighted summaries
 #' @param digits number of digits
 #' @param ama whether percentages >10 should be without digits per AMA journal of style. Default = T.
+#' @param style character vector specifiying journal stiles. Supported: "lancet".
 #' @param simplify a list of column names that should be simplified by dropping specified levels (e.g. 0 or "no") for simple output.
 #' Groups of size > 1 should be named such as: list("IHC" = c("cd10", "sox10", "ck"), "necrosis", "margins")
 #' @param simplify.remove vector of labels that should be removed from the columns assigned in the "simplify" argument. Default = c("no", "0")
@@ -95,6 +96,7 @@ tablR <- function(data,
                   weights,
                   digits = 1,
                   ama = T,
+                  style = NULL,
                   simplify = list(),
                   simplify.remove = c("no", "No", "0"),
                   print = F,
@@ -210,7 +212,9 @@ tablR <- function(data,
                                          mean = "Mean",
                                          sd="SD",
                                          range = "Range",
-                                         Nmiss = "Missing")
+                                         Nmiss = "Missing"),
+                       digits = 3L,
+                       digits.pct = 3L,
   )
 
   if(missing(group)) {
@@ -234,10 +238,9 @@ tablR <- function(data,
   tab <- summary(table,
                  text=T,
                  labelTranslations = headings_reverse,
-                 digits = digits) %>%
+                 digits = 3L) %>%
     as.data.frame() %>%
     dplyr::rename("var" = 1)
-
 
 
   if(censur) {
@@ -246,16 +249,12 @@ tablR <- function(data,
 
   }
 
-  if(ama) {
+  #Rounding and AMA style
+  tab <- tab %>% mutate(across(c(2:ncol(tab)), ~ ifelse(str_detect(., "%"),
+                                                        str_replace(., "\\d+\\.\\d*(?=(%))", ~ numbR(as.numeric(.x), digits = digits, ama = ama)),
+                                                        str_replace_all(., "\\d+\\.\\d+", ~ numbR(as.numeric(.x), digits = digits))
+  )))
 
-    tab <- tab %>% mutate(across(c(2:ncol(tab)), ~ ifelse(str_detect(., "%"),
-                                                          ifelse(as.numeric(str_extract(., "\\d+\\.\\d*(?=(%))")) >= 10,
-                                                                 str_replace(., "\\d+\\.\\d*(?=(%))", as.character(round(as.numeric(str_extract(., "\\d+\\.\\d*(?=(%))")),0))),
-                                                                 .)
-
-                                                          , .)))
-
-  }
 
   #Update names from labs.headings
   if(length(labs.headings) > 0 & class(simplify) == "list") {
@@ -345,6 +344,12 @@ tablR <- function(data,
            var = str_pad(str_trim(var), width = max(str_count(str_trim(var))), side = "right"),
            var = str_remove(var, "xzx")) %>%
     dplyr::rename(" " = 1)
+
+  if(!is.null(style)) {
+
+    if(style == "lancet") tab <- tab %>% mutate(across(c(2:ncol(tab)), ~ str_replace_all(., "\\.", "\u00B7")))
+
+  }
 
   if(print) {
     print(tab)

@@ -9,11 +9,11 @@ incidencR(
   group,
   strata = list(c("year")),
   unit = 1e+05,
-  ci.method = "lognormal",
   reference = "full",
   index,
   age = age,
-  sex = sex
+  sex = sex,
+  dt = F
 )
 }
 \arguments{
@@ -23,7 +23,7 @@ incidencR(
 
 \item{strata}{list of vectors for which strata the incidence rates should be reported (e.g. per age-group and sex)}
 
-\item{ci.method}{the method for derivation of confidence intervals. Default is "normal". If negative CIs are reported, use "lognormal"}
+\item{unit}{the unit of the incidence rate. Default is 100.000 person years}
 
 \item{reference}{whether the reference population should include all possible age-sex-groups ("full" (default)) or only the age-groups present in data ("partial")}
 
@@ -32,8 +32,6 @@ incidencR(
 \item{age}{name of the age variable}
 
 \item{sex}{name of the sex variable}
-
-\item{pyears}{the unit of the incidence rate. Default is 100.000 person years}
 }
 \value{
 a standardized incidence rate of the overall population and, if specified in the strata-argument, stratified incidence rates

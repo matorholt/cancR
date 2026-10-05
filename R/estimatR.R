@@ -116,9 +116,10 @@ estimatR <- function(data,
                      verbose = T,
                      dt = F) {
 
-  if(verbose) cli::cli_h2("Initializing estimatR algorithm: {tickR(print=T, cli=F)}")
-
-  start <- tickR.start
+  if(verbose) {
+    cli::cli_h2("Initializing estimatR algorithm: {tickR(print=T, cli=F)}")
+    start <- tickR.start
+  }
 
   if(verbose) {
   on.exit({

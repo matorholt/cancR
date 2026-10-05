@@ -34,9 +34,12 @@ Imports:
     cli,
     ggpubr,
     haven,
+    lava,
+    marginaleffects,
     mets,
     pammtools,
     progressr,
+    readxl,
     survminer,
     tibble,
     timereg

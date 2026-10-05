@@ -7,8 +7,7 @@
 #' @param data data set containing age, sex and index date and group
 #' @param group optional if incidence rates should be provided per group
 #' @param strata list of vectors for which strata the incidence rates should be reported (e.g. per age-group and sex)
-#' @param pyears the unit of the incidence rate. Default is 100.000 person years
-#' @param ci.method the method for derivation of confidence intervals. Default is "normal". If negative CIs are reported, use "lognormal"
+#' @param unit the unit of the incidence rate. Default is 100.000 person years
 #' @param reference whether the reference population should include all possible age-sex-groups ("full" (default)) or only the age-groups present in data ("partial")
 #' @param index variable name of the index data
 #' @param age name of the age variable
@@ -72,28 +71,30 @@ incidencR <- function(data,
                       group,
                       strata = list(c("year")),
                       unit = 100000,
-                      ci.method = "lognormal",
                       reference = "full",
                       index,
                       age = age,
-                      sex = sex) {
+                      sex = sex,
+                      dt = F) {
 
-  if(reference %nin% c("full", "partial")) cat("Error: Argument reference must be full or partial")
+  #Return DT if input is DT and dt is not specified
+  if(is.data.table(data) & missing(dt)) dt <- T
 
-  data <- data %>%
-    rename(sex = {{sex}},
-           age = {{age}},
-           index = {{index}})
+  if(reference %nin% c("full", "partial", "male", "female")) cat("Error: Argument reference must be full, partial, male or female")
+
+  dat <- as.data.table(data)
+
+  setnames(dat,
+           c(defusR(c(sex, age, index))),
+           c("sex", "age", "index"))
+
+  covs <- c("age_group", "sex", "year")
 
   if(!missing(group)) {
 
-    group_c <- data %>% select({{group}}) %>% names
-
-  } else {
-
-    group_c <- "grp"
-    data <- data %>%
-      mutate(grp = 1)
+    group_c <- defusR(group)
+    dat <- dat[, (group_c) := as.character(get(group_c))]
+    covs <- c(covs, group_c)
 
   }
 
@@ -103,129 +104,95 @@ incidencR <- function(data,
     cli::cli_ul(c(paste0("Age: ", sum(is.na(data$age))), paste0("Sex: ", sum(is.na(data$sex)))))
   }
 
-
-  aggregate_df <- data %>%
-    drop_na(sex, age) %>%
-    mutate(year = str_extract(index, "\\d{4}"),
-           sex = str_to_lower(str_extract(sex, "\\w"))) %>%
+  aggregate_df <-
+    dat[!is.na(sex) & !is.na(age)] %>%
     cutR(age,
          c(seq(0,85,5), 150),
-         "age_group") %>%
-    mutate(age_group = ifelse(age_group == "85-150", "85+", as.character(age_group)),
-           !!sym(group_c) := as.character(!!sym(group_c))) %>%
-    select(year, age_group, sex, !!sym(group_c)) %>%
-    group_by(!!sym(group_c), year, age_group, sex) %>%
-    summarise(count = n(), .groups = "drop") %>%
-    ungroup
-
-
+         "age_group",
+         autoformat = F) %>%
+    .[, `:=` (year = str_extract(index, "\\d{4}"),
+              sex = str_to_lower(str_extract(sex, "\\w")),
+              age_group = ifelse(age_group == "85-150", "85+", as.character(age_group)))] %>%
+    .[, covs, with = FALSE] %>%
+    .[, count := .N, by = covs]
 
   #Prep for expand.grid. If full all unique levels in pop_DK, if partial only unique levels in data.
-  grid_list <- c(lapply(c("sex", "age_group"), function(i) {
+  grid_list <-
+    c(map(c("age_group", "sex"), function(i) {
 
-    if(reference == "full") levels <- unique(population_denmark[[i]])
+      if(reference == "full") levels <- unique(population_denmark[[i]])
 
-    if(reference == "partial") levels <- unique(aggregate_df[[i]])
+      if(reference == "partial") levels <- unique(aggregate_df[[i]])
 
-    levels
+      levels
 
-  }),
-  list(as.character(do.call(seq, as.list(range(as.numeric(aggregate_df[["year"]])))))),
-  list(as.character(unique(aggregate_df[[group_c]])))) %>% set_names("sex", "age_group", "year", group_c)
+    }),
+    #Sequence of years in observed population
+    list(as.character(do.call(seq, as.list(range(as.numeric(aggregate_df[["year"]])))))))
+
+  if(!missing(group)) grid_list <- c(grid_list, list(as.character(unique(aggregate_df[[group_c]]))))
+
+  grid <- do.call(CJ, grid_list %>% set_names(covs))
 
   full_data <-
-    left_join(expand.grid(grid_list), aggregate_df, by = c("sex", "age_group", "year", group_c)) %>%
-    left_join(., population_denmark %>% rename(fu = population), by = c("sex", "age_group", "year")) %>%
-    left_join(., population_who, by = c("sex", "age_group"), relationship = "many-to-many") %>%
-    mutate(year = as.numeric(year)) %>%
-    rename(age = age_group) %>%
-    mutate(count = ifelse(is.na(count), 0, count))
+    joinR(grid, aggregate_df, by = covs) %>%
+    joinR(., population_denmark, by = c("sex", "age_group", "year")) %>%
+    .[, count := ifelse(is.na(count), 0, count)] %>%
+    .[, year := as.numeric(year)] %>%
+    factR(vars = covs[covs != "year"])
+
+  setnames(full_data, "population", "total")
 
 
-  get_rates <- function(data, strata=NULL) {
-
-    strata_v <- unique(c(strata, c("age","sex")))
-
-    data <- data %>%
-      #Strata-specific counts and pyears
-      group_by(!!!syms(strata_v)) %>%
-      summarise(count = sum(count),
-                pyears = sum(fu),
-                population = first(population), .groups="drop") %>%
-
-      #Estimate standardized rates stratified on strata
-      group_by(!!!syms(strata)) %>%
-      mutate(cases = sum(count),
-             rate = count/pyears,
-             rate_var = count / pyears ^ 2,
-             crude_rate = sum(count)/sum(pyears),
-             crude_var = sum(count) / sum(pyears) ^2,
-             #WHO standard is 100000 in total
-             wts=population/sum(population),
-             weighted_rate = sum(wts*(rate)),
-             weighted_var=sum(as.numeric((wts^2)*rate_var))
-      ) %>%
-      ungroup() %>%
-      distinct(!!!syms(strata), .keep_all = T)
-
-    if(ci.method == "normal") {
-
-      data <- data %>%
-        mutate(crude_lower=unit*(crude_rate+qnorm((1-0.95)/2)*sqrt(crude_var)),
-               crude_upper=unit*(crude_rate-qnorm((1-0.95)/2)*sqrt(crude_var)),
-               weighted_lower=unit*(weighted_rate+qnorm((1-0.95)/2)*sqrt(weighted_var)),
-               weighted_upper=unit*(weighted_rate-qnorm((1-0.95)/2)*sqrt(weighted_var)))
-    }
-
-    if(ci.method == "lognormal") {
-
-      data <- data %>%
-        mutate(crude_lower=unit*exp((log(crude_rate)+qnorm((1-0.95)/2)*sqrt(crude_var)/(crude_rate))),
-               crude_upper=unit*exp((log(crude_rate)-qnorm((1-0.95)/2)*sqrt(crude_var)/(crude_rate))),
-               weighted_lower=unit*exp((log(weighted_rate)+qnorm((1-0.95)/2)*sqrt(weighted_var)/(weighted_rate))),
-               weighted_upper=unit*exp((log(weighted_rate)-qnorm((1-0.95)/2)*sqrt(weighted_var)/(weighted_rate))))
-
-    }
-
-    data %>%
-      mutate(crude_rate=unit*crude_rate,
-             weighted_rate = unit*weighted_rate,
-             across(contains(c("lower", "upper")), ~ ifelse(is.na(.), 0, .))) %>%
-      select(!!!syms(strata), cases, pyears, crude_rate, crude_lower, crude_upper, weighted_rate, weighted_lower, weighted_upper)
-
-  }
-
-
-
-  out.list <- list()
-
-  #Overall
-  out.list[["overall"]] <-
-    full_data %>%
-    get_rates() %>%
-    slice(1)
+  rhs <- paste0(c("age_group", "sex", "splines::ns(year, df = 4)", "offset(log(total))"), collapse = " + ")
 
   if(!missing(group)) {
-
-    out.list[[group_c]] <-
-      full_data %>%
-      get_rates(strata=group_c)
-
-
-
+    rhs <- paste0(group_c, " + ", rhs)
   }
 
-  #Strata
-  for(i in strata) {
 
-    out.list[[paste0(i, collapse="_")]] <-
-      full_data %>%
-      get_rates(i)
+  mod <- glm(as.formula(paste0("count ~ ", rhs)),
+             data   = full_data,
+             family = poisson(link = "log")
+  )
 
-  }
+  #Add standard populations
+  pred_dat <-
+    full_data %>%
+    #Fix person years unit
+    mutate(total = unit) %>%
+    joinR(population_who, population_euro, by = c("sex", "age_group")) %>%
+    rename(who = population.x,
+           euro = population.y) %>%
+    group_by(!!!syms(covs)) %>%
+    #Split weight within groups (over years)
+    mutate(across(c(who, euro), ~ . / n())) %>%
+    ungroup()
 
-  out.list
+  #Loop over overall + strata specifications
+  res <- imap(c(list(overall = NULL), strata), function(svars, stratum) {
 
+    #Loop over standard populations (NULL = Crude)
+    imap(list(crude = NULL, euro = "euro", who = "who"), function(w, nm) {
 
+      args <- list(model   = mod,
+                   newdata = pred_dat,
+                   by      = if (is.null(svars)) TRUE else svars)
+
+      if (!is.null(w)) args$wts <- w
+
+      out <- do.call(marginaleffects::avg_predictions, args) %>%
+        as.data.frame() %>%
+        select(any_of(svars), estimate, conf.low, conf.high) %>%
+        rename_with(~ paste0(c("estimate", "lower", "upper"), "_", nm),
+                    c(estimate, conf.low, conf.high))
+
+      if(dt) as.data.table(out) else as.data.frame(out)
+
+    }) %>% {
+      if(is.null(svars)) bind_cols(.) else joinR(., by = svars)
+    }
+
+  }) %>% set_names(c("overall", map_chr(strata, ~ paste(.x, collapse = "_"))))
 
 }

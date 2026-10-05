@@ -31,6 +31,7 @@ plotR(
   y.title.size = 6,
   y.title.shift = 0,
   y.text.size = 6,
+  y.breaks = NULL,
   res.size = 5,
   res.shift = c(0, 0),
   res.spacing = 1,
@@ -42,6 +43,8 @@ plotR(
   box.linewidth = 0.8,
   contrast.digits = 1,
   table = c("event", "risk"),
+  event.title = "Cumulative Events",
+  risk.title = "Number at Risk",
   table.space = 1,
   table.padding = 1,
   table.title.size = 6,
@@ -106,6 +109,8 @@ plotR(
 
 \item{y.text.size}{Y-axis text.size}
 
+\item{y.breaks}{break size for the y-axis in percent (e.g. y.breaks = 2.5 equals 2.5\% increments)}
+
 \item{res.size}{Size of the results}
 
 \item{res.shift}{Vector of XY shifting of the results}
@@ -127,6 +132,10 @@ plotR(
 \item{contrast.digits}{Number of digits on the contrasts}
 
 \item{table}{Which parts of the risk table should be provided ("event", "risk", "none"). Default is c("event", "risk")}
+
+\item{event.title}{title of the cumulative events table}
+
+\item{risk.title}{title of the number at risk table}
 
 \item{table.space}{Spacing between counts in risk table}
 

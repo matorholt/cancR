@@ -94,7 +94,8 @@ savR <- function(object,
                  size = 9,
                  table.width = 1,
                  folder = NULL,
-                 sep = ";") {
+                 sep = ";",
+                 verbose = T) {
 
   formats <- c("pdf", "svg", "tiff", "jpg", "png", "rds", "csv", "parquet")
 
@@ -120,8 +121,8 @@ savR <- function(object,
   if(folder != getwd()) {
 
     if(!dir.exists(paste0(getwd(), "/", folder))) {
-      cli::cli_alert_info("Directory not found")
-      cli::cli_text("Created: {paste0(getwd(), \'/\', folder)}")
+      if(verbose) cli::cli_alert_info("Directory not found")
+      if(verbose) cli::cli_text("Created: {paste0(getwd(), \'/\', folder)}")
       dir.create(paste0(getwd(), "/", folder))
     }
   }
@@ -178,7 +179,7 @@ savR <- function(object,
 
     }
 
-    return(cli::cli_alert_success("Done"))
+    if(verbose) return(cli::cli_alert_success("Done")) else return(NULL)
 
   }
 
@@ -191,8 +192,8 @@ savR <- function(object,
 
   if("flextable" %in% class(object)) {
 
-    cat("\n\nExports")
-    cat(paste0("\nFlextable: "))
+    if(verbose) cli::cli_text("Exports")
+    if(verbose) cli::cli_text("Flextable: ")
 
     object %>%
       fontsize(size = size, part = "all") %>%
@@ -200,7 +201,7 @@ savR <- function(object,
       width(width=table.width) %>%
       save_as_docx(path = paste0(getwd(), "/", folder, "/", name, ".docx", collapse=""))
 
-    cli::cli_alert_success("Done")
+    if(verbose) cli::cli_alert_success("Done")
   }
 
   if("ggplot" %in% class(object)) {
@@ -225,12 +226,10 @@ savR <- function(object,
 
     format <- format[format %nin% c("csv", "rds")]
 
-    cat(paste0("\n\nExporting: ", name))
+    if(verbose) cli::cli_text(paste0("Exporting: ", name))
     for(p in format) {
 
-      print(paste0(name, ".", p, collapse=""))
-
-      cat(paste0("\n", p, ": "))
+      if(verbose) cli::cli_text(paste0(p, ": "))
 
       if(p == "tiff") {
         ggsave(filename=paste0(name, ".", p, collapse=""),
@@ -257,7 +256,7 @@ savR <- function(object,
 
       }
 
-      cli::cli_alert_success("Done")
+      if(verbose) cli::cli_alert_success("Done")
 
     }
   }

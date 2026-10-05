@@ -16,25 +16,33 @@
 #' @export
 #'
 #'
+#'
 
+# t_codes <- readR("../Supplemental data/tcodes/tcodes.xlsx") %>%
+#   mutate(depth = case_when(str_detect(danish, "[Ll]ymfe") ~ "lymph",
+#                            str_detect(t.code, "^T1[012]") ~ "bone",
+#                            str_detect(t.code, "^T55") ~ "gland")) %>%
+#   select(-danish)
+# sort(unique(t_codes$localisation))
+# #
 # pato <- tribble(
 #   ~ record_id, ~ index,   ~ snomed,
-#   #Three unique tumors and one
+#   #Three unique tumors and one recurrence
 #   1, "2012-01-01", "T02120 M80703 M84003",
 #   1, "2012-02-01", "T02121 M80704 M80003",
 #   1, "2012-08-31", "T29030 M80706",
 #   1, "2013-04-04", "T0220B M80903",
 #   1, "2013-05-04", "T0220B M87003",
-#   1, "2013-06-04", "T29030 M80906",
+#   1, "2013-06-04", "T29030 M87006",
 #   1, "2016-01-01", "T0282D TY9000 M80703",
 #   1, "2017-01-01", "T0282C M80703",
 #   #Single tumor
 #   2, "2012-01-01", "T0282C M87003",
-#   #One skin cancer, one competing cancer and three metastases
+#   #One skin cancer, one competing cancer and three metastases (1 LR to skin pcc and two local to lung pcc)
 #   3, "2012-01-01", "T0282C M80703",
 #   3, "2015-01-01", "T29030 M80703" ,
 #   3, "2016-01-01", "T29030 M80706" ,
-#   3, "2016-03-01", "T0848F M80706",
+#   3, "2016-03-01", "T08810 M80706",
 #   3, "2016-04-01", "T29031 M80706",
 #   #One skin cancer, change in diagnosis BCC -> MM
 #   4, "2013-04-04", "T0220B M80903",
@@ -44,7 +52,7 @@
 #   5, "2001-03-01", "T0220B M88903",
 #   5, "2005-01-01", "T0220B M88003",
 #   #One skin cancer, specific to unspecific shift
-#   6, "2001-01-01", "T0282C M80503",
+#   6, "2001-01-01", "T0282C M80003",
 #   6, "2001-02-01", "T0282C M80703",
 #   #Different sarcomas to test m88 vs. m8830, m8832, m889
 #   7, "2001-01-01", "T0282C M88303",
@@ -60,8 +68,9 @@
 #   # Ear+Skin < 90
 #   10, "2001-01-01", "T0220B M80503",
 #   10, "2001-02-01", "T01000 M80503",
-#   # Ear+Skin > 90
-#   11, "2001-01-01", "T0220B M80503",
+#   # Ear and scalp + Skin > 90 - recurrence only to the first tumor
+#   11, "2001-01-01", "T0282C M80503",
+#   11, "2001-02-03", "T0220B M80503",
 #   11, "2003-02-01", "T01000 M80503",
 #   # Skin+Skin < 90 - BCC
 #   12, "2001-01-01", "T01000 M80903",
@@ -101,7 +110,10 @@
 #   #Competing T-codes for both primary and lymph node
 #   20, "2001-07-01", "T0220B M80703",
 #   20, "2002-07-01", "T0220B M80706",
-#   20, "2003-06-01", "T0810S TY0100 T28500 M80706"
+#   20, "2003-06-01", "T0810S TY0100 T28500 M80706",
+#   # Unspecific TY codes needs to be L=L
+#   21, "2000-01-01", "TY6960 M88903",
+#   21, "2001-06-01", "TY4660 M88903"
 # )
 # #
 # tumor_list <- list("pcc" = c("m807", "m805"),
@@ -110,16 +122,8 @@
 #      #"sarcoma" = "m88",
 #      "ups" = "m8830",
 #      "dfsp" = "m8832",
-#      "lms" = "m889[02]"
+#      "lms" = "m889"
 #      )
-#
-# test <- tumR(#pato %>% filter(record_id == 20),
-#   pato,
-#   tumor = tumor_list,
-#   verbose = F,
-#   loc.exact = F,
-#   pnr = record_id,
-#   date = index)
 
 tumR <- function(data,
                  tumor,
@@ -130,7 +134,8 @@ tumR <- function(data,
                  verbose = F,
                  tumor_distance = c(-90, 365.25*5),
                  meta_distance = 365.25 * 2,
-                 exclude = NULL) {
+                 exclude = NULL,
+                 skin.only = F) {
 
   cli::cli_h2("Initializing tumR algorithm: {tickR(print=T, cli=F)}")
 
@@ -148,6 +153,8 @@ tumR <- function(data,
   pnr_c <- defusR(pnr)
   date_c <- defusR(date)
 
+  if(any(c(pnr_c, date_c) %nin% names(data))) return(cli::cli_alert_danger("{c(pnr_c, date_c)[c(pnr_c, date_c) %nin% names(tdf)]} not in found in data"))
+  if(length(unique(data[[pnr_c]])) > 10 && verbose) return(cli::cli_alert_danger("Set verbose = F when running more than 10 ids"))
   if(loc.exact) loc.exact <- "localisation" else loc.exact <- "cluster"
 
   ##############################################  Custom functions  ##############################################
@@ -212,7 +219,7 @@ tumR <- function(data,
     lst(tumor, uns, tumor_uns, tumor_regex, tumor_uns_regex, meta_regex, meta_uns_regex)
   })
 
-
+  # Automatic conversion to non-skin (e.g. lung, brain etc)
   if(is.null(exclude)) {
 
     exclude <- c("m801[2-9]", "m804",
@@ -248,7 +255,8 @@ tumR <- function(data,
   #Split data at T-codes and ;
   dat <- dat[, snomed := str_to_lower(snomed)] %>%
     .[, .(snomed = unlist(str_split(snomed, "(?<=((?<=(t.{0,50}))[fjmpsæ].{5})).(?=(t))|;"))), by = c(pnr_c, date_c)] %>%
-    .[str_detect(snomed, collapsR(tumor_map, "tumor_uns"))]
+    .[str_detect(snomed, collapsR(tumor_map, "tumor_uns"))] %>%
+    setorderv(c(pnr_c, date_c))
 
   if(nrow(dat) == 0) return({cli::cli_alert_danger("Error: No tumors found, check argument tumor"); invisible(NULL)})
 
@@ -260,40 +268,56 @@ tumR <- function(data,
     recodR(list(tumor = labs,
                 meta = labs), dt=T, match = "contains")
 
+  dat[, c("tumor", "meta") := map(.SD, function(col) {
+    map(col, function(el) if (length(el) == 0) NA_character_ else el)
+  }), .SDcols = c("tumor", "meta")]
+
   #extract exact t-codes
   dat[, t.exact := t.map(t.code, type = "primary")]
   dat[, met.exact := t.map(t.code, type = "primary")]
 
-  dat[, cluster := map(t.code, ~
-                         str_trim(
-                           unique(
-                             unlist(
-                               str_split(
-                                 paste0(
-                                   map_chr(.x, ~ {
-                                     t_codes$cluster[match(str_to_upper(.x), t_codes$t.code)]
-                                   }), collapse = ","), ","))))
+  dat[, cluster := map(t.code, ~ {
+    cl <- t_codes$cluster[match(str_to_upper(.x), t_codes$t.code)]
+    cl <- cl[!is.na(cl)]
 
+    loc <- str_trim(unlist(str_split(cl, ",")))
+    loc <- unique(loc[loc != ""])
 
-  )]
+    if (length(loc) == 0) NA_character_ else loc
+  })]
 
 
   for(i in c("exact", "localisation", "loc_spec", "loc_skin", "region", "depth")) {
 
-    dat[, (i) := lapply(t.exact, function(x) na.omit(unique(t.extract(x, var = i))))]
+    dat[, (i) := lapply(t.exact, function(x) {
+      loc <- na.omit(unique(t.extract(x, var = i)))
+      if(length(loc) == 0) NA_character_ else loc
+    })]
 
   }
 
   #If non-skin diagnosis code is in snomed, change to non-skin
-  dat[, loc_skin := ifelse(unlist(loc_skin) %nin% "skin" & str_detect(snomed, exclude_c), "non-skin", loc_skin)]
+  dat[, loc_skin := ifelse(loc_skin %nin% "skin" & str_detect(snomed, exclude_c), "non-skin", loc_skin)]
+
+  #Distant metastasis
+  dat[, obs_meta := ifelse(is.na(meta)  & (any("brain" %in% localisation) | any(c("bone", "lymph") %in% depth)), 1, 0), by = .I] %>%
+    .[, meta := ifelse(obs_meta == 1, tumor, meta)] %>%
+    .[, tumor := ifelse(obs_meta == 1, NA, tumor)]
 
   dat[, op_date := as.Date(NA)]
   dat[, recurrence_date := as.Date(NA)]
 
   dat_list <- split(dat, by = pnr_c)
 
-  cli::cli_alert_success("Extraction: Complete {tockR(\'time\', cli=F)}, Runtime = {tockR(cli=F)}")
+  #Remove patients with no primary tumors
+  dat_list <- dat_list[map_lgl(dat_list, ~ any(lengths(.x$tumor) > 0))]
 
+  if(length(dat_list) == 0) {
+    cli::cli_alert_danger("No primary tumors detected in any patients")
+    return()
+  }
+
+  cli::cli_alert_success("Extraction: Complete {tockR(\'time\', cli=F)}, Runtime = {tockR(cli=F)}")
 
   cli::cli_progress_message("Tumor loop:")
   tickR()
@@ -306,7 +330,6 @@ tumR <- function(data,
 
   ##############################################  MAIN  ##############################################
 
-
   main_out <-
     map(seq_along(dat_list), function(y) {
 
@@ -314,7 +337,9 @@ tumR <- function(data,
 
       if(verbose) cli::cli_h1("Patient: {y}")
 
-      dat_y <- dat_list[[y]][lengths(tumor) > 0]
+      dat_y <- dat_list[[y]][!is.na(tumor)]
+
+      if(verbose) print(dat_y)
 
       ##############################################  TUMORS  ##############################################
 
@@ -338,9 +363,10 @@ tumR <- function(data,
         date_x <- dfx[[date_c]]
         spec_x <- dfx$loc_spec
         skin_x <- dfx$loc_skin
+        region_x <- unlist(dfx$region)
+        second_x <- str_detect(dfx$snomed, "p307[45]")
 
-        add <- 0
-        inc <- 0
+        add_tumor <- 0
 
         if(verbose) {
           cli::cli_h2("Index {x}")
@@ -349,6 +375,7 @@ tumR <- function(data,
           cli::cli_text("Date: {as.character(date_x)}")
           cli::cli_text("Type: {as.character(skin_x)}")
           cli::cli_text("Spec: {as.character(spec_x)}")
+          cli::cli_text("Second: {second_x}")
         }
 
         #Allocate first tumor to tumor_frame and move on
@@ -361,136 +388,162 @@ tumR <- function(data,
         #Inner loop
         for(i in 1:nrow(tumor_frame)) {
 
-
           tfx <- tumor_frame[i, ]
           tumor_i <- unlist(tfx$tumor)
           loc_i <- unlist(tfx[[loc.exact]])
-          tcode_i <- unlist(dfx$t.code)
+          tcode_i <- unlist(tfx$t.code)
           date_i <- tfx[[date_c]]
-          diff <- as.numeric(date_x - date_i)
+
           spec_i <- tfx$loc_spec
           skin_i <- tfx$loc_skin
-          unspec <- skin_x %in% skin_i & "non-specific" %in% c(spec_x, spec_i)
+          region_i <- unlist(tfx$region)
+
+
+          update_loc <- update_diag <- update_op <- add_recur <- included <- FALSE
+
+          #SCENARIO
+          na_x <- length(loc_x) == 1 && is.na(loc_x)
+          na_i <- length(loc_i) == 1 && is.na(loc_i)
+          simul <- date_i == date_x & all(region_x %in% region_i)
+          TT <- str_detect(tumor_i, tumor_x) | str_detect(tumor_x, tumor_i)
+          LL <- any(loc_x %in% loc_i) || na_x || na_i || simul
+          early <- as.numeric(date_x - date_i) < 90
+          unspec <- spec_i %in% "non_specific" & spec_x %in% "specific" || na_i & !na_x
+          uns_tumor <- str_detect(tumor_i, "uns") & str_detect(tumor_x, "uns", negate=T)
 
           if(verbose) {
             cli::cli_h3("Tumor {i}")
             cli::cli_text("Tumor: {tumor_i}")
-            cli::cli_text("Location: {loc_i} ({tcode_x})")
+            cli::cli_text("Location: {loc_i} ({tcode_i})")
             cli::cli_text("Date: {as.character(date_i)}")
             cli::cli_text("Type: {as.character(skin_i)}")
             cli::cli_text("Spec: {as.character(spec_i)}")
-            cli::cli_text("T=T: {any(str_detect(tumor_i, tumor_x) | str_detect(tumor_x, tumor_i))}")
-            cli::cli_text("L=L: {any(loc_x %in% loc_i)}")
+            cli::cli_text("SCENARIOS")
+            cli::cli_text("T=T: {TT}")
+            cli::cli_text("L=L: {LL}")
+            cli::cli_text("<90 days: {early}")
             cli::cli_text("Unspec: {unspec}")
-            cli::cli_text("Diff: {diff}")
+            cli::cli_text("UNS_tumor: {uns_tumor}")
+
           }
 
+          #### TT & LL ###
+          if(TT & LL) {
 
+            #<90 days
+            if(early) {
 
-          #T=T
-          #Reverse also to capture UNS-strings after primary specific
-          if(str_detect(tumor_i, tumor_x) | str_detect(tumor_x, tumor_i)) {
+              #Non-specific primary location < 90 - update location
+              if(unspec) update_loc <- TRUE
 
-            if(any((is.na(loc_x) | loc_x == poopNApoop) | loc_x == "skin") & any((is.na(loc_i) | loc_i == poopNApoop | loc_i == "skin"))) {
+              if(uns_tumor) update_diag <- TRUE
 
+              update_op <- TRUE
 
-              if(tumor_x == "bcc" | diff > 90) {
-
-                if(verbose) cli::cli_alert_info("BCC kept")
-                tumor_frame <- rbind(tumor_frame, dfx)
-                inc <- inc + 1
-                next()
-              } else {
-                next()
-              }
             }
+            #> days
+            if(!early) {
 
-            #L=L
-            if(any(loc_x %in% loc_i) |
-               #If any of the codes are non-specific but same type (skin or non-skin)
-               unspec) {
+              #If location is NA
+              if(na_x || na_i) {
+
+                #Only update if single previous tumor of same type
+                if(sum(str_detect(unlist(tumor_frame[c(1:i), ]$tumor), tumor_x)) < 2) {
+
+                  if(na_x) add_recur <- T
+                  if(na_i) add_recur <- update_loc <- T
 
 
-              if(diff < 90) {
-
-                #Non-specific primary location < 90 - update location
-                if(spec_x == "specific" & spec_i == "non-specific") {
-                  if(verbose) cli::cli_alert_info("Location updated")
-                  loc_cols <- c("cluster", "exact", "localisation", "loc_spec", "loc_skin", "region")
-
-                  tumor_frame[i, c(loc_cols) := dfx[, c(loc_cols), with = FALSE]]
-
-                  inc <- inc + 1
                 }
 
-                if(str_detect(tumor_i, "uns") & str_detect(tumor_x, "uns", negate=T)) {
-                  if(verbose) cli::cli_alert_info("Diagnosis updated")
-                  tum_cols <- c("tumor", "snomed")
+              } else add_recur <- T
 
-                  tumor_frame[i, c(tum_cols) := dfx[, c(tum_cols), with = FALSE]]
-
-                  inc <- inc + 1
-                }
-
-                #Update OP-date
-                tumor_frame[i, op_date := date_x]
-
-              } else {
-
-                #Recurrence if T=T, L=L and diff > 90. Unspecific code can give recurrence if not BCC.
-                if(is.na(tumor_frame[i, recurrence_date]) & !(tumor_x == "bcc" & spec_x == "non-specific")) {
-
-                  if(verbose) cli::cli_alert_info("Recurrence added")
-                  tumor_frame[i, recurrence_date := date_x]
-
-                  inc <- inc + 1
-
-                }
-              }
-
-              #L!=L
-            } else {
-              #Add tumor
-              add <- add + 1
-              inc <- inc + 1
             }
-            #T!=T
-          } else {
 
-            #Same location, <30 - Change diagnosis
-            if(diff < 90 & any(loc_x %in% loc_i) & tumor_x != "bcc") {
-              if(verbose) cli::cli_alert_info("Diagnosis updated")
-              tum_cols <- c("tumor", "snomed")
-
-              tumor_frame[i, c(tum_cols) := dfx[, c(tum_cols), with = FALSE]]
-              inc <- inc + 1
-
-            } else {
-              #Add tumor
-              add <- add + 1
-              inc <- inc + 1
-            }
           }
+
+          if(TT & !LL) {
+
+            add_tumor <- add_tumor <- add_tumor + 1
+
+          }
+
+          if(!TT) {
+
+            if(early) update_diag <- T
+
+            if(!early) {
+              add_tumor <- add_tumor + 1
+
+            }
+
+          }
+
+          #MODIFICATIONS
+
+          if(update_loc) {
+            if(verbose) cli::cli_alert_info("Location updated")
+            loc_cols <- c("cluster", "exact", "localisation", "loc_spec", "loc_skin", "region")
+
+            tumor_frame[i, c(loc_cols) := dfx[, c(loc_cols), with = FALSE]]
+            included <- TRUE
+          }
+
+          if(update_diag) {
+            if(verbose) cli::cli_alert_info("Diagnosis updated")
+            tum_cols <- c("tumor", "snomed")
+
+            tumor_frame[i, c(tum_cols) := dfx[, c(tum_cols), with = FALSE]]
+            included <- TRUE
+          }
+
+          if(update_op) {
+            if(verbose) cli::cli_alert_info("OP-date updated")
+            tumor_frame[i, op_date := date_x]
+            included <- TRUE
+          }
+
+          if(add_recur & is.na(tumor_frame$recurrence_date[i])) {
+            if(verbose) cli::cli_alert_info("Recurrence added")
+            tumor_frame[i, recurrence_date := date_x]
+            included <- TRUE
+
+          }
+
         } #Tumor inner loop
 
-        if(add == nrow(tumor_frame)) {
-          if(verbose) {
-            cli::cli_alert_info("Tumor added")
-          }
+        if(add_tumor == nrow(tumor_frame)) {
+          if(verbose) cli::cli_alert_info("Tumor added")
+
           tumor_frame <- rbind(tumor_frame, dfx)
+
+          included <- TRUE
+
         }
 
-        if(inc == 0) if(verbose) cli::cli_alert_info("Tumor not included")
+        if(!included) if(verbose) cli::cli_alert_info("Tumor not included")
 
 
       } #Tumor outer loop
 
+
+
+
+
+
+
       ##############################################  METASTASES  ##############################################
 
 
-      if(verbose) cli::cli_h2("Metastasis")
 
-      mets <- dat_list[[y]][lengths(meta) > 0]
+
+
+
+
+
+      if(verbose) cli::cli_h1("Metastasis")
+
+      mets <- dat_list[[y]][!is.na(meta)]
 
       #Only run for patients with mets
       if(nrow(mets) == 0) {
@@ -498,6 +551,8 @@ tumR <- function(data,
         return(list(tumors = tumor_frame,
                     mets = meta_frame))
       }
+
+      if(verbose) print(mets)
 
       #Outer loop
       for(x in 1:nrow(mets)) {
@@ -508,8 +563,7 @@ tumR <- function(data,
         date_x <- mfx[[date_c]]
         spec_x <- mfx$loc_spec
 
-        add <- 0
-        inc <- 0
+        add_met <- 0
 
         if(verbose) {
           cli::cli_h2("Index {x}")
@@ -532,48 +586,64 @@ tumR <- function(data,
           meta_i <- unlist(tfx$meta)
           loc_i <- unlist(tfx[[loc.exact]])
           date_i <- tfx[[date_c]]
-          diff <- as.numeric(date_x - date_i)
+
+          update_loc <- update_diag <- update_op <- included <- add_recur <- FALSE
+
+          #SCENARIOS
+          MM <- any(str_detect(meta_i, meta_x) | str_detect(meta_x, meta_i))
+          LL <- any(loc_x %in% loc_i)
+          early <- as.numeric(date_x - date_i) < 90
 
           if(verbose) {
             cli::cli_h3("Metastasis {i}")
             cli::cli_text("Tumor: {meta_i}")
             cli::cli_text("Location: {loc_i}")
             cli::cli_text("Date: {as.character(date_i)}")
-            cli::cli_text("M=M: {any(str_detect(meta_i, meta_x) | str_detect(meta_x, meta_i))}")
-            cli::cli_text("L=L: {any(loc_x %in% loc_i)}")
-            cli::cli_text("Diff: {diff}")
+            cli::cli_text("SCENARIOS")
+            cli::cli_text("M=M: {MM}")
+            cli::cli_text("L=L: {LL}")
+            cli::cli_text("<90 days: {early}")
           }
 
-          #M=M
-          if(any(str_detect(meta_i, meta_x) | str_detect(meta_x, meta_i))) {
+          #### MM & LL ####
+          if(MM & LL & !early) add_met <- add_met + 1
 
-            add <- add + 1
-            inc <- inc + 1
+          ##### MM & !LL ####
+          if(MM & !LL) {
 
-          } else {
-
-            if(any(loc_x %in% loc_i) & diff < 90) {
-
-              if(verbose) cli::cli_alert_info("Diagnosis updated")
-              meta_cols <- c("meta", "snomed")
-
-              meta_frame[i, c(meta_cols) := mfx[, c(meta_cols), with = FALSE]]
-
-              inc <- inc + 1
-
-            }
+            add_met <- add_met + 1
           }
 
-          if(add == nrow(meta_frame)) {
-            if(verbose) {
-              cli::cli_alert_info("Metastasis added")
-            }
-            meta_frame <- rbind(meta_frame, mfx)
+          #### !MM & LL ####
+          if(!MM & LL) {
+
+            if(early) update_diag <- T
+
+            if(!early) add_met <- add_met + 1
+
           }
 
-          if(inc == 0) if(verbose) cli::cli_alert_info("Metastasis not included")
+          if(update_diag) {
+
+            if(verbose) cli::cli_alert_info("Diagnosis updated")
+            meta_cols <- c("meta", "snomed")
+
+            meta_frame[i, c(meta_cols) := mfx[, c(meta_cols), with = FALSE]]
+
+            included <- T
+
+          }
 
         } #Mets inner loop
+
+
+        if(add_met == nrow(meta_frame)) {
+          if(verbose) cli::cli_alert_info("Metastasis added")
+
+          meta_frame <- rbind(meta_frame, mfx)
+        }
+
+        if(!included) if(verbose) cli::cli_alert_info("Metastasis not included")
 
       } #Mets outer loop
 
@@ -586,7 +656,7 @@ tumR <- function(data,
   cli::cli_alert_success("Tumor mapping: Complete {tockR(\'time\', cli=F)}, Runtime = {tockR(cli=F)}")
 
   tumors <-
-    rbindlist(map(main_out, ~ .x$tumors))[, c("meta", "snomed", "t.code", "t.exact", "loc_spec", "depth") := NULL][
+    rbindlist(map(main_out, ~ .x$tumors))[, c("meta", "snomed", "t.code", "t.exact", "met.exact", "loc_spec", "depth") := NULL][
       , op_date := fifelse(is.na(op_date), get(date_c), op_date)][, tumor := unlist(tumor)] %>%
     rollR(type = "count", by = pnr_c, order = c(pnr_c, date_c), label = t_id)
 
@@ -608,44 +678,58 @@ tumR <- function(data,
            renames,
            paste0("m_", renames))
 
+  mt_frame <- joinR(tumors, mets, by = pnr_c)[, c("exact", "op_date", "recurrence_date") := NULL] %>%
+    .[, diff := as.numeric(get(paste0("m_", date_c)) - get(paste0("t_", date_c)))] %>%
+    .[, meta := str_remove(meta, "_uns")] %>%
 
-
-  mt_frame <- joinR(tumors, mets, by = pnr_c)[, c("exact", "op_date", "recurrence_date") := NULL][, diff := as.numeric(get(paste0("m_", date_c)) - get(paste0("t_", date_c)))] %>%
     #Match on subtype and mets not preceeding tumor
-    .[meta == tumor & diff > tumor_distance[1]] %>%
+    .[meta %in% tumor & diff > tumor_distance[1]] %>%
+
     #Point system:
-    #ns: non-skin tumor within 5 years of metastasis wins
-    #time: skin tumor within 5 years of metastasis wins
-    #lr: exact localisation or skin/lymph in same region wins
-    .[, `:=` (ns = ifelse(t_loc_skin == "non-skin" & diff %between% tumor_distance, 99, 0),
-              time = ifelse(diff %between% tumor_distance, 1, 0),
-              lr = ifelse(any(unlist(m_localisation) %chin% unlist(cluster)) | ((m_loc_skin %chin% "skin"|depth %chin% "lymph") & any(unlist(m_region) %chin% unlist(t_region))), 1, 0)
-    )] %>%
-    rowR(., vars = c(ns, time, lr), type = "sum") %>%
+    #lr: exact localisation or skin/lymph in same region = 3 points
+    #time: skin tumor within 2 years of metastasis = 1 points
+    #ns: non-skin tumor within 2 years of metastasis = 2 points
+
+
+    .[, `:=` (lr = ifelse(
+      any(unlist(m_localisation %chin% unlist(cluster))) |
+        m_loc_skin %chin% "skin"|depth %chin% "lymph" & any(unlist(m_region) %chin% unlist(t_region)), 3, 0),
+      time = ifelse(diff %between% tumor_distance, 1, 0),
+      ns = ifelse(diff %between% tumor_distance & t_loc_skin == "non-skin", 1, 0)), by = .I] %>%
+    rowR(vars = c(ns, time, lr), type = "sum") %>%
+
     #Link related metastases
     .[, sum := ifelse(sum != max(sum), max(sum), sum), by = c(pnr_c, "t_id", "m_fam")] %>%
+    #Prioritize locoregional
+    .[, sum := ifelse(lr == 3, sum + 5, sum)] %>%
+
     #Keep max for each tumor
     .[, .SD[sum == max(sum)], by = c(pnr_c, "m_id")] %>%
-    #Remove mets allocated to non-skin cancers
-    .[t_loc_skin != "non-skin"] %>% setorderv(c(pnr_c, "diff")) %>%
+
     #Keep tumor closest to met
+    setorderv(c(pnr_c, "diff")) %>%
     unique(by = c(pnr_c, "m_id")) %>%
+
+
     #Assign type of metastasis
-   .[, local := ifelse(any(unlist(m_loc_skin) %chin% "skin") & any(unlist(m_region) == unlist(t_region)), 1, 0), by = c(pnr_c, "m_id")] %>%
-    .[, regional := ifelse(any(unlist(depth) %chin% "lymph") & (any(unlist(m_region) == unlist(t_region)) | is.na(m_region)), 1, 0), by = c(pnr_c, "m_id")] %>%
+    .[, local := ifelse(any(unlist(m_localisation) %in% unlist(cluster)), 1, 0), by = c(pnr_c, "m_id")] %>%
+    .[, regional := ifelse((any(unlist(depth) %chin% "lymph") |
+                              (any(unlist(m_region) == unlist(t_region)) |
+                                 is.na(m_region))) &
+                             local != 1, 1, 0), by = c(pnr_c, "m_id")] %>%
     .[, distant := ifelse(any(unlist(m_region) != unlist(t_region)), 1, 0), by = c(pnr_c, "m_id")] %>%
+
     #Pivot longer
     melt(.,
          measure.vars  = c("local", "regional", "distant"),
          variable.name = "meta_type",
          value.name    = "value"
     ) %>%
-   .[value == 1] %>%
+    .[value == 1] %>%
     .[, .SD, .SDcols = c(pnr_c, paste0("m_", date_c), "t_id", "m_id", "m_localisation", "m_region", "m_loc_skin", "depth", "meta_type")]
 
   #If all metastases are ruled out
   if(nrow(mt_frame) == 0) return(tumors)
-
 
   #Pack all metastasis data into nested DTs
   mets_data <- mt_frame[, .(mets_data = list(.SD)), by = c(pnr_c, "t_id")]
@@ -658,13 +742,27 @@ tumR <- function(data,
     # #pivot mets wider
     dcast(as.formula(paste0(pnr_c, "+ t_id ~ meta_type")), value.var = paste0("m_", date_c), fun.aggregate = function(x) if(length(x) == 0) NA else min(x)) %>%
     joinR(tumors, ., mets_data, by = c(pnr_c, "t_id")) %>%
-    .[t_loc_skin != "non-skin",] %>%
-    .[, c("cluster", "t_loc_skin") := NULL]
+    .[, c("cluster") := NULL]
 
   setnames(tm_frame,
            paste0("t_", renames)[paste0("t_", renames) %in% names(tm_frame)],
            renames[paste0("t_", renames) %in% names(tm_frame)])
 
+  if(skin.only) tm_frame <- tm_frame[loc_skin != "non-skin"]
+
   if(dt) return(tm_frame) else return(as.data.frame(tm_frame))
 
 }
+
+# test_id <- 21
+# tdf <- tumR(pato %>% filter(record_id == test_id),
+#              #pato,
+#              tumor = tumor_list,
+#              verbose = T,
+#              loc.exact = F,
+#              pnr = record_id,
+#              date = index,
+#      skin.only = F) %>% print
+#
+# pato %>% filter(record_id == test_id)
+

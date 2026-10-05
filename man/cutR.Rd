@@ -11,6 +11,7 @@ cutR(
   name.list = list(),
   name.pattern = NULL,
   simplify = T,
+  autoformat = T,
   digits = 0,
   dt = F
 )
@@ -28,6 +29,8 @@ Can be specified using only "median", "quantile", "quartile" etc which will be a
 \item{name.pattern}{naming pattern that should automatically be pasted on the end of all the specified variable names in "vars".}
 
 \item{simplify}{whether date intervals should be simplified}
+
+\item{autoformat}{whether > and < should be inserted at the min/max levels and the right limits should be subtracted 0.1/1 (default = T)}
 
 \item{digits}{number of digits for label formatting}
 

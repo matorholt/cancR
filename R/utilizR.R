@@ -336,6 +336,8 @@ multitaskR <- function(cores, gb = NULL) {
 #' @param digits number of digits
 #' @param nsmall number of zero-digits
 #' @param ama whether the numbers should be printed according to AMA guidelines (no digits on values >= 10). Default = F.
+#' @param trim whether the leading padding should be trimmed (default = T)
+#' @param sign whether the number should be rounded using significant figures specified using the digits argument (defualt = F)
 #'
 #' @return returns a vector of same lentgh with formatted digits
 #' @export
@@ -345,66 +347,97 @@ multitaskR <- function(cores, gb = NULL) {
 #' numbR(c(5,2,4,10,100, 41.2), ama=T)
 #'
 
-numbR <- function(numbers, digits = 1, nsmall, ama = F) {
+numbR <- function(numbers, digits = 1, nsmall, ama = F, trim = T, sign = F) {
   if(missing(nsmall)) {
     nsmall <- digits
   }
 
-  vals <- format(round(numbers, digits), nsmall = nsmall)
+  if(sign) return(signif(numbers, digits))
 
+  if(ama) ama_digit <- 0 else ama_digit <- digits
 
+  numbers <- ifelse(numbers > 10, format(round(numbers, ama_digit), nsmall = ama_digit), format(round(numbers, digits), nsmall = nsmall))
 
-  if(ama) {
+  if(trim) numbers <- str_trim(numbers)
 
-    vals <- ifelse(as.numeric(str_extract(vals, "\\d+\\.\\d*")) >= 10, str_replace(vals, "\\d{2,}\\.\\d*", as.character(round(as.numeric(str_extract(vals, "\\d{2,}\\.\\d*")),0))), vals)
-
-  }
-
-  vals
+  return(numbers)
 
 }
 
+
+
+
 #' @title Format p-values to AMA manual of style
-#' @param x A p-value
+#' @param x vector of p-values
 #' @param na the print of NA values, default = "NA.
+#' @param drop.p whether "p = " should be printed (default = F)
+#' @param drop.zero whether the leading zero should be printed (default = F)
+#' @param trim whether white spaces should be removed (default = F)
+#' @param style style of the formatting (default = "ama")
 #' @return Prints the raw p-value according to AMA manual of style
 #' @export
 
-pvertR <- function(x, na = "NA") {
-  sapply(x, function(x) {
-    if(is.na(x) | str_detect(x, "\\d", negate=T)){
-      return(na)
+# vals <- c(0.0005, 0.002, 0.03, 0.0491, 0.051, 2, NA)
+# pvertR(vals,
+#        trim = F,
+#        drop.p = F,
+#        drop.zero = T)
+
+pvertR <- function(pval,
+                   na = "NA",
+                   drop.p = F,
+                   drop.zero = F,
+                   trim = F,
+                   style = "ama") {
+
+  if(is.character(pval)) {
+    p_val <- case_when(is.na(pval) | str_detect(x, "\\d", negate=T) ~ na,
+                       str_detect(pval, "\\<\\s?0.001") ~ "p < 0.001",
+                       T ~ pval)
+  } else {
+
+    if(style == "ama") {
+
+      p_val <- case_when(is.na(pval) ~ na,
+                         pval < 0.001 ~ "p < 0.001",
+                         pval < 0.01 | (pval >= 0.045 & pval < 0.05) ~ paste0("p = ", numbR(pval, 3, 3)),
+                         pval >= 0.99 ~ "p > 0.99",
+                         T ~ paste0("p = ", numbR(pval, 2, 2)))
+
     }
 
-    if(is.character(x)) {
-      if(str_detect(x, "\\<\\s?0.001")) {
-        return("p < 0.001")
-      } else {
-        x <- as.numeric(x)
+    if(style == "lancet") {
+
+      lancet_num <- function(x) {
+        x   <- numbR(x, digits = 2, sign = T)
+        dec <- pmin(1 - floor(log10(x)), 4)
+        sprintf("%.*f", dec, x)
+
       }
+
+      p_val <- case_when(
+        is.na(pval)   ~ na,
+        pval < 0.0001 ~ "p < 0.0001",
+        pval >= 0.99 ~ "p > 0.99",
+        TRUE          ~ paste0("p = ", lancet_num(pval))
+      )
+
     }
 
-    if(x<0.001){
-      y = "p < 0.001"
-    }
-    else if(x < 0.01){
-      y = paste0("p = ", numbR(x,3,2))
-    }
-    else if(x>=0.045 & x < 0.05){
-      y = paste0("p = ", numbR(x,3,2))
-    }
-    else if(x>=0.01 & x<1){
-      y = paste0("p = ", numbR(x,2,2))
-    }
-    else if(x>=1){
-      y = paste0("p = 1.00")
-    }
-    else {
-      y = na
-    }
-    return(y)
-  })
+
+
+  }
+
+
+
+  if(trim) p_val <- str_remove_all(p_val, "\\s")
+  if(drop.p) p_val <- str_remove(p_val, "p.*.(?=(\\d\\.))")
+  if(drop.zero) p_val <- str_remove(p_val, "0(?=(\\.))")
+
+
+  return(p_val)
 }
+
 
 #' @title First timestamp for taking time
 #' @description

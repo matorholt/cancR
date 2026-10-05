@@ -15,7 +15,15 @@ The last row per \code{id} must include either a terminal event or censoring,
 with the corresponding \code{event_time} representing the maximum follow-up date.
 }
 \usage{
-wR(data, hierarchy, max.time = 60, digits = 4, alpha = 0.05, verbose = T)
+wR(
+  data,
+  hierarchy,
+  plot = T,
+  max.time = NA,
+  digits = 4,
+  alpha = 0.05,
+  verbose = T
+)
 }
 \arguments{
 \item{data}{Dataset; see \code{format}.}

@@ -4,7 +4,7 @@
 \alias{numbR}
 \title{Format numeric vectors}
 \usage{
-numbR(numbers, digits = 1, nsmall, ama = F)
+numbR(numbers, digits = 1, nsmall, ama = F, trim = T, sign = F)
 }
 \arguments{
 \item{numbers}{numeric value or vector for formatting}
@@ -14,6 +14,10 @@ numbR(numbers, digits = 1, nsmall, ama = F)
 \item{nsmall}{number of zero-digits}
 
 \item{ama}{whether the numbers should be printed according to AMA guidelines (no digits on values >= 10). Default = F.}
+
+\item{trim}{whether the leading padding should be trimmed (default = T)}
+
+\item{sign}{whether the number should be rounded using significant figures specified using the digits argument (defualt = F)}
 }
 \value{
 returns a vector of same lentgh with formatted digits

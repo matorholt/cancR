@@ -20,7 +20,8 @@ savR(
   size = 9,
   table.width = 1,
   folder = NULL,
-  sep = ";"
+  sep = ";",
+  verbose = T
 )
 }
 \arguments{

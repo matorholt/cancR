@@ -28,6 +28,7 @@
 #' @param y.title.size Y-axis title size
 #' @param y.title.shift Y-axis title horizontal shift
 #' @param y.text.size Y-axis text.size
+#' @param y.breaks break size for the y-axis in percent (e.g. y.breaks = 2.5 equals 2.5% increments)
 #' @param res.size Size of the results
 #' @param res.shift Vector of XY shifting of the results
 #' @param res.spacing Vertical spacing between results
@@ -39,6 +40,8 @@
 #' @param box.linewidth Results box linewidth
 #' @param contrast.digits Number of digits on the contrasts
 #' @param table Which parts of the risk table should be provided ("event", "risk", "none"). Default is c("event", "risk")
+#' @param event.title title of the cumulative events table
+#' @param risk.title title of the number at risk table
 #' @param table.space Spacing between counts in risk table
 #' @param table.padding Spacing between lines and first/last rows in the risk table
 #' @param table.title.size Risk table titles size
@@ -111,6 +114,7 @@ plotR <- function(list,
                   y.title.size = 6,
                   y.title.shift = 0,
                   y.text.size = 6,
+                  y.breaks = NULL,
                   res.size = 5,
                   res.shift = c(0,0),
                   res.spacing = 1,
@@ -122,6 +126,8 @@ plotR <- function(list,
                   box.linewidth = 0.8,
                   contrast.digits = 1,
                   table = c("event", "risk"),
+                  event.title = "Cumulative Events",
+                  risk.title = "Number at Risk",
                   table.space = 1,
                   table.padding = 1,
                   table.title.size = 6,
@@ -229,10 +235,6 @@ plotR <- function(list,
   p <-
     ggplot(plot, aes(x=time, y=est, color = !!sym(group), fill = !!sym(group))) +
     geom_step(linewidth = linewidth) +
-    #X-axis
-    geom_segment(x = -(horizon*0.0075), xend=horizon*1.04, y=-(y*0.01), yend=-(y*0.01), color = "Black", linewidth = linewidth) +
-    #Y-axis
-    geom_segment(x = 0, xend=0, y=-(y*0.0375), yend=y, color = "Black", linewidth = linewidth) +
     scale_color_manual(values = c(col[1:length(levels)]), labels = labs) +
     scale_fill_manual(values = c(col[1:length(levels)]), labels = labs)
   if(se) p <- p + pammtools::geom_stepribbon(aes(ymin = lower, ymax = upper), alpha = 0.2, color = NA)
@@ -260,6 +262,10 @@ plotR <- function(list,
 
   p <- p +
     coord_cartesian(xlim=c(horizon*-0.1-y.title.shift,horizon), ylim = c(zmin,1.2*y+pmax(res.shift[2],0))) +
+    #X-axis
+    geom_segment(x = -(horizon*0.0075), xend=horizon*1.04, y=-(y*0.01), yend=-(y*0.01), color = "Black", linewidth = linewidth) +
+    #Y-axis
+    geom_segment(x = 0, xend=0, y=-(y*0.0375), yend=y, color = "Black", linewidth = linewidth) +
     theme_classic() +
     theme(axis.line = element_blank(),
           axis.ticks = element_blank(),
@@ -281,11 +287,17 @@ plotR <- function(list,
     #X-breaks
     annotate("text", x=seq(0,horizon,breaks), y=-(y*0.08), label=round(seq(0,horizon,breaks)/u,0), size = x.text.size*tscale)
 
+  if(!is.null(y.breaks)) {
+    yscale <- y.breaks/100
+  } else {
+
   yscale <- case_when(y>=0.5 ~ 1/10,
                       y<=0.01 ~ 2.5/1000,
                       y<=0.05 ~ 5/1000,
                       y<=0.1 ~ 1/100,
                       T ~ 5/100)
+  }
+
   #Y-breaks/labels
   p <- p + annotate("text", x=-(horizon*0.01), y=seq(0,y,yscale), label = paste(seq(0,y*100,yscale*100), "%", sep=""), size = y.text.size*tscale, hjust="right") +
 
@@ -294,8 +306,8 @@ plotR <- function(list,
 
   #Risk table
   if(any(table %nin% "none")) {
-    tablabs <- str_replace_all(table, c("risk" = "At Risk",
-                                        "event" = "Cumulative Events"))
+    tablabs <- str_replace_all(table, c("risk" = risk.title,
+                                        "event" = event.title))
 
     #Grid
     for(i in 1:length(lines)) {

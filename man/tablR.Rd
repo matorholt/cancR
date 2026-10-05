@@ -8,7 +8,7 @@ tablR(
   data,
   group,
   vars,
-  num.vars,
+  num.vars = NULL,
   test = FALSE,
   total = FALSE,
   numeric = c("medianq1q3", "range"),
@@ -18,13 +18,15 @@ tablR(
   labs.groups = list(),
   labs.headings = list(),
   labs.subheadings = list(),
+  keep.raw = NULL,
   reverse = F,
   test.stats = c("kwt", "chisq"),
-  show.na = FALSE,
+  show.na = NULL,
   censur = F,
   weights,
   digits = 1,
   ama = T,
+  style = NULL,
   simplify = list(),
   simplify.remove = c("no", "No", "0"),
   print = F,
@@ -49,15 +51,21 @@ Options include: median, q1q3, medianq1q3 (default), iqr, range, mean, sd, means
 
 \item{direction}{Direction for percentages (colwise or rowwise)}
 
-\item{reference}{List specifying reference group for each variable}
+\item{reference}{see factR}
 
-\item{labs.headings}{List specifying labels for variable names}
+\item{labs.groups}{List specifying labels for group variables, see factR}
+
+\item{labs.headings}{List specifying labels for variable names, see factR}
+
+\item{labs.subheadings}{List specifying labels for variable levels. Automatically assigns order, see factR}
+
+\item{keep.raw}{vector of variables that should not be automatically formatted}
 
 \item{reverse}{whether the order of groups should start with the highest level (default = T)}
 
 \item{test.stats}{Vector of length 2 containing statistical tests that should be performed}
 
-\item{show.na}{Whether NAs should be presented}
+\item{show.na}{whether NAs should be displayed ("count") or included in proportions ("pct"), default = NULL}
 
 \item{censur}{whether counts <= 3 should be censored}
 
@@ -67,6 +75,8 @@ Options include: median, q1q3, medianq1q3 (default), iqr, range, mean, sd, means
 
 \item{ama}{whether percentages >10 should be without digits per AMA journal of style. Default = T.}
 
+\item{style}{character vector specifiying journal stiles. Supported: "lancet".}
+
 \item{simplify}{a list of column names that should be simplified by dropping specified levels (e.g. 0 or "no") for simple output.
 Groups of size > 1 should be named such as: list("IHC" = c("cd10", "sox10", "ck"), "necrosis", "margins")}
 
@@ -75,8 +85,6 @@ Groups of size > 1 should be named such as: list("IHC" = c("cd10", "sox10", "ck"
 \item{print}{whether the table should be printed in the console}
 
 \item{flextable}{whether the table should be returned as a flextable}
-
-\item{labels}{List specifying labels of the specific labels for each variable}
 }
 \value{
 Returns a table as a dataframe or flextable

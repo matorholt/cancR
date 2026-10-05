@@ -32,7 +32,7 @@ redcapR(
 
 \item{cprlist}{optional dataframe containing cpr numbers for extraction of birth and sex}
 
-\item{id}{name of id in cprlist (should have the same name as in data)}
+\item{id}{vector of length 1 or 2 with name(s) of ids in dataframe and cprlist}
 }
 \value{
 relabelled redcap dataset with correctly formatted dates

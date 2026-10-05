@@ -4,12 +4,20 @@
 \alias{pvertR}
 \title{Format p-values to AMA manual of style}
 \usage{
-pvertR(x, na = "NA")
+pvertR(pval, na = "NA", drop.p = F, drop.zero = F, trim = F, style = "ama")
 }
 \arguments{
-\item{x}{A p-value}
-
 \item{na}{the print of NA values, default = "NA.}
+
+\item{drop.p}{whether "p = " should be printed (default = F)}
+
+\item{drop.zero}{whether the leading zero should be printed (default = F)}
+
+\item{trim}{whether white spaces should be removed (default = F)}
+
+\item{style}{style of the formatting (default = "ama")}
+
+\item{x}{vector of p-values}
 }
 \value{
 Prints the raw p-value according to AMA manual of style

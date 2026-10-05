@@ -7,11 +7,12 @@
 factR(
   data,
   vars,
-  num.vars,
+  num.vars = NULL,
   reference = list(),
   levels = list(),
   labels = list(),
   lab_to_lev = FALSE,
+  na.level = FALSE,
   reverse = F,
   auto.format = F,
   dt = F
@@ -31,6 +32,8 @@ factR(
 \item{labels}{List of variables with the corresponding labels (e.g. list("v3" = c("e" = "epsilon", "d" = "delta")))}
 
 \item{lab_to_lev}{Whether changing labels should change levels if these are not specified (defaults to TRUE)}
+
+\item{na.level}{whether NAs should be added as a separate level named "missing" (default = F)}
 
 \item{reverse}{Whether the levels should be reversed (default is FALSE)}
 
