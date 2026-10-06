@@ -621,8 +621,7 @@ population_denmark <-
                                                                                                                                                           62959L, 64022L, 65323L, 66825L, 68606L, 69636L, 70129L, 70409L,
                                                                                                                                                           70160L, 70460L, 70849L, 72926L, 74501L, 74778L, 75770L, 76421L,
                                                                                                                                                           76943L, 77557L, 78143L, 78426L, 78904L, 79025L, 79228L, 79473L,
-                                                                                                                                                          79544L, 80628L, 82065L, 83425L, 85476L, 88083L, 91465L)), class = c("tbl_df",
-                                                                                                                                                                                                                              "tbl", "data.frame"), row.names = c(NA, -1296L))
-
+                                                                                                                                                          79544L, 80628L, 82065L, 83425L, 85476L, 88083L, 91465L)), row.names = c(NA,
+                                                                                                                                                                                                                                  -1296L), class = c("tbl_df", "tbl", "data.frame"))
 
 usethis::use_data(population_denmark, overwrite = TRUE)
