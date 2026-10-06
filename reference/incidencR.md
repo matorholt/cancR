@@ -80,22 +80,7 @@ specified in the strata-argument, stratified incidence rates
                            c("year", "type", "age"),
                            c("type", "age"),
                            c("year", "age", "sex", "type"))))
-#> Error in map2(.x, vec_index(.x), .f, ...): ℹ In index: 3.
-#> Caused by error in `map2()`:
-#> ℹ In index: 1.
-#> ℹ With name: crude.
-#> Caused by error:
-#> ! The `by` argument must be either:
-#>   
-#>   1. Character vector in which each element is part of: sex, age_group,
-#>   year, type, count, total, who, euro
-#>   
-#>   2. A data frame with a `by` column of labels, and in which all other
-#>   columns are elements of: sex, age_group, year, type, count, total, who,
-#>   euro
-#>   
-#>   It can sometimes be useful to supply a data frame explicitly to the
-#>   `newdata` argument in order to be able to group by different columns.
+#> Error in incidencR(redcap_df %>% recodR(list(sex = list(Female = 1, Male = 2))),     index = date_of_surgery, group = type, unit = 1e+05, strata = list(c("year"),         c("age", "sex"), c("year", "type"), c("year", "type",             "age"), c("type", "age"), c("year", "age", "sex",             "type"))): Error: age not present in data
 
 
 ggplot(rates$year_type, aes(x=year, y=weighted_rate, color = type, fill = type)) +

@@ -120,22 +120,7 @@
 <span class="r-in"><span>                           <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"year"</span>, <span class="st">"type"</span>, <span class="st">"age"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                           <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"type"</span>, <span class="st">"age"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                           <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"year"</span>, <span class="st">"age"</span>, <span class="st">"sex"</span>, <span class="st">"type"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in map2(.x, vec_index(.x), .f, ...):</span> <span style="color: #00BBBB;">ℹ</span> In index: 3.</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Caused by error in `map2()`:</span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> In index: 1.</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> With name: crude.</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Caused by error:</span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00;">!</span> The `by` argument must be either:</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span>   </span>
-<span class="r-err co"><span class="r-pr">#&gt;</span>   1. Character vector in which each element is part of: sex, age_group,</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span>   year, type, count, total, who, euro</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span>   </span>
-<span class="r-err co"><span class="r-pr">#&gt;</span>   2. A data frame with a `by` column of labels, and in which all other</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span>   columns are elements of: sex, age_group, year, type, count, total, who,</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span>   euro</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span>   </span>
-<span class="r-err co"><span class="r-pr">#&gt;</span>   It can sometimes be useful to supply a data frame explicitly to the</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span>   `newdata` argument in order to be able to group by different columns.</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in incidencR(redcap_df %&gt;% recodR(list(sex = list(Female = 1, Male = 2))),     index = date_of_surgery, group = type, unit = 1e+05, strata = list(c("year"),         c("age", "sex"), c("year", "type"), c("year", "type",             "age"), c("type", "age"), c("year", "age", "sex",             "type"))):</span> Error: age not present in data</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">ggplot</span><span class="op">(</span><span class="va">rates</span><span class="op">$</span><span class="va">year_type</span>, <span class="fu">aes</span><span class="op">(</span>x<span class="op">=</span><span class="va">year</span>, y<span class="op">=</span><span class="va">weighted_rate</span>, color <span class="op">=</span> <span class="va">type</span>, fill <span class="op">=</span> <span class="va">type</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span></span>
