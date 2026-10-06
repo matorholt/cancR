@@ -10,6 +10,7 @@
 #' @param unit the unit of the incidence rate. Default is 100.000 person years
 #' @param reference whether the reference population should include all possible age-sex-groups ("full" (default)) or only the age-groups present in data ("partial")
 #' @param index variable name of the index data
+#' @param print.model whether the poisson model with results should be printed (default = F)
 #' @param age name of the age variable
 #' @param sex name of the sex variable
 #'
@@ -73,6 +74,7 @@ incidencR <- function(data,
                       unit = 100000,
                       reference = "full",
                       index,
+                      print.model = F,
                       age = age,
                       sex = sex,
                       dt = F) {
@@ -80,7 +82,7 @@ incidencR <- function(data,
   #Return DT if input is DT and dt is not specified
   if(is.data.table(data) & missing(dt)) dt <- T
 
-  if(reference %nin% c("full", "partial", "male", "female")) cat("Error: Argument reference must be full, partial, male or female")
+  if(reference %nin% c("full", "partial", "male", "female")) cli::cli_abort("Error: Argument reference must be full, partial, male or female")
 
   dat <- as.data.table(data)
 
@@ -96,6 +98,12 @@ incidencR <- function(data,
     dat <- dat[, (group_c) := as.character(get(group_c))]
     covs <- c(covs, group_c)
 
+  } else {
+    group_c <- NULL
+  }
+
+  if(any(unique(unlist(strata)) %nin% covs)) {
+    cli::cli_abort("Error: {setdiff(unique(unlist(strata)), covs)} not present in data")
   }
 
   #Removing NAs
@@ -114,7 +122,7 @@ incidencR <- function(data,
               sex = str_to_lower(str_extract(sex, "\\w")),
               age_group = ifelse(age_group == "85-150", "85+", as.character(age_group)))] %>%
     .[, covs, with = FALSE] %>%
-    .[, count := .N, by = covs]
+    .[, .(count = .N), by = covs]
 
   #Prep for expand.grid. If full all unique levels in pop_DK, if partial only unique levels in data.
   grid_list <-
@@ -139,32 +147,66 @@ incidencR <- function(data,
     joinR(., population_denmark, by = c("sex", "age_group", "year")) %>%
     .[, count := ifelse(is.na(count), 0, count)] %>%
     .[, year := as.numeric(year)] %>%
-    factR(vars = covs[covs != "year"])
+    factR(vars = covs)
 
   setnames(full_data, "population", "total")
 
 
-  rhs <- paste0(c("age_group", "sex", "splines::ns(year, df = 4)", "offset(log(total))"), collapse = " + ")
+  rhs <- paste0(c("age_group", "sex", "year", "offset(log(total))"), collapse = " + ")
+
+  mod_list <- list()
 
   if(!missing(group)) {
-    rhs <- paste0(group_c, " + ", rhs)
-  }
 
+    #Overall model without group if specified
+    overall_mod <- glm(as.formula(paste0("count ~ ", rhs)),
+                       data   = copy(full_data)[, .(count = sum(count), total = first(total)), by = .(age_group, sex, year)],
+                       family = poisson(link = "log")
+    )
+
+    mod_list <- list(overall_mod)
+
+    rhs <- paste0(group_c, " + ", rhs)
+
+  }
 
   mod <- glm(as.formula(paste0("count ~ ", rhs)),
              data   = full_data,
              family = poisson(link = "log")
   )
 
+  mod_list <- c(mod_list, list(mod))
+
+
+  if(print.model) {
+
+    cli::cli_text("Reference groups")
+    data.table(variable = covs,
+               reference = map_chr(covs, ~ levels(full_data[[.x]])[1])) %>% print
+
+    est <- coef(mod)
+    ci  <- confint.default(mod)   # Wald 95% CI
+
+    coefs <- data.frame(
+      variable  = names(est),
+      ratio    = exp(est),
+      lower = exp(ci[, 1]),
+      upper = exp(ci[, 2]),
+      p.value = pvertR(summary(mod)$coefficients[, 4]),
+      row.names = NULL
+    ) %>% arrange(variable) %>% print
+  }
+
   #Add standard populations
   pred_dat <-
     full_data %>%
     #Fix person years unit
-    mutate(total = unit) %>%
+    mutate(pop = total,
+           total = unit) %>%
     joinR(population_who, population_euro, by = c("sex", "age_group")) %>%
     rename(who = population.x,
            euro = population.y) %>%
-    group_by(!!!syms(covs)) %>%
+    group_by(!!!syms(covs[covs %nin% "year"])) %>%
     #Split weight within groups (over years)
     mutate(across(c(who, euro), ~ . / n())) %>%
     ungroup()
@@ -173,16 +215,20 @@ incidencR <- function(data,
   res <- imap(c(list(overall = NULL), strata), function(svars, stratum) {
 
     #Loop over standard populations (NULL = Crude)
-    imap(list(crude = NULL, euro = "euro", who = "who"), function(w, nm) {
+    imap(list(crude = "pop", euro = "euro", who = "who"), function(w, nm) {
 
-      args <- list(model   = mod,
+      #Use overall model when subgroup
+      args <- list(model   = if(is.null(group_c) || is.null(svars) || group_c %nin% svars) mod_list[[1]] else mod_list[[length(mod_list)]],
                    newdata = pred_dat,
-                   by      = if (is.null(svars)) TRUE else svars)
-
-      if (!is.null(w)) args$wts <- w
+                   by      = if (is.null(svars)) TRUE else svars,
+                   wts     = w,
+                   type    = "response")
 
       out <- do.call(marginaleffects::avg_predictions, args) %>%
         as.data.frame() %>%
+        mutate(se_log    = std.error / estimate,
+               conf.low  = estimate * exp(-qnorm(0.975) * se_log),
+               conf.high = estimate * exp( qnorm(0.975) * se_log)) %>%
         select(any_of(svars), estimate, conf.low, conf.high) %>%
         rename_with(~ paste0(c("estimate", "lower", "upper"), "_", nm),
                     c(estimate, conf.low, conf.high))
@@ -196,3 +242,4 @@ incidencR <- function(data,
   }) %>% set_names(c("overall", map_chr(strata, ~ paste(.x, collapse = "_"))))
 
 }
+
