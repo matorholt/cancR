@@ -273,7 +273,7 @@ t1 <- estimatR(analysis_df,
 timevar = ttt,
 event = event)
 #> 
-#> ── Initializing estimatR algorithm: 2026-10-05 11:43:31 ──
+#> ── Initializing estimatR algorithm: 2026-10-06 09:51:07 ──
 #> 
 #> Preparing data:
 #> Error in get(timevar_c): object 'ttt' not found
@@ -281,7 +281,7 @@ event = event)
 #> Preparing data:
 #> Total runtime:
 #> Preparing data:
-#> 0.02 secs
+#> 0.01 secs
 #> Preparing data:
 #> 
 #> Preparing data:
@@ -295,7 +295,7 @@ timevar = ttt,
 event = event,
 group = X2)
 #> 
-#> ── Initializing estimatR algorithm: 2026-10-05 11:43:31 ──
+#> ── Initializing estimatR algorithm: 2026-10-06 09:51:07 ──
 #> 
 #> Preparing data:
 #> ✖ Error: X2 is not a factor. Convert using the factR() function

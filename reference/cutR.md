@@ -14,6 +14,7 @@ cutR(
   name.pattern = NULL,
   simplify = T,
   autoformat = T,
+  threshold = 1,
   digits = 0,
   dt = F
 )
@@ -55,6 +56,11 @@ cutR(
   whether \> and \< should be inserted at the min/max levels and the
   right limits should be subtracted 0.1/1 (default = T)
 
+- threshold:
+
+  number of digits where 0.1 is retracted in autoformat instead of 1
+  (e.g. threshold = 2 -\> 34.9)
+
 - digits:
 
   number of digits for label formatting
@@ -66,6 +72,45 @@ cutR(
 ## Value
 
 The inputted dataframe with the cut variables
+
+## Details
+
+If a single `seq.list` vector or quick name is provided, it is applied
+to all `vars`.
+
+The pre-specified categorization options are:
+
+**Quantile splits**
+
+- `median`: 50% (2 groups)
+
+- `tertile`: 33% (3 groups)
+
+- `quartile`: 25% (4 groups)
+
+- `pentile`: 20% (5 groups)
+
+- `decile`: 10% (10 groups)
+
+- `percentile`: 1% (100 groups)
+
+**Time splits**
+
+- `year`: 1 year
+
+- `5y`: 5 years
+
+- `10y`: 10 years
+
+- `half`: 6 months
+
+- `quarter`: 3 months
+
+- `third`: 4 months
+
+**BMI**
+
+- `bmi`: splits at 18.5, 25, 30, 35 and 40
 
 ## Examples
 

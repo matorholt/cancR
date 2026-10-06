@@ -51,7 +51,17 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">checkR</span><span class="op">(</span><span class="va">data</span>, <span class="va">treatment</span>, <span class="va">outcome</span>, <span class="va">vars</span>, <span class="va">id</span>, levels <span class="op">=</span> <span class="cn">NULL</span>, quantiles <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">checkR</span><span class="op">(</span></span>
+<span>  <span class="va">data</span>,</span>
+<span>  treatment <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  outcome <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  vars <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  <span class="va">id</span>,</span>
+<span>  levels <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  threshold <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  return.counts <span class="op">=</span> <span class="cn">F</span>,</span>
+<span>  quantiles <span class="op">=</span> <span class="st">"decile"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -63,15 +73,15 @@
 
 
 <dt id="arg-treatment">treatment<a class="anchor" aria-label="anchor" href="#arg-treatment"></a></dt>
-<dd><p>the main stratum which all covariates should include all levels of (optional)</p></dd>
+<dd><p>treatment stratum that should be included to all covariate combinations (optional)</p></dd>
 
 
 <dt id="arg-outcome">outcome<a class="anchor" aria-label="anchor" href="#arg-outcome"></a></dt>
-<dd><p>the outcome variable which all covariates should include all levels of (optional)</p></dd>
+<dd><p>outcome stratum that should be included to all covariate combinations (optional)</p></dd>
 
 
 <dt id="arg-vars">vars<a class="anchor" aria-label="anchor" href="#arg-vars"></a></dt>
-<dd><p>the covariates to examine for positivity violations. State multiple variables as c(var1, var2, var3) without quotes.</p></dd>
+<dd><p>vector of covariates to examine for positivity violations</p></dd>
 
 
 <dt id="arg-id">id<a class="anchor" aria-label="anchor" href="#arg-id"></a></dt>
@@ -79,16 +89,16 @@
 
 
 <dt id="arg-levels">levels<a class="anchor" aria-label="anchor" href="#arg-levels"></a></dt>
-<dd><p>the number of combinations of covariates. level=1 (default) corresponds to a 2x2 table, whereas level=2 corresponds to 2x2 tables stratified on e.g. treatment</p></dd>
+<dd><p>the number of covariates for which each treatment and/or outcome level will be counted (default = all covariate combinations)</p></dd>
 
 
 <dt id="arg-quantiles">quantiles<a class="anchor" aria-label="anchor" href="#arg-quantiles"></a></dt>
-<dd><p>quantiles for binning of continuous covariates</p></dd>
+<dd><p>quantile argument for categorization of numeric variables. See <code><a href="cutR.html">cutR()</a></code> for supported quantiles. Default = "decile"</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>prints the variables with positivity violations if present. Otherwise none detected. Also returns as either NULL or character for downstream use.</p>
+    <p>prints the variables with positivity violations if present, otherwise none detected.</p>
     </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

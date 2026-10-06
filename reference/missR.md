@@ -11,7 +11,9 @@ missR(
   drop.rows = F,
   drop.cols = F,
   return.id = F,
-  dt = F,
+  na.remove = "all.na",
+  return.data = F,
+  dt = NULL,
   print = T,
   verbose = T
 )
@@ -39,6 +41,11 @@ missR(
 - return.id:
 
   whether rows with any NA should be returned, default = F
+
+- na.remove:
+
+  whether all ("all.na") or any ("any.na") NAs should be removed
+  (default = "all.na")
 
 - dt:
 

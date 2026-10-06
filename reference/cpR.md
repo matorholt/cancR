@@ -5,7 +5,14 @@ Fix CPR numbers with removed leading zeros
 ## Usage
 
 ``` r
-cpR(data, cpr = cpr, extract = F, remove.cpr = F, return.cpr = F)
+cpR(
+  data,
+  cpr = cpr,
+  extract = FALSE,
+  remove.cpr = FALSE,
+  return.cpr = FALSE,
+  dt = NULL
+)
 ```
 
 ## Arguments
@@ -16,7 +23,7 @@ cpR(data, cpr = cpr, extract = F, remove.cpr = F, return.cpr = F)
 
 - cpr:
 
-  cpr-column
+  name of the cpr-column
 
 - extract:
 
@@ -29,6 +36,10 @@ cpR(data, cpr = cpr, extract = F, remove.cpr = F, return.cpr = F)
 - return.cpr:
 
   whether the invalid CPRs should be returned as a vector, default = F
+
+- dt:
+
+  whether the dataframe should be returned as a data.table
 
 ## Value
 

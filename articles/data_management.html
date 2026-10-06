@@ -190,6 +190,27 @@ function:</p>
 function</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/missR.html">missR</a></span><span class="op">(</span><span class="va">redcap_df</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Missing variables</span></span>
+<span><span class="co">#&gt; Index: &lt;pct&gt;</span></span>
+<span><span class="co">#&gt;            variable count   pct</span></span>
+<span><span class="co">#&gt;              &lt;fctr&gt; &lt;int&gt; &lt;num&gt;</span></span>
+<span><span class="co">#&gt;  1: metastasis_date   339  67.8</span></span>
+<span><span class="co">#&gt;  2:      death_date   314  62.8</span></span>
+<span><span class="co">#&gt;  3: recurrence_date   254  50.8</span></span>
+<span><span class="co">#&gt;  4:        necrosis   172  34.4</span></span>
+<span><span class="co">#&gt;  5:            cd10   162  32.4</span></span>
+<span><span class="co">#&gt;  6:           sox10   162  32.4</span></span>
+<span><span class="co">#&gt;  7:              ck   157  31.4</span></span>
+<span><span class="co">#&gt;  8:              id     0   0.0</span></span>
+<span><span class="co">#&gt;  9:             sex     0   0.0</span></span>
+<span><span class="co">#&gt; 10:             age     0   0.0</span></span>
+<span><span class="co">#&gt; 11:           birth     0   0.0</span></span>
+<span><span class="co">#&gt; 12:        followup     0   0.0</span></span>
+<span><span class="co">#&gt; 13: date_of_surgery     0   0.0</span></span>
+<span><span class="co">#&gt; 14:            size     0   0.0</span></span>
+<span><span class="co">#&gt; 15:            type     0   0.0</span></span>
+<span><span class="co">#&gt; 16:    localisation     0   0.0</span></span>
+<span><span class="co">#&gt; 17:         margins     0   0.0</span></span>
 <span><span class="co">#&gt; Index: &lt;pct&gt;</span></span>
 <span><span class="co">#&gt;            variable count   pct</span></span>
 <span><span class="co">#&gt;              &lt;fctr&gt; &lt;int&gt; &lt;num&gt;</span></span>
@@ -752,7 +773,7 @@ factor.</p>
 <span><span class="co">#&gt;  $ death_date     : chr  NA NA "2017-09-02" "2018-10-04" ...</span></span>
 <span><span class="co">#&gt;  $ recurrence_date: chr  "2015-03-22" NA NA "2011-12-31" ...</span></span>
 <span><span class="co">#&gt;  $ metastasis_date: chr  NA NA NA NA ...</span></span>
-<span><span class="co">#&gt;  - attr(*, ".internal.selfref")=&lt;pointer: 0x5623cd0aff20&gt;</span></span></code></pre></div>
+<span><span class="co">#&gt;  - attr(*, ".internal.selfref")=&lt;pointer: 0x564ac35c1f20&gt;</span></span></code></pre></div>
 <p>The reference group is specified using the reference argument</p>
 <div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">redcap_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
@@ -777,7 +798,7 @@ factor.</p>
 <span><span class="co">#&gt;  $ death_date     : chr  NA NA "2017-09-02" "2018-10-04" ...</span></span>
 <span><span class="co">#&gt;  $ recurrence_date: chr  "2015-03-22" NA NA "2011-12-31" ...</span></span>
 <span><span class="co">#&gt;  $ metastasis_date: chr  NA NA NA NA ...</span></span>
-<span><span class="co">#&gt;  - attr(*, ".internal.selfref")=&lt;pointer: 0x5623cd0aff20&gt;</span></span></code></pre></div>
+<span><span class="co">#&gt;  - attr(*, ".internal.selfref")=&lt;pointer: 0x564ac35c1f20&gt;</span></span></code></pre></div>
 <p>Levels can be manually assigned</p>
 <div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">redcap_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
@@ -802,7 +823,7 @@ factor.</p>
 <span><span class="co">#&gt;  $ death_date     : chr  NA NA "2017-09-02" "2018-10-04" ...</span></span>
 <span><span class="co">#&gt;  $ recurrence_date: chr  "2015-03-22" NA NA "2011-12-31" ...</span></span>
 <span><span class="co">#&gt;  $ metastasis_date: chr  NA NA NA NA ...</span></span>
-<span><span class="co">#&gt;  - attr(*, ".internal.selfref")=&lt;pointer: 0x5623cd0aff20&gt;</span></span></code></pre></div>
+<span><span class="co">#&gt;  - attr(*, ".internal.selfref")=&lt;pointer: 0x564ac35c1f20&gt;</span></span></code></pre></div>
 <p>New labels can also be assigned and automatically specify levels
 simultaneously</p>
 <div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
@@ -831,7 +852,7 @@ simultaneously</p>
 <span><span class="co">#&gt;  $ death_date     : chr  NA NA "2017-09-02" "2018-10-04" ...</span></span>
 <span><span class="co">#&gt;  $ recurrence_date: chr  "2015-03-22" NA NA "2011-12-31" ...</span></span>
 <span><span class="co">#&gt;  $ metastasis_date: chr  NA NA NA NA ...</span></span>
-<span><span class="co">#&gt;  - attr(*, ".internal.selfref")=&lt;pointer: 0x5623cd0aff20&gt;</span></span></code></pre></div>
+<span><span class="co">#&gt;  - attr(*, ".internal.selfref")=&lt;pointer: 0x564ac35c1f20&gt;</span></span></code></pre></div>
 <p>Lastly, all the arguments can be specified for multiple variables at
 once</p>
 <div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
@@ -863,7 +884,7 @@ once</p>
 <span><span class="co">#&gt;  $ death_date     : chr  NA NA "2017-09-02" "2018-10-04" ...</span></span>
 <span><span class="co">#&gt;  $ recurrence_date: chr  "2015-03-22" NA NA "2011-12-31" ...</span></span>
 <span><span class="co">#&gt;  $ metastasis_date: chr  NA NA NA NA ...</span></span>
-<span><span class="co">#&gt;  - attr(*, ".internal.selfref")=&lt;pointer: 0x5623cd0aff20&gt;</span></span></code></pre></div>
+<span><span class="co">#&gt;  - attr(*, ".internal.selfref")=&lt;pointer: 0x564ac35c1f20&gt;</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="subset-rows-filters">Subset rows (filters)<a class="anchor" aria-label="anchor" href="#subset-rows-filters"></a>
@@ -1091,6 +1112,27 @@ missR()</p>
 <div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">redcap_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="../reference/missR.html">missR</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Missing variables</span></span>
+<span><span class="co">#&gt; Index: &lt;pct&gt;</span></span>
+<span><span class="co">#&gt;            variable count   pct</span></span>
+<span><span class="co">#&gt;              &lt;fctr&gt; &lt;int&gt; &lt;num&gt;</span></span>
+<span><span class="co">#&gt;  1: metastasis_date   339  67.8</span></span>
+<span><span class="co">#&gt;  2:      death_date   314  62.8</span></span>
+<span><span class="co">#&gt;  3: recurrence_date   254  50.8</span></span>
+<span><span class="co">#&gt;  4:        necrosis   172  34.4</span></span>
+<span><span class="co">#&gt;  5:            cd10   162  32.4</span></span>
+<span><span class="co">#&gt;  6:           sox10   162  32.4</span></span>
+<span><span class="co">#&gt;  7:              ck   157  31.4</span></span>
+<span><span class="co">#&gt;  8:              id     0   0.0</span></span>
+<span><span class="co">#&gt;  9:             sex     0   0.0</span></span>
+<span><span class="co">#&gt; 10:             age     0   0.0</span></span>
+<span><span class="co">#&gt; 11:           birth     0   0.0</span></span>
+<span><span class="co">#&gt; 12:        followup     0   0.0</span></span>
+<span><span class="co">#&gt; 13: date_of_surgery     0   0.0</span></span>
+<span><span class="co">#&gt; 14:            size     0   0.0</span></span>
+<span><span class="co">#&gt; 15:            type     0   0.0</span></span>
+<span><span class="co">#&gt; 16:    localisation     0   0.0</span></span>
+<span><span class="co">#&gt; 17:         margins     0   0.0</span></span>
 <span><span class="co">#&gt; Index: &lt;pct&gt;</span></span>
 <span><span class="co">#&gt;            variable count   pct</span></span>
 <span><span class="co">#&gt;              &lt;fctr&gt; &lt;int&gt; &lt;num&gt;</span></span>

@@ -59,6 +59,7 @@
 <span>  name.pattern <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  simplify <span class="op">=</span> <span class="cn">T</span>,</span>
 <span>  autoformat <span class="op">=</span> <span class="cn">T</span>,</span>
+<span>  threshold <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  digits <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  dt <span class="op">=</span> <span class="cn">F</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -97,6 +98,10 @@ Can be specified using only "median", "quantile", "quartile" etc which will be a
 <dd><p>whether &gt; and &lt; should be inserted at the min/max levels and the right limits should be subtracted 0.1/1 (default = T)</p></dd>
 
 
+<dt id="arg-threshold">threshold<a class="anchor" aria-label="anchor" href="#arg-threshold"></a></dt>
+<dd><p>number of digits where 0.1 is retracted in autoformat instead of 1 (e.g. threshold = 2 -&gt; 34.9)</p></dd>
+
+
 <dt id="arg-digits">digits<a class="anchor" aria-label="anchor" href="#arg-digits"></a></dt>
 <dd><p>number of digits for label formatting</p></dd>
 
@@ -109,6 +114,25 @@ Can be specified using only "median", "quantile", "quartile" etc which will be a
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>The inputted dataframe with the cut variables</p>
     </div>
+    <div class="section level2">
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+    <p>If a single <code>seq.list</code> vector or quick name is provided, it is applied
+to all <code>vars</code>.</p>
+<p>The pre-specified categorization options are:</p>
+<p><strong>Quantile splits</strong></p><ul><li><p><code>median</code>: 50% (2 groups)</p></li>
+<li><p><code>tertile</code>: 33% (3 groups)</p></li>
+<li><p><code>quartile</code>: 25% (4 groups)</p></li>
+<li><p><code>pentile</code>: 20% (5 groups)</p></li>
+<li><p><code>decile</code>: 10% (10 groups)</p></li>
+<li><p><code>percentile</code>: 1% (100 groups)</p></li>
+</ul><p><strong>Time splits</strong></p><ul><li><p><code>year</code>: 1 year</p></li>
+<li><p><code>5y</code>: 5 years</p></li>
+<li><p><code>10y</code>: 10 years</p></li>
+<li><p><code>half</code>: 6 months</p></li>
+<li><p><code>quarter</code>: 3 months</p></li>
+<li><p><code>third</code>: 4 months</p></li>
+</ul><p><strong>BMI</strong></p><ul><li><p><code>bmi</code>: splits at 18.5, 25, 30, 35 and 40</p></li>
+</ul></div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>

@@ -5,7 +5,17 @@ Detection of positivity violations (empty levels)
 ## Usage
 
 ``` r
-checkR(data, treatment, outcome, vars, id, levels = NULL, quantiles = 0.1)
+checkR(
+  data,
+  treatment = NULL,
+  outcome = NULL,
+  vars = NULL,
+  id,
+  levels = NULL,
+  threshold = 0,
+  return.counts = F,
+  quantiles = "decile"
+)
 ```
 
 ## Arguments
@@ -16,18 +26,17 @@ checkR(data, treatment, outcome, vars, id, levels = NULL, quantiles = 0.1)
 
 - treatment:
 
-  the main stratum which all covariates should include all levels of
-  (optional)
+  treatment stratum that should be included to all covariate
+  combinations (optional)
 
 - outcome:
 
-  the outcome variable which all covariates should include all levels of
+  outcome stratum that should be included to all covariate combinations
   (optional)
 
 - vars:
 
-  the covariates to examine for positivity violations. State multiple
-  variables as c(var1, var2, var3) without quotes.
+  vector of covariates to examine for positivity violations
 
 - id:
 
@@ -35,16 +44,15 @@ checkR(data, treatment, outcome, vars, id, levels = NULL, quantiles = 0.1)
 
 - levels:
 
-  the number of combinations of covariates. level=1 (default)
-  corresponds to a 2x2 table, whereas level=2 corresponds to 2x2 tables
-  stratified on e.g. treatment
+  the number of covariates for which each treatment and/or outcome level
+  will be counted (default = all covariate combinations)
 
 - quantiles:
 
-  quantiles for binning of continuous covariates
+  quantile argument for categorization of numeric variables. See
+  [`cutR()`](cutR.md) for supported quantiles. Default = "decile"
 
 ## Value
 
-prints the variables with positivity violations if present. Otherwise
-none detected. Also returns as either NULL or character for downstream
-use.
+prints the variables with positivity violations if present, otherwise
+none detected.

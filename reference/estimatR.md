@@ -197,31 +197,31 @@ Optionally, the following elements may also be present:
 ``` r
 estimatR(analysis_df, t_event, event, g2, vars = c(x4, x5))
 #> 
-#> ── Initializing estimatR algorithm: 2026-10-05 11:43:24 ──
+#> ── Initializing estimatR algorithm: 2026-10-06 09:51:01 ──
 #> 
 #> Preparing data:
-#> ✔ Preparing data: Complete 2026-10-05 11:43:24, Runtime = 0 secs
+#> ✔ Preparing data: Complete 2026-10-06 09:51:01, Runtime = 0.01 secs
 #> Preparing data:
 #> Life-tables:
-#> ✔ Life-tables: Complete 2026-10-05 11:43:24, Runtime = 0.02 secs
+#> ✔ Life-tables: Complete 2026-10-06 09:51:01, Runtime = 0.02 secs
 #> Life-tables:
 #> Modelling:
-#> ✔ Modelling: Complete 2026-10-05 11:43:25, Runtime = 1.03 secs
+#> ✔ Modelling: Complete 2026-10-06 09:51:02, Runtime = 1.3 secs
 #> Modelling:
 #> Plot data:
-#> ✔ Plot data: Complete 2026-10-05 11:43:27, Runtime = 1.69 secs
+#> ✔ Plot data: Complete 2026-10-06 09:51:03, Runtime = 1.37 secs
 #> Plot data:
 #> Time-to-event:
-#> ✔ Time-to-event: Complete 2026-10-05 11:43:27, Runtime = 0 secs
+#> ✔ Time-to-event: Complete 2026-10-06 09:51:03, Runtime = 0 secs
 #> Time-to-event:
 #> Contrasts:
-#> ✔ Contrasts: Complete 2026-10-05 11:43:27, Runtime = 0.02 secs
+#> ✔ Contrasts: Complete 2026-10-06 09:51:03, Runtime = 0.01 secs
 #> Contrasts:
 #> Event proportions:
-#> ✔ Event proportions: Complete 2026-10-05 11:43:27, Runtime = 0.06 secs
+#> ✔ Event proportions: Complete 2026-10-06 09:51:03, Runtime = 0.04 secs
 #> Event proportions:
 #> Conditional risk:
-#> ✔ Conditional risk: Complete 2026-10-05 11:43:27, Runtime = 0.01 secs
+#> ✔ Conditional risk: Complete 2026-10-06 09:51:03, Runtime = 0 secs
 #> Conditional risk:
 #> 
 #> Conditional risk:
@@ -229,7 +229,7 @@ estimatR(analysis_df, t_event, event, g2, vars = c(x4, x5))
 #> Conditional risk:
 #> Total runtime:
 #> Conditional risk:
-#> 3.01 secs
+#> 2.88 secs
 #> Conditional risk:
 #> 
 #> Conditional risk:

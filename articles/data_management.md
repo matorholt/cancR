@@ -137,6 +137,27 @@ And to exploit the number of missing values we use the missR() function
 ``` r
 
 missR(redcap_df)
+#> Missing variables
+#> Index: <pct>
+#>            variable count   pct
+#>              <fctr> <int> <num>
+#>  1: metastasis_date   339  67.8
+#>  2:      death_date   314  62.8
+#>  3: recurrence_date   254  50.8
+#>  4:        necrosis   172  34.4
+#>  5:            cd10   162  32.4
+#>  6:           sox10   162  32.4
+#>  7:              ck   157  31.4
+#>  8:              id     0   0.0
+#>  9:             sex     0   0.0
+#> 10:             age     0   0.0
+#> 11:           birth     0   0.0
+#> 12:        followup     0   0.0
+#> 13: date_of_surgery     0   0.0
+#> 14:            size     0   0.0
+#> 15:            type     0   0.0
+#> 16:    localisation     0   0.0
+#> 17:         margins     0   0.0
 #> Index: <pct>
 #>            variable count   pct
 #>              <fctr> <int> <num>
@@ -769,7 +790,7 @@ redcap_df %>%
 #>  $ death_date     : chr  NA NA "2017-09-02" "2018-10-04" ...
 #>  $ recurrence_date: chr  "2015-03-22" NA NA "2011-12-31" ...
 #>  $ metastasis_date: chr  NA NA NA NA ...
-#>  - attr(*, ".internal.selfref")=<pointer: 0x5623cd0aff20>
+#>  - attr(*, ".internal.selfref")=<pointer: 0x564ac35c1f20>
 ```
 
 The reference group is specified using the reference argument
@@ -798,7 +819,7 @@ redcap_df %>%
 #>  $ death_date     : chr  NA NA "2017-09-02" "2018-10-04" ...
 #>  $ recurrence_date: chr  "2015-03-22" NA NA "2011-12-31" ...
 #>  $ metastasis_date: chr  NA NA NA NA ...
-#>  - attr(*, ".internal.selfref")=<pointer: 0x5623cd0aff20>
+#>  - attr(*, ".internal.selfref")=<pointer: 0x564ac35c1f20>
 ```
 
 Levels can be manually assigned
@@ -827,7 +848,7 @@ redcap_df %>%
 #>  $ death_date     : chr  NA NA "2017-09-02" "2018-10-04" ...
 #>  $ recurrence_date: chr  "2015-03-22" NA NA "2011-12-31" ...
 #>  $ metastasis_date: chr  NA NA NA NA ...
-#>  - attr(*, ".internal.selfref")=<pointer: 0x5623cd0aff20>
+#>  - attr(*, ".internal.selfref")=<pointer: 0x564ac35c1f20>
 ```
 
 New labels can also be assigned and automatically specify levels
@@ -860,7 +881,7 @@ redcap_df %>%
 #>  $ death_date     : chr  NA NA "2017-09-02" "2018-10-04" ...
 #>  $ recurrence_date: chr  "2015-03-22" NA NA "2011-12-31" ...
 #>  $ metastasis_date: chr  NA NA NA NA ...
-#>  - attr(*, ".internal.selfref")=<pointer: 0x5623cd0aff20>
+#>  - attr(*, ".internal.selfref")=<pointer: 0x564ac35c1f20>
 ```
 
 Lastly, all the arguments can be specified for multiple variables at
@@ -896,7 +917,7 @@ redcap_df %>%
 #>  $ death_date     : chr  NA NA "2017-09-02" "2018-10-04" ...
 #>  $ recurrence_date: chr  "2015-03-22" NA NA "2011-12-31" ...
 #>  $ metastasis_date: chr  NA NA NA NA ...
-#>  - attr(*, ".internal.selfref")=<pointer: 0x5623cd0aff20>
+#>  - attr(*, ".internal.selfref")=<pointer: 0x564ac35c1f20>
 ```
 
 ### Subset rows (filters)
@@ -1149,6 +1170,27 @@ To get a quick overview of missing data in the dataset we use missR()
 
 redcap_df %>% 
   missR()
+#> Missing variables
+#> Index: <pct>
+#>            variable count   pct
+#>              <fctr> <int> <num>
+#>  1: metastasis_date   339  67.8
+#>  2:      death_date   314  62.8
+#>  3: recurrence_date   254  50.8
+#>  4:        necrosis   172  34.4
+#>  5:            cd10   162  32.4
+#>  6:           sox10   162  32.4
+#>  7:              ck   157  31.4
+#>  8:              id     0   0.0
+#>  9:             sex     0   0.0
+#> 10:             age     0   0.0
+#> 11:           birth     0   0.0
+#> 12:        followup     0   0.0
+#> 13: date_of_surgery     0   0.0
+#> 14:            size     0   0.0
+#> 15:            type     0   0.0
+#> 16:    localisation     0   0.0
+#> 17:         margins     0   0.0
 #> Index: <pct>
 #>            variable count   pct
 #>              <fctr> <int> <num>
