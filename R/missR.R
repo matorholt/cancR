@@ -6,6 +6,7 @@
 #' @param drop.rows whether to remove rows containing all NA values, default = F
 #' @param drop.cols  whether to remove columns contain all NA values, default = F
 #' @param return.id whether rows with any NA should be returned, default = F
+#' @param na.remove whether all ("all.na") or any ("any.na") NAs should be removed (default = "all.na")
 #' @param dt whether the data.frame should be returned as a data.table, default = F
 #' @param print whether the NA check should be printed in the console, default = T
 #' @param verbose whether cli messages should be printed, default = T
@@ -18,6 +19,7 @@
 #' @export
 #'
 #'
+
 
 # n=200
 # set.seed(1)
@@ -34,10 +36,11 @@
 #          hospital = as.factor(hospital))
 #
 # #add random NA
-# df <- apply (df, 2, function(x) {x[sample( c(1:n), floor(n/10))] <- NA; x} ) %>%
-#   as_tibble()
+# df <- apply(df, 2, function(x) {x[sample( c(1:n), floor(n/10))] <- NA; x}) %>%
+#   as_tibble() %>%
+#   mutate(na_test = NA)
 #
-# missR(df)
+# missR(df, drop.rows = T, drop.cols = T, dt =T)
 
 
 missR <- function(data,
@@ -45,12 +48,14 @@ missR <- function(data,
                   drop.rows = F,
                   drop.cols = F,
                   return.id = F,
-                  dt = F,
+                  na.remove = "all.na",
+                  return.data = F,
+                  dt = NULL,
                   print = T,
                   verbose = T) {
 
   #Return DT if input is DT and dt is not specified
-  if(is.data.table(data) && missing(dt)) dt <- T
+  if(is.null(dt)) dt <- is.data.table(data)
 
   dat <- as.data.table(data)
 
@@ -67,7 +72,8 @@ missR <- function(data,
     .[, pct := round((count/total) * 100,1)] %>%
     setorder(-pct)
 
-  vars_z <- as.character(miss_df[pct == 100]$variable)
+  na_cols <- as.character(miss_df[pct == 100]$variable)
+  na_rows <- nrow(miss_df[pct > 0]) - length(na_cols)
 
   if(return.id) {
 
@@ -79,29 +85,36 @@ missR <- function(data,
 
   }
 
-  if(drop.cols || drop.rows) {
-
+  if(print) {
     if(verbose) cli::cli_text("Missing variables")
-    if(print) print(miss_df)
+    print(miss_df)
+  }
 
-    drops <- c()
 
-    if(drop.cols) {
+  drops <- c()
+  if((drop.cols || drop.rows) && sum(c(na_rows, length(na_cols))) > 0) {
 
-      dat <- dat[, c(vars_z) := NULL]
-      drops <- c("columns")
+    if(drop.cols & length(na_cols > 0)) {
+
+      dat <- dat[, c(na_cols) := NULL]
+      drops <- c("NA columns")
     }
 
-    if(drop.rows) {
+    if(drop.rows && na_rows > 0) {
 
-      dat <- rowR(dat, vars_c[vars_c %nin% vars_z], type = "all.na", filter = "remove")
-      drops <- c(drops, "rows")
+      dat <- rowR(dat, vars_c[vars_c %nin% na_cols], type = na.remove, filter = "remove")
+      drops <- c(drops, paste0(str_extract(na.remove, "all|any"), " NA rows", collapse = " "))
     }
 
     if(verbose) cli::cli_text("Returning dataset {if(length(drops) > 0) paste0(\'with \', paste0(drops, collapse = \' and \'), \' removed\')}")
 
+  }
+
+  if(length(drops) > 0 || return.data) {
     if(dt) return(dat) else return(as.data.frame(dat))
   } else {
     return(miss_df)
   }
+
+
 }

@@ -100,74 +100,90 @@ combinR <- function(letters, letters2=NULL, list=F) {
 
 #' @title Fix CPR numbers with removed leading zeros
 #' @param data dataset
-#' @param cpr cpr-column
+#' @param cpr name of the cpr-column
 #' @param extract TRUE if age and date of birth should be extracted
 #' @param remove.cpr whether invalid CPRs should be removed, default = F
 #' @param return.cpr whether the invalid CPRs should be returned as a vector, default = F
+#' @param dt whether the dataframe should be returned as a data.table
 #'
 #' @return Returns same dataset with correct CPR numbers and optionally age and date of birth. Invalid CPRs stops the function and returns the invalid CPRs as a vector.
 #' @export
 #'
 
-# data.frame(cpr = c("010101-1234",
-#                    "0101011234",
-#                    "9999999999",
-#                    "101011234"
-# )) %>%
-#   cpR(extract=T,
-#       return.cpr=F,
-#       remove.cpr=T)
+# tdf <- data.table(cpr = c("010169-2234",
+#                           "0101012234",
+#                           "9999999999",
+#                           "101113235",
+#                           "231023",
+#                           "210434-4529",
+#                           "010203-1AB2",
+#                           NA),
+#                   test = 1)
+#
+# cpR(tdf, extract = T, return.cpr = F, dt = T, remove.cpr = T) %>% print
+#
+# cpR(tdf$cpr, extract = F, return.cpr = F, remove.cpr = F) %>% print
 
 
-cpR <- function(data, cpr=cpr,extract=F, remove.cpr = F, return.cpr = F) {
+cpR <- function(data, cpr = cpr, extract = FALSE, remove.cpr = FALSE,
+                return.cpr = FALSE, dt = NULL) {
 
-  data <- data %>% ungroup()
+  is_tbl <- is.data.frame(data)
+  #Original class
+  if(is.null(dt)) dt <- is.data.table(data)
 
-  cpr_c <- data %>% select({{cpr}}) %>% names
-
-  errors <- data %>% filter(str_detect(data[[cpr_c]], "^\\d{9,10}$|^\\d{5,6}-?\\w{4}$", negate=T) |
-                              str_count(data[[cpr_c]]) == 10 & str_sub(data[[cpr_c]], 1,2) %in% c("00", seq(32,99)) |
-                              str_count(data[[cpr_c]]) == 10 & str_sub(data[[cpr_c]], 3,4) %in% c("00", seq(13,99)) |
-                              str_count(data[[cpr_c]]) == 9 & str_sub(data[[cpr_c]], 2,3) %in% c("00", seq(13,99)) |
-                              is.na(data[[cpr_c]]))
-
-  if(nrow(errors) > 0) {
-
-    if(return.cpr) {
-      warning(paste0(nrow(errors), " invalid CPR", rep("s", nrow(errors)>1), " detected and returned as vector"))
-      return(errors[[cpr_c]])
-    } else {
-
-      if(remove.cpr) {
-        warning(paste0(nrow(errors), " invalid CPR", rep("s", nrow(errors)>1), " detected and removed"))
-        data <- data %>% filter(!!sym(cpr_c) %nin% errors[[cpr_c]])
-      } else {
-        warning(paste0(nrow(errors), " invalid CPR", rep("s", nrow(errors)>1), " detected"))
-      }
-    }
+  if(is_tbl) {
+    cpr_c <- defusR(cpr)
+    raw   <- data[[cpr_c]]
+  } else {
+    raw <- data
   }
 
+  cpr <- as.character(raw)
+  #Drop hyphen and add leading zero
+  cpr <- str_replace(cpr, "^(\\d{5,6})-(\\d\\w{2}\\d)$", "\\1\\2")
+  cpr <- str_replace(cpr, "^(\\d{5}\\d\\w{2}\\d)$", "0\\1")
+  #Returns NA if not 10 digits
+  cpr <- str_extract(cpr, "^\\d{6}\\d\\w{2}\\d$")
 
-  data <- data %>%
-    mutate(!!sym(cpr_c) := str_pad(str_remove_all(!!sym(cpr_c), "-"), width=10, pad="0"))
+  sex <- if(extract) fifelse(as.integer(str_sub(cpr, 10L, 10L)) %% 2L == 0L, "F", "M")
 
-  if(extract) {
-    data <- data %>%
-      mutate(sex = case_when(str_sub({{cpr}}, 10) %in% seq(0,8,2) ~ "F",
-                             str_sub({{cpr}}, 10) %in% seq(1,9,2) ~ "M"),
-             birth = case_when(str_sub({{cpr}}, 5,6) %in% str_pad(seq(0,36), 2, pad="0") &
-                                 str_sub({{cpr}}, 7,7) %in% c(4, 9) ~ as.Date(str_c("20", str_replace_all({{cpr}}, "(\\d{2})(\\d{2})(\\d{2})(\\w{4})", "\\3-\\2-\\1"), sep="")),
-                               str_sub({{cpr}}, 5,6) %in% str_pad(seq(0,57), 2, pad="0") &
-                                 str_sub({{cpr}}, 7,7) %in% seq(5,8) ~ as.Date(str_c("20", str_replace_all({{cpr}}, "(\\d{2})(\\d{2})(\\d{2})(\\w{4})", "\\3-\\2-\\1"), sep="")),
-                               str_sub({{cpr}}, 5,6) %in% str_pad(seq(58,99), 2, pad="0") &
-                                 str_sub({{cpr}}, 7,7) %in% seq(5,8) ~ as.Date(str_c("18", str_replace_all({{cpr}}, "(\\d{2})(\\d{2})(\\d{2})(\\w{4})", "\\3-\\2-\\1"), sep="")),
+  yy <- as.integer(str_sub(cpr, 5L, 6L))
+  d7 <- as.integer(str_sub(cpr, 7L, 7L))
 
-                               T ~ as.Date(str_c("19", str_replace_all({{cpr}}, "(\\d{2})(\\d{2})(\\d{2})(\\w{4})", "\\3-\\2-\\1"), sep=""))),
-             across(c(sex, birth), ~ case_when(cpr %in% errors[[cpr_c]] ~ NA,
-                                               T ~ .)))
+  century <- fifelse(d7 <= 3L, 1900L,
+                     fifelse(d7 %in% c(4L, 9L),
+                             fifelse(yy <= 36L, 2000L, 1900L),
+                             fifelse(yy <= 57L, 2000L, 1800L)))
+
+  birth <- as.Date(paste0(century + yy, str_sub(cpr, 3L, 4L), str_sub(cpr, 1L, 2L)),
+                   format = "%Y%m%d")
+
+  cpr[is.na(birth)] <- NA_character_
+  check <- !is.na(cpr)
+
+  if (return.cpr) {
+    error <- raw[!check]
+    if (length(error)) cli::cli_alert_info("{length(error)} CPR(s) returned")
+    return(error)
   }
 
-  return(data)
+  if (!is_tbl) {
+    out <- if(extract) data.table(cpr, sex, birth) else cpr
+    if (remove.cpr) out <- out[check]
+    return(out)
+  }
+
+  # --- data.frame / data.table input --------------------------------------
+  out <- if(is.data.table(data)) copy(data) else as.data.table(data)
+  set(out, j = cpr_c, value = cpr)
+  if (extract) {
+    set(out, j = "birth", value = birth)
+    set(out, j = "sex",   value = sex)
+  }
+  if (remove.cpr) out <- out[check]
+
+  if (dt) out else as.data.frame(out)
 }
 
 #' @title Assessment of distribution of continuous variables with histograms, QQ-plots and the Shapiro-Wilks test

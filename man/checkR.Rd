@@ -4,25 +4,35 @@
 \alias{checkR}
 \title{Detection of positivity violations (empty levels)}
 \usage{
-checkR(data, treatment, outcome, vars, id, levels = NULL, quantiles = 0.1)
+checkR(
+  data,
+  treatment = NULL,
+  outcome = NULL,
+  vars = NULL,
+  id,
+  levels = NULL,
+  threshold = 0,
+  return.counts = F,
+  quantiles = "decile"
+)
 }
 \arguments{
 \item{data}{data frame to detect positivity violations}
 
-\item{treatment}{the main stratum which all covariates should include all levels of (optional)}
+\item{treatment}{treatment stratum that should be included to all covariate combinations (optional)}
 
-\item{outcome}{the outcome variable which all covariates should include all levels of (optional)}
+\item{outcome}{outcome stratum that should be included to all covariate combinations (optional)}
 
-\item{vars}{the covariates to examine for positivity violations. State multiple variables as c(var1, var2, var3) without quotes.}
+\item{vars}{vector of covariates to examine for positivity violations}
 
 \item{id}{column indicating unique patient identifier for returning specific NAs}
 
-\item{levels}{the number of combinations of covariates. level=1 (default) corresponds to a 2x2 table, whereas level=2 corresponds to 2x2 tables stratified on e.g. treatment}
+\item{levels}{the number of covariates for which each treatment and/or outcome level will be counted (default = all covariate combinations)}
 
-\item{quantiles}{quantiles for binning of continuous covariates}
+\item{quantiles}{quantile argument for categorization of numeric variables. See \code{cutR()} for supported quantiles. Default = "decile"}
 }
 \value{
-prints the variables with positivity violations if present. Otherwise none detected. Also returns as either NULL or character for downstream use.
+prints the variables with positivity violations if present, otherwise none detected.
 }
 \description{
 Detection of positivity violations (empty levels)

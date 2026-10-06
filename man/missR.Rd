@@ -10,7 +10,9 @@ missR(
   drop.rows = F,
   drop.cols = F,
   return.id = F,
-  dt = F,
+  na.remove = "all.na",
+  return.data = F,
+  dt = NULL,
   print = T,
   verbose = T
 )
@@ -25,6 +27,8 @@ missR(
 \item{drop.cols}{whether to remove columns contain all NA values, default = F}
 
 \item{return.id}{whether rows with any NA should be returned, default = F}
+
+\item{na.remove}{whether all ("all.na") or any ("any.na") NAs should be removed (default = "all.na")}
 
 \item{dt}{whether the data.frame should be returned as a data.table, default = F}
 

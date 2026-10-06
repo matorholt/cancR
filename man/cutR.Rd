@@ -12,6 +12,7 @@ cutR(
   name.pattern = NULL,
   simplify = T,
   autoformat = T,
+  threshold = 1,
   digits = 0,
   dt = F
 )
@@ -32,6 +33,8 @@ Can be specified using only "median", "quantile", "quartile" etc which will be a
 
 \item{autoformat}{whether > and < should be inserted at the min/max levels and the right limits should be subtracted 0.1/1 (default = T)}
 
+\item{threshold}{number of digits where 0.1 is retracted in autoformat instead of 1 (e.g. threshold = 2 -> 34.9)}
+
 \item{digits}{number of digits for label formatting}
 
 \item{dt}{whether a data.table should be returned (default = F)}
@@ -41,6 +44,37 @@ The inputted dataframe with the cut variables
 }
 \description{
 Wrapper for cut() with simplified labels and automatic conversion to factor based on most frequent levels
+}
+\details{
+If a single \code{seq.list} vector or quick name is provided, it is applied
+to all \code{vars}.
+
+The pre-specified categorization options are:
+
+\strong{Quantile splits}
+\itemize{
+\item \code{median}: 50\% (2 groups)
+\item \code{tertile}: 33\% (3 groups)
+\item \code{quartile}: 25\% (4 groups)
+\item \code{pentile}: 20\% (5 groups)
+\item \code{decile}: 10\% (10 groups)
+\item \code{percentile}: 1\% (100 groups)
+}
+
+\strong{Time splits}
+\itemize{
+\item \code{year}: 1 year
+\item \verb{5y}: 5 years
+\item \verb{10y}: 10 years
+\item \code{half}: 6 months
+\item \code{quarter}: 3 months
+\item \code{third}: 4 months
+}
+
+\strong{BMI}
+\itemize{
+\item \code{bmi}: splits at 18.5, 25, 30, 35 and 40
+}
 }
 \examples{
 redcap_df \%>\%

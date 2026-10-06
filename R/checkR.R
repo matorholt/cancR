@@ -1,21 +1,20 @@
 #' Detection of positivity violations (empty levels)
 #'
-#'
 #' @param data data frame to detect positivity violations
-#' @param treatment the main stratum which all covariates should include all levels of (optional)
-#' @param outcome the outcome variable which all covariates should include all levels of (optional)
-#' @param vars the covariates to examine for positivity violations. State multiple variables as c(var1, var2, var3) without quotes.
+#' @param treatment treatment stratum that should be included to all covariate combinations (optional)
+#' @param outcome outcome stratum that should be included to all covariate combinations (optional)
+#' @param vars vector of covariates to examine for positivity violations
 #' @param id column indicating unique patient identifier for returning specific NAs
-#' @param levels the number of combinations of covariates. level=1 (default) corresponds to a 2x2 table, whereas level=2 corresponds to 2x2 tables stratified on e.g. treatment
-#' @param quantiles quantiles for binning of continuous covariates
+#' @param levels the number of covariates for which each treatment and/or outcome level will be counted (default = all covariate combinations)
+#' @param quantiles quantile argument for categorization of numeric variables. See `cutR()` for supported quantiles. Default = "decile"
 #'
-#' @return prints the variables with positivity violations if present. Otherwise none detected. Also returns as either NULL or character for downstream use.
+#' @return prints the variables with positivity violations if present, otherwise none detected.
 #' @export
 #'
 #'
 # n=200
 # set.seed(1)
-# df <- data.frame(id=seq(1:n),
+# df <- data.frame(ID=seq(1:n),
 #                  group=sample(c("pre", "sub"), n, replace=T),
 #                  sex=factor(sample(c("M","F"), n, replace=T)),
 #                  age_group=sample(c("<50",">50"),n,replace=T),
@@ -28,106 +27,96 @@
 #          hospital = as.factor(hospital))
 #
 # #add random NA
-# df <- apply (df, 2, function(x) {x[sample( c(1:n), floor(n/10))] <- NA; x} ) %>%
-#   as_tibble()
-#
-# t <- checkR(df,
-#             treatment=group,
-#             vars=sex,
-#             levels=1)
-# t2 <- checkR(df, group, vars=c(sex, hospital), levels=2)
-# t3 <- checkR(df, treatment=group, outcome = sex, vars=c(age_group, chemo, hospital), levels = 3)
+# df <- apply(df, 2, function(x) {x[sample( c(1:n), floor(n/10))] <- NA; x}) %>%
+#   as_tibble() %>%
+#   mutate(na_test = NA)
 
-checkR <- function(data, treatment, outcome, vars, id, levels=NULL, quantiles=0.1) {
+# checkR(df,
+#        treatment=group,
+#        vars=c(sex, age_group),
+#        return.counts = F,
+#        threshold = 25)
+# checkR(df, group, vars=c(sex), levels=1)
+# checkR(df, treatment=group, vars=c(age_group, chemo, hospital, size), return.counts = T, levels = 1, threshold = 5, quantiles = "quartile")
+
+checkR <- function(data,
+                   treatment = NULL,
+                   outcome = NULL,
+                   vars = NULL,
+                   id,
+                   levels=NULL,
+                   threshold = 0,
+                   return.counts = F,
+                   quantiles="decile") {
 
   if(missing(id)) {
 
-    id_syn <- paste0("\\b", c("id", "ID", "pnr", "pt_id", "study_id", "record_id"), "\\b")
+    id_syn <- str_extract(names(data), paste0("\\b", c("id", "ID", "pnr", "pt_id", "study_id", "record_id"), "\\b", collapse = "|")) %>% na.omit
+
+    if(length(id_syn) == 0) return(cli::cli_alert_danger("Error: No ID column identified - please provide"))
 
     if(sum(id_syn %in% colnames(data)) > 1) {
-      return(cat("Multiple ID columns detected - pick only one"))
+      return(cli::cli_alert_danger("Multiple ID columns detected - pick only one"))
     }
-    id_c <- data %>% select(matches(id_syn)) %>% names()
+
+    id_c <- defusR(id_syn)
   } else {
-    id_c <- data %>% select({{id}}) %>% names()
+    id_c <- defusR(id)
   }
 
-  vars_c <- data %>% select({{vars}}) %>% names()
-  treat_c <- data %>% select({{treatment}}) %>% names()
-  out_c <- data %>% select({{outcome}}) %>% names()
+  vars_c <- defusR(vars)
+  treat_c <- defusR(treatment)
+  out_c <- defusR(outcome)
 
-  if(is.null(levels)) {
-    levels <- length(vars_c)
-  }
+  if(is.null(vars_c)) vars_c <- names(df)
 
+  if(is.null(levels)) levels <- length(vars_c)
   if(levels > length(c(vars_c))) {
-    return(cat(paste0("ERROR: Levels exceeding number of variables. Levels can maximally be: ", length(c(vars_c)))))
+    return(cli::cli_alert_danger("ERROR: Levels exceeding number of variables. Levels can maximally be: {length(vars_c)}"))
   }
 
-  na <- missR(data, vars = c(vars_c, treat_c, out_c), id =id, print=F)
+  dat <- missR(data, vars = c(vars_c, treat_c, out_c), drop.rows = T, drop.cols = T, na.remove = "any.na", print = T, verbose = T, dt = T, return.data = T)
 
-  if(!is.null(na)) {
-    cat("\nThe checkR algorithm only works on complete data. Remove NAs in the following variables:\n\n")
-    print(na$counts)
+  dat <- dat[, c(vars_c, treat_c, out_c), with = FALSE]
 
+  num_vars <- names(dat)[map_lgl(names(dat), ~ is.numeric(dat[[.x]]))]
 
-    return(na)
+  if(length(num_vars) > 0) {
+
+    dat <- cutR(dat,
+                num_vars,
+                seq.list = "decile")
+
   }
 
+  dat <- factR(dat,
+               c(vars_c, treat_c, out_c))
 
-  n = levels
+  grid <- combn(vars_c, levels, simplify = F)
 
-  data <- data %>%
-    select({{treatment}}, {{vars}}, {{outcome}}) %>%
-    mutate(across(where(is.numeric), ~ cut(.,breaks = unique(quantile(., seq(0,1,quantiles))))),
-           across(c({{treatment}}, {{vars}}), ~ as.factor(.)))
+  count_dt <- map(grid, ~ {
 
-  grid <- expand.grid(lapply(1:n, function(x) {
-    vars_c
-  })) %>%
-    mutate(index = row_number()) %>%
-    pivot_longer(cols=c(1:n), names_to = "position", values_to="var") %>%
-    group_by(index) %>%
-    distinct(var) %>%
-    filter(n() == n) %>%
-    arrange(index, var) %>%
-    mutate(position = letters[row_number()+10]) %>%
-    ungroup() %>%
-    pivot_wider(names_from = position, values_from = var) %>%
-    select(-index) %>%
-    distinct() %>%
-    mutate(across(everything(), ~ as.character(.)))
+    by_cols <- c(.x, treat_c, out_c)
 
-  if(!missing(treatment)) {
-    grid$a_treat <- paste(substitute(treatment))
-  }
+    counts <- dat[, .N, by = c(by_cols)]
 
-  if(!missing(outcome)) {
-    grid$b_outcome <- paste(substitute(outcome))
-  }
+    grid <- do.call(CJ, c(map(dat[, ..by_cols], unique), sorted = TRUE))
 
-  grid <- grid[, order(colnames(grid))]
+    out <- counts[grid, on = by_cols]
 
-  l <-
-    lapply(c(1:nrow(grid)), function(i) {
-      paste0(grid[i,])
-    })
+    if(!return.counts) out[is.na(N) | N < threshold] else out
 
-  zero <- rbindlist(lapply(l, function(x) {
-    data %>% select(!!!syms(x)) %>%
-      group_by(!!!syms(x), .drop = FALSE) %>%
-      count() %>%
-      ungroup() %>%
-      filter(n == 0) %>%
-      select(-n) %>%
-      ungroup()
-  }), fill=T)
+  }) %>% rbindlist(fill=T)
 
-  if(nrow(zero) == 0) {
-    cat("No positivity violations detected\n")
-  }
-  if(nrow(zero) > 0) {
-    cat(paste0("Positivity violations detected in ", nrow(zero), " combinations:\n"))
-    print(as_tibble(zero), n=300)
+  setcolorder(count_dt, c(treat_c, out_c, setdiff(names(count_dt), c(treat_c, out_c, "N")), "N"), skip_absent = T)
+
+  if(nrow(count_dt) > 0) {
+
+    cli::cli_alert_info("Positivity violations detected in {nrow(count_dt)} combinations")
+    print(as_tibble(missR(count_dt, names(count_dt), drop.cols = T, print = F, verbose = F, return.data = T)))
+
+  } else {
+    cli::cli_alert_success("No positivity violations detected")
+
   }
 }

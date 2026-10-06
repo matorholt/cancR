@@ -42,8 +42,7 @@
 rollR <- function (data, by = NULL, order, sort = 1L, label = grp, type = "roll",
                    dt = F, vars, interval, lag = 1)
 {
-  if (is.data.table(data) & missing(dt))
-    dt <- T
+  if (is.data.table(data) & missing(dt)) dt <- T
   by_c <- defusR(by)
   if (any(type %in% c("interval"))) {
     if (missing(interval))
