@@ -519,11 +519,9 @@ estimatR <- function(data,
 
   ##############################################  Counts / RD / RR  ##############################################
 
-   counts <-
+  out.list[["counts"]] <-
      dat[, .(n.events = sum(get(event_c) == cause),
-             total = .N), by = group_c]
-
-  out.list[["counts"]] <- counts
+             total = .N), keyby = group_c]
 
   #Risks
   if(length(group_levels) > 1) {

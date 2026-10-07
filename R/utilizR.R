@@ -407,40 +407,36 @@ pvertR <- function(pval,
                    style = "ama") {
 
   if(is.character(pval)) {
-    p_val <- case_when(is.na(pval) | str_detect(pval, "\\d", negate=T) ~ na,
-                       str_detect(pval, "\\<\\s?0.001") ~ "p < 0.001",
-                       T ~ pval)
-  } else {
+    pval <- case_when(is.na(pval) | str_detect(pval, "\\d", negate=T) ~ NA,
+                      str_detect(pval, "\\<\\s?0.001") ~ 0.000000001,
+                      T ~ as.numeric(str_extract_all(pval, "\\d.*")))
+  }
 
-    if(style == "ama") {
+  if(style == "ama") {
 
-      p_val <- case_when(is.na(pval) ~ na,
-                         pval < 0.001 ~ "p < 0.001",
-                         pval < 0.01 | (pval >= 0.045 & pval < 0.05) ~ paste0("p = ", numbR(pval, 3, 3)),
-                         pval >= 0.99 ~ "p > 0.99",
-                         T ~ paste0("p = ", numbR(pval, 2, 2)))
+    p_val <- case_when(is.na(pval) ~ na,
+                       pval < 0.001 ~ "p < 0.001",
+                       pval < 0.01 | (pval >= 0.045 & pval < 0.05) ~ paste0("p = ", numbR(pval, 3, 3)),
+                       pval >= 0.99 ~ "p > 0.99",
+                       T ~ paste0("p = ", numbR(pval, 2, 2)))
 
-    }
+  }
 
-    if(style == "lancet") {
+  if(style == "lancet") {
 
-      lancet_num <- function(x) {
-        x   <- numbR(x, digits = 2, sign = T)
-        dec <- pmin(1 - floor(log10(x)), 4)
-        sprintf("%.*f", dec, x)
-
-      }
-
-      p_val <- case_when(
-        is.na(pval)   ~ na,
-        pval < 0.0001 ~ "p < 0.0001",
-        pval >= 0.99 ~ "p > 0.99",
-        TRUE          ~ paste0("p = ", lancet_num(pval))
-      )
+    lancet_num <- function(x) {
+      x   <- numbR(x, digits = 2, sign = T)
+      dec <- pmin(1 - floor(log10(x)), 4)
+      sprintf("%.*f", dec, x)
 
     }
 
-
+    p_val <- case_when(
+      is.na(pval)   ~ na,
+      pval < 0.0001 ~ "p < 0.0001",
+      pval >= 0.99 ~ "p > 0.99",
+      TRUE          ~ paste0("p = ", lancet_num(pval))
+    )
 
   }
 

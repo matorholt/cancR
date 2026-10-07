@@ -152,7 +152,7 @@ incidencR <- function(data,
   setnames(full_data, "population", "total")
 
 
-  rhs <- paste0(c("age_group", "sex", "year", "offset(log(total))"), collapse = " + ")
+  rhs <- paste0(c("year", "age_group", "sex", "offset(log(total))"), collapse = " + ")
 
   mod_list <- list()
 
@@ -166,7 +166,7 @@ incidencR <- function(data,
 
     mod_list <- list(overall_mod)
 
-    rhs <- paste0(group_c, " + ", rhs)
+    rhs <- paste0(group_c, " * ", rhs)
 
   }
 

@@ -334,6 +334,8 @@ tablR <- function(data,
              str_detect(var, "\\b(V|X)?I{1,3}(V|X)?\\b") ~ var,
              #Keep mean/sd/iqr
              str_detect(var, "Mean|SD|IQR") ~ var,
+             #Keep mm and cm
+             str_detect(var, "\\bmm|cm\\b") ~ var,
              var %in% names(labs.headings) ~ var,
              #Remove xzx (indentions) from headings
              str_detect(var, paste0("\\b", c(names(labs.headings), "xzx"), "\\b", collapse="|")) ~ var,
