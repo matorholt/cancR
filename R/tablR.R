@@ -88,6 +88,7 @@ tablR <- function(data,
                   labs.groups = list(),
                   labs.headings = list(),
                   labs.subheadings= list(),
+                  labs.total = "Total",
                   keep.raw = NULL,
                   reverse = F,
                   test.stats = c("kwt", "chisq"),
@@ -213,6 +214,7 @@ tablR <- function(data,
                                          sd="SD",
                                          range = "Range",
                                          Nmiss = "Missing"),
+                       total.name = labs.total,
                        digits = 3L,
                        digits.pct = 3L,
   )
@@ -240,8 +242,8 @@ tablR <- function(data,
                  labelTranslations = headings_reverse,
                  digits = 3L) %>%
     as.data.frame() %>%
-    dplyr::rename("var" = 1)
-
+    rename("var" = 1) %>%
+    rename_with(~ str_replace(.x, "\\bOverall|Total\\b", labs.total))
 
   if(censur) {
 
@@ -251,8 +253,8 @@ tablR <- function(data,
 
   #Rounding and AMA style
   tab <- tab %>% mutate(across(c(2:(ncol(tab)-test)), ~ ifelse(str_detect(., "%"),
-                                                        str_replace(., "\\d+\\.\\d*(?=(%))", ~ numbR(as.numeric(.x), digits = digits, ama = ama)),
-                                                        str_replace_all(., "\\d+\\.\\d+", ~ numbR(as.numeric(.x), digits = digits))
+                                                               str_replace(., "\\d+\\.\\d*(?=(%))", ~ numbR(as.numeric(.x), digits = digits, ama = ama)),
+                                                               str_replace_all(., "\\d+\\.\\d+", ~ numbR(as.numeric(.x), digits = digits))
   )))
 
 

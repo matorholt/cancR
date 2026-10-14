@@ -101,7 +101,7 @@
 #     labels = list("vnum" = c("test" = "cci_0")))
 
 factR <- function(data,
-                  vars,
+                  vars = NULL,
                   num.vars = NULL,
                   reference = list(),
                   levels = list(),
@@ -116,9 +116,10 @@ factR <- function(data,
   if(is.data.table(data) & missing(dt)) dt <- T
 
   num_c <- defusR(num.vars)
-
   vars_c <- defusR(vars)
 
+  #Lazy specification of num.vars
+  if(length(vars_c) == 0 & length(num_c > 0)) vars_c <- num_c
 
   #Allow unnamed lists
   if(length(vars_c) == 1) {
@@ -191,7 +192,7 @@ factR <- function(data,
 
       if(v %in% num_c) {
 
-        nlevs <- levels(data[[v]])
+        nlevs <- unique(data[[v]])
 
         mods <- as.numeric(str_extract(nlevs, "\\d+\\.?(\\d+)?"))+case_when(str_detect(nlevs, "\\<") ~ -1000000,
                                                                             str_detect(nlevs, "\\>") ~ 1000000,
@@ -202,6 +203,8 @@ factR <- function(data,
 
         levels[[v]] <- names(val_list)
         labs <- as.list(levels[[v]]) %>% set_names(as.list(levels[[v]]))
+
+
 
         labels[[v]] <- list_modify(listR(labs, type = "reverse"),
                                    !!!listR(labels[[v]], type = "reverse")) %>% listR(., type = "reverse")

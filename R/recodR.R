@@ -86,12 +86,12 @@
 #          replace=T)
 
 
-recodR <- function(data, namelist, match = "exact", replace=F, dt=F) {
+recodR <- function(data, namelist, match = "exact", replace=F, dt=NULL) {
 
   match <- match.arg(match, c("start", "end", "exact", "contains", "boundary"))
 
   if(class(namelist) != "list") {
-    return(cat("ERROR: The variable names are not provided as a list"))
+    cli::cli_abort("ERROR: The variable names are not provided as a list")
   }
 
   switch(match,
@@ -103,9 +103,9 @@ recodR <- function(data, namelist, match = "exact", replace=F, dt=F) {
   )
 
   #Return DT if input is DT and dt is not specified
-  if(is.data.table(data) & missing(dt)) dt <- T
+  if(is.null(dt)) dt <- is.data.table(data)
 
-  setDT(data)
+  data <- as.data.table(data)
 
   #Paste diagnosis codes
   reglist <- modify_depth(namelist, 2, function(x) paste0(regex[1], paste0(x, collapse="|"), regex[2]))
@@ -121,9 +121,9 @@ recodR <- function(data, namelist, match = "exact", replace=F, dt=F) {
         #Looping through all indiviual diag codes
         for(k in seq_along(namelist[[i]][[j]])) {
 
-          data <- as.data.table(factR(data,
-                                      vars = i,
-                                      labels = unlist(c(namelist[[i]][[j]][k])) %>% set_names(names(namelist[[i]])[[j]])))
+          data <- factR(data,
+                        vars = i,
+                        labels = unlist(c(namelist[[i]][[j]][k])) %>% set_names(names(namelist[[i]])[[j]]))
 
 
         }
@@ -132,7 +132,7 @@ recodR <- function(data, namelist, match = "exact", replace=F, dt=F) {
       } else {
 
         if(replace) {
-          data[, substitute(i) := str_replace_all(get(i), names(reglist[[i]])[j] %>% set_names(reglist[[i]][[j]]))]
+          data[, substitute(i) := str_replace_all(get(i),names(reglist[[i]])[j] %>% set_names(reglist[[i]][[j]]))]
         } else {
 
           data[, substitute(i) := ifelse(get(i) %like% reglist[[i]][[j]], names(reglist[[i]])[j], get(i))]

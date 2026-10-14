@@ -86,6 +86,7 @@ cutR <- function(data,
                  name.pattern = NULL,
                  simplify = T,
                  autoformat = T,
+                 num.sort = F,
                  threshold = 1,
                  digits = 0,
                  dt=F) {
@@ -99,7 +100,7 @@ cutR <- function(data,
   for(v in vars) {
 
     if(any(class(data[[v]]) %in% c("character", "logical"))) {
-      return(cat(paste0("Error: ", v, " is ", class(data[[v]]), " and needs to be converted into numerical, date or integer")))
+      cli::cli_abort("Error: {v} is {class(data[[v]])} and needs to be converted into numerical, date or integer")
     }
 
   }
@@ -115,14 +116,21 @@ cutR <- function(data,
 
     name.list.default <- as.list(vars) %>% set_names(vars)
 
+    val <- tryCatch(
+      eval(substitute(name.list), parent.frame()),
+      error = function(e) NULL
+    )
+
     #Allow names as vector
-    if(class(name.list) != "list") {
+    if(class(val) != "list") {
+
+      name.list <- defusR(name.list)
 
       if(length(name.list) == length(vars)) {
 
         name.list <- as.list(vars) %>% set_names(name.list)
       } else {
-        return(cli::cli_alert_danger("Error: Length of vars.list not equal to length of variables"))
+        return(cli::cli_abort("Error: Length of vars.list not equal to length of name.list"))
 
       }
 
@@ -140,7 +148,7 @@ cutR <- function(data,
     } else if(length(seq.list == 1)) {
       seq.list <- map(vars, ~ seq.list) %>% set_names(vars)
     } else {
-      cat("Error: length of vars != length of seq.list")
+      cli::cli_abort("Error: length of vars != length of seq.list")
     }
 
 
@@ -206,7 +214,7 @@ cutR <- function(data,
                                       breaks = unique(round(seq.vecs[[v]], digits)),
                                       include.lowest = TRUE,
                                       right = F,
-                                      dig.lab = 4),
+                                      dig.lab = max(str_count(unique(round(seq.vecs[[v]], digits))))),
                                   "\\W(-?\\d+\\.?\\d*)\\,(-?\\d+\\.?\\d*)\\W",
                                   "\\1-\\2")]
 
@@ -271,9 +279,11 @@ cutR <- function(data,
 
     dat[, c(label) := ifelse(str_detect(get(label), "NA"), NA, get(label))]
 
-    dat[, c(label) := fct_infreq(get(label))]
 
   })
+
+  #Decide whether the cut labels should be sorted pseudonumerically
+  dat <- rlang::exec(factR, dat, !!!setNames(list(unlist(name.list)), if (num.sort) "num.vars" else "vars"))
 
   if(dt) return(dat) else return(as.data.frame(dat))
 
