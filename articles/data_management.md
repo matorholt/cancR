@@ -547,30 +547,20 @@ function:
 redcap_df %>% 
   datR(c(contains("date"), birth, followup)) %>% 
   head
-#>       id   sex   age      birth   followup date_of_surgery      size  type
-#>    <int> <num> <num>     <Date>     <Date>          <Date>     <num> <int>
-#> 1:     1     1  79.1 1929-09-20 2023-04-03      2008-11-03  7.302734     1
-#> 2:     2     2  38.1 1953-10-12 2025-12-18      1991-11-13 20.043036     1
-#> 3:     3     1  60.6 1948-05-11 2025-09-21      2008-12-17 42.412003     1
-#> 4:     4     1  45.2 1949-04-22 2022-02-11      1994-07-17 27.853775     1
-#> 5:     5     2  39.5 1966-01-18 2022-04-21      2005-07-16 25.587530     2
-#> 6:     6     1  81.2 1925-11-06 2023-07-17      2007-02-02 49.415904     2
-#>    localisation necrosis margins  cd10 sox10    ck death_date recurrence_date
-#>           <int>    <num>  <char> <num> <num> <num>     <Date>          <Date>
-#> 1:            3       NA       0     1     1     1       <NA>      2015-03-22
-#> 2:            1       NA       0     0     0    NA       <NA>            <NA>
-#> 3:            2        0       1    NA    NA     0 2017-09-02            <NA>
-#> 4:            3        1       0     0     0     0 2018-10-04      2011-12-31
-#> 5:            1       NA       0     0    NA     0       <NA>            <NA>
-#> 6:            3        1       1     1     1     0       <NA>            <NA>
-#>    metastasis_date
-#>             <Date>
-#> 1:            <NA>
-#> 2:            <NA>
-#> 3:            <NA>
-#> 4:            <NA>
-#> 5:            <NA>
-#> 6:            <NA>
+#>   id sex  age      birth   followup date_of_surgery      size type localisation
+#> 1  1   1 79.1 1929-09-20 2023-04-03      2008-11-03  7.302734    1            3
+#> 2  2   2 38.1 1953-10-12 2025-12-18      1991-11-13 20.043036    1            1
+#> 3  3   1 60.6 1948-05-11 2025-09-21      2008-12-17 42.412003    1            2
+#> 4  4   1 45.2 1949-04-22 2022-02-11      1994-07-17 27.853775    1            3
+#> 5  5   2 39.5 1966-01-18 2022-04-21      2005-07-16 25.587530    2            1
+#> 6  6   1 81.2 1925-11-06 2023-07-17      2007-02-02 49.415904    2            3
+#>   necrosis margins cd10 sox10 ck death_date recurrence_date metastasis_date
+#> 1       NA       0    1     1  1       <NA>      2015-03-22            <NA>
+#> 2       NA       0    0     0 NA       <NA>            <NA>            <NA>
+#> 3        0       1   NA    NA  0 2017-09-02            <NA>            <NA>
+#> 4        1       0    0     0  0 2018-10-04      2011-12-31            <NA>
+#> 5       NA       0    0    NA  0       <NA>            <NA>            <NA>
+#> 6        1       1    1     1  0       <NA>            <NA>            <NA>
 ```
 
 ### Categorization of continuous variables
@@ -657,12 +647,12 @@ redcap_df %>%
   head
 #>       id   sex   age      birth   followup date_of_surgery   size  type
 #>    <int> <num> <num>     <char>     <char>          <char> <fctr> <int>
-#> 1:     1     1  79.1 20-09-1929 03-04-2023      2008-11-03    <10     1
-#> 2:     2     2  38.1 12-10-1953 18-12-2025      1991-11-13  20-29     1
-#> 3:     3     1  60.6 11-05-1948 21-09-2025      2008-12-17    ≥40     1
-#> 4:     4     1  45.2 22-04-1949 11-02-2022      1994-07-17  20-29     1
-#> 5:     5     2  39.5 18-01-1966 21-04-2022      2005-07-16  20-29     2
-#> 6:     6     1  81.2 06-11-1925 17-07-2023      2007-02-02    ≥40     2
+#> 1:     1     1  79.1 20-09-1929 03-04-2023      2008-11-03   0-10     1
+#> 2:     2     2  38.1 12-10-1953 18-12-2025      1991-11-13  20-30     1
+#> 3:     3     1  60.6 11-05-1948 21-09-2025      2008-12-17  40-50     1
+#> 4:     4     1  45.2 22-04-1949 11-02-2022      1994-07-17  20-30     1
+#> 5:     5     2  39.5 18-01-1966 21-04-2022      2005-07-16  20-30     2
+#> 6:     6     1  81.2 06-11-1925 17-07-2023      2007-02-02  40-50     2
 #>    localisation necrosis margins  cd10 sox10    ck death_date recurrence_date
 #>           <int>    <num>  <char> <num> <num> <num>     <char>          <char>
 #> 1:            3       NA       0     1     1     1       <NA>      2015-03-22
@@ -710,12 +700,12 @@ redcap_df %>%
 #> 6:            3        1       1     1     1     0       <NA>            <NA>
 #>    metastasis_date age_group size_bin
 #>             <char>    <fctr>   <fctr>
-#> 1:            <NA>     70-79     2-13
-#> 2:            <NA>     30-39    14-23
-#> 3:            <NA>     60-69    38-49
-#> 4:            <NA>     40-49    24-37
-#> 5:            <NA>     40-49    24-37
-#> 6:            <NA>     80-89    38-49
+#> 1:            <NA>     70-80     2-14
+#> 2:            <NA>     30-40    14-24
+#> 3:            <NA>     60-70    38-50
+#> 4:            <NA>     40-50    24-38
+#> 5:            <NA>     40-50    24-38
+#> 6:            <NA>     80-90    38-50
 ```
 
 The new variables can also be given the same name pattern if the input
@@ -750,12 +740,12 @@ redcap_df %>%
 #> 6:            3        1       1     1     1     0       <NA>            <NA>
 #>    metastasis_date recurrence_date_bin metastasis_date_bin
 #>             <Date>              <fctr>              <fctr>
-#> 1:            <NA>           2010-2019                <NA>
-#> 2:            <NA>                <NA>                <NA>
-#> 3:            <NA>                <NA>                <NA>
-#> 4:            <NA>           2010-2019                <NA>
-#> 5:            <NA>                <NA>                <NA>
-#> 6:            <NA>                <NA>                <NA>
+#> 1:            <NA>           2010-2020               NA-NA
+#> 2:            <NA>               NA-NA               NA-NA
+#> 3:            <NA>               NA-NA               NA-NA
+#> 4:            <NA>           2010-2020               NA-NA
+#> 5:            <NA>               NA-NA               NA-NA
+#> 6:            <NA>               NA-NA               NA-NA
 ```
 
 ### Conversion to factor
@@ -790,7 +780,7 @@ redcap_df %>%
 #>  $ death_date     : chr  NA NA "2017-09-02" "2018-10-04" ...
 #>  $ recurrence_date: chr  "2015-03-22" NA NA "2011-12-31" ...
 #>  $ metastasis_date: chr  NA NA NA NA ...
-#>  - attr(*, ".internal.selfref")=<pointer: 0x557e20bfef20>
+#>  - attr(*, ".internal.selfref")=<pointer: 0x558b6d06bf20>
 ```
 
 The reference group is specified using the reference argument
@@ -819,7 +809,7 @@ redcap_df %>%
 #>  $ death_date     : chr  NA NA "2017-09-02" "2018-10-04" ...
 #>  $ recurrence_date: chr  "2015-03-22" NA NA "2011-12-31" ...
 #>  $ metastasis_date: chr  NA NA NA NA ...
-#>  - attr(*, ".internal.selfref")=<pointer: 0x557e20bfef20>
+#>  - attr(*, ".internal.selfref")=<pointer: 0x558b6d06bf20>
 ```
 
 Levels can be manually assigned
@@ -848,7 +838,7 @@ redcap_df %>%
 #>  $ death_date     : chr  NA NA "2017-09-02" "2018-10-04" ...
 #>  $ recurrence_date: chr  "2015-03-22" NA NA "2011-12-31" ...
 #>  $ metastasis_date: chr  NA NA NA NA ...
-#>  - attr(*, ".internal.selfref")=<pointer: 0x557e20bfef20>
+#>  - attr(*, ".internal.selfref")=<pointer: 0x558b6d06bf20>
 ```
 
 New labels can also be assigned and automatically specify levels
@@ -881,7 +871,7 @@ redcap_df %>%
 #>  $ death_date     : chr  NA NA "2017-09-02" "2018-10-04" ...
 #>  $ recurrence_date: chr  "2015-03-22" NA NA "2011-12-31" ...
 #>  $ metastasis_date: chr  NA NA NA NA ...
-#>  - attr(*, ".internal.selfref")=<pointer: 0x557e20bfef20>
+#>  - attr(*, ".internal.selfref")=<pointer: 0x558b6d06bf20>
 ```
 
 Lastly, all the arguments can be specified for multiple variables at
@@ -917,7 +907,7 @@ redcap_df %>%
 #>  $ death_date     : chr  NA NA "2017-09-02" "2018-10-04" ...
 #>  $ recurrence_date: chr  "2015-03-22" NA NA "2011-12-31" ...
 #>  $ metastasis_date: chr  NA NA NA NA ...
-#>  - attr(*, ".internal.selfref")=<pointer: 0x557e20bfef20>
+#>  - attr(*, ".internal.selfref")=<pointer: 0x558b6d06bf20>
 ```
 
 ### Subset rows (filters)

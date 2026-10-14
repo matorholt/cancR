@@ -46,7 +46,7 @@ the input data frame with recoded variables
                             "Astma" = c("DC123", "DC2"),
                             "AMI" = c("DG123", "DG234"))),
          match = "exact")
-#> Error in setDT(data): Argument 'x' to 'setDT' should be a 'list', 'data.frame' or 'data.table'
+#> Error in as.data.frame.default(x, ...): cannot coerce class ‘"function"’ to a data.frame
 df %>%
   factR(c(diag, type, type2)) %>%
   recodR(list("diag" = list("KOL" = "DX123",
@@ -61,7 +61,7 @@ df %>%
                              "ten" = "10",
                              "fifteen" = "15")),
          match = "boundary")
-#> Error in setDT(data): Argument 'x' to 'setDT' should be a 'list', 'data.frame' or 'data.table'
+#> Error in as.data.frame.default(x, ...): cannot coerce class ‘"function"’ to a data.frame
 
 df %>%
   recodR(list("split" = list("one" = "1",
@@ -72,5 +72,5 @@ df %>%
                              "fifteen" = "15")),
          match = "boundary",
          replace=T)
-#> Error in setDT(data): Argument 'x' to 'setDT' should be a 'list', 'data.frame' or 'data.table'
+#> Error in as.data.frame.default(x, ...): cannot coerce class ‘"function"’ to a data.frame
 ```

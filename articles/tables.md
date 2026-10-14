@@ -16,7 +16,7 @@ the whole population and present the covariates age, sex and tumor type
 
 tablR(redcap_df,
       vars = c(age, sex, type))
-#>                        Overall (N=500)
+#>                          Total (N=500)
 #> 1 Age                                 
 #> 2    Median (Q1, Q3) 49.6 (34.0, 64.6)
 #> 3    Range              10.8 - 88.8   
@@ -40,7 +40,7 @@ need to specify the data frame in [`tablR()`](../reference/tablR.md)
 redcap_df %>% 
   factR(c(sex, type)) %>% 
   tablR(vars = c(age, sex, type))
-#>                         Overall (N=500)
+#>                           Total (N=500)
 #> 1  Age                                 
 #> 2     Median (Q1, Q3) 49.6 (34.0, 64.6)
 #> 3     Range              10.8 - 88.8   
