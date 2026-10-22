@@ -11,6 +11,7 @@ incidencR(
   unit = 1e+05,
   reference = "full",
   index,
+  print.model = F,
   age = age,
   sex = sex,
   dt = F
@@ -28,6 +29,8 @@ incidencR(
 \item{reference}{whether the reference population should include all possible age-sex-groups ("full" (default)) or only the age-groups present in data ("partial")}
 
 \item{index}{variable name of the index data}
+
+\item{print.model}{whether the poisson model with results should be printed (default = F)}
 
 \item{age}{name of the age variable}
 

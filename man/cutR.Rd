@@ -12,6 +12,7 @@ cutR(
   name.pattern = NULL,
   simplify = T,
   autoformat = T,
+  num.sort = F,
   threshold = 1,
   digits = 0,
   dt = F

@@ -18,10 +18,12 @@ tablR(
   labs.groups = list(),
   labs.headings = list(),
   labs.subheadings = list(),
+  labs.total = "Total",
   keep.raw = NULL,
   reverse = F,
   test.stats = c("kwt", "chisq"),
   show.na = NULL,
+  drop.unused = F,
   censur = F,
   weights,
   digits = 1,
@@ -66,6 +68,8 @@ Options include: median, q1q3, medianq1q3 (default), iqr, range, mean, sd, means
 \item{test.stats}{Vector of length 2 containing statistical tests that should be performed}
 
 \item{show.na}{whether NAs should be displayed ("count") or included in proportions ("pct"), default = NULL}
+
+\item{drop.unused}{whether unused levels of a factor should be dropped/not shown (default = F)}
 
 \item{censur}{whether counts <= 3 should be censored}
 

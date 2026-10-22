@@ -4,7 +4,7 @@
 \alias{recodR}
 \title{Recode multiple variables}
 \usage{
-recodR(data, namelist, match = "exact", replace = F, dt = F)
+recodR(data, namelist, match = "exact", replace = F, dt = NULL)
 }
 \arguments{
 \item{data}{dataframe}
