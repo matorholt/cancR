@@ -20,6 +20,7 @@
 #' @param reverse whether the order of groups should start with the highest level (default = T)
 #' @param test.stats Vector of length 2 containing statistical tests that should be performed
 #' @param show.na whether NAs should be displayed ("count") or included in proportions ("pct"), default = NULL
+#' @param drop.unused whether unused levels of a factor should be dropped/not shown (default = F)
 #' @param censur whether counts <= 3 should be censored
 #' @param weights optional name of the column containing weights for weighted summaries
 #' @param digits number of digits
@@ -93,6 +94,7 @@ tablR <- function(data,
                   reverse = F,
                   test.stats = c("kwt", "chisq"),
                   show.na = NULL,
+                  drop.unused = F,
                   censur=F,
                   weights,
                   digits = 1,
@@ -196,6 +198,7 @@ tablR <- function(data,
           levels = levels,
           reference = reference,
           na.level = show.na,
+          drop = drop.unused,
           lab_to_lev=T,
           dt = F)
 

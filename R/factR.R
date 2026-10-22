@@ -21,6 +21,7 @@
 #' @param na.level whether NAs should be added as a separate level named "missing" (default = F)
 #' @param reverse Whether the levels should be reversed (default is FALSE)
 #' @param auto.format whether no/yes and 0/1 should be autoformatted with no as reference
+#' @param drop whether unused levels should be dropped (default = T)
 #' @param dt whether the data frame should be returned as data.table (default = F)
 #'
 #' @return Returns the inputted dataframe with modified factor variables
@@ -110,6 +111,7 @@ factR <- function(data,
                   na.level = FALSE,
                   reverse = F,
                   auto.format = F,
+                  drop = T,
                   dt = F) {
 
   #Return DT if input is DT and dt is not specified
@@ -165,10 +167,14 @@ factR <- function(data,
 
     map(vars_c, function(v) {
 
-      if(lab_to_lev && v %in% names(labels) && v %nin% num_c) {
+      levels[[v]] <-
+        if(lab_to_lev && v %in% names(labels) && v %nin% num_c) {
+          labels[[v]]
+        } else {
 
-        levels[[v]] <- labels[[v]]
-      }
+          if(is.factor(data[[v]])) levels(data[[v]]) else as.character(unique(data[[v]]))
+
+        }
 
       if(auto.format & v %nin% names(labels) & length(na.omit(unique(data[[v]]))) == 2) {
 
@@ -184,10 +190,6 @@ factR <- function(data,
           labels[[v]] <- list("No" = "0",
                               "Yes" = "1")
 
-      }
-
-      if(is.factor(v)) {
-        data <- data[, c(v) := fct_drop(get(v))]
       }
 
       if(v %in% num_c) {
@@ -212,7 +214,7 @@ factR <- function(data,
 
       }
 
-      suppressWarnings(data[, c(v) := fct_infreq(as.character(get(v)))][
+      suppressWarnings(data[, c(v) := fct_infreq(get(v))][
         , c(v) := fct_relevel(get(v), reference[[v]])][
           , c(v) := fct_relevel(get(v), levels[[v]])])
 
@@ -222,12 +224,15 @@ factR <- function(data,
 
       }
 
-
-
       if(reverse) {
 
         data[, c(v) := fct_rev(get(v))]
 
+      }
+
+      if(drop) {
+        print("here")
+        data <- data[, c(v) := fct_drop(get(v))]
       }
 
       if(na.level && sum(is.na(data[[v]]) > 0)) {
