@@ -74,7 +74,7 @@ The order of effects is:</p><ol><li><p>Set as factor (fct_infreq setting levels 
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">factR</span><span class="op">(</span></span>
 <span>  <span class="va">data</span>,</span>
-<span>  <span class="va">vars</span>,</span>
+<span>  vars <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  num.vars <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  reference <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
@@ -83,7 +83,8 @@ The order of effects is:</p><ol><li><p>Set as factor (fct_infreq setting levels 
 <span>  na.level <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  reverse <span class="op">=</span> <span class="cn">F</span>,</span>
 <span>  auto.format <span class="op">=</span> <span class="cn">F</span>,</span>
-<span>  dt <span class="op">=</span> <span class="cn">F</span></span>
+<span>  drop <span class="op">=</span> <span class="cn">T</span>,</span>
+<span>  <span class="va">dt</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -129,6 +130,10 @@ The order of effects is:</p><ol><li><p>Set as factor (fct_infreq setting levels 
 
 <dt id="arg-auto-format">auto.format<a class="anchor" aria-label="anchor" href="#arg-auto-format"></a></dt>
 <dd><p>whether no/yes and 0/1 should be autoformatted with no as reference</p></dd>
+
+
+<dt id="arg-drop">drop<a class="anchor" aria-label="anchor" href="#arg-drop"></a></dt>
+<dd><p>whether unused levels should be dropped (default = T)</p></dd>
 
 
 <dt id="arg-dt">dt<a class="anchor" aria-label="anchor" href="#arg-dt"></a></dt>

@@ -19,10 +19,12 @@ tablR(
   labs.groups = list(),
   labs.headings = list(),
   labs.subheadings = list(),
+  labs.total = "Total",
   keep.raw = NULL,
   reverse = F,
   test.stats = c("kwt", "chisq"),
   show.na = NULL,
+  drop.unused = T,
   censur = F,
   weights,
   digits = 1,
@@ -106,6 +108,11 @@ tablR(
 
   whether NAs should be displayed ("count") or included in proportions
   ("pct"), default = NULL
+
+- drop.unused:
+
+  whether unused levels of a factor should be dropped/not shown (default
+  = F)
 
 - censur:
 

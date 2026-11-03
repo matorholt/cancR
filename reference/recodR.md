@@ -5,7 +5,7 @@ Recode multiple variables
 ## Usage
 
 ``` r
-recodR(data, namelist, match = "exact", replace = F, dt = F)
+recodR(data, namelist, match = "exact", replace = F, dt = NULL)
 ```
 
 ## Arguments

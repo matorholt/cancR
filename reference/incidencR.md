@@ -16,6 +16,7 @@ incidencR(
   unit = 1e+05,
   reference = "full",
   index,
+  print.model = F,
   age = age,
   sex = sex,
   dt = F
@@ -50,6 +51,10 @@ incidencR(
 - index:
 
   variable name of the index data
+
+- print.model:
+
+  whether the poisson model with results should be printed (default = F)
 
 - age:
 

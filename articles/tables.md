@@ -126,13 +126,13 @@ redcap_df %>%
     labs.headings = list("Age at Debut" = "age"),
     labs.subheadings = list("sex" = list("Female" = "2",
                                          "Male" = "1")))
-#>                         benign (N=113)   in situ (N=254) malignant (N=133)
+#>                        in situ (N=254) malignant (N=133)    benign (N=113)
 #> 1 Age at Debut                                                            
-#> 2    Median (Q1, Q3) 48.3 (31.8, 64.2) 49.6 (34.9, 66.0) 50.4 (34.8, 63.4)
-#> 3    Range              12.0 - 84.6       10.8 - 88.8       11.2 - 86.3   
+#> 2    Median (Q1, Q3) 49.6 (34.9, 66.0) 50.4 (34.8, 63.4) 48.3 (31.8, 64.2)
+#> 3    Range              10.8 - 88.8       11.2 - 86.3       12.0 - 84.6   
 #> 4 Sex                                                                     
-#> 5    Female              47 (42%)          123 (48%)         74 (56%)     
-#> 6    Male                66 (58%)          131 (52%)         59 (44%)
+#> 5    Male                131 (52%)         59 (44%)          66 (58%)     
+#> 6    Female              123 (48%)         74 (56%)          47 (42%)
 ```
 
 #### Changing orders
@@ -161,20 +161,20 @@ redcap_df %>%
                                                   "Lower Extremity" = "4",
                                                   "Unspecified" = "5")),
     reference = list("sex" = c("Female")))
-#>                          benign (N=113)   in situ (N=254) malignant (N=133)
+#>                         in situ (N=254) malignant (N=133)    benign (N=113)
 #> 1  Age at Debut                                                            
-#> 2     Median (Q1, Q3) 48.3 (31.8, 64.2) 49.6 (34.9, 66.0) 50.4 (34.8, 63.4)
-#> 3     Range              12.0 - 84.6       10.8 - 88.8       11.2 - 86.3   
+#> 2     Median (Q1, Q3) 49.6 (34.9, 66.0) 50.4 (34.8, 63.4) 48.3 (31.8, 64.2)
+#> 3     Range              10.8 - 88.8       11.2 - 86.3       12.0 - 84.6   
 #> 4  Sex                                                                     
-#> 5     Female              47 (42%)          123 (48%)         74 (56%)     
-#> 6     Male                66 (58%)          131 (52%)         59 (44%)     
+#> 5     Male                131 (52%)         59 (44%)          66 (58%)     
+#> 6     Female              123 (48%)         74 (56%)          47 (42%)     
 #> 7  Localisation                                                            
-#> 8     Neck                6 (5.3%)          8 (3.1%)          1 (0.8%)     
-#> 9     Head                9 (8.0%)          31 (12%)          24 (18%)     
-#> 10    Trunk               47 (42%)          74 (29%)          46 (35%)     
-#> 11    Upper Extremity     30 (27%)          94 (37%)          35 (26%)     
-#> 12    Lower Extremity     20 (18%)          45 (18%)          23 (17%)     
-#> 13    Unspecified         1 (0.9%)          2 (0.8%)          4 (3.0%)
+#> 8     Trunk               74 (29%)          46 (35%)          47 (42%)     
+#> 9     Upper Extremity     94 (37%)          35 (26%)          30 (27%)     
+#> 10    Lower Extremity     45 (18%)          23 (17%)          20 (18%)     
+#> 11    Head                31 (12%)          24 (18%)          9 (8.0%)     
+#> 12    Neck                8 (3.1%)          1 (0.8%)          6 (5.3%)     
+#> 13    Unspecified         2 (0.8%)          4 (3.0%)          1 (0.9%)
 ```
 
 #### Changing summary measures
@@ -204,20 +204,20 @@ redcap_df %>%
                                                   "Unspecified" = "5")),
     reference = list("sex" = c("Female")),
     numeric = c("mean", "sd"))
-#>                       benign (N=113) in situ (N=254) malignant (N=133)
+#>                       in situ (N=254) malignant (N=133) benign (N=113)
 #> 1  Age at Debut                                                       
-#> 2     Mean                    49.0           49.9               49.7  
-#> 3     SD                      19.2           19.1               18.5  
+#> 2     Mean                    49.9               49.7           49.0  
+#> 3     SD                      19.1               18.5           19.2  
 #> 4  Sex                                                                
-#> 5     Female                47 (42%)       123 (48%)          74 (56%)
-#> 6     Male                  66 (58%)       131 (52%)          59 (44%)
+#> 5     Male                  131 (52%)          59 (44%)       66 (58%)
+#> 6     Female                123 (48%)          74 (56%)       47 (42%)
 #> 7  Localisation                                                       
-#> 8     Neck                  6 (5.3%)       8 (3.1%)           1 (0.8%)
-#> 9     Head                  9 (8.0%)       31 (12%)           24 (18%)
-#> 10    Trunk                 47 (42%)       74 (29%)           46 (35%)
-#> 11    Upper Extremity       30 (27%)       94 (37%)           35 (26%)
-#> 12    Lower Extremity       20 (18%)       45 (18%)           23 (17%)
-#> 13    Unspecified           1 (0.9%)       2 (0.8%)           4 (3.0%)
+#> 8     Trunk                 74 (29%)           46 (35%)       47 (42%)
+#> 9     Upper Extremity       94 (37%)           35 (26%)       30 (27%)
+#> 10    Lower Extremity       45 (18%)           23 (17%)       20 (18%)
+#> 11    Head                  31 (12%)           24 (18%)       9 (8.0%)
+#> 12    Neck                  8 (3.1%)           1 (0.8%)       6 (5.3%)
+#> 13    Unspecified           2 (0.8%)           4 (3.0%)       1 (0.9%)
 ```
 
 #### Customizing tables

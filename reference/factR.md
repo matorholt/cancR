@@ -20,7 +20,7 @@ remaining variables
 ``` r
 factR(
   data,
-  vars,
+  vars = NULL,
   num.vars = NULL,
   reference = list(),
   levels = list(),
@@ -29,7 +29,8 @@ factR(
   na.level = FALSE,
   reverse = F,
   auto.format = F,
-  dt = F
+  drop = T,
+  dt
 )
 ```
 
@@ -79,6 +80,10 @@ factR(
 - auto.format:
 
   whether no/yes and 0/1 should be autoformatted with no as reference
+
+- drop:
+
+  whether unused levels should be dropped (default = T)
 
 - dt:
 

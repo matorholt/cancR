@@ -188,22 +188,22 @@ g1_res <- estimatR(
   timevar = t_event,
   event = event2)
 #> 
-#> ── Initializing estimatR algorithm: 2026-10-14 13:48:55 ──
+#> ── Initializing estimatR algorithm: 2026-11-03 12:05:02 ──
 #> 
 #> Preparing data:
-#> ✔ Preparing data: Complete 2026-10-14 13:48:56, Runtime = 0 secs
+#> ✔ Preparing data: Complete 2026-11-03 12:05:02, Runtime = 0 secs
 #> Preparing data:Life-tables:
-#> ✔ Life-tables: Complete 2026-10-14 13:48:56, Runtime = 0.02 secs
+#> ✔ Life-tables: Complete 2026-11-03 12:05:02, Runtime = 0.02 secs
 #> Life-tables:Modelling:
-#> ✔ Modelling: Complete 2026-10-14 13:48:56, Runtime = 0 secs
+#> ✔ Modelling: Complete 2026-11-03 12:05:02, Runtime = 0 secs
 #> Modelling:Plot data:
-#> ✔ Plot data: Complete 2026-10-14 13:48:56, Runtime = 0.02 secs
+#> ✔ Plot data: Complete 2026-11-03 12:05:02, Runtime = 0.01 secs
 #> Plot data:Time-to-event:
-#> ✔ Time-to-event: Complete 2026-10-14 13:48:56, Runtime = 0.01 secs
+#> ✔ Time-to-event: Complete 2026-11-03 12:05:02, Runtime = 0.03 secs
 #> Time-to-event:Event proportions:
-#> ✔ Event proportions: Complete 2026-10-14 13:48:56, Runtime = 0.07 secs
+#> ✔ Event proportions: Complete 2026-11-03 12:05:02, Runtime = 0.06 secs
 #> Event proportions:Conditional risk:
-#> ✔ Conditional risk: Complete 2026-10-14 13:48:56, Runtime = 0.01 secs
+#> ✔ Conditional risk: Complete 2026-11-03 12:05:02, Runtime = 0.01 secs
 #> Conditional risk:
 #> Conditional risk:── Estimation complete! 
 #> Conditional risk:Total runtime:
@@ -258,28 +258,28 @@ g2_res <- estimatR(
   group = g2
 )
 #> 
-#> ── Initializing estimatR algorithm: 2026-10-14 13:48:57 ──
+#> ── Initializing estimatR algorithm: 2026-11-03 12:05:03 ──
 #> 
 #> Preparing data:
-#> ✔ Preparing data: Complete 2026-10-14 13:48:57, Runtime = 0 secs
+#> ✔ Preparing data: Complete 2026-11-03 12:05:03, Runtime = 0 secs
 #> Preparing data:Life-tables:
-#> ✔ Life-tables: Complete 2026-10-14 13:48:57, Runtime = 0.02 secs
+#> ✔ Life-tables: Complete 2026-11-03 12:05:03, Runtime = 0.02 secs
 #> Life-tables:Modelling:
-#> ✔ Modelling: Complete 2026-10-14 13:48:58, Runtime = 1.66 secs
+#> ✔ Modelling: Complete 2026-11-03 12:05:05, Runtime = 1.76 secs
 #> Modelling:Plot data:
-#> ✔ Plot data: Complete 2026-10-14 13:49:00, Runtime = 1.26 secs
+#> ✔ Plot data: Complete 2026-11-03 12:05:06, Runtime = 1.21 secs
 #> Plot data:Time-to-event:
-#> ✔ Time-to-event: Complete 2026-10-14 13:49:00, Runtime = 0 secs
+#> ✔ Time-to-event: Complete 2026-11-03 12:05:06, Runtime = 0 secs
 #> Time-to-event:Contrasts:
-#> ✔ Contrasts: Complete 2026-10-14 13:49:00, Runtime = 0.02 secs
+#> ✔ Contrasts: Complete 2026-11-03 12:05:06, Runtime = 0.02 secs
 #> Contrasts:Event proportions:
-#> ✔ Event proportions: Complete 2026-10-14 13:49:00, Runtime = 0.02 secs
+#> ✔ Event proportions: Complete 2026-11-03 12:05:06, Runtime = 0.02 secs
 #> Event proportions:Conditional risk:
-#> ✔ Conditional risk: Complete 2026-10-14 13:49:00, Runtime = 0.01 secs
+#> ✔ Conditional risk: Complete 2026-11-03 12:05:06, Runtime = 0.01 secs
 #> Conditional risk:
 #> Conditional risk:── Estimation complete! 
 #> Conditional risk:Total runtime:
-#> Conditional risk:3.05 secs
+#> Conditional risk:3.11 secs
 #> Conditional risk:
 #> Conditional risk:
 ```
@@ -322,28 +322,28 @@ g2_res <- estimatR(
   vars = c(x6,x1,x2)
 )
 #> 
-#> ── Initializing estimatR algorithm: 2026-10-14 13:49:01 ──
+#> ── Initializing estimatR algorithm: 2026-11-03 12:05:08 ──
 #> 
 #> Preparing data:
-#> ✔ Preparing data: Complete 2026-10-14 13:49:01, Runtime = 0 secs
+#> ✔ Preparing data: Complete 2026-11-03 12:05:08, Runtime = 0 secs
 #> Preparing data:Life-tables:
-#> ✔ Life-tables: Complete 2026-10-14 13:49:01, Runtime = 0.02 secs
+#> ✔ Life-tables: Complete 2026-11-03 12:05:08, Runtime = 0.02 secs
 #> Life-tables:Modelling:
-#> ✔ Modelling: Complete 2026-10-14 13:49:02, Runtime = 1.41 secs
+#> ✔ Modelling: Complete 2026-11-03 12:05:09, Runtime = 1.71 secs
 #> Modelling:Plot data:
-#> ✔ Plot data: Complete 2026-10-14 13:49:04, Runtime = 1.83 secs
+#> ✔ Plot data: Complete 2026-11-03 12:05:11, Runtime = 1.46 secs
 #> Plot data:Time-to-event:
-#> ✔ Time-to-event: Complete 2026-10-14 13:49:04, Runtime = 0 secs
+#> ✔ Time-to-event: Complete 2026-11-03 12:05:11, Runtime = 0 secs
 #> Time-to-event:Contrasts:
-#> ✔ Contrasts: Complete 2026-10-14 13:49:04, Runtime = 0.01 secs
+#> ✔ Contrasts: Complete 2026-11-03 12:05:11, Runtime = 0.01 secs
 #> Contrasts:Event proportions:
-#> ✔ Event proportions: Complete 2026-10-14 13:49:04, Runtime = 0.02 secs
+#> ✔ Event proportions: Complete 2026-11-03 12:05:11, Runtime = 0.02 secs
 #> Event proportions:Conditional risk:
-#> ✔ Conditional risk: Complete 2026-10-14 13:49:04, Runtime = 0.01 secs
+#> ✔ Conditional risk: Complete 2026-11-03 12:05:11, Runtime = 0.01 secs
 #> Conditional risk:
 #> Conditional risk:── Estimation complete! 
 #> Conditional risk:Total runtime:
-#> Conditional risk:3.34 secs
+#> Conditional risk:3.29 secs
 #> Conditional risk:
 #> Conditional risk:
 ```
@@ -382,7 +382,7 @@ g2_multires <- iteratR(
 #> 
 #> ── Iteration complete!
 #> Total runtime:
-#> 5.72 secs
+#> 4.98 secs
 ```
 
 `g2_multires` is now a named list containing three `estimatR` objects

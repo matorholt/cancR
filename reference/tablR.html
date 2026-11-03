@@ -65,10 +65,12 @@
 <span>  labs.groups <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  labs.headings <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  labs.subheadings <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  labs.total <span class="op">=</span> <span class="st">"Total"</span>,</span>
 <span>  keep.raw <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  reverse <span class="op">=</span> <span class="cn">F</span>,</span>
 <span>  test.stats <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"kwt"</span>, <span class="st">"chisq"</span><span class="op">)</span>,</span>
 <span>  show.na <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  drop.unused <span class="op">=</span> <span class="cn">T</span>,</span>
 <span>  censur <span class="op">=</span> <span class="cn">F</span>,</span>
 <span>  <span class="va">weights</span>,</span>
 <span>  digits <span class="op">=</span> <span class="fl">1</span>,</span>
@@ -148,6 +150,10 @@ Options include: median, q1q3, medianq1q3 (default), iqr, range, mean, sd, means
 
 <dt id="arg-show-na">show.na<a class="anchor" aria-label="anchor" href="#arg-show-na"></a></dt>
 <dd><p>whether NAs should be displayed ("count") or included in proportions ("pct"), default = NULL</p></dd>
+
+
+<dt id="arg-drop-unused">drop.unused<a class="anchor" aria-label="anchor" href="#arg-drop-unused"></a></dt>
+<dd><p>whether unused levels of a factor should be dropped/not shown (default = F)</p></dd>
 
 
 <dt id="arg-censur">censur<a class="anchor" aria-label="anchor" href="#arg-censur"></a></dt>
