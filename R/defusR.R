@@ -40,10 +40,10 @@ defusR <- function(input, data = NULL) {
   tidys <- c("contains", "matches", "starts_with", "ends_with", "everything", ":")
 
   #If already defused - return character
-  val <- tryCatch(input, error = function(e) NULL)
+  val <- suppressWarnings(tryCatch(input, error = function(e) NULL))
   if(is.character(val)) {
 
-    #if(!inherits(val, "def_ex")) class(val) <- c("def_ex", "character")
+    if(any(str_detect(val, "="))) val <- str_trim(unlist(str_split(val, "=")))
 
     return(val)
   }

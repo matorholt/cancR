@@ -16,7 +16,7 @@ factR(
   reverse = F,
   auto.format = F,
   drop = T,
-  dt = F
+  dt
 )
 }
 \arguments{

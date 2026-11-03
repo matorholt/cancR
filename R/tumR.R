@@ -405,11 +405,11 @@ tumR <- function(data,
           na_x <- length(loc_x) == 1 && is.na(loc_x)
           na_i <- length(loc_i) == 1 && is.na(loc_i)
           simul <- date_i == date_x & all(region_x %in% region_i)
-          TT <- str_detect(tumor_i, tumor_x) | str_detect(tumor_x, tumor_i)
+          TT <- any(str_detect(tumor_i, tumor_x) | str_detect(tumor_x, tumor_i))
           LL <- any(loc_x %in% loc_i) || na_x || na_i || simul
           early <- as.numeric(date_x - date_i) < 90
           unspec <- spec_i %in% "non_specific" & spec_x %in% "specific" || na_i & !na_x
-          uns_tumor <- str_detect(tumor_i, "uns") & str_detect(tumor_x, "uns", negate=T)
+          uns_tumor <- any(str_detect(tumor_i, "uns") & str_detect(tumor_x, "uns", negate=T))
 
           if(verbose) {
             cli::cli_h3("Tumor {i}")
@@ -748,7 +748,7 @@ tumR <- function(data,
            paste0("t_", renames)[paste0("t_", renames) %in% names(tm_frame)],
            renames[paste0("t_", renames) %in% names(tm_frame)])
 
-  if(skin.only) tm_frame <- tm_frame[loc_skin != "non-skin"]
+  if(skin.only) tm_frame <- tm_frame[unlist(t_loc_skin) %nin% "non-skin"]
 
   if(dt) return(tm_frame) else return(as.data.frame(tm_frame))
 

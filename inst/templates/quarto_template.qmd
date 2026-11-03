@@ -1,0 +1,18 @@
+---
+title: "TITLE"
+date: today
+author: "AUTHOR"
+output-file: "REPORT NAME"
+toc: true
+format: 
+  html:
+    embed-resources: true
+    standalone: true
+editor: visual
+execute:
+  echo: false
+---
+
+```{r}
+library(cancR)
+```

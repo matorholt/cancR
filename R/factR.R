@@ -39,11 +39,11 @@
 #                v3 = sample(letters[1:5], size = n, replace=TRUE),
 #                vnum = sample(c("<40", "50-60", "10-20", "100-110", ">110", "cci_0"), size = n, replace=TRUE),
 #                comorb = rbinom(n, 1, 0.5)))
-
-#Already a factor
+#
+# #Already a factor
 # df %>%
 #   factR(comorb) %>%
-#   factR(num.vars = comorb)
+#   factR(num.vars = comorb) %>% str
 #
 #
 # # #Lazy_coding
@@ -112,10 +112,10 @@ factR <- function(data,
                   reverse = F,
                   auto.format = F,
                   drop = T,
-                  dt = F) {
+                  dt = NULL) {
 
   #Return DT if input is DT and dt is not specified
-  if(is.data.table(data) & missing(dt)) dt <- T
+  if(is.null(dt)) dt <- is.data.table(data)
 
   num_c <- defusR(num.vars)
   vars_c <- defusR(vars)
@@ -128,6 +128,7 @@ factR <- function(data,
 
 
     if(length(levels) > 0) {
+
       if(!is.null(names(levels))) {
         levels <- unlist(levels %>% set_names(NULL))
 
@@ -148,7 +149,6 @@ factR <- function(data,
     }
   }
 
-
   if(length(vars_c) == 1 & length(reference) == 1) {
 
     if(class(reference) == "character") {
@@ -163,18 +163,16 @@ factR <- function(data,
   data <- copy(data)
   setDT(data)
 
+
   if(length(vars_c) > 0) {
 
     map(vars_c, function(v) {
 
-      levels[[v]] <-
-        if(lab_to_lev && v %in% names(labels) && v %nin% num_c) {
-          labels[[v]]
-        } else {
+      if(!is.factor(data[[v]])) data[, (v) := as.character(get(v))]
 
-          if(is.factor(data[[v]])) levels(data[[v]]) else as.character(unique(data[[v]]))
+      if(lab_to_lev && v %in% names(labels) && v %nin% num_c) levels[[v]] <- labels[[v]]
 
-        }
+      if(is.factor(data[[v]]) && v %nin% levels[[v]]) levels[[v]] <- levels(data[[v]])
 
       if(auto.format & v %nin% names(labels) & length(na.omit(unique(data[[v]]))) == 2) {
 
@@ -214,13 +212,17 @@ factR <- function(data,
 
       }
 
+
+
       suppressWarnings(data[, c(v) := fct_infreq(get(v))][
-        , c(v) := fct_relevel(get(v), reference[[v]])][
-          , c(v) := fct_relevel(get(v), levels[[v]])])
+        , c(v) := fct_relevel(get(v), levels[[v]])][
+          , c(v) := fct_relevel(get(v), reference[[v]])])
 
       if(v %in% names(labels) & any(labels[[v]] %in% levels(data[[v]]))) {
 
-        data[, c(v) := fct_recode(get(v), !!!setNames(labels[[v]], as.character(names(labels[[v]]))))]
+        labels[[v]] <- labels[[v]][!is.na(names(labels[[v]])) & !is.na(unlist(labels[[v]]))]
+
+        data[, (v) := fct_recode(get(v), !!!setNames(unlist(labels[[v]]), names(labels[[v]])))]
 
       }
 
@@ -231,7 +233,7 @@ factR <- function(data,
       }
 
       if(drop) {
-        print("here")
+
         data <- data[, c(v) := fct_drop(get(v))]
       }
 

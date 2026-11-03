@@ -1,79 +1,186 @@
-# joinR, t1
+# basic joins
 
     Code
-      joinR(df_list, by = "id", type = "left", dt = T)
+      joinR(x, y, by = id, type = left)
     Output
-            id   pnr     x  v1.x  pnr2    x2  v1.y     y  pnr3    x3    v1     z
-         <num> <num> <num> <num> <num> <num> <num> <num> <num> <num> <num> <num>
-      1:     1     1     1     1    NA    NA    NA    NA    NA    NA    NA    NA
-      2:     2     2     1     1     2     1     1     2     2     1     1     3
-      3:     3     3     2     2     3     1     1     2    NA    NA    NA    NA
-      4:     3     3     2     2     3     2     2     2    NA    NA    NA    NA
+      Key: <id>
+            id  grp.x   name score  grp.y   city active
+         <int> <char> <char> <num> <char> <char> <lgcl>
+      1:     1     g1      a    10   <NA>   <NA>     NA
+      2:     2     g1      b    NA     g1      X   TRUE
+      3:     3     g1      c    30     g2      Y  FALSE
+      4:     3     g2      d    NA     g2      Y  FALSE
 
-# joinR, t2
+---
 
     Code
-      joinR(df_list[[1]], df_list[[3]], by = c("id", "v1"))
+      joinR(x, y, by = c(id, grp), type = left)
     Output
-        id v1 pnr x pnr3 x3  z
-      1  1  1   1 1   NA NA NA
-      2  2  1   2 1    2  1  3
-      3  3  2   3 2   NA NA NA
+      Key: <id, grp>
+            id    grp   name score   city active
+         <int> <char> <char> <num> <char> <lgcl>
+      1:     1     g1      a    10   <NA>     NA
+      2:     2     g1      b    NA      X   TRUE
+      3:     3     g1      c    30   <NA>     NA
+      4:     3     g2      d    NA      Y  FALSE
 
-# joinR, t3
+---
 
     Code
-      joinR(df_list, by = c("id", "v1"), type = "left", dt = T)
+      joinR(x, y, by = id, type = full)
     Output
-            id    v1   pnr     x  pnr2    x2     y  pnr3    x3     z
-         <num> <num> <num> <num> <num> <num> <num> <num> <num> <num>
-      1:     1     1     1     1    NA    NA    NA    NA    NA    NA
-      2:     2     1     2     1     2     1     2     2     1     3
-      3:     3     2     3     2     3     2     2    NA    NA    NA
+      Key: <id>
+            id  grp.x   name score  grp.y   city active
+         <int> <char> <char> <num> <char> <char> <lgcl>
+      1:     1     g1      a    10   <NA>   <NA>     NA
+      2:     2     g1      b    NA     g1      X   TRUE
+      3:     3     g1      c    30     g2      Y  FALSE
+      4:     3     g2      d    NA     g2      Y  FALSE
+      5:     4   <NA>   <NA>    NA     g1      Z   TRUE
 
-# joinR, t4
+---
 
     Code
-      joinR(df_list, by = list(c("pnr", "pnr2", "pnr3")), type = "full")
+      joinR(x, y, by = c(id, grp), type = inner)
     Output
-        pnr id.x  x v1.x id.y x2 v1.y  y id x3 v1  z
-      1   1    1  1    1   NA NA   NA NA NA NA NA NA
-      2   2    2  1    1    2  1    1  2  2  1  1  3
-      3   3    3  2    2    3  1    1  2 NA NA NA NA
-      4   3    3  2    2    3  2    2  2 NA NA NA NA
-      5   4   NA NA   NA   NA NA   NA NA  4  3  3  3
-      6   4   NA NA   NA   NA NA   NA NA  4  3  3  3
+      Key: <id, grp>
+            id    grp   name score   city active
+         <int> <char> <char> <num> <char> <lgcl>
+      1:     2     g1      b    NA      X   TRUE
+      2:     3     g2      d    NA      Y  FALSE
 
-# joinR, t5
+# filter joins
 
     Code
-      joinR(df_list, by = list(c("pnr", "pnr2", "pnr3"), c("x", "x2", "x3")), type = "left",
-      dt = T)
+      joinR(x, y, by = id, type = semi)
     Output
-           pnr     x  id.x  v1.x  id.y  v1.y     y    id    v1     z
-         <num> <num> <num> <num> <num> <num> <num> <num> <num> <num>
-      1:     1     1     1     1    NA    NA    NA    NA    NA    NA
-      2:     2     1     2     1     2     1     2     2     1     3
-      3:     3     2     3     2     3     2     2    NA    NA    NA
+            id    grp   name score
+         <int> <char> <char> <num>
+      1:     2     g1      b    NA
+      2:     3     g1      c    30
+      3:     3     g2      d    NA
 
-# joinR, t6
+---
 
     Code
-      joinR(df_list, as.data.table(df_2), by = "id")
+      joinR(x, y, by = c(id, grp), type = anti)
+    Output
+            id    grp   name score
+         <int> <char> <char> <num>
+      1:     1     g1      a    10
+      2:     3     g1      c    30
+
+# insert and update joins on id only
+
+    Code
+      joinR(x, new_rows, by = id, type = insert)
+    Output
+            id    grp   name score
+         <int> <char> <char> <num>
+      1:     1     g1      a    10
+      2:     2     g1      b    20
+      3:     3     g1      c    30
+      4:     3     g2      d    35
+
+---
+
+    Code
+      joinR(x, new_rows, by = id, type = update)
+    Output
+            id    grp   name score
+         <int> <char> <char> <num>
+      1:     1     g1      a    10
+      2:     2     g1     b2    20
+      3:     3     g1     c2    35
+      4:     3     g2     c2    35
+
+# update joins only the columns in `vars`
+
+    Code
+      joinR(x, new_rows, by = id, type = update, vars = score)
+    Output
+            id    grp   name score
+         <int> <char> <char> <num>
+      1:     1     g1      a    10
+      2:     2     g1      b    20
+      3:     3     g1      c    35
+      4:     3     g2      d    35
+
+# insert and update joins on id and grp
+
+    Code
+      joinR(x, new_rows_grp, by = c(id, grp), type = insert)
+    Output
+            id    grp   name score
+         <int> <char> <char> <num>
+      1:     1     g1      a    10
+      2:     2     g1      b    20
+      3:     3     g1      c    30
+      4:     3     g2      d    35
+
+---
+
+    Code
+      joinR(x, new_rows_grp, by = c(id, grp), type = update)
+    Output
+            id    grp   name score
+         <int> <char> <char> <num>
+      1:     1     g1      a    10
+      2:     2     g1     b2    20
+      3:     3     g1      c    30
+      4:     3     g2     c2    35
+
+---
+
+    Code
+      joinR(x, new_rows_grp, by = c(id, grp), type = update, vars = score)
+    Output
+            id    grp   name score
+         <int> <char> <char> <num>
+      1:     1     g1      a    10
+      2:     2     g1      b    20
+      3:     3     g1      c    30
+      4:     3     g2      d    35
+
+# keys with different names
+
+    Code
+      joinR(x, z, by = "id = pnr", type = left)
+    Output
+      Key: <id>
+            id    grp   name score region
+         <int> <char> <char> <num> <char>
+      1:     1     g1      a    10      N
+      2:     2     g1      b    NA   <NA>
+      3:     3     g1      c    30      S
+      4:     3     g2      d    NA      S
+
+# joining a list of data.tables
+
+    Code
+      joinR(x, df_list, by = c("id = id2 = pnr = id"), type = left)
     Condition
       Warning in `merge.data.table()`:
-      column names [v1.x, v1.y] are duplicated in the result
+      column names [grp.x, grp.y] are duplicated in the result
     Output
-            id pnr.x   x.x  v1.x  pnr2    x2  v1.y     y  pnr3    x3  v1.x     z
-         <num> <num> <num> <num> <num> <num> <num> <num> <num> <num> <num> <num>
-      1:     1     1     1     1    NA    NA    NA    NA    NA    NA    NA    NA
-      2:     2     2     1     1     2     1     1     2     2     1     1     3
-      3:     3     3     2     2     3     1     1     2    NA    NA    NA    NA
-      4:     3     3     2     2     3     2     2     2    NA    NA    NA    NA
-         pnr.y   x.y  v1.y
-         <num> <num> <num>
-      1:    11    11    11
-      2:    22    11    11
-      3:    33    22    12
-      4:    33    22    12
+      Key: <id>
+            id  grp.x   name score  grp.y  val_a  grp.x  val_b  grp.y  val_c
+         <int> <char> <char> <num> <char> <char> <char> <char> <char> <char>
+      1:     1     g1      a    10     g1     a1     g1     b1     g1     c1
+      2:     2     g1      b    NA     g1     a2     g2     b2   <NA>   <NA>
+      3:     3     g1      c    30     g2     a3   <NA>   <NA>     g2     c3
+      4:     3     g2      d    NA     g2     a3   <NA>   <NA>     g2     c3
+
+---
+
+    Code
+      joinR(x, y, df_list, by = list(c("id", "id", "id2", "pnr", "id"), "grp"), type = "left")
+    Output
+      Key: <id, grp>
+            id    grp   name score   city active  val_a  val_b  val_c
+         <int> <char> <char> <num> <char> <lgcl> <char> <char> <char>
+      1:     1     g1      a    10   <NA>     NA     a1     b1     c1
+      2:     2     g1      b    NA      X   TRUE     a2   <NA>   <NA>
+      3:     3     g1      c    30   <NA>     NA   <NA>   <NA>   <NA>
+      4:     3     g2      d    NA      Y  FALSE     a3   <NA>     c3
 

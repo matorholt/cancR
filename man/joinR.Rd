@@ -4,14 +4,16 @@
 \alias{joinR}
 \title{Join two or more dataframes}
 \usage{
-joinR(..., by, type = "left", dt = F, cartesian = TRUE)
+joinR(..., by, type = "left", vars = NULL, dt = NULL)
 }
 \arguments{
 \item{...}{dataframes or list of dataframes to be joined}
 
 \item{by}{variable to join on. This can either be a vector of one or multiple keys (e.g. by = c("id", "group")) or a list of vectors containing key columns.}
 
-\item{type}{type of join (e.g. left (default), right, full and inner)}
+\item{type}{type of join (see details)}
+
+\item{vars}{vector of variables the join should update/insert}
 
 \item{dt}{whether the returned dataframe should be a data.table}
 }
@@ -20,4 +22,77 @@ a single joined dataframe
 }
 \description{
 Join two or more dataframes as a left, right, full or inner join. The dataframes can be provided separately or as a list.
+}
+\details{
+The join types fall into four groups.
+
+\strong{Mutating joins} combine the columns of \code{x} and \code{y}:
+\describe{
+\item{\code{left}}{Keeps all rows of \code{x}. Columns from \code{y} are added, and
+rows without a match get \code{NA}.}
+\item{\code{right}}{Keeps all rows of \code{y}. Columns from \code{x} are added, and
+rows without a match get \code{NA}.}
+\item{\code{full}}{Keeps all rows of both \code{x} and \code{y}. Unmatched rows on
+either side get \code{NA} in the other side's columns.}
+\item{\code{inner}}{Keeps only rows with a match in both \code{x} and \code{y}.}
+}
+
+\strong{Filtering joins} only filter \code{x} and never add columns from \code{y}:
+\describe{
+\item{semi}{Keeps rows of \code{x} that have a match in \code{y}.}
+\item{\code{anti}}{Keeps rows of \code{x} that have \strong{no} match in \code{y}.}
+}
+
+\strong{Row-update joins} modify \code{x} using rows from \code{y}. They use the columns
+that \code{x} and \code{y} have in common, apart from the keys, or only the columns
+named in \code{vars}. They do not add new columns to \code{x}:
+\describe{
+\item{\code{insert}}{For matching keys,
+only \code{NA} values in \code{x} are filled with the values from \code{y}. Existing
+non-\code{NA} values are kept, and no new rows are added.}
+\item{\code{update}}{For matching keys,
+values in \code{x} are overwritten with the values from \code{y}, and rows in \code{y}
+with keys not found in \code{x} are added as new rows.}
+}
+
+\strong{Keys}
+
+Use \code{by = "id"} or \code{by = c("id", "grp")} when the key columns have the same
+name in all tables. When the names differ, use the form
+\code{by = "id = pnr = id2"}, corresponding to the same length as the number of
+input datasets. Alternatively pass a list with one #' element per key set
+e.g. \code{list(c("id", "pnr"), "grp")}
+}
+\examples{
+x <- data.table(id = c(1,2,3,3), grp = c("g1", "g1", "g1", "g2"), name = c("a", "b", "c", "d"), score = c(10, NA, 30, NA))
+y <- data.table(id = 2:4, grp = c("g1", "g2", "g1"), city = c("X", "Y", "Z"), active = c(TRUE, FALSE, TRUE))
+new_rows <- data.table(id = 2:4, name = c("b2", "c2", "d"), score = c(20, 35, 40))
+z <- data.table(pnr = c(1, 3, 5), region = c("N", "S", "E"))
+df_list <- list(
+  data.table(id2 = 1:3,        grp = c("g1", "g1", "g2"), val_a = c("a1", "a2", "a3")),
+  data.table(pnr = c(1, 2, 4), grp = c("g1", "g2", "g1"), val_b = c("b1", "b2", "b4")),
+  data.table(id  = c(1, 3, 4), grp = c("g1", "g2", "g1"), val_c = c("c1", "c3", "c4"))
+)
+
+# Basic joins
+joinR(x, y, by = id, type = left)
+joinR(x, y, by = c(id, grp), type = left)
+joinR(x, y, by = id, type = full)
+joinR(x, y, by = c(id, grp), type = inner)
+
+# Filter-joins
+joinR(x, y, by = id, type = semi)
+joinR(x, y, by = c(id, grp), type = anti)
+
+# Update/insert joins
+joinR(x, new_rows, by = id, type = insert)
+joinR(x, new_rows, by = id, type = update)
+# Update only score
+joinR(x, new_rows, by = id, type = update, vars = score)
+
+# Different keys
+joinR(x, z, by = "id = pnr", type = left)
+joinR(x, df_list, by = c("id = id2 = pnr = id"), type = left)
+joinR(x, y, df_list, by = list(c("id", "id", "id2", "pnr", "id"),
+                               "grp"), type = "left")
 }

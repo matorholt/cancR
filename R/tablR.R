@@ -94,7 +94,7 @@ tablR <- function(data,
                   reverse = F,
                   test.stats = c("kwt", "chisq"),
                   show.na = NULL,
-                  drop.unused = F,
+                  drop.unused = T,
                   censur=F,
                   weights,
                   digits = 1,
@@ -222,12 +222,7 @@ tablR <- function(data,
                        digits.pct = 3L,
   )
 
-  if(missing(group)) {
-    form <- paste0(" ~ ", paste0(vars_c, collapse="+"))
-  } else {
-    form <- paste0(group_c, " ~ ", paste0(vars_c, collapse="+"))
-  }
-
+  form <- paste0(if(!missing(group)) group_c, " ~ ", paste0(unique(c(vars_c, vars_cat, num_c)), collapse=" + "))
 
   table <- tableby(as.formula(form),
                    data=data,

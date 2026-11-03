@@ -23,7 +23,7 @@ tablR(
   reverse = F,
   test.stats = c("kwt", "chisq"),
   show.na = NULL,
-  drop.unused = F,
+  drop.unused = T,
   censur = F,
   weights,
   digits = 1,
