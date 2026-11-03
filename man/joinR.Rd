@@ -61,10 +61,11 @@ Use \code{by = "id"} or \code{by = c("id", "grp")} when the key columns have the
 name in all tables. When the names differ, use the form
 \code{by = "id = pnr = id2"}, corresponding to the same length as the number of
 input datasets. Alternatively pass a list with one #' element per key set
-e.g. \code{list(c("id", "pnr"), "grp")}
+e.g. \code{list(c("id", "pnr"), "grp")}, where a single element is recycled to the
+length of the input studies.
 }
 \examples{
-x <- data.table(id = c(1,2,3,3), grp = c("g1", "g1", "g1", "g2"), name = c("a", "b", "c", "d"), score = c(10, NA, 30, NA))
+x <- data.table(id = c(1L, 2L, 3L, 3L), grp = c("g1", "g1", "g1", "g2"), name = c("a", "b", "c", "d"), score = c(10, NA, 30, NA))
 y <- data.table(id = 2:4, grp = c("g1", "g2", "g1"), city = c("X", "Y", "Z"), active = c(TRUE, FALSE, TRUE))
 new_rows <- data.table(id = 2:4, name = c("b2", "c2", "d"), score = c(20, 35, 40))
 z <- data.table(pnr = c(1, 3, 5), region = c("N", "S", "E"))
