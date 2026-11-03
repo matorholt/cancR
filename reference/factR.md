@@ -30,7 +30,7 @@ factR(
   reverse = F,
   auto.format = F,
   drop = T,
-  dt
+  dt = NULL
 )
 ```
 

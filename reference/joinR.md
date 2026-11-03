@@ -93,12 +93,13 @@ Use `by = "id"` or `by = c("id", "grp")` when the key columns have the
 same name in all tables. When the names differ, use the form
 `by = "id = pnr = id2"`, corresponding to the same length as the number
 of input datasets. Alternatively pass a list with one \#' element per
-key set e.g. `list(c("id", "pnr"), "grp")`
+key set e.g. `list(c("id", "pnr"), "grp")`, where a single element is
+recycled to the length of the input studies.
 
 ## Examples
 
 ``` r
-x <- data.table(id = c(1,2,3,3), grp = c("g1", "g1", "g1", "g2"), name = c("a", "b", "c", "d"), score = c(10, NA, 30, NA))
+x <- data.table(id = c(1L, 2L, 3L, 3L), grp = c("g1", "g1", "g1", "g2"), name = c("a", "b", "c", "d"), score = c(10, NA, 30, NA))
 y <- data.table(id = 2:4, grp = c("g1", "g2", "g1"), city = c("X", "Y", "Z"), active = c(TRUE, FALSE, TRUE))
 new_rows <- data.table(id = 2:4, name = c("b2", "c2", "d"), score = c(20, 35, 40))
 z <- data.table(pnr = c(1, 3, 5), region = c("N", "S", "E"))
@@ -144,27 +145,27 @@ joinR(x, y, by = c(id, grp), type = inner)
 # Filter-joins
 joinR(x, y, by = id, type = semi)
 #>       id    grp   name score
-#>    <num> <char> <char> <num>
+#>    <int> <char> <char> <num>
 #> 1:     2     g1      b    NA
 #> 2:     3     g1      c    30
 #> 3:     3     g2      d    NA
 joinR(x, y, by = c(id, grp), type = anti)
 #>       id    grp   name score
-#>    <num> <char> <char> <num>
+#>    <int> <char> <char> <num>
 #> 1:     1     g1      a    10
 #> 2:     3     g1      c    30
 
 # Update/insert joins
 joinR(x, new_rows, by = id, type = insert)
 #>       id    grp   name score
-#>    <num> <char> <char> <num>
+#>    <int> <char> <char> <num>
 #> 1:     1     g1      a    10
 #> 2:     2     g1      b    20
 #> 3:     3     g1      c    30
 #> 4:     3     g2      d    35
 joinR(x, new_rows, by = id, type = update)
 #>       id    grp   name score
-#>    <num> <char> <char> <num>
+#>    <int> <char> <char> <num>
 #> 1:     1     g1      a    10
 #> 2:     2     g1     b2    20
 #> 3:     3     g1     c2    35
@@ -172,7 +173,7 @@ joinR(x, new_rows, by = id, type = update)
 # Update only score
 joinR(x, new_rows, by = id, type = update, vars = score)
 #>       id    grp   name score
-#>    <num> <char> <char> <num>
+#>    <int> <char> <char> <num>
 #> 1:     1     g1      a    10
 #> 2:     2     g1      b    20
 #> 3:     3     g1      c    35
@@ -182,7 +183,7 @@ joinR(x, new_rows, by = id, type = update, vars = score)
 joinR(x, z, by = "id = pnr", type = left)
 #> Key: <id>
 #>       id    grp   name score region
-#>    <num> <char> <char> <num> <char>
+#>    <int> <char> <char> <num> <char>
 #> 1:     1     g1      a    10      N
 #> 2:     2     g1      b    NA   <NA>
 #> 3:     3     g1      c    30      S

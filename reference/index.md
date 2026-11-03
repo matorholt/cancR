@@ -106,6 +106,7 @@ Small utility functions
   regardless of quoted or non-quoted in functions.
 - [`formatR()`](formatR.md) : Auto-formatting of a data frame with
   layout option for typical levels and labels
+- [`initializR()`](initializR.md) : Initialize new project
 - [`listR()`](listR.md) : Routine modifications of lists
 - [`modeR()`](modeR.md) : Get the mode (most common value) of a vector.
 - [`multitaskR()`](multitaskR.md) : Start a multisession with automatic
